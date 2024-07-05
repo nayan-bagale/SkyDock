@@ -1,4 +1,5 @@
 {
+  "name": "nex-cloud",
   "private": true,
   "scripts": {
     "build": "turbo build",
@@ -7,14 +8,12 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
     "prettier": "^3.2.5",
-    "turbo": "^2.0.6"
+    "turbo": "^2.0.6",
+    "typescript": "^5.4.5"
   },
-  "name": "with-vite",
-  "packageManager": "yarn@1.22.21",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ]
+  "packageManager": "pnpm@8.15.6",
+  "engines": {
+    "node": ">=18"
+  }
 }
