@@ -1,9 +1,7 @@
+import MenuBar from '@/components/Bar/MenuBar'
+import HandleDragnDrop from '@/components/Files/HandleDragnDrop'
 import Dock from '@components/Dock/Dock'
 import "@repo/ui/styles"
-import CheckDevice from '@/components/CheckDevice'
-import MenuBar from '@/components/Bar/MenuBar'
-import Terminal from '@/components/Apps/Terminal'
-import HandleDragnDrop from '@/components/Files/HandleDragnDrop'
 
 
 
@@ -22,7 +20,7 @@ function App() {
         </div>
         <div className='flex-1 w-full'>
           <HandleDragnDrop />
-          <Terminal />
+          {/* <Terminal /> */}
         </div>
         <div className=' justify-self-end'>
           <Dock />
