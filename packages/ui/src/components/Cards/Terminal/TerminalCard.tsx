@@ -11,7 +11,7 @@ interface TerminalCardProps {
 export const TerminalCard = forwardRef<HTMLDivElement, TerminalCardProps>(
     ({ style, onMouseDown }, ref) => {
         return (
-            <div className=" absolute  min-w-[32rem] min-h-[18rem] max-h-[20rem] z-20 text-gray-200 bg-black/60 backdrop-blur rounded-xl overflow-hidden"
+            <div className=" resize absolute min-w-[32rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] z-20 text-gray-200 bg-black/60 backdrop-blur rounded-xl overflow-hidden"
                 ref={ref}
                 style={{ left: style.x, top: style.y }}
             >

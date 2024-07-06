@@ -18,7 +18,7 @@ const CommandsInput = () => {
     }
   return (
       <div className=" flex flex-col p-2 text-xs h-full w-full gap-1">
-          <div ref={scrollref} className=" overflow-y-scroll h-[17rem]">
+          <div ref={scrollref} className=" overflow-y-scroll pb-10">
               <div>Welcome to Nex-Cloud! - Type <span className="text-blue-500">help</span> for a list supported commands.</div>
               {commands.map((command, index) => (<div key={index}>-&#62; ~ {command}</div>))}
               <div className=" flex gap-1 -mb-2">

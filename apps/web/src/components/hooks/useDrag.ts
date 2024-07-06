@@ -8,7 +8,10 @@ export const useDrag = ({
   calculateFor?: string;
 }) => {
   const [dragInfo, setDragInfo] = useState<any>();
-  const [finalPosition, setFinalPosition] = useState<any>({});
+  const [finalPosition, setFinalPosition] = useState<{x:number, y:number}>({
+    x: 0,
+    y: 20,
+  });
   const [isDragging, setIsDragging] = useState(false);
 
   const updateFinalPosition = useCallback(

@@ -5,7 +5,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./icons":"./src/icons/index.tsx",
-    "./styles": "./style.css"
+    "./styles": "./style.css",
+    "./utils":"./src/utils/index.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

@@ -8,7 +8,7 @@ const DockStyles = cva(["border", "rounded-3xl", "backdrop-blur-md", "shadow", "
     variants: {
         intent: {
             primary: [
-                "bg-white/60",
+                "bg-white/40",
                 "text-white",
                 "border-transparent",
             ],

@@ -8,7 +8,7 @@ const dockButtonStyles = cva(["font-semibold", "border", "rounded-2xl", "shadow"
   variants: {
     intent: {
       primary: [
-        "bg-white/50",
+        "bg-white/80",
         "text-white",
         "border-transparent",
         "hover:bg-white/80",

@@ -1,13 +1,15 @@
 import { motion } from 'framer-motion'
+import { FC, ReactNode } from 'react'
+import cn from '../../utils'
 
-export const Bar = () => {
+export const Bar:FC<{children?: ReactNode, className?:string}> = ({children, className}) => {
   return (
-      <motion.div className=" w-full h-5 bg-white/60"
+    <motion.div className={cn(" w-full h-5 bg-white/60", className)}
         initial={{ y: -10 }}
         animate={{ y: 0 }}
         exit={{ y: -10 }}
       >
-          
+          {children}
       </motion.div>
   )
 }
