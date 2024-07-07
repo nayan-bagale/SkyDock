@@ -1,22 +1,38 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 
-const initialState = {
+export interface AppsStateT {
   apps: {
-    terminal: {
+    id: string;
+    name: string;
+    process: "off" | "on";
+  }[];
+}
+
+const initialState: AppsStateT = {
+  apps: [
+    {
       id: nanoid(),
       name: "Terminal",
-      icon: "terminal",
-      description: "Terminal",
-      status: "active",
-      zIndex: 0,
+      process: "off",
     },
-  },
+  ],
 };
 
 export const appsSlice = createSlice({
   name: "apps",
-  initialState,
-  reducers: {},
+  initialState: initialState,
+  reducers: {
+    process: (state, action) => {
+      state.apps = state.apps.map((app) => {
+        if (app.name === action.payload.name) {
+          app.process = action.payload.process;
+        }
+        return app;
+      });
+    },
+  },
 });
+
+export const { process } = appsSlice.actions;
 
 export default appsSlice.reducer;

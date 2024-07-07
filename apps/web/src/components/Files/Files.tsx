@@ -29,8 +29,8 @@ const FileIcon: FC<{ file: FileT }> = ({ file }) => {
 }
 
 const Files: FC<FliesProps> = () => {
-  const files = useAppSelector((state: any) => state.files);
-  // console.log(files)
+  const files = useAppSelector((state: any) => state.files.files);
+
   return (
     <div >
       {files.map((file: FileT) => (

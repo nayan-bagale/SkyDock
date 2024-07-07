@@ -8,7 +8,7 @@ export const useDrag = ({
   calculateFor?: string;
 }) => {
   const [dragInfo, setDragInfo] = useState<any>();
-  const [finalPosition, setFinalPosition] = useState<{x:number, y:number}>({
+  const [finalPosition, setFinalPosition] = useState<{ x: number; y: number }>({
     x: 0,
     y: 20,
   });
@@ -40,8 +40,8 @@ export const useDrag = ({
       setFinalPosition({
         x: Math.min(Math.max(0, x), window.innerWidth - width),
         y:
-          Math.min(Math.max(0, y), window.innerHeight - height) <= 20
-            ? 20
+          Math.min(Math.max(0, y), window.innerHeight - height) <= 24
+            ? 24
             : Math.min(Math.max(0, y), window.innerHeight - height),
       });
     },

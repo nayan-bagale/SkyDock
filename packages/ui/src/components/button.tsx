@@ -62,8 +62,6 @@ export const Button = ({
     ...props
 }: ButtonProps) => {
 
-    console.log(props)
-
     return (
         <motion.button onClick={onClick}
             whileTap={{ scale: 0.95 }}
