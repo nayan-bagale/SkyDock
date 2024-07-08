@@ -2,8 +2,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import { HTMLMotionProps, motion } from "framer-motion";
 import { cn } from "../utils";
 
-
-const ButtonStyles = cva(["font-semibold", "rounded-md", "w-fit"], {
+const ButtonStyles = cva(["font-semibold", "rounded-md", "w-fit", "flex", " items-center", "transition-colors"], {
     variants: {
         intent: {
             primary: [
@@ -24,13 +23,14 @@ const ButtonStyles = cva(["font-semibold", "rounded-md", "w-fit"], {
                 "bg-transparent",
                 "text-gray-900",
                 "border-transparent",
-                "hover:bg-white/80",
+                "hover:bg-white",
             ],
         },
         size: {
             small: ["text-xs", "py-0.5", "px-1"],
             medium: ["text-base", "py-2", "px-4"],
-            icon: ["p-0.5"],
+            icon: ["p-0.5", "drop-shadow", ""],
+            menu: ["text-xs", "py-0.5", "px-2", "w-full", " justify-between ", " rounded", "hover:bg-blue-400 hover:text-white", " hover:shadow"],
         },
 
     },
@@ -49,8 +49,9 @@ const ButtonStyles = cva(["font-semibold", "rounded-md", "w-fit"], {
     },
 });
 
-type ButtonProps = HTMLMotionProps<"button"> & VariantProps<typeof ButtonStyles>
-
+type ButtonProps = HTMLMotionProps<"button"> & VariantProps<typeof ButtonStyles> & {
+    isActive?: boolean;
+}
 
 export const Button = ({
     onClick,
@@ -59,6 +60,7 @@ export const Button = ({
     size,
     className,
     title,
+    isActive,
     ...props
 }: ButtonProps) => {
 
@@ -66,7 +68,7 @@ export const Button = ({
         <motion.button onClick={onClick}
             whileTap={{ scale: 0.95 }}
             type="button"
-            className={cn(ButtonStyles({ intent, size, className }))}
+            className={cn(ButtonStyles({ intent, size, className }), isActive && " bg-blue-400 text-white")}
             {...props}
         >
             {children}

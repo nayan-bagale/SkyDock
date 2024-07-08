@@ -2,6 +2,7 @@ import { cn } from "../utils";
 
 import logo_svg from './assests/cat-svgrepo-com.svg';
 import control_center_svg from './assests/control-centre-svgrepo-com.svg';
+import trash_svg from './assests/delete-svgrepo-com.svg';
 import docker_svg from './assests/docker-svgrepo-com.svg';
 import file_svg from './assests/file-svgrepo-com.svg';
 import folder_svg from './assests/folder-archive-documents-open-svgrepo-com.svg';
@@ -10,6 +11,7 @@ import pdf_svg from './assests/pdf-svgrepo-com-1.svg';
 import image_svg from './assests/picture-photo-image-svgrepo-com.svg';
 import python_image from './assests/python-svgrepo-com.svg';
 import react_svg from './assests/react-svgrepo-com.svg';
+import right_arrow_svg from './assests/right-arrow-svgrepo-com.svg';
 import vscode_svg from './assests/sln-svgrepo-com.svg';
 import terminal_svg from './assests/terminal-svgrepo-com.svg';
 import upload_svg from './assests/upload-svgrepo-com.svg';
@@ -31,6 +33,8 @@ export const Icons = {
   PDF: ({ className }: { className: string }) => $({ svg: pdf_svg, name: 'pdf', className }),
   Image: ({ className }: { className: string }) => $({ svg: image_svg, name: 'image', className }),
   File: ({ className }: { className: string }) => $({ svg: file_svg, name: 'file', className }),
-  Logo: ({ className }: { className: string }) => $({ svg: logo_svg, name: 'logo', className })
+  Logo: ({ className }: { className: string }) => $({ svg: logo_svg, name: 'logo', className }),
+  Right_Arrow: ({ className }: { className: string }) => $({ svg: right_arrow_svg, name: 'right_arrow', className }),
+  Trash: ({ className }: { className: string }) => $({ svg: trash_svg, name: 'trash', className }),
 }
 

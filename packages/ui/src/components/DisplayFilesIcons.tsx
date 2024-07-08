@@ -1,6 +1,5 @@
-import React, { FC, useState } from 'react'
-import { Icons } from '../icons'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { FC } from 'react';
 
 interface FileT {
     id: string;
@@ -15,31 +14,33 @@ interface DisplayFilesIconsT {
     children?: React.ReactNode;
     className?: string;
     file: FileT;
-    Icon: ({className}:{className:string}) => JSX.Element;
+    Icon: ({ className }: { className: string }) => JSX.Element;
     onClick?: () => void;
+    onContextMenu?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
 
-export const DisplayFilesIcons:FC<DisplayFilesIconsT> = ({file, Icon}) => {
+export const DisplayFilesIcons: FC<DisplayFilesIconsT> = ({ file, Icon, onContextMenu }) => {
 
-    const [tooltip, setTooltip] = useState(false)
-
+    // const [tooltip, setTooltip] = useState(false)
+    const tooltip = false;
     return (
         <motion.div className=' relative w-fit flex flex-col justify-center items-center p-0.5 rounded-md'
+            id={file.id}
             whileHover={{
                 backgroundColor: '#ffffff40',
             }}
             whileTap={{ scale: 0.9 }}
-            onMouseEnter={() => setTooltip(true)}
-            onMouseLeave={() => setTooltip(false)}
-
+            // onMouseEnter={() => setTooltip(true)}
+            // onMouseLeave={() => setTooltip(false)}
+            onContextMenu={onContextMenu}
         >
             <Icon className=" w-12" />
-            <p className='text-xs text-white cursor-default text-center text-wrap w-14'>{ file.name }</p>
+            <p className='text-xs text-white cursor-default text-center text-wrap w-14'>{file.name}</p>
             {tooltip && (
                 <AnimatePresence>
                     <motion.div className=' text-xs absolute left-16 backdrop-blur bg-white/80 border rounded-lg px-1 py-0.5 '
-                        initial={{ opacity: 0}}
+                        initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ delay: 0.6 }}

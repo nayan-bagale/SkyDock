@@ -1,11 +1,16 @@
 import { useAppSelector } from "@/redux/hooks";
-import Terminal from "./terminal/Terminal";
+import { lazy, Suspense } from "react";
+const Terminal = lazy(() => import('@/components/Apps/terminal/Terminal'))
 
 const Apps_ = () => {
     const terminal = useAppSelector((state: any) => state.terminal.process);
 
     return (<>
-        {terminal === 'on' && <Terminal />}
+        {terminal === 'on' && (
+            <Suspense fallback={<div>Loding.....</div>}>
+                <Terminal />
+            </Suspense>
+        )}
     </>
     )
 }

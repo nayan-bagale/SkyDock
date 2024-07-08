@@ -1,6 +1,6 @@
-import React, { forwardRef, ReactNode, useState } from 'react'
-import { Icons } from '../icons'
 import { motion } from 'framer-motion';
+import React, { forwardRef, ReactNode, useState } from 'react';
+import { Icons } from '../icons';
 import cn from '../utils';
 
 interface DragDropWrapperProps {
@@ -20,7 +20,6 @@ export const DragDropWrapper = forwardRef<HTMLDivElement, DragDropWrapperProps>(
                 setDragging(true)
             }
 
-            // console.log(target?.dataset?.type)
         }
 
         const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
