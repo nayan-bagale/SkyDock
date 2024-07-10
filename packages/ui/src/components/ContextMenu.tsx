@@ -13,13 +13,15 @@ interface ContextMenuT {
 export const ContextMenu = forwardRef<HTMLDivElement, ContextMenuT>(
     ({ children, className, position }, ref) => {
 
-        console.log(position)
         return (
             <AnimatePresence>
-                <motion.div className={cn(" z-10 absolute bg-gray-50  py-1 px-0.5 text-xs min-w-[10rem] gap-1 shadow-md flex flex-col rounded", className,
-                    position && `top-[${position.y}px] left-[${position.x}px]`
+                <motion.div className={cn(" z-10 absolute bg-gray-50 py-1 px-0.5 text-xs min-w-[10rem] gap-1 shadow-md flex flex-col rounded", className,
                 )}
                     ref={ref}
+                    style={{
+                        x: position?.x,
+                        y: position?.y
+                    }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}

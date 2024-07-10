@@ -9,8 +9,8 @@ export const useDrag = ({
 }) => {
   const [dragInfo, setDragInfo] = useState<any>();
   const [finalPosition, setFinalPosition] = useState<{ x: number; y: number }>({
-    x: 0,
-    y: 20,
+    x: 100,
+    y: 100,
   });
   const [isDragging, setIsDragging] = useState(false);
 

@@ -1,17 +1,27 @@
 import { cn } from "../utils";
 
 import logo_svg from './assests/cat-svgrepo-com.svg';
+import cloud_svg from './assests/cloud-storage-upload-up-arrow-svgrepo-com.svg';
 import control_center_svg from './assests/control-centre-svgrepo-com.svg';
+import cross_svg from './assests/cross-svgrepo-com.svg';
 import trash_svg from './assests/delete-svgrepo-com.svg';
 import docker_svg from './assests/docker-svgrepo-com.svg';
 import file_svg from './assests/file-svgrepo-com.svg';
+import folder_add_svg from './assests/folder-add-svgrepo-com.svg';
 import folder_svg from './assests/folder-archive-documents-open-svgrepo-com.svg';
+import folder2_svg from './assests/folder-svgrepo-com.svg';
+import grid2_svg from './assests/grid-2-horizontal-svgrepo-com.svg';
+import grid4_svg from './assests/grid-4-svgrepo-com.svg';
+import home_svg from './assests/home-svgrepo-com.svg';
+import left_arrow from './assests/left-arrow-backup-2-svgrepo-com.svg';
 import menu_svg from './assests/mjml-svgrepo-com.svg';
 import pdf_svg from './assests/pdf-svgrepo-com-1.svg';
 import image_svg from './assests/picture-photo-image-svgrepo-com.svg';
 import python_image from './assests/python-svgrepo-com.svg';
 import react_svg from './assests/react-svgrepo-com.svg';
+import right_arrow2_svg from './assests/right-arrow-backup-2-svgrepo-com.svg';
 import right_arrow_svg from './assests/right-arrow-svgrepo-com.svg';
+import select_multiple_svg from './assests/select-multiple-svgrepo-com.svg';
 import vscode_svg from './assests/sln-svgrepo-com.svg';
 import terminal_svg from './assests/terminal-svgrepo-com.svg';
 import upload_svg from './assests/upload-svgrepo-com.svg';
@@ -36,5 +46,15 @@ export const Icons = {
   Logo: ({ className }: { className: string }) => $({ svg: logo_svg, name: 'logo', className }),
   Right_Arrow: ({ className }: { className: string }) => $({ svg: right_arrow_svg, name: 'right_arrow', className }),
   Trash: ({ className }: { className: string }) => $({ svg: trash_svg, name: 'trash', className }),
+  Cross: ({ className }: { className: string }) => $({ svg: cross_svg, name: 'cross', className }),
+  Left_Arrow: ({ className }: { className: string }) => $({ svg: left_arrow, name: 'left_arrow', className }),
+  Right_Arrow2: ({ className }: { className: string }) => $({ svg: right_arrow2_svg, name: 'right_arrow', className }),
+  Grid4: ({ className }: { className: string }) => $({ svg: grid4_svg, name: 'grid-4', className }),
+  Grid2: ({ className }: { className: string }) => $({ svg: grid2_svg, name: 'grid-2', className }),
+  Cloud: ({ className }: { className: string }) => $({ svg: cloud_svg, name: 'cloud', className }),
+  Folder2: ({ className }: { className: string }) => $({ svg: folder2_svg, name: 'folder2', className }),
+  Home: ({ className }: { className: string }) => $({ svg: home_svg, name: 'home', className }),
+  Select_Multiple: ({ className }: { className: string }) => $({ svg: select_multiple_svg, name: 'select_multiple', className }),
+  Folder_Add: ({ className }: { className: string }) => $({ svg: folder_add_svg, name: 'folder_add', className }),
 }
 

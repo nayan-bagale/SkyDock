@@ -29,7 +29,7 @@ const ButtonStyles = cva(["font-semibold", "rounded-md", "w-fit", "flex", " item
         size: {
             small: ["text-xs", "py-0.5", "px-1"],
             medium: ["text-base", "py-2", "px-4"],
-            icon: ["p-0.5", "drop-shadow", ""],
+            icon: ["p-0.5", "drop-shadow"],
             menu: ["text-xs", "py-0.5", "px-2", "w-full", " justify-between ", " rounded", "hover:bg-blue-400 hover:text-white", " hover:shadow"],
         },
 
@@ -51,6 +51,7 @@ const ButtonStyles = cva(["font-semibold", "rounded-md", "w-fit", "flex", " item
 
 type ButtonProps = HTMLMotionProps<"button"> & VariantProps<typeof ButtonStyles> & {
     isActive?: boolean;
+    isActiveClassName?: string;
 }
 
 export const Button = ({
@@ -61,6 +62,7 @@ export const Button = ({
     className,
     title,
     isActive,
+    isActiveClassName = " bg-blue-400 text-white",
     ...props
 }: ButtonProps) => {
 
@@ -68,7 +70,7 @@ export const Button = ({
         <motion.button onClick={onClick}
             whileTap={{ scale: 0.95 }}
             type="button"
-            className={cn(ButtonStyles({ intent, size, className }), isActive && " bg-blue-400 text-white")}
+            className={cn(ButtonStyles({ intent, size, className }), isActive && isActiveClassName)}
             {...props}
         >
             {children}

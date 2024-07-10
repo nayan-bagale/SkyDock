@@ -1,5 +1,4 @@
 import MenuBar from '@/components/Bar/MenuBar'
-import HandleDragnDrop from '@/components/Files/HandleDragnDrop'
 import Dock from '@components/Dock/Dock'
 import "@repo/ui/styles"
 import Apps_ from './components/Apps/Apps_'
@@ -17,7 +16,6 @@ function App() {
           <MenuBar />
         </div>
         <div className='flex-1 w-full'>
-          <HandleDragnDrop />
           <Apps_ />
         </div>
         <div className=' justify-self-end'>

@@ -5,12 +5,11 @@ import cn from '../utils';
 
 interface DragDropWrapperProps {
     children?: ReactNode
-    handlefiles?: (files: File[]) => void
+    handlefiles?: (files: any) => void
 }
 
 export const DragDropWrapper = forwardRef<HTMLDivElement, DragDropWrapperProps>(
-    ({ children, handlefiles }, ref) => {
-        const [files, setFiles] = useState<File[]>([])
+    ({ children, handlefiles }) => {
         const [dragging, setDragging] = useState(false)
 
         const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {

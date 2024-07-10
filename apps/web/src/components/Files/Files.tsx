@@ -1,53 +1,54 @@
 import useOnClickOutside from '@/components/hooks/useOnclickOutside';
-import { FileT } from '@/redux/features/files/filesSlice';
-import { useAppSelector } from '@/redux/hooks';
-import { Button, ContextMenu, ContextMenuSeparator, ContextMenuSub, DisplayFilesIcons } from '@repo/ui';
+import { FileT, removeFile } from '@/redux/features/files/filesSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { Button, ContextMenu, ContextMenuSeparator, DisplayFilesIcons } from '@repo/ui';
 import { Icons } from '@repo/ui/icons';
 
 import React, { FC, useRef, useState } from 'react';
 
 
-
-
 const FileWrapper: FC<{ file: FileT, Icon: any }> = ({ file, Icon }) => {
   const [contextMenu, SetContextMenu] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
+  // const [position, setPosition] = useState({ x: 0, y: 0 });
   const ref = useRef<HTMLDivElement>(null)
+  const dispatch = useAppDispatch()
+
+  const view = useAppSelector((state: any) => state.filesexplorer.view).view
+
+  const position = view === 'grid' ? ' left-4' : ' left-12'
 
   useOnClickOutside(ref, () => SetContextMenu(false));
 
   const handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>,) => {
     e.preventDefault();
     SetContextMenu(!contextMenu);
-    setPosition({ x: e.clientX, y: e.clientY });
+    // setPosition({ x: e.clientX, y: e.clientY });
   }
 
+  const handleDelete = () => {
+    dispatch(removeFile(file.id))
+  }
+
+
   return (
-    <>
-      <DisplayFilesIcons Icon={Icon} file={file} onContextMenu={handleContextMenu} />
+    <div className={`relative ${view === 'row' && ' w-full'} `}>
+      <DisplayFilesIcons view={view} Icon={Icon} file={file} onContextMenu={handleContextMenu} />
       {contextMenu && (
-        <ContextMenu ref={ref} position={position}>
+        <ContextMenu ref={ref} className={position}>
           <Button size={'menu'} className=" ">
             Open
           </Button>
-
-          <ContextMenuSub name="Open in">
-            <Button size={'menu'}>
-              New Tab
-            </Button>
-          </ContextMenuSub>
-
           <Button size={'menu'} className=" ">
             Download
           </Button>
           <ContextMenuSeparator />
-          <Button size={'menu'} className=" hover:bg-red-600">
+          <Button size={'menu'} className=" hover:bg-red-600" onClick={handleDelete}>
             <div>Delete</div>
             <Icons.Trash className=" h-4" />
           </Button>
         </ContextMenu>
       )}
-    </>
+    </div>
   )
 }
 
@@ -77,9 +78,10 @@ interface FliesProps {
 
 const Files: FC<FliesProps> = () => {
   const files = useAppSelector((state: any) => state.files.files);
+  const view = useAppSelector((state: any) => state.filesexplorer.view).view
 
   return (
-    <div >
+    <div className={view === 'grid' ? 'flex gap-2 items-start justify-start flex-wrap ' : '  '}>
       {files.map((file: FileT) => (
         <FileIcon key={file.id} file={file} />
       ))}

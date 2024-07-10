@@ -9,6 +9,18 @@ export interface FileT {
   File: File;
 }
 
+const changeBytes = (bytes: number, decimals = 2) => {
+  if (bytes === 0) return "0 Bytes";
+
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+};
+
 const initalState = {
   files: [
     // {
@@ -27,14 +39,15 @@ export const filesSlice = createSlice({
   initialState: initalState,
   reducers: {
     addFiles: (state, action) => {
+      action.payload.size = changeBytes(action.payload.size);
       state.files.push(action.payload);
     },
-    removeFiles: (state, action) => {
+    removeFile: (state, action) => {
       state.files = state.files.filter((file) => file.id !== action.payload);
     },
   },
 });
 
-export const { addFiles, removeFiles } = filesSlice.actions;
+export const { addFiles, removeFile } = filesSlice.actions;
 
 export default filesSlice.reducer;
