@@ -2,6 +2,7 @@ import MenuBar from '@/components/Bar/MenuBar'
 import Dock from '@components/Dock/Dock'
 import "@repo/ui/styles"
 import Apps_ from './components/Apps/Apps_'
+import { Folders } from './components/Demo/Folder'
 
 function App() {
   const handleContext = (e: any) => {
@@ -16,6 +17,7 @@ function App() {
           <MenuBar />
         </div>
         <div className='flex-1 w-full'>
+          <Folders />
           <Apps_ />
         </div>
         <div className=' justify-self-end'>
