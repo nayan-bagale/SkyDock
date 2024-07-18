@@ -1,8 +1,8 @@
 
-import Apps_ from "./components/Apps/Apps_"
-import MenuBar from "./components/Bar/MenuBar"
-import { Folders } from "./components/Demo/Folder"
-import Dock from "./components/Dock/Dock"
+import Apps_ from './components/Apps/Apps_'
+import MenuBar from './components/Bar/MenuBar'
+import { Folders } from './components/Demo/Folder'
+import Dock from './components/Dock/Dock'
 import './index.css'
 function App() {
   const handleContext = (e: any) => {
@@ -13,7 +13,7 @@ function App() {
     <main className=' h-screen pb-4' onContextMenu={handleContext}>
       {/* <CheckDevice /> */}
       {/* <div className=" flex h-full w-full items-center justify-center">
-        <Signin />
+        <Auth />
       </div> */}
 
       <div className=' flex flex-col items-center justify-between h-full'>

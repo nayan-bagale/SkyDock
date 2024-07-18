@@ -6,6 +6,8 @@ import control_center_svg from './assests/control-centre-svgrepo-com.svg';
 import cross_svg from './assests/cross-svgrepo-com.svg';
 import trash_svg from './assests/delete-svgrepo-com.svg';
 import docker_svg from './assests/docker-svgrepo-com.svg';
+import closed_eye_svg from './assests/eye-closed-svgrepo-com.svg';
+import eye_svg from './assests/eye-svgrepo-com.svg';
 import file_svg from './assests/file-svgrepo-com.svg';
 import folder_add_svg from './assests/folder-add-svgrepo-com.svg';
 import folder_svg from './assests/folder-archive-documents-open-svgrepo-com.svg';
@@ -14,6 +16,7 @@ import grid2_svg from './assests/grid-2-horizontal-svgrepo-com.svg';
 import grid4_svg from './assests/grid-4-svgrepo-com.svg';
 import home_svg from './assests/home-svgrepo-com.svg';
 import left_arrow from './assests/left-arrow-backup-2-svgrepo-com.svg';
+import loader_svg from './assests/loading-loader-svgrepo-com.svg';
 import menu_svg from './assests/mjml-svgrepo-com.svg';
 import pdf_svg from './assests/pdf-svgrepo-com-1.svg';
 import image_svg from './assests/picture-photo-image-svgrepo-com.svg';
@@ -56,5 +59,8 @@ export const Icons = {
   Home: ({ className }: { className: string }) => $({ svg: home_svg, name: 'home', className }),
   Select_Multiple: ({ className }: { className: string }) => $({ svg: select_multiple_svg, name: 'select_multiple', className }),
   Folder_Add: ({ className }: { className: string }) => $({ svg: folder_add_svg, name: 'folder_add', className }),
+  Eye: ({ className }: { className: string }) => $({ svg: eye_svg, name: 'eye', className }),
+  Closed_Eye: ({ className }: { className: string }) => $({ svg: closed_eye_svg, name: 'closed_eye', className }),
+  Loader: ({ className }: { className: string }) => $({ svg: loader_svg, name: 'loader', className }),
 }
 

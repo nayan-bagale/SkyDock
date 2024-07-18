@@ -1,5 +1,6 @@
 import useOutsideAlerter from "@/components/hooks/useOnclickOutside";
-import { Button, MainDropDownMenu, SubDropDownMenu } from "@repo/ui";
+import { Button } from "@/ui/button";
+import { MainDropDownMenu, SubDropDownMenu } from "@/ui/Cards/Menus/MainDropDownMenu/MainDropDownMenu";
 import { useRef, useState } from "react";
 import { useDate } from "../../hooks/useDate";
 

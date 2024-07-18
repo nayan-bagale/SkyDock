@@ -73,7 +73,7 @@ export const Button = ({
             className={cn(
                 ButtonStyles({ intent, size, className }),
                 (isActive && isActiveClassName),
-                (props.disabled && "opacity-50 cursor-not-allowed hover:bg-transparent")
+                (props.disabled && "opacity-50 cursor-not-allowed ")
             )}
             {...props}
         >

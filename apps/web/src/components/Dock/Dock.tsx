@@ -38,7 +38,8 @@ const Dock = () => {
 
     return (
         <DockPanel className='' intent={'primary'} size={'medium'}>
-            {apps.map(({ name, Icon, fun, active }, index) => (
+            {apps.map(({ name, Icon, fun, active }, index) =>
+            (
                 <DockButton
                     key={index}
                     intent={'primary'}
@@ -48,7 +49,8 @@ const Dock = () => {
                 >
                     <Icon className="h-10" />
                 </DockButton>
-            ))}
+            )
+            )}
         </DockPanel>
     )
 }
