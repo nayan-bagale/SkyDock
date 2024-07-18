@@ -2,7 +2,9 @@ import HandleDragnDrop from "@/components/Files/HandleDragnDrop";
 import { useDrag } from "@/components/hooks/useDrag";
 import { changeView, FileExplorer, process } from '@/redux/features/apps/app/fileexplorer';
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { FilesExplorerCard } from "@repo/ui";
+import { FilesExplorerCard } from "@/ui/Cards/FilesExplorer/FilesExplorer";
+// import { FilesExplorerCard } from "@repo/ui";
+
 import { useRef } from "react";
 
 const FilesExplorer = () => {

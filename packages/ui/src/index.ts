@@ -1,4 +1,5 @@
 export { Button } from "./components/button";
+export { SignInCard } from "./components/Cards/AuthFlow/SignInCard";
 export { FilesExplorerCard } from "./components/Cards/FilesExplorer/FilesExplorer";
 export {
   MainDropDownMenu,

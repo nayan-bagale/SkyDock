@@ -1,7 +1,10 @@
 import useOnClickOutside from '@/components/hooks/useOnclickOutside';
 import { FileT, removeFile } from '@/redux/features/files/filesSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { Button, ContextMenu, ContextMenuSeparator, DisplayFilesIcons } from '@repo/ui';
+import { Button } from '@/ui/button';
+import { ContextMenu, ContextMenuSeparator } from '@/ui/ContextMenu';
+import { DisplayFilesIcons } from '@/ui/DisplayFilesIcons';
+// import { Button, ContextMenu, ContextMenuSeparator, DisplayFilesIcons } from '@repo/ui';
 import { Icons } from '@repo/ui/icons';
 
 import React, { FC, useRef, useState } from 'react';

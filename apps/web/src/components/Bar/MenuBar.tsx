@@ -1,4 +1,5 @@
-import { Bar, Button } from "@repo/ui";
+import { Button } from "@/ui/button";
+import { Bar } from "@/ui/MenuBar/Bar";
 import { Icons } from "@repo/ui/icons";
 import Date_n_Time from "./DatenTime/Date_n_Time";
 import Logo from "./Logo/Logo";

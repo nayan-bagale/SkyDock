@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    ".": "./src/index.ts",
-    "./icons":"./src/icons/index.tsx",
+    "./icons": "./src/icons/index.tsx",
     "./styles": "./style.css",
-    "./utils":"./src/utils/index.ts"
+    "./utils": "./src/utils/index.ts",
+    "./framer-motion": "./src/framer-motion.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

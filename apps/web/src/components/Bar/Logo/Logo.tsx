@@ -1,7 +1,9 @@
 import useOutsideAlerter from "@/components/hooks/useOnclickOutside"
 import { process } from "@/redux/features/apps/app/terminalSlice"
 import { useAppDispatch } from "@/redux/hooks"
-import { Button, MainDropDownMenu, MainMenuSeparator, SubDropDownMenu } from "@repo/ui"
+import { Button } from "@/ui/button"
+import { MainDropDownMenu, MainMenuSeparator, SubDropDownMenu } from "@/ui/Cards/Menus/MainDropDownMenu/MainDropDownMenu"
+
 import { Icons } from "@repo/ui/icons"
 import { useRef, useState } from "react"
 

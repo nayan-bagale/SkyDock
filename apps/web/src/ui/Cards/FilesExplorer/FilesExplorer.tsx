@@ -1,7 +1,7 @@
+import cn from "@/utils";
+import { Icons } from "@repo/ui/icons";
 import { AnimatePresence, motion } from "framer-motion";
 import { forwardRef, ReactNode } from "react";
-import { Icons } from "../../../icons";
-import cn from "../../../utils";
 import { Button } from "../../button";
 
 interface FilesExplorerCardProps {

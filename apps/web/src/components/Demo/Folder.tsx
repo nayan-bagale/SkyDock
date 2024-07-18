@@ -61,8 +61,6 @@ export const Folders = () => {
                     {show && (folder.items.map((f) => (<F_recur folder={f} />)))}
                 </div>
             </div>
-
-
         )
     }
 

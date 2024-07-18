@@ -1,7 +1,8 @@
 import { process as files_explorer_process } from '@/redux/features/apps/app/fileexplorer';
 import { process as terminal_process } from '@/redux/features/apps/app/terminalSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { DockButton, Dock as DockPanel } from '@repo/ui';
+import { Dock as DockPanel } from '@/ui/Dock/dock';
+import { DockButton } from '@/ui/Dock/dock_button';
 import { Icons } from '@repo/ui/icons';
 
 const Dock = () => {

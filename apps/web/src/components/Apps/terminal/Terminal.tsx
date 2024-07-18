@@ -1,7 +1,8 @@
 import { useDrag } from '@/components/hooks/useDrag';
 import { process } from '@/redux/features/apps/app/terminalSlice';
 import { useAppDispatch } from '@/redux/hooks';
-import { TerminalCard } from '@repo/ui';
+import { TerminalCard } from '@/ui/Cards/Terminal/TerminalCard';
+// import { TerminalCard } from '@repo/ui';
 import { useRef } from 'react';
 
 const Terminal = () => {

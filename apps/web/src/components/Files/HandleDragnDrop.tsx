@@ -1,7 +1,7 @@
 import { addFiles, FileT } from '@/redux/features/files/filesSlice'
 import { useAppDispatch } from '@/redux/hooks'
+import { DragDropWrapper } from '@/ui/DragDropWrapper'
 import { nanoid } from '@reduxjs/toolkit'
-import { DragDropWrapper } from '@repo/ui'
 import Files from './Files'
 
 const HandleDragnDrop = () => {
