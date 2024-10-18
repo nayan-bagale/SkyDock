@@ -26,13 +26,13 @@ const Dock = () => {
             name: 'Terminal',
             Icon: Terminal,
             fun: () => dispatch(terminal_process('on')),
-            active: useAppSelector((state: any) => state.terminal.process) as string
+            active: useAppSelector((state) => state.terminal.process) as string
         },
         {
             name: 'Folder',
             Icon: Folder,
             fun: () => dispatch(files_explorer_process('on')),
-            active: useAppSelector((state: any) => state.filesexplorer.process) as string
+            active: useAppSelector((state) => state.filesexplorer.process) as string
         },
     ]
 

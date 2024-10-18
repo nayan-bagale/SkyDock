@@ -22,9 +22,9 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-app.use("/auth", auth);
+app.use("/api/v1/auth", auth);
 
-app.get("/protected", middleware, (req, res) => {
+app.get("/api/v1/protected", middleware, (req, res) => {
   res.send("Protected route");
 });
 

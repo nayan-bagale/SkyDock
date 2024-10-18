@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import "../config/dotenv";
 
 export const createRefreshToken = (username: string) => {
+  console.log(process.env.REFRESH_TOKEN_SECRET);
   return jwt.sign({ username }, process.env.REFRESH_TOKEN_SECRET!, {
     expiresIn: "7d",
   });

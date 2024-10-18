@@ -4,7 +4,11 @@ import MenuBar from './components/Bar/MenuBar'
 import { Folders } from './components/Demo/Folder'
 import Dock from './components/Dock/Dock'
 import './index.css'
+import { useTestingQuery } from './redux/APISlice'
 function App() {
+
+  const { data, error, isLoading } = useTestingQuery()
+  console.log(data)
   const handleContext = (e: any) => {
     // e.preventDefault()
     console.log(e.target)
