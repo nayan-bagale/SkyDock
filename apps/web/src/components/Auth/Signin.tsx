@@ -1,3 +1,6 @@
+import { useLoginMutation, useProtectedMutation } from "@/redux/APISlice"
+import { setCredentials } from "@/redux/features/auth"
+import { useAppDispatch } from "@/redux/hooks"
 import { Button } from "@/ui/button"
 import { AuthCard } from "@/ui/Cards/AuthFlow/AuthCard"
 import { Form } from "@/ui/Cards/AuthFlow/Form"
@@ -14,12 +17,13 @@ const Signin: FC<SigninProps> = ({ windowChange }) => {
 
     const [emailError, setEmailError] = useState('')
     const [passwordError, setPasswordError] = useState('')
+    const [login, { isLoading }] = useLoginMutation();
+    const [protectedD] = useProtectedMutation();
+    const dispatch = useAppDispatch()
 
 
-    const handleSubmit: any = (e: any) => {
+    const handleSubmit = async (e: any): void => {
         e.preventDefault()
-
-        console.log(e.target[1].value)
 
         const email = emailValidation(e.target[0].value)
         if (!email.valid) {
@@ -36,7 +40,25 @@ const Signin: FC<SigninProps> = ({ windowChange }) => {
         setPasswordError('')
 
         const rememberMe = e.target[3].checked;
-        console.log(rememberMe)
+
+
+        console.log({ email: e.target[0].value, password: e.target[1].value })
+        try {
+            const data = await login({ username: e.target[0].value, password: e.target[1].value }).unwrap()
+            dispatch(setCredentials(data))
+            console.log(data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const handleProteced = async () => {
+        try {
+            const data = await protectedD({}).unwrap()
+            console.log(data)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -62,6 +84,7 @@ const Signin: FC<SigninProps> = ({ windowChange }) => {
                     <p>Don't have account? </p>
                     <Button className=" hover:bg-transparent text-white " onClick={() => windowChange('signup')}>Register</Button>
                 </div>
+                <Button size={'medium'} onClick={handleProteced} className=" w-full flex items-center justify-center my-2 " intent={'primary'}>Protected</Button>
             </Form>
 
         </AuthCard>

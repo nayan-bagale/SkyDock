@@ -1,5 +1,7 @@
 import useOutsideAlerter from "@/components/hooks/useOnclickOutside"
+import { useLogOutApiMutation } from "@/redux/APISlice"
 import { process } from "@/redux/features/apps/app/terminalSlice"
+import { logOut } from "@/redux/features/auth"
 import { useAppDispatch } from "@/redux/hooks"
 import { Button } from "@/ui/button"
 import { MainDropDownMenu, MainMenuSeparator, SubDropDownMenu } from "@/ui/Cards/Menus/MainDropDownMenu/MainDropDownMenu"
@@ -11,12 +13,15 @@ const Logo = () => {
     const [show, setShow] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
     const dispatch = useAppDispatch();
+    const [logOutApi, { isLoading }] = useLogOutApiMutation()
 
     useOutsideAlerter(ref, () => setShow(false));
 
     const apps = {
         terminal: () => (dispatch(process('on')), setShow(false)),
     }
+
+    const signOut = () => logOutApi('').then(() => dispatch(logOut()))
 
 
     return (
@@ -47,6 +52,9 @@ const Logo = () => {
                     <MainMenuSeparator />
                     <Button size={'menu'}>
                         System Preference..
+                    </Button>
+                    <Button onClick={signOut} intent={'destructive'} size={'menu'}>
+                        LogOut
                     </Button>
                 </MainDropDownMenu>
             )}

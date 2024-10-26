@@ -1,10 +1,6 @@
 import express from "express";
-import {
-  FORBIDDEN,
-  INVALIDTOKEN,
-  TOKENEXPIRED,
-  UNAUTHORIED,
-} from "../constants/status";
+import messages from "../constants/messages";
+import { INTERNALERROR, OK, UNAUTHORIED } from "../constants/status";
 import {
   createAccessToken,
   createRefreshToken,
@@ -17,54 +13,57 @@ router.post("/login", (req, res) => {
   const { username, password } = req.body;
   console.log(req.body);
 
-  if (username === "admin" && password === "admin") {
+  if (username === "nvbagale@gmail.com" && password === "yadnesh") {
     const refreshToken = createRefreshToken(username);
     const accessToken = createAccessToken(username, refreshToken);
-    res.setHeader("Authorization", `Bearer ${accessToken}`);
     res.cookie("refreshToken", refreshToken, {
-      // httpOnly: true,
-      // secure: true,
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      secure: true,
     });
-    res.json({ accessToken, refreshToken });
+    res.status(OK).json({ accessToken, user: { username } });
     return;
   }
-  res.status(UNAUTHORIED).json({ message: "Invalid credentials" });
+  res.status(UNAUTHORIED).json({ message: messages.UNAUTHORIED });
 });
 
-router.post("/refresh", (req, res) => {
-  const accessToken = req.headers.authorization;
+router.get("/logout", (req, res) => {
+  res.clearCookie("refreshToken");
+  res.status(OK).json({ message: messages.LOGOUT });
+});
+
+router.get("/refresh", (req, res) => {
+  // ----------------- Refresh Token ----------------
   const refreshToken = req.cookies.refreshToken;
 
-  if (!accessToken || !refreshToken)
-    return res.status(UNAUTHORIED).json("You are not authenticated!");
+  // Check if refresh token is present in the cookie or not if not then return unauthorized
+  if (!refreshToken)
+    return res.status(UNAUTHORIED).json({ message: messages.UNAUTHORIED });
+
+  // Verify the refresh token if it is valid or not if not then return unauthorized
   try {
     verifyToken(refreshToken, "RefreshToken", "");
   } catch (e: any) {
-    res.removeHeader("Authorization");
-    if (e?.name === "TokenExpiredError") {
-      res.status(TOKENEXPIRED).json({ message: "refresh token expired" });
-    } else {
-      res.status(FORBIDDEN).json({ message: e?.message });
-    }
-    return;
+    res.clearCookie("refreshToken");
+    return res
+      .status(UNAUTHORIED)
+      .json({ message: messages.INVALID_REFRESH_TOKEN });
   }
 
+  // ----------------- Access Token ----------------
+  // If the refresh token is valid then create a new access token and send it back to the client along with the user data
   try {
     //TODO: DB Fetch Data
     const username = "admin";
 
     const newAccessToken = createAccessToken(username, refreshToken);
-    res.setHeader("Authorization", `Bearer ${newAccessToken}`);
-    res.json({ accessToken: newAccessToken, refreshToken });
+    return res.json({ accessToken: newAccessToken, user: { username } });
   } catch (e: any) {
     console.log(e);
-    res.removeHeader("Authorization");
-    if (e?.name === "TokenExpiredError") {
-      res.status(TOKENEXPIRED).json({ message: e?.message });
-    } else {
-      res.status(INVALIDTOKEN).json({ message: e?.message });
-    }
-    return;
+    res.clearCookie("refreshToken");
+    return res
+      .status(INTERNALERROR)
+      .json({ message: messages.INTERNAL_SERVER_ERROR });
   }
 });
 

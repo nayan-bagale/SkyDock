@@ -1,16 +1,96 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {
+  BaseQueryFn,
+  createApi,
+  FetchArgs,
+  fetchBaseQuery,
+  FetchBaseQueryError,
+} from "@reduxjs/toolkit/query/react";
+import { logOut, setCredentials } from "./features/auth";
+import { RootState } from "./store";
+
+interface IUpdateAccessTokenResponse {
+  accessToken: string;
+  user: {
+    username: string;
+  };
+}
+
+const baseQuery = fetchBaseQuery({
+  baseUrl: `${import.meta.env.VITE_BACKEND_URL}`,
+  credentials: "include",
+  prepareHeaders: (headers, { getState }) => {
+    const { accessToken } = (getState() as RootState).auth;
+    if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
+    return headers;
+  },
+});
+
+const baseQueryWithReAuth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, store, extraOptions) => {
+  const result = await baseQuery(args, store, extraOptions);
+
+  if (result.error?.status === 401 || result.error?.status === 403) {
+    store.dispatch(logOut());
+  }
+
+  if (result.error?.status === 498) {
+    const response = await baseQuery(
+      `${import.meta.env.VITE_BACKEND_URL}/auth/refresh`,
+      store,
+      extraOptions
+    );
+
+    if (response.data) {
+      // const data: IUpdateAccessTokenResponse = await response.json();
+      //@ts-ignore
+      store.dispatch(setCredentials(response.data));
+      return await baseQuery(args, store, extraOptions);
+    } else if (
+      response.error?.status === 401 ||
+      response.error?.status === 403 ||
+      response.error?.status === 500
+    ) {
+      store.dispatch(logOut());
+      return response;
+    }
+  }
+
+  return result;
+};
 
 // Define a service using a base URL and expected endpoints
-export const backendApi = createApi({
+const backendApi = createApi({
   reducerPath: "backendApi",
-  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BACKEND_URL }),
+  baseQuery: baseQueryWithReAuth,
   endpoints: (builder) => ({
-    testing: builder.query({
-      query: () => `/`,
+    login: builder.mutation({
+      query: (body) => ({
+        url: `/auth/login`,
+        method: "POST",
+        body: { ...body },
+      }),
+    }),
+    logOutApi: builder.mutation({
+      query: () => `/auth/logout`,
+    }),
+    protected: builder.mutation({
+      query: () => `/protected`,
+    }),
+    getSession: builder.query({
+      query: () => `/session`,
     }),
   }),
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
-export const { useTestingQuery } = backendApi;
+// // Export hooks for usage in functional components, which are
+// // auto-generated based on the defined endpoints
+export const {
+  useLoginMutation,
+  useProtectedMutation,
+  useGetSessionQuery,
+  useLogOutApiMutation,
+} = backendApi;
+export default backendApi;

@@ -25,12 +25,18 @@ const ButtonStyles = cva(["font-semibold", "rounded-md", "w-fit", "flex", " item
                 "border-transparent",
                 "hover:bg-white",
             ],
+            destructive: [
+                "bg-transparent",
+                "text-gray-900",
+                "border-transparent",
+                "hover:bg-red-600",
+            ],
         },
         size: {
             small: ["text-xs", "py-0.5", "px-1"],
             medium: ["text-base", "py-2", "px-4"],
             icon: ["p-0.5", "drop-shadow"],
-            menu: ["text-xs", "py-0.5", "px-2", "w-full", " justify-between ", " rounded", "hover:bg-blue-400 hover:text-white", " hover:shadow"],
+            menu: ["text-xs", "py-1", "px-2", "w-full", " justify-between ", " rounded", "hover:bg-blue-400 hover:text-white", " hover:shadow"],
         },
 
     },
