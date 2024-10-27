@@ -12,16 +12,26 @@ interface FilesExplorerCardProps {
         process: (p: any) => void;
     };
     title?: string;
-    navButtons: {
+    settings: {
         func: (v: any) => void;
         state: 'grid' | 'row'
     };
+    handleFolderTree: {
+        forward: {
+            disabled: boolean;
+            func: () => void;
+        },
+        backward: {
+            disabled: boolean;
+            func: () => void;
+        }
+    }
 
 }
 
 
 export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardProps>(
-    ({ style, onMouseDown, Action, children, title = 'CatX', navButtons }, ref) => {
+    ({ style, onMouseDown, Action, children, title = 'CatX', settings, handleFolderTree: { forward, backward } }, ref) => {
 
         return (
             <AnimatePresence>
@@ -50,10 +60,10 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                         </div>
                         <div className="text-xs w-full flex items-center justify-start ml-8 gap-2 cursor-default">
                             <div className=" flex justify-evenly gap-2">
-                                <Button intent={'ghost'} size={'icon'} disabled={true} className=" p-1">
+                                <Button intent={'ghost'} size={'icon'} disabled={backward.disabled} onClick={backward.func} className=" p-1">
                                     <Icons.Left_Arrow className="h-4 w-4" />
                                 </Button>
-                                <Button intent={'ghost'} size={'icon'} className=" p-1">
+                                <Button intent={'ghost'} size={'icon'} disabled={forward.disabled} onClick={forward.func} className=" p-1">
                                     <Icons.Right_Arrow2 className="h-4 w-4" />
                                 </Button>
                             </div>
@@ -64,10 +74,10 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                                 <Icons.Folder_Add className=" h-6 w-6" />
                             </Button>
                             <div className=" border-l border-black mx-2 "></div>
-                            <Button onClick={() => navButtons.func({ view: 'grid' })} isActive={navButtons.state === 'grid'} isActiveClassName=" bg-white hover:bg-none">
+                            <Button onClick={() => settings.func({ view: 'grid' })} isActive={settings.state === 'grid'} isActiveClassName=" bg-white hover:bg-none">
                                 <Icons.Grid4 className=" h-5 w-5" />
                             </Button>
-                            <Button onClick={() => navButtons.func({ view: 'row' })} isActive={navButtons.state === 'row'} isActiveClassName=" bg-white hover:bg-none">
+                            <Button onClick={() => settings.func({ view: 'row' })} isActive={settings.state === 'row'} isActiveClassName=" bg-white hover:bg-none">
                                 <Icons.Grid2 className=" h-5 w-5" />
                             </Button>
                         </div>

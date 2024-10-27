@@ -12,11 +12,15 @@ import file_svg from './assests/file-svgrepo-com.svg';
 import folder_add_svg from './assests/folder-add-svgrepo-com.svg';
 import folder_svg from './assests/folder-archive-documents-open-svgrepo-com.svg';
 import folder2_svg from './assests/folder-svgrepo-com.svg';
+import full_screen_exit_svg from './assests/full-screen-exit-svgrepo-com.svg';
+import full_screen_svg from './assests/full-screen-svgrepo-com.svg';
 import grid2_svg from './assests/grid-2-horizontal-svgrepo-com.svg';
 import grid4_svg from './assests/grid-4-svgrepo-com.svg';
 import home_svg from './assests/home-svgrepo-com.svg';
 import left_arrow from './assests/left-arrow-backup-2-svgrepo-com.svg';
 import loader_svg from './assests/loading-loader-svgrepo-com.svg';
+import lock_svg from './assests/lock-svgrepo-com.svg';
+import logout_svg from './assests/logout-svgrepo-com.svg';
 import menu_svg from './assests/mjml-svgrepo-com.svg';
 import pdf_svg from './assests/pdf-svgrepo-com-1.svg';
 import image_svg from './assests/picture-photo-image-svgrepo-com.svg';
@@ -25,12 +29,15 @@ import react_svg from './assests/react-svgrepo-com.svg';
 import right_arrow2_svg from './assests/right-arrow-backup-2-svgrepo-com.svg';
 import right_arrow_svg from './assests/right-arrow-svgrepo-com.svg';
 import select_multiple_svg from './assests/select-multiple-svgrepo-com.svg';
+import settings_svg from './assests/settings-svgrepo-com.svg';
 import vscode_svg from './assests/sln-svgrepo-com.svg';
+import spinner_svg from './assests/spinner-svgrepo-com.svg';
 import terminal_svg from './assests/terminal-svgrepo-com.svg';
 import upload_svg from './assests/upload-svgrepo-com.svg';
+import user_svg from './assests/user-circle-svgrepo-com.svg';
 import vite_svg from './assests/vite-svgrepo-com.svg';
 
-const $ = ({ svg, name, className }: { svg: any, name: string, className: string }) => (<img src={svg} className={cn(className)} alt={name} />)
+const $ = ({ svg, name, className }: { svg: any, name: string, className?: string }) => (<img src={svg} className={cn(className)} alt={name} />)
 
 export const Icons = {
   React: ({ className }: { className: string }) => $({ svg: react_svg, name: 'react', className }),
@@ -62,5 +69,12 @@ export const Icons = {
   Eye: ({ className }: { className: string }) => $({ svg: eye_svg, name: 'eye', className }),
   Closed_Eye: ({ className }: { className: string }) => $({ svg: closed_eye_svg, name: 'closed_eye', className }),
   Loader: ({ className }: { className: string }) => $({ svg: loader_svg, name: 'loader', className }),
+  Spinner: ({ className }: { className?: string }) => $({ svg: spinner_svg, name: 'spinner', className }),
+  User: ({ className }: { className: string }) => $({ svg: user_svg, name: 'user', className }),
+  Full_Screen: ({ className }: { className: string }) => $({ svg: full_screen_svg, name: 'full_screen', className }),
+  Full_Screen_Exit: ({ className }: { className: string }) => $({ svg: full_screen_exit_svg, name: 'full_screen_exit', className }),
+  Settings: ({ className }: { className: string }) => $({ svg: settings_svg, name: 'settings', className }),
+  Lock: ({ className }: { className: string }) => $({ svg: lock_svg, name: 'lock', className }),
+  Logout: ({ className }: { className: string }) => $({ svg: logout_svg, name: 'logout', className }),
 }
 

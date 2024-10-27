@@ -1,5 +1,5 @@
 import useOnClickOutside from '@/components/hooks/useOnclickOutside';
-import { FileT, removeFile } from '@/redux/features/files/filesSlice';
+import { FileT } from '@/redux/features/explorer/explorerSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Button } from '@/ui/button';
 import { ContextMenu, ContextMenuSeparator } from '@/ui/ContextMenu';
@@ -29,7 +29,7 @@ const FileWrapper: FC<{ file: FileT, Icon: any }> = ({ file, Icon }) => {
   }
 
   const handleDelete = () => {
-    dispatch(removeFile(file.id))
+    // dispatch(removeFile(file.id))
   }
 
 
@@ -80,8 +80,9 @@ interface FliesProps {
 }
 
 const Files: FC<FliesProps> = () => {
-  const files = useAppSelector((state: any) => state.files.files);
-  const view = useAppSelector((state: any) => state.filesexplorer.view).view
+  const files = useAppSelector((state) => state.files.files);
+  const view = useAppSelector((state) => state.filesexplorer.view)?.view;
+
 
   return (
     <div className={view === 'grid' ? 'flex gap-2 items-start justify-start flex-wrap ' : '  '}>

@@ -1,13 +1,13 @@
 import filesexplorerReducer from "@/redux/features/apps/app/fileexplorer";
 import terminalReducer from "@/redux/features/apps/app/terminalSlice";
 import authReducer from "@/redux/features/auth";
-import filesReducer from "@/redux/features/files/filesSlice";
+import explorerReducer from "@/redux/features/explorer/explorerSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import backendApi from "./APISlice";
 
 export const store = configureStore({
   reducer: {
-    files: filesReducer,
+    explorer: explorerReducer,
     terminal: terminalReducer,
     filesexplorer: filesexplorerReducer,
     auth: authReducer,
