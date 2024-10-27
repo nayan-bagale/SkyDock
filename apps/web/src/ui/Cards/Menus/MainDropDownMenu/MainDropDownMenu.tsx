@@ -31,6 +31,8 @@ export const MainDropDownMenu = forwardRef<HTMLDivElement, MainDropDownMenuT>(
         )
     })
 
+MainDropDownMenu.displayName = 'MainDropDownMenu'
+
 
 interface SubDropDownMenuT {
     children: ReactNode

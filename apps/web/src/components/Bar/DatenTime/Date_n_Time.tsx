@@ -10,6 +10,10 @@ const Date_n_Time = () => {
     const ref = useRef<HTMLDivElement>(null)
     const date = useDate();
 
+    const toggleDropdown = () => {
+        setShow(!show);
+    };
+
     useOutsideAlerter(ref, () => setShow(false));
 
     return (

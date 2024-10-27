@@ -13,7 +13,6 @@ const Logo = () => {
     const [show, setShow] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
     const dispatch = useAppDispatch();
-    const [logOutApi, { isLoading }] = useLogOutApiMutation()
 
     useOutsideAlerter(ref, () => setShow(false));
 
@@ -21,7 +20,6 @@ const Logo = () => {
         terminal: () => (dispatch(process('on')), setShow(false)),
     }
 
-    const signOut = () => logOutApi('').then(() => dispatch(logOut()))
 
 
     return (
@@ -53,9 +51,9 @@ const Logo = () => {
                     <Button size={'menu'}>
                         System Preference..
                     </Button>
-                    <Button onClick={signOut} intent={'destructive'} size={'menu'}>
+                    {/* <Button onClick={signOut} className="hover:bg-red-600" size={'menu'}>
                         LogOut
-                    </Button>
+                    </Button> */}
                 </MainDropDownMenu>
             )}
 

@@ -40,7 +40,7 @@ const DockStyles = cva(["border", "rounded-3xl", "backdrop-blur-md", "shadow", "
 type DockProps = HTMLMotionProps<"div"> & VariantProps<typeof DockStyles>
 
 const container = {
-    hidden: { opacity: 1, y: 100 },
+    hidden: { opacity: 0, y: 100 },
     visible: {
         opacity: 1,
         y: 1,
@@ -66,6 +66,7 @@ export const Dock = ({
             variants={container}
             initial="hidden"
             animate="visible"
+            transition={{ delay: 0.2 }}
             {...props}
         >
             {children}

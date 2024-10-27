@@ -2,7 +2,9 @@ import { Button } from "@/ui/button";
 import { Bar } from "@/ui/MenuBar/Bar";
 import { Icons } from "@repo/ui/icons";
 import Date_n_Time from "./DatenTime/Date_n_Time";
+import FullScreenBtn from "./FullScreenBtn/FullScreenBtn";
 import Logo from "./Logo/Logo";
+import ProfileDropdown from "./Profile/ProfleDropDown";
 
 const MenuBar = () => {
 
@@ -23,10 +25,12 @@ const MenuBar = () => {
             </div>
           </div>
           <div className=" flex justify-evenly items-center gap-2 px-2">
+            <FullScreenBtn />
             <Button>
               <Icons.Control_Center className="h-4" />
             </Button>
             <Date_n_Time />
+            <ProfileDropdown />
           </div>
         </div>
       </Bar>
