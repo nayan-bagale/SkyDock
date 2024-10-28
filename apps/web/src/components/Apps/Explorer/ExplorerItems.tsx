@@ -1,5 +1,5 @@
 import useOnClickOutside from "@/components/hooks/useOnclickOutside";
-import { FileT, FolderT, setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
+import { deleteItem, FileT, FolderT, renameItem, setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
 import { ContextMenu, ContextMenuSeparator } from "@/ui/ContextMenu";
@@ -8,12 +8,22 @@ import cn from "@/utils";
 import { Icons } from "@repo/ui/icons";
 import { FC, useRef, useState } from "react";
 
-const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye, onClick?: () => void }> =
-    ({ item, Icon, onClick }) => {
+const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }> =
+    ({ item, Icon }) => {
         const [contextMenu, SetContextMenu] = useState(false);
         // const [position, setPosition] = useState({ x: 0, y: 0 });
         const ref = useRef<HTMLDivElement>(null)
         const dispatch = useAppDispatch()
+
+        const [editing, setEditing] = useState(false)
+        const [name, setName] = useState(item.name)
+
+        const rename = {
+            editing,
+            setEditing,
+            name,
+            setName
+        }
 
         const view = useAppSelector((state: any) => state.filesexplorer.view).view
 
@@ -21,27 +31,55 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye, o
 
         useOnClickOutside(ref, () => SetContextMenu(false));
 
+        const saveNewNameToStore = () => {
+            console.log('saveNewNameToStore' + name)
+            dispatch(renameItem({ id: item.id, name }))
+            setEditing(false)
+        }
+
         const handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>,) => {
             e.preventDefault();
             SetContextMenu(!contextMenu);
             // setPosition({ x: e.clientX, y: e.clientY });
         }
 
+
         const handleDelete = () => {
-            // dispatch(removeFile(file.id))
+            dispatch(deleteItem(item.id))
+        }
+
+        const handleOpen = () => {
+            console.log('open')
+            if (item.isFolder) {
+                dispatch(setCurrentFolder(item.id))
+            }
+        }
+
+        const handleDoubleClick = () => {
+            if (item.isFolder) {
+                dispatch(setCurrentFolder(item.id))
+            }
+        }
+
+        const handleRename = () => {
+            setEditing(true)
+            SetContextMenu(false)
         }
 
 
         return (
-            <div onDoubleClick={onClick}>
-                <DisplayItemsIcons view={view} Icon={Icon} item={item} onContextMenu={handleContextMenu} />
+            <div>
+                <DisplayItemsIcons view={view} Icon={Icon} rename={rename} saveNewNameToStore={saveNewNameToStore} item={item} onContextMenu={handleContextMenu} onDoubleClick={handleDoubleClick} />
                 {contextMenu && (
                     <ContextMenu ref={ref} className={position}>
-                        <Button size={'menu'} className=" ">
+                        {item.isFolder && <Button size={'menu'} className=" " onClick={handleOpen}>
                             Open
-                        </Button>
+                        </Button>}
                         <Button size={'menu'} className=" ">
                             Download
+                        </Button>
+                        <Button size={'menu'} className=" " onClick={handleRename}>
+                            Rename
                         </Button>
                         <ContextMenuSeparator />
                         <Button size={'menu'} className=" hover:bg-red-600" onClick={handleDelete}>
@@ -71,9 +109,9 @@ const FileIcon: FC<{ file: FileT }> = ({ file }) => {
 
 }
 
-const FolderIcon: FC<{ folder: FolderT, onClick?: () => void }> = ({ folder, onClick }) => {
+const FolderIcon: FC<{ folder: FolderT }> = ({ folder }) => {
     return (
-        <ItemsWrapper Icon={Icons.Folder} item={folder} onClick={onClick} />
+        <ItemsWrapper Icon={Icons.Folder} item={folder} />
     )
 }
 
@@ -91,7 +129,7 @@ const ExplorerItems = () => {
         return (
             <div className={cn('relative', view === 'row' ? ' w-full' : 'flex gap-2 items-start justify-start flex-wrap w-fit')}>
                 {item.children.map((child) => explorerItems[child].isFolder && (
-                    <FolderIcon key={explorerItems[child].id} folder={explorerItems[child]} onClick={() => dispatch(setCurrentFolder(explorerItems[child].id))} />
+                    <FolderIcon key={explorerItems[child].id} folder={explorerItems[child]} />
                 ))}
                 {item.children.map((child) => !explorerItems[child].isFolder && (
                     <FileIcon key={explorerItems[child].id} file={explorerItems[child] as FileT} />

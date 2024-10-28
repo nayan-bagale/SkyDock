@@ -63,7 +63,8 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                                 <Button intent={'ghost'} size={'icon'} disabled={backward.disabled} onClick={backward.func} className=" p-1">
                                     <Icons.Left_Arrow className="h-4 w-4" />
                                 </Button>
-                                <Button intent={'ghost'} size={'icon'} disabled={forward.disabled} onClick={forward.func} className=" p-1">
+                                {/* TODO: Added Forward Functionality. */}
+                                <Button intent={'ghost'} size={'icon'} disabled={true || forward.disabled} onClick={forward.func} className=" p-1">
                                     <Icons.Right_Arrow2 className="h-4 w-4" />
                                 </Button>
                             </div>

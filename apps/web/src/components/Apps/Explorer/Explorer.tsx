@@ -15,7 +15,7 @@ const Explorer = () => {
 
     const draggableRef = useRef<any>(null);
 
-    const currentFolder = useAppSelector((state) => state.explorer.currentFolder)
+    const currentFolder = useAppSelector((state) => state.explorer.explorerItems[state.explorer.currentFolder].name)
     const backStack = useAppSelector((state) => state.explorer.backStack)
     const forwardStack = useAppSelector((state) => state.explorer.forwardStack)
 

@@ -124,10 +124,41 @@ export const explorerSlice = createSlice({
       state.currentFolder =
         state.backStack[state.backStack.length - 1] || "root";
     },
+    deleteItem: (state, action) => {
+      const currentFolderItem = state.explorerItems[state.currentFolder];
+      if (currentFolderItem.isFolder) {
+        state.explorerItems = {
+          ...state.explorerItems,
+          [state.currentFolder]: {
+            ...currentFolderItem,
+            children: currentFolderItem.children.filter(
+              (child) => child !== action.payload
+            ),
+          },
+        };
+        delete state.explorerItems[action.payload];
+      }
+    },
+    renameItem: (state, action) => {
+      const item = state.explorerItems[action.payload.id];
+      state.explorerItems = {
+        ...state.explorerItems,
+        [action.payload.id]: {
+          ...item,
+          name: action.payload.name,
+        },
+      };
+    },
   },
 });
 
-export const { addItem, setCurrentFolder, setForwardStack, setBackStack } =
-  explorerSlice.actions;
+export const {
+  addItem,
+  setCurrentFolder,
+  setForwardStack,
+  setBackStack,
+  deleteItem,
+  renameItem,
+} = explorerSlice.actions;
 
 export default explorerSlice.reducer;
