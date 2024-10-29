@@ -1,6 +1,12 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 
+enum AppsT {
+  Terminal = "Terminal",
+  Explorer = "Explorer",
+}
+
 export interface AppsStateT {
+  zIndex: keyof typeof AppsT | "";
   apps: {
     id: string;
     name: string;
@@ -9,10 +15,11 @@ export interface AppsStateT {
 }
 
 const initialState: AppsStateT = {
+  zIndex: "",
   apps: [
     {
       id: nanoid(),
-      name: "Terminal",
+      name: AppsT.Terminal,
       process: "off",
     },
   ],
@@ -30,9 +37,12 @@ export const appsSlice = createSlice({
         return app;
       });
     },
+    setZIndex: (state, action) => {
+      state.zIndex = action.payload;
+    },
   },
 });
 
-export const { process } = appsSlice.actions;
+export const { process, setZIndex } = appsSlice.actions;
 
 export default appsSlice.reducer;

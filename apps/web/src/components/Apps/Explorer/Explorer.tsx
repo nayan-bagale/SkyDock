@@ -5,7 +5,9 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { FilesExplorerCard } from "@/ui/Cards/FilesExplorer/FilesExplorer";
 // import { FilesExplorerCard } from "@repo/ui";
 
-import { setBackStack, setForwardStack } from "@/redux/features/explorer/explorerSlice";
+import { setZIndex } from "@/redux/features/apps/appsSlice";
+import { addItem, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
+import { nanoid } from "@reduxjs/toolkit";
 import { useRef } from "react";
 import ExplorerItems from "./ExplorerItems";
 
@@ -13,17 +15,37 @@ const Explorer = () => {
 
     const dispatch = useAppDispatch()
 
-    const draggableRef = useRef<any>(null);
+    const draggableRef = useRef<HTMLDivElement>(null);
 
     const currentFolder = useAppSelector((state) => state.explorer.explorerItems[state.explorer.currentFolder].name)
+    const backStackFoldersName = useAppSelector((state) => state.explorer.backStack.map((id) => ({ id, name: state.explorer.explorerItems[id].name })))
     const backStack = useAppSelector((state) => state.explorer.backStack)
     const forwardStack = useAppSelector((state) => state.explorer.forwardStack)
+    const zIndex = useAppSelector((state) => state.apps.zIndex)
 
     const title = currentFolder === 'root' ? 'CatX' : currentFolder
 
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef
     });
+
+    const handleZIndex = () => {
+        zIndex !== 'Explorer' && dispatch(setZIndex('Explorer'))
+    }
+
+    const addFolder = () => {
+        dispatch(addItem({
+            id: nanoid(),
+            isFolder: true,
+            name: 'New Folder',
+            parent: currentFolder,
+            details: {
+                size: 0,
+                lastModified: new Date().toISOString(),
+            },
+            children: []
+        }))
+    }
 
     const Action = {
         process: () => {
@@ -43,7 +65,9 @@ const Explorer = () => {
         },
         backward: {
             disabled: backStack.length === 0,
-            func: () => dispatch(setBackStack(''))
+            backStack: backStackFoldersName,
+            func: () => dispatch(setBackStack('')),
+            onClickBreadCrumb: (id: string) => dispatch(setBreadCrumb(id))
         },
     }
 
@@ -56,7 +80,10 @@ const Explorer = () => {
             Action={Action}
             title={title}
             settings={settings}
+            addFolder={addFolder}
             handleFolderTree={handleFolderTree}
+            onMouseDownCard={handleZIndex}
+            className={zIndex === 'Explorer' ? 'z-20' : ''}
         >
             <HandleDragnDrop>
                 <ExplorerItems />

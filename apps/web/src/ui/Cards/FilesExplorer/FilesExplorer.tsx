@@ -1,7 +1,7 @@
 import cn from "@/utils";
 import { Icons } from "@repo/ui/icons";
 import { AnimatePresence, motion } from "framer-motion";
-import { forwardRef, ReactNode } from "react";
+import { forwardRef, Fragment, ReactNode } from "react";
 import { Button } from "../../button";
 
 interface FilesExplorerCardProps {
@@ -23,24 +23,33 @@ interface FilesExplorerCardProps {
         },
         backward: {
             disabled: boolean;
+            backStack: {
+                id: string;
+                name: string;
+            }[];
+            onClickBreadCrumb: (id: string) => void;
             func: () => void;
         }
-    }
+    },
+    addFolder: () => void;
+    onMouseDownCard: () => void;
+    className?: string;
 
 }
 
 
 export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardProps>(
-    ({ style, onMouseDown, Action, children, title = 'CatX', settings, handleFolderTree: { forward, backward } }, ref) => {
+    ({ style, onMouseDown, Action, children, onMouseDownCard, title = 'CatX', settings, addFolder, className, handleFolderTree: { forward, backward } }, ref) => {
 
         return (
             <AnimatePresence>
-                <motion.div className={cn(" text-black resize shadow absolute w-[36rem] h-[22rem] min-w-[36rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] z-20 bg-white/80 backdrop-blur rounded-xl overflow-hidden")}
+                <motion.div className={cn(" text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] bg-white/80 backdrop-blur rounded-xl overflow-hidden", className)}
                     ref={ref}
                     style={{ left: style.x, top: style.y }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
+                    onMouseDown={onMouseDownCard}
                 >
                     <div className=" flex items-center shadow relative justify-between px-2 py-1 w-full bg-slate-200/60 rounded"
                         onMouseDown={onMouseDown}
@@ -71,7 +80,7 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                             <div className=" text-sm">{title}</div>
                         </div>
                         <div className=" w-full flex gap-1 justify-end">
-                            <Button>
+                            <Button onClick={addFolder}>
                                 <Icons.Folder_Add className=" h-6 w-6" />
                             </Button>
                             <div className=" border-l border-black mx-2 "></div>
@@ -109,11 +118,16 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                                 {children}
                             </div>
                             <div className=" text-xs border-t px-2 py-1 flex items-center w-full ">
-                                <Button className=" hover:bg-white p-1" size={'icon'} intent={'ghost'}><Icons.Home className=" h-4 w-4" /></Button>
-                                <Icons.Right_Arrow className=" mt-1 h-5 w-5" />
-                                <Button>
-                                    Nayan
-                                </Button>
+                                <Button onClick={() => backward.onClickBreadCrumb('root')} className=" hover:bg-white p-1" size={'icon'} intent={'ghost'}><Icons.Home className=" h-4 w-4" /></Button>
+                                {backward.backStack.map((item, index) => (
+                                    <Fragment key={item.id}>
+                                        <Icons.Right_Arrow className=" mt-1 h-5 w-5" />
+                                        <Button onClick={() => backward.onClickBreadCrumb(item.id)}>
+                                            {item.name}
+                                        </Button>
+                                    </Fragment>
+                                ))
+                                }
                             </div>
 
                         </div>

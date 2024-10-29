@@ -120,11 +120,26 @@ export const explorerSlice = createSlice({
     },
     setBackStack: (state, action) => {
       const temp = state.backStack.pop();
-      if (temp) state.forwardStack.push(temp);
-      state.currentFolder =
-        state.backStack[state.backStack.length - 1] || "root";
+      if (temp) state.currentFolder = temp;
+    },
+    setBreadCrumb: (state, action) => {
+      state.currentFolder = action.payload;
+      const index = state.backStack.indexOf(action.payload);
+      if (index !== -1) {
+        state.backStack = state.backStack.slice(0, index);
+      }
     },
     deleteItem: (state, action) => {
+      const deleteRecursively = (itemId: FolderT["id"]) => {
+        const item = state.explorerItems[itemId];
+        if (item.isFolder) {
+          item.children.forEach((childId) => {
+            deleteRecursively(childId);
+          });
+        }
+        delete state.explorerItems[itemId];
+      };
+
       const currentFolderItem = state.explorerItems[state.currentFolder];
       if (currentFolderItem.isFolder) {
         state.explorerItems = {
@@ -136,7 +151,7 @@ export const explorerSlice = createSlice({
             ),
           },
         };
-        delete state.explorerItems[action.payload];
+        deleteRecursively(action.payload);
       }
     },
     renameItem: (state, action) => {
@@ -157,6 +172,7 @@ export const {
   setCurrentFolder,
   setForwardStack,
   setBackStack,
+  setBreadCrumb,
   deleteItem,
   renameItem,
 } = explorerSlice.actions;

@@ -9,19 +9,23 @@ interface TerminalCardProps {
     Action: {
         process: (p: any) => void;
     };
+    onClick: () => void;
+    className?: string;
+    onMouseDownCard: () => void;
 
 }
 
 export const TerminalCard = forwardRef<HTMLDivElement, TerminalCardProps>(
-    ({ style, onMouseDown, Action }, ref) => {
+    ({ style, onMouseDown, onMouseDownCard, Action, className }, ref) => {
         return (
             <AnimatePresence>
-                <motion.div className={cn(" resize absolute min-w-[32rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] z-20 text-gray-200 bg-black/60 backdrop-blur rounded-xl overflow-hidden")}
+                <motion.div className={cn(" resize absolute min-w-[32rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] text-gray-200 bg-black/60 backdrop-blur rounded-xl overflow-hidden", className)}
                     ref={ref}
                     style={{ left: style.x, top: style.y }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
+                    onMouseDown={onMouseDownCard}
                 >
                     <div className=" flex items-center justify-between px-2 py-1 text-sm w-full bg-black/80 rounded"
                         onMouseDown={onMouseDown}
