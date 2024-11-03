@@ -68,7 +68,7 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
 
 
         return (
-            <div>
+            <div className="relative">
                 <DisplayItemsIcons view={view} Icon={Icon} rename={rename} saveNewNameToStore={saveNewNameToStore} item={item} onContextMenu={handleContextMenu} onDoubleClick={handleDoubleClick} />
                 {contextMenu && (
                     <ContextMenu ref={ref} className={position}>

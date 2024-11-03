@@ -22,7 +22,7 @@ app.use(cookieParser());
 
 app.get("/api/v1/session", middleware, (req, res) => {
   const refreshToken = req.cookies.refreshToken;
-  const data = verifyToken(refreshToken, "RefreshToken", "");
+  const data = verifyToken(refreshToken, "RefreshToken", "") as any;
   console.log(data);
   res.status(OK).json({ username: data.username });
 });

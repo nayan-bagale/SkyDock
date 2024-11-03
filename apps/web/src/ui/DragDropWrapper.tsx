@@ -21,6 +21,12 @@ export const DragDropWrapper = forwardRef<HTMLDivElement, DragDropWrapperProps>(
 
         const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
             e.preventDefault()
+            const isFromBrowser = e.dataTransfer.types.includes('text/plain');
+            if (isFromBrowser) {
+                console.log('Element is from the browser.');
+            } else {
+                console.log('Element is from outside the browser.');
+            }
             handlefiles(e.dataTransfer.files);
             setDragging(false)
         }
