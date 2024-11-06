@@ -1,15 +1,18 @@
+import { LoginResponse } from "@repo/types/Auth";
 import jwt from "jsonwebtoken";
 import "../config/dotenv";
 
-export const createRefreshToken = (username: string) => {
-  console.log(process.env.REFRESH_TOKEN_SECRET);
-  return jwt.sign({ username }, process.env.REFRESH_TOKEN_SECRET!, {
+export const createRefreshToken = (user: LoginResponse) => {
+  return jwt.sign({ user }, process.env.REFRESH_TOKEN_SECRET!, {
     expiresIn: "7d",
   });
 };
-export const createAccessToken = (username: string, refreshToken: string) => {
+export const createAccessToken = (
+  user: LoginResponse,
+  refreshToken: string
+) => {
   return jwt.sign(
-    { username },
+    { user },
     `${process.env.ACCESS_TOKEN_SECRET!} ${refreshToken}`,
     {
       expiresIn: "15m",
@@ -30,4 +33,8 @@ export const verifyToken = (
     ? `${process.env[tokenType[type]]!} ${refreshToken}`
     : process.env[tokenType[type]]!;
   return jwt.verify(token, SECRET);
+};
+
+export const decodeToken = (token: string) => {
+  return jwt.decode(token);
 };

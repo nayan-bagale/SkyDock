@@ -1,7 +1,7 @@
 import useOutsideAlerter from "@/components/hooks/useOnclickOutside";
 import { useLogOutApiMutation } from "@/redux/APISlice";
 import { logOut } from "@/redux/features/auth";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from '@/ui/button';
 import { MainDropDownMenu, MainMenuSeparator } from "@/ui/Cards/Menus/MainDropDownMenu/MainDropDownMenu";
 import { Icons } from '@repo/ui/icons';
@@ -14,10 +14,10 @@ const ProfileDropdown = () => {
     const dispatch = useAppDispatch();
 
 
-    const [logOutApi, { isLoading }] = useLogOutApiMutation();
+    const [logOutApi] = useLogOutApiMutation();
     const signOut = () => logOutApi('').then(() => dispatch(logOut()))
 
-
+    const user = useAppSelector(state => state.auth.user);
 
 
     const toggleDropdown = () => {
@@ -39,8 +39,8 @@ const ProfileDropdown = () => {
                         <Icons.User className="h-12 mx-auto" />
                         {/* <img src="https://picsum.photos/64/64" alt="Profile" className="rounded-full mx-auto" /> */}
                         <div className="text-center mt-2">
-                            <p className="text-lg font-semibold">Jane Doe</p>
-                            <p className="text-sm text-gray-600">jane.doe@example.com</p>
+                            <p className="text-lg font-semibold">{user?.name}</p>
+                            <p className="text-sm text-gray-600">{user?.email}</p>
                         </div>
                     </div>
                     <div className="px-4 py-2">

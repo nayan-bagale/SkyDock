@@ -8,13 +8,6 @@ import {
 import { logOut, setCredentials } from "./features/auth";
 import { RootState } from "./store";
 
-interface IUpdateAccessTokenResponse {
-  accessToken: string;
-  user: {
-    username: string;
-  };
-}
-
 const baseQuery = fetchBaseQuery({
   baseUrl: `${import.meta.env.VITE_BACKEND_URL}`,
   credentials: "include",
@@ -44,8 +37,6 @@ const baseQueryWithReAuth: BaseQueryFn<
     );
 
     if (response.data) {
-      // const data: IUpdateAccessTokenResponse = await response.json();
-      //@ts-ignore
       store.dispatch(setCredentials(response.data));
       return await baseQuery(args, store, extraOptions);
     } else if (
@@ -73,6 +64,13 @@ const backendApi = createApi({
         body: { ...body },
       }),
     }),
+    register: builder.mutation({
+      query: (body) => ({
+        url: `/auth/register`,
+        method: "POST",
+        body: { ...body },
+      }),
+    }),
     logOutApi: builder.mutation({
       query: () => `/auth/logout`,
     }),
@@ -89,6 +87,7 @@ const backendApi = createApi({
 // // auto-generated based on the defined endpoints
 export const {
   useLoginMutation,
+  useRegisterMutation,
   useProtectedMutation,
   useGetSessionQuery,
   useLogOutApiMutation,

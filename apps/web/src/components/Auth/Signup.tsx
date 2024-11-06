@@ -1,12 +1,13 @@
+import { useRegisterMutation } from "@/redux/APISlice"
 import { Button } from "@/ui/button"
 import { AuthCard } from "@/ui/Cards/AuthFlow/AuthCard"
 import { Form } from "@/ui/Cards/AuthFlow/Form"
 import { Input } from "@/ui/input"
 import cn from "@/utils"
-import sleep from "@/utils/sleep"
 import { Icons } from "@repo/ui/icons"
 import { emailValidation, passwordValidation } from "@repo/validation"
 import { FC, useState } from "react"
+import useServerErrors from "../hooks/useServerErrors"
 import ErrorMessage from "./ErrorMessage"
 
 interface SignupProps {
@@ -14,52 +15,64 @@ interface SignupProps {
 }
 
 const Signup: FC<SignupProps> = ({ windowChange }) => {
-    const [emailError, setEmailError] = useState('')
-    const [passwordError, setPasswordError] = useState('')
-    const [confirmPasswordError, setConfirmPasswordError] = useState('')
-    const [submitting, setSubmitting] = useState(false)
 
-    const handleSubmit: any = async (e: any) => {
+    const [formError, setFormError] = useState({
+        email: '',
+        password: '',
+        confirmPassword: ''
+    })
+
+    const [serverError, setServerError] = useServerErrors()
+
+    const [registerUser, { isLoading }] = useRegisterMutation();
+
+
+    const handleSubmit = async (e: any) => {
         e.preventDefault()
+        setServerError('')
         const fname = e.target[0].value;
         const lname = e.target[1].value;
         const email = e.target[2].value;
         if (!emailValidation(email).valid) {
-            console.log('Invalid email')
-            setEmailError(emailValidation(email).message);
+            setFormError(prev => ({ ...prev, email: emailValidation(email).message }));
             return;
         }
-        setEmailError('')
-
+        setFormError(prev => ({ ...prev, email: '' }));
 
         const password = e.target[3].value;
         if (!passwordValidation(password).valid) {
-            setPasswordError(passwordValidation(password).message);
+            setFormError(prev => ({ ...prev, password: passwordValidation(password).message }));
             return;
         }
-        setPasswordError('')
+        setFormError(prev => ({ ...prev, password: '' }));
+
 
         const confirmPassword = e.target[4].value;
         if (!passwordValidation(confirmPassword).valid) {
-            setConfirmPasswordError(passwordValidation(confirmPassword).message);
+            setFormError(prev => ({ ...prev, confirmPassword: passwordValidation(confirmPassword).message }));
             return;
         }
-        setConfirmPasswordError('')
+        setFormError(prev => ({ ...prev, confirmPassword: '' }));
         if (password !== confirmPassword) {
-            setConfirmPasswordError('Passwords do not match');
+            setFormError(prev => ({ ...prev, confirmPassword: 'Passwords do not match' }));
             return;
         }
-        setConfirmPasswordError('')
-        setSubmitting(true)
-        await sleep(2000);
-        setSubmitting(false)
-        console.log(fname, lname, email, password, confirmPassword)
-        e.target.reset()
+        setFormError(prev => ({ ...prev, confirmPassword: '' }));
+
+        try {
+            const response = await registerUser({ email, password, firstName: fname, lastName: lname }).unwrap();
+            console.log(response)
+            e.target.reset()
+            windowChange('signin')
+        } catch (e: any) {
+            setServerError(e.data.message)
+        }
     }
 
     return (
         <AuthCard>
             <h1 className=" text-2xl font-bold text-white mb-1 ">Register</h1>
+            {serverError && <ErrorMessage>{serverError}</ErrorMessage>}
             <Form onSubmit={handleSubmit}>
                 <div className=" flex gap-2">
                     <div className=" flex flex-col  gap-2">
@@ -73,28 +86,27 @@ const Signup: FC<SignupProps> = ({ windowChange }) => {
                 </div>
 
                 <label htmlFor="email" className=" self-start">Email </label>
-                <Input className={cn(emailError && 'border-red-500')} id="email" placeholder="name@company.com" type="email" />
-                {emailError && <ErrorMessage>{emailError}</ErrorMessage>}
+                <Input className={cn(formError.email && 'border-red-500')} id="email" placeholder="name@company.com" type="email" />
+                {formError.email && <ErrorMessage>{formError.email}</ErrorMessage>}
                 <label htmlFor="password" className=" self-start">Password </label>
                 <Input className="" id="password" placeholder="Password" />
-                {passwordError && <ErrorMessage>{passwordError}</ErrorMessage>}
+                {formError.password && <ErrorMessage>{formError.password}</ErrorMessage>}
                 <label htmlFor="confirm-password" className=" self-start">Confirm Password </label>
                 <Input className="" id="confirm-password" placeholder="Confirm Password" type="password" />
-                {confirmPasswordError && <ErrorMessage>{confirmPasswordError}</ErrorMessage>}
+                {formError.confirmPassword && <ErrorMessage>{formError.confirmPassword}</ErrorMessage>}
 
-                <Button size={'medium'} className=" my-2 w-full flex items-center justify-center  " disabled={submitting} intent={'secondary'} type="submit">
-                    {submitting ? <span className=" animate-spin"><Icons.Loader className=" h-6 w-6" /> </span> : "Register"}
+                <Button size={'medium'} className=" my-2 w-full flex items-center justify-center  " disabled={isLoading} intent={'secondary'} type="submit">
+                    {isLoading ? <span className=" animate-spin"><Icons.Loader className=" h-6 w-6" /> </span> : "Register"}
 
                 </Button>
             </Form>
             {/* <div className="w-[95%] border-b border-gray-200"></div> */}
             <div className=" flex items-center gap-2">
-                <p className=" text-white text-sm">Already have an account? </p>
-                <Button className=" hover:bg-transparent text-white text-sm " disabled={submitting} onClick={() => windowChange('signin')}>
+                <p className=" text-white ">Already have an account? </p>
+                <Button className=" hover:bg-transparent text-white  " disabled={isLoading} onClick={() => windowChange('signin')}>
                     Login
                 </Button>
             </div>
-
         </AuthCard>
     )
 }

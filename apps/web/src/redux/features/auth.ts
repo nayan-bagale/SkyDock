@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { LoginResponse } from "@repo/types/Auth";
 
 export const authSlice = createSlice({
   name: "auth",
   initialState: {
     accessToken: "",
-    user: {},
+    user: null as LoginResponse | null,
   },
   reducers: {
     setCredentials: (state, action) => {
@@ -13,7 +14,7 @@ export const authSlice = createSlice({
     },
     logOut: (state) => {
       state.accessToken = "";
-      state.user = {};
+      state.user = null;
     },
   },
 });

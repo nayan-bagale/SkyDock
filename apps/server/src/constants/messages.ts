@@ -11,6 +11,8 @@ const messages = {
   INVALID_CREDENTIALS: "Invalid credentials",
   INTERNAL_SERVER_ERROR: "Internal server error",
 
+  USER_CREATED: "User created",
+
   LOGOUT: "Logged out",
 };
 

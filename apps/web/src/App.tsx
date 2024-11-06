@@ -16,7 +16,7 @@ function App() {
     console.log(e.target)
   }
 
-  const user: any = useAppSelector((state) => state.auth.user)
+  const token = useAppSelector((state) => state.auth.accessToken)
 
   if (isLoading) return <div>Loading...</div>
 
@@ -24,13 +24,13 @@ function App() {
   return (
     <main className=' h-screen pb-4' onContextMenu={handleContext}>
       {/* <CheckDevice /> */}
-      <div className={cn(' flex flex-col items-center  h-full', !user?.username ? 'justify-center' : 'justify-between')}>
+      <div className={cn(' flex flex-col items-center  h-full', !token ? 'justify-center' : 'justify-between')}>
         <AnimatePresence>
-          {!user?.username && (
+          {!token && (
             <Auth />
           )}
         </AnimatePresence>
-        {user?.username &&
+        {token &&
           (<>
             <div className=' w-full'>
               <MenuBar />

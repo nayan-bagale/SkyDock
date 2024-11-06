@@ -1,11 +1,12 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
+import { JwtPayload } from "jsonwebtoken";
 import { corsOptions } from "./config/corsOptions";
 import { OK } from "./constants/status";
 import { middleware } from "./middleware";
 import auth from "./routes/auth";
-import { verifyToken } from "./utils/token";
+import { decodeToken } from "./utils/token";
 
 const app = express();
 // Cross Origin Resource Sharing
@@ -17,14 +18,13 @@ app.use(express.urlencoded({ extended: false }));
 // built-in middleware for json
 app.use(express.json());
 
-//middleware for cookies
+// middleware for cookies
 app.use(cookieParser());
 
 app.get("/api/v1/session", middleware, (req, res) => {
   const refreshToken = req.cookies.refreshToken;
-  const data = verifyToken(refreshToken, "RefreshToken", "") as any;
-  console.log(data);
-  res.status(OK).json({ username: data.username });
+  const decoded = decodeToken(refreshToken) as JwtPayload;
+  res.status(OK).json({ user: decoded.user });
 });
 
 app.use("/api/v1/auth", auth);
