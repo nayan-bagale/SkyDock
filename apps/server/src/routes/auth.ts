@@ -100,12 +100,10 @@ router.post("/login", async (req, res) => {
     secure: true,
   });
 
-  res
-    .status(OK)
-    .json({
-      accessToken,
-      user: { email: user.email, name: user.name, id: user.id },
-    });
+  res.status(OK).json({
+    accessToken,
+    user: { email: user.email, name: user.name, id: user.id },
+  });
 });
 
 router.get("/logout", (req, res) => {

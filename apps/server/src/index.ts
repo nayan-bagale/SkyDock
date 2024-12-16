@@ -6,6 +6,7 @@ import { corsOptions } from "./config/corsOptions";
 import { OK } from "./constants/status";
 import { middleware } from "./middleware";
 import auth from "./routes/auth";
+import files from "./routes/files";
 import { decodeToken } from "./utils/token";
 
 const app = express();
@@ -32,6 +33,8 @@ app.use("/api/v1/auth", auth);
 app.get("/api/v1/protected", middleware, (req, res) => {
   res.status(OK).json({ message: "Access Granted." });
 });
+
+app.use("/api/v1", files);
 
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");
