@@ -26,8 +26,8 @@ export const DragDropWrapper = forwardRef<HTMLDivElement, DragDropWrapperProps>(
                 console.log('Element is from the browser.');
             } else {
                 console.log('Element is from outside the browser.');
+                handlefiles(e.dataTransfer.files);
             }
-            handlefiles(e.dataTransfer.files);
             setDragging(false)
         }
         return (

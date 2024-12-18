@@ -58,7 +58,7 @@ const initalState = {
         size: "15KB",
         type: "text/plain",
         lastModified: "2023-10-01T12:00:00Z",
-        // File: new Fil/e(["content"], "file1.txt", { type: "text/plain" }),
+        // File: new File(["content"], "file1.txt", { type: "text/plain" }),
       },
     },
     folder1: {

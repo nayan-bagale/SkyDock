@@ -12,8 +12,8 @@ import {
 import { emailValidation, passwordValidation } from "@repo/validation";
 import bcrypt from "bcrypt";
 import { JwtPayload } from "jsonwebtoken";
+import { prisma } from "../config/db";
 import { SALT } from "../constants/constants";
-import { prisma } from "../db/db";
 
 const router = express.Router();
 

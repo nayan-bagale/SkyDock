@@ -22,16 +22,27 @@ const putObjectUrl = async (filename: string, contentType: string) => {
   return await getSignedUrl(s3, command);
 };
 
-router.get("/files/upload", async (req, res) => {
-  // const { filename, contentType } = req.body;
-  // if (!filename || !contentType) {
-  //   res.status(400).json({ message: "Filename and contentType are required" });
-  //   return;
-  // }
+router.post("/files/generate-upload-urls", async (req, res) => {
+  const { files } = req.body;
+  const signed_urls = await Promise.all(
+    files.map(async (file: any) => {
+      const [filename, extension] = file.name.split(".");
+      const url = await putObjectUrl(
+        `${filename.split(" ").join("-")}-${Date.now()}.${extension}`,
+        file.type
+      );
+      return { [file.id]: url };
+    })
+  );
 
-  const url = await putObjectUrl(`image-${Date.now()}.png`, `image/png`);
+  // const url = await putObjectUrl(`image-${Date.now()}.png`, `image/png`);
+  // const url = await getObjectUrl("uploads/image-1734369597730.png");
+  res.json(signed_urls);
+});
 
-  res.json({ url });
+router.post("/files/upload", async (req, res) => {
+  console.log(req.body);
+  res.json({ message: "Upload successful" });
 });
 
 export default router;

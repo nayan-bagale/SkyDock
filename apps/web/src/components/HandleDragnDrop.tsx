@@ -1,38 +1,34 @@
-import { addItem, FileT } from '@/redux/features/explorer/explorerSlice'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { DragDropWrapper, DraggedFilesT } from '@/ui/DragDropWrapper'
-import { changeBytes } from '@/utils/changeBytes'
 import { nanoid } from '@reduxjs/toolkit'
 import { FC, ReactNode } from 'react'
+import useFileUploads from './hooks/useFileUploads'
 
 
 const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
 
     const dispatch = useAppDispatch()
     const currentFolder = useAppSelector((state) => state.explorer.currentFolder)
+    const [getUploadUrls] = useFileUploads();
 
-    const handlefiles = (files: DraggedFilesT) => {
+    const handlefiles = async (files: DraggedFilesT) => {
         const Arrayfiles = Array.from(files)
-
-        Arrayfiles.forEach((file) => {
-
-            if (file.type === '') return;
-
-            const fileData: FileT = {
-                id: nanoid(),
+        const filesObj = Arrayfiles.filter(file => file.type !== '').map((file) => ({
+            id: nanoid(),
+            isFolder: false as const,
+            name: file.name,
+            parent: currentFolder,
+            details: {
                 name: file.name,
-                parent: currentFolder,
-                isFolder: false,
-                details: {
-                    name: file.name,
-                    size: changeBytes(file.size),
-                    type: file.type,
-                    lastModified: file.lastModified.toString(),
-                    // File: file
-                }
+                size: file.size.toString(),
+                // size_display: changeBytes(file.size),
+                type: file.type,
+                lastModified: file.lastModified.toString(),
+                File: file
             }
-            dispatch(addItem(fileData))
-        })
+        }))
+
+        await getUploadUrls(filesObj)
     }
 
     return (

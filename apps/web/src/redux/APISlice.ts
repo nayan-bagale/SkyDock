@@ -80,6 +80,22 @@ const backendApi = createApi({
     getSession: builder.query({
       query: () => `/session`,
     }),
+    // File Handling Apis (Upload and Download)
+    getUploadUrls: builder.mutation({
+      query: (files) => ({
+        url: "/files/generate-upload-urls",
+        method: "POST",
+        body: { files },
+      }),
+    }),
+
+    uploadFiles: builder.mutation({
+      query: (body) => ({
+        url: "/files/upload",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -91,5 +107,7 @@ export const {
   useProtectedMutation,
   useGetSessionQuery,
   useLogOutApiMutation,
+  useGetUploadUrlsMutation,
+  useUploadFilesMutation,
 } = backendApi;
 export default backendApi;
