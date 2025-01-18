@@ -1,8 +1,15 @@
 import { NextFunction, Request, Response } from "express";
+import { JwtPayload } from "jsonwebtoken";
 import "./config/dotenv";
 import messages from "./constants/messages";
 import { TOKENEXPIRED, UNAUTHORIED } from "./constants/status";
-import { verifyToken } from "./utils/token";
+import { decodeToken, verifyToken } from "./utils/token";
+
+// declare module "express" {
+//   interface Request {
+//     user?: any;
+//   }
+// }
 
 export function middleware(req: Request, res: Response, next: NextFunction) {
   // ----------------- Refresh Token ----------------
@@ -42,5 +49,10 @@ export function middleware(req: Request, res: Response, next: NextFunction) {
       .status(TOKENEXPIRED)
       .json({ message: messages.ACCESS_TOKEN_EXPIRED });
   }
+
+  req.user = (
+    decodeToken(accessToken.split(" ")[1] as string) as JwtPayload
+  ).user;
+
   next();
 }
