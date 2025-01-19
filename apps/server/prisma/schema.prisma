@@ -3,7 +3,6 @@
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-// TODO: Migrate Schema and generate Prisma Client
 
 generator client {
   provider = "prisma-client-js"
@@ -21,6 +20,7 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  explorerItems ExplorerItems[]
 }
 
 model ExplorerItems {
@@ -29,12 +29,13 @@ model ExplorerItems {
   is_folder Boolean
   parent_id String?
   user_id   String
-  size      Int
+  size      String
   mime_type String?
   s3_key    String?
   is_deleted Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   last_modified DateTime
+  user     User     @relation(fields: [user_id], references: [id])
 }
 
