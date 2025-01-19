@@ -1,3 +1,4 @@
+import useFileDownloadWithProgress from "@/components/hooks/useFileDownloadWithProgress";
 import useOnClickOutside from "@/components/hooks/useOnclickOutside";
 import { useDeleteFileMutation } from "@/redux/APISlice";
 import { deleteItem, FileT, FolderT, renameItem, setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
@@ -13,7 +14,8 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
     ({ item, Icon }) => {
         const [contextMenu, SetContextMenu] = useState(false);
         // const [position, setPosition] = useState({ x: 0, y: 0 });
-        const [deleteFile] = useDeleteFileMutation()
+        const [deleteFile] = useDeleteFileMutation();
+        const { downloadFile } = useFileDownloadWithProgress();
 
         const ref = useRef<HTMLDivElement>(null)
         const dispatch = useAppDispatch()
@@ -28,7 +30,7 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
             setName
         }
 
-        const view = useAppSelector((state: any) => state.filesexplorer.view).view
+        const view = useAppSelector((state) => state.filesexplorer.view)
 
         const position = view === 'grid' ? ' left-4' : ' left-12'
 
@@ -46,12 +48,15 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
             // setPosition({ x: e.clientX, y: e.clientY });
         }
 
+        const handleDownload = async () => {
+            await downloadFile(item as FileT)
+        }
+
 
         const handleDelete = async () => {
             try {
                 await deleteFile(item.id)
                 dispatch(deleteItem(item.id))
-
             } catch (error) {
                 console.log(error)
             }
@@ -78,15 +83,23 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
 
         return (
             <div className="relative">
-                <DisplayItemsIcons view={view} Icon={Icon} rename={rename} saveNewNameToStore={saveNewNameToStore} item={item} onContextMenu={handleContextMenu} onDoubleClick={handleDoubleClick} />
+                <DisplayItemsIcons
+                    view={view}
+                    Icon={Icon}
+                    rename={rename}
+                    saveNewNameToStore={saveNewNameToStore}
+                    item={item}
+                    onContextMenu={handleContextMenu}
+                    onDoubleClick={handleDoubleClick}
+                />
                 {contextMenu && (
                     <ContextMenu ref={ref} className={position}>
                         {item.isFolder && <Button size={'menu'} className=" " onClick={handleOpen}>
                             Open
                         </Button>}
-                        <Button size={'menu'} className=" ">
+                        {!(item.isFolder) && <Button size={'menu'} className=" " onClick={handleDownload}>
                             Download
-                        </Button>
+                        </Button>}
                         <Button size={'menu'} className=" " onClick={handleRename}>
                             Rename
                         </Button>
@@ -128,10 +141,6 @@ const ExplorerItems = () => {
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
     const currentFolder = useAppSelector((state) => state.explorer.currentFolder);
     const view = useAppSelector((state) => state.filesexplorer.view);
-
-    console.log({ view })
-
-    const dispatch = useAppDispatch()
 
     const item = explorerItems[currentFolder]
 

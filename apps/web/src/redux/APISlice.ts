@@ -103,6 +103,13 @@ const backendApi = createApi({
       query: () => "/files",
     }),
 
+    getFileUrl: builder.mutation<{ url: string }, any>({
+      query: (id: string) => ({
+        url: `/file/${id}`,
+        method: "GET",
+      }),
+    }),
+
     deleteFile: builder.mutation({
       query: (id: string) => ({
         url: `/file/${id}`,
@@ -124,5 +131,6 @@ export const {
   useUploadFilesMutation,
   useGetAllFilesQuery,
   useDeleteFileMutation,
+  useGetFileUrlMutation,
 } = backendApi;
 export default backendApi;

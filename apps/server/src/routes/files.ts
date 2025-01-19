@@ -8,6 +8,10 @@ router.get("/files", middleware, async (req, res) => {
   await filesController.getAllFiles(req, res);
 });
 
+router.get("/file/:id", middleware, async (req, res) => {
+  await filesController.getFileUrl(req, res);
+});
+
 router.delete("/file/:id", middleware, async (req, res) => {
   await filesController.deleteFile(req, res);
 });

@@ -76,6 +76,21 @@ class FilesController {
     }
   }
 
+  async getFileUrl(req: Request, res: Response) {
+    const fileName = req.params.id as string;
+    const userId = req.user?.id as string;
+
+    try {
+      const fileUrl = await Store.getObjectUrl(`${userId}/${fileName}`);
+      res.json({ url: fileUrl });
+    } catch (err) {
+      console.log(err);
+      res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+  }
+
   async deleteFile(req: Request, res: Response) {
     const fileId = req.params.id as string;
     const userId = req.user?.id as string;
