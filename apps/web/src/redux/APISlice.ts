@@ -116,6 +116,14 @@ const backendApi = createApi({
         method: "DELETE",
       }),
     }),
+
+    renameItem: builder.mutation({
+      query: ({ id, name }: { id: string; name: string }) => ({
+        url: `/file/${id}`,
+        method: "PATCH",
+        body: { name },
+      }),
+    }),
   }),
 });
 
@@ -132,5 +140,6 @@ export const {
   useGetAllFilesQuery,
   useDeleteFileMutation,
   useGetFileUrlMutation,
+  useRenameItemMutation,
 } = backendApi;
 export default backendApi;

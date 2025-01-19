@@ -1,6 +1,6 @@
 import useFileDownloadWithProgress from "@/components/hooks/useFileDownloadWithProgress";
 import useOnClickOutside from "@/components/hooks/useOnclickOutside";
-import { useDeleteFileMutation } from "@/redux/APISlice";
+import { useDeleteFileMutation, useRenameItemMutation } from "@/redux/APISlice";
 import { deleteItem, FileT, FolderT, renameItem, setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
@@ -16,6 +16,7 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
         // const [position, setPosition] = useState({ x: 0, y: 0 });
         const [deleteFile] = useDeleteFileMutation();
         const { downloadFile } = useFileDownloadWithProgress();
+        const [renameItem_] = useRenameItemMutation();
 
         const ref = useRef<HTMLDivElement>(null)
         const dispatch = useAppDispatch()
@@ -36,9 +37,13 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
 
         useOnClickOutside(ref, () => SetContextMenu(false));
 
-        const saveNewNameToStore = () => {
-            console.log('saveNewNameToStore' + name)
-            dispatch(renameItem({ id: item.id, name }))
+        const saveNewNameToStore = async () => {
+            try {
+                await renameItem_({ id: item.id, name })
+                dispatch(renameItem({ id: item.id, name }))
+            } catch (error) {
+                console.log(error)
+            }
             setEditing(false)
         }
 

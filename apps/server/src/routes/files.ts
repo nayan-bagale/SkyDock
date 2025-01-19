@@ -12,6 +12,10 @@ router.get("/file/:id", middleware, async (req, res) => {
   await filesController.getFileUrl(req, res);
 });
 
+router.patch("/file/:id", middleware, async (req, res) => {
+  await filesController.patchFile(req, res);
+});
+
 router.delete("/file/:id", middleware, async (req, res) => {
   await filesController.deleteFile(req, res);
 });

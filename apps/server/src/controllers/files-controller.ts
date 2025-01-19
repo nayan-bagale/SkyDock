@@ -118,6 +118,22 @@ class FilesController {
         .json({ message: messages.INTERNAL_SERVER_ERROR });
     }
   }
+
+  async patchFile(req: Request, res: Response) {
+    const fileId = req.params.id as string;
+    try {
+      await prisma.explorerItems.update({
+        where: { id: fileId },
+        data: req.body as { name: string },
+      });
+      res.json({ message: "File updated" });
+    } catch (err) {
+      console.log(err);
+      res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+  }
 }
 
 export default FilesController.getInstance();
