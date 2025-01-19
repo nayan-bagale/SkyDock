@@ -16,6 +16,7 @@ router.patch("/file/:id", middleware, async (req, res) => {
   await filesController.patchFile(req, res);
 });
 
+// TODO: Add Folder Delete Endpoint (Delete Folder and all its children files)
 router.delete("/file/:id", middleware, async (req, res) => {
   await filesController.deleteFile(req, res);
 });
@@ -27,5 +28,7 @@ router.post("/files/generate-upload-urls", middleware, async (req, res) => {
 router.post("/files/upload", middleware, async (req, res) => {
   await filesController.saveUploadedFilesToDB(req, res);
 });
+
+// TODO: Add Folder Endpoint
 
 export default router;

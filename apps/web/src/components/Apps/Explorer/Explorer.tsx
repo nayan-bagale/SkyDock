@@ -37,6 +37,7 @@ const Explorer = () => {
     }
 
     const addFolder = () => {
+        // TODO: Build Endpoint to add folder
         dispatch(addItem({
             id: nanoid(),
             isFolder: true,
