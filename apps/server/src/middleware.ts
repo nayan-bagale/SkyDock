@@ -5,12 +5,6 @@ import messages from "./constants/messages";
 import { TOKENEXPIRED, UNAUTHORIED } from "./constants/status";
 import { decodeToken, verifyToken } from "./utils/token";
 
-// declare module "express" {
-//   interface Request {
-//     user?: any;
-//   }
-// }
-
 export function middleware(req: Request, res: Response, next: NextFunction) {
   // ----------------- Refresh Token ----------------
   const refreshToken = req.cookies.refreshToken;
