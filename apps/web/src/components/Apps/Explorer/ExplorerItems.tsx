@@ -1,5 +1,6 @@
 import useOnClickOutside from "@/components/hooks/useOnclickOutside";
-import { deleteItem, FileT, FolderT, renameItem, setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
+import { useDeleteFileMutation } from "@/redux/APISlice";
+import { FileT, FolderT, renameItem, setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
 import { ContextMenu, ContextMenuSeparator } from "@/ui/ContextMenu";
@@ -12,6 +13,8 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
     ({ item, Icon }) => {
         const [contextMenu, SetContextMenu] = useState(false);
         // const [position, setPosition] = useState({ x: 0, y: 0 });
+        const [deleteFile] = useDeleteFileMutation()
+
         const ref = useRef<HTMLDivElement>(null)
         const dispatch = useAppDispatch()
 
@@ -44,8 +47,15 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
         }
 
 
-        const handleDelete = () => {
-            dispatch(deleteItem(item.id))
+        const handleDelete = async () => {
+            try {
+                await deleteFile(item.id)
+                // dispatch(deleteItem(file.id))
+                console.log("file deleted")
+
+            } catch (error) {
+                console.log(error)
+            }
         }
 
         const handleOpen = () => {

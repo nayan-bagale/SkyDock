@@ -8,6 +8,12 @@ router.get("/files", middleware, async (req, res) => {
   await filesController.getAllFiles(req, res);
 });
 
+router.delete("/file/:id", middleware, async (req, res) => {
+  console.log(req.params.id);
+
+  res.json({ message: "File deleted" });
+});
+
 router.post("/files/generate-upload-urls", middleware, async (req, res) => {
   await filesController.generateUploadUrls(req, res);
 });
