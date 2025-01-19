@@ -1,6 +1,6 @@
 import useOnClickOutside from "@/components/hooks/useOnclickOutside";
 import { useDeleteFileMutation } from "@/redux/APISlice";
-import { FileT, FolderT, renameItem, setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
+import { deleteItem, FileT, FolderT, renameItem, setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
 import { ContextMenu, ContextMenuSeparator } from "@/ui/ContextMenu";
@@ -50,8 +50,7 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
         const handleDelete = async () => {
             try {
                 await deleteFile(item.id)
-                // dispatch(deleteItem(file.id))
-                console.log("file deleted")
+                dispatch(deleteItem(item.id))
 
             } catch (error) {
                 console.log(error)
@@ -128,7 +127,9 @@ const FolderIcon: FC<{ folder: FolderT }> = ({ folder }) => {
 const ExplorerItems = () => {
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
     const currentFolder = useAppSelector((state) => state.explorer.currentFolder);
-    const view = useAppSelector((state) => state.filesexplorer.view)?.view;
+    const view = useAppSelector((state) => state.filesexplorer.view);
+
+    console.log({ view })
 
     const dispatch = useAppDispatch()
 

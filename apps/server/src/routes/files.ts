@@ -9,9 +9,7 @@ router.get("/files", middleware, async (req, res) => {
 });
 
 router.delete("/file/:id", middleware, async (req, res) => {
-  console.log(req.params.id);
-
-  res.json({ message: "File deleted" });
+  await filesController.deleteFile(req, res);
 });
 
 router.post("/files/generate-upload-urls", middleware, async (req, res) => {

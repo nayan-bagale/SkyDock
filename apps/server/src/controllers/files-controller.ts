@@ -25,7 +25,8 @@ class FilesController {
         const [filename, extension] = file.name.split(".");
         const url = await Store.putObjectUrl(
           userId,
-          `${filename?.split(" ").join("-")}-${Date.now()}.${extension}`,
+          // `${filename?.split(" ").join("-")}-${file.id}.${extension}`,
+          `${file.id}.${extension}`,
           file.type
         );
         return { [file.id]: url };
@@ -67,6 +68,34 @@ class FilesController {
         where: { user_id: userId },
       });
       res.json(files);
+    } catch (err) {
+      console.log(err);
+      res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+  }
+
+  async deleteFile(req: Request, res: Response) {
+    const fileId = req.params.id as string;
+    const userId = req.user?.id as string;
+    try {
+      await prisma.$transaction(async (tx) => {
+        const file = await tx.explorerItems.findUnique({
+          where: { id: fileId },
+        });
+        if (!file) {
+          return res.status(INTERNALERROR).json({ message: "File not found" });
+        }
+
+        const extension = file.name.split(".").pop() as string;
+
+        await Store.deleteObject(`${userId}/${fileId}.${extension}`);
+
+        await tx.explorerItems.delete({ where: { id: fileId } });
+      });
+
+      res.json({ message: "File deleted" });
     } catch (err) {
       console.log(err);
       res

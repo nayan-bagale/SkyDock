@@ -9,7 +9,7 @@ interface TerminalCardProps {
     Action: {
         process: (p: any) => void;
     };
-    onClick: () => void;
+    onClick?: () => void;
     className?: string;
     onMouseDownCard: () => void;
 
