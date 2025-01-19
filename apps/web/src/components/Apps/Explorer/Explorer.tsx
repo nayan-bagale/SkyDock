@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { FilesExplorerCard } from "@/ui/Cards/FilesExplorer/FilesExplorer";
 // import { FilesExplorerCard } from "@repo/ui";
 
+import useIntializeFilesAndFolders from "@/components/hooks/useIntializeFilesAndFolders";
 import { setZIndex } from "@/redux/features/apps/appsSlice";
 import { addItem, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
 import { nanoid } from "@reduxjs/toolkit";
@@ -14,6 +15,8 @@ import ExplorerItems from "./ExplorerItems";
 const Explorer = () => {
 
     const dispatch = useAppDispatch()
+
+    useIntializeFilesAndFolders();
 
     const draggableRef = useRef<HTMLDivElement>(null);
 

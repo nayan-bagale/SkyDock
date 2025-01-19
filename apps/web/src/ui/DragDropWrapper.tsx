@@ -1,4 +1,4 @@
-import { DraggedFiles } from '@/components/HandleDragnDrop';
+// import { DraggedFiles } from '@/components/HandleDragnDrop';
 import { Icons } from '@repo/ui/icons';
 import { motion } from 'framer-motion';
 import React, { forwardRef, ReactNode, useState } from 'react';
@@ -8,7 +8,7 @@ export type DraggedFilesT = Pick<React.DragEvent<HTMLDivElement>, 'dataTransfer'
 
 interface DragDropWrapperProps {
     children?: ReactNode
-    handlefiles: (files: DraggedFiles) => void
+    handlefiles: (files: DraggedFilesT) => void
 }
 
 export const DragDropWrapper = forwardRef<HTMLDivElement, DragDropWrapperProps>(

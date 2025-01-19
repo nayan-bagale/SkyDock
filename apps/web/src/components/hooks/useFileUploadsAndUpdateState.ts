@@ -58,10 +58,11 @@ const useFileUploadsAndUpdateState = () => {
       id: file.id,
     }));
 
+    // Get upload urls for each file
     const uploadUrls = await getUploadUrlsSafely(requestFiles);
-
     if (!uploadUrls) return null;
 
+    // Upload each file to the corresponding url
     const uploadFilesPromise = await Promise.allSettled(
       files.map(async (file) => {
         const uploadUrl = uploadUrls.find((url) => url[file.id]);
@@ -91,9 +92,9 @@ const useFileUploadsAndUpdateState = () => {
         return { ...response, details: file as FileT };
       })
     );
-
     if (!uploadFilesPromise) return null;
 
+    // Filter out the rejected promises and get the details of the files
     const requestArray = uploadFilesPromise
       .filter((promise) => {
         if (!promise) return false;
@@ -115,10 +116,11 @@ const useFileUploadsAndUpdateState = () => {
         }
       }) as FileT[];
 
+    // Upload the details of the files to the server
     const finalResponse = await uploadFilesDetailsSafely(requestArray);
-
     if (!finalResponse) return null;
 
+    // Update the state with the uploaded files
     requestArray.forEach((file) => dispatch(addItem(file)));
 
     return true;

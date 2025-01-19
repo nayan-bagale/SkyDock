@@ -46,45 +46,46 @@ const initalState = {
         size: 0,
         lastModified: "2023-10-01T12:00:00Z",
       },
-      children: ["file1", "folder1"],
+      // children: ["file1", "folder1"],
+      children: [],
     },
-    file1: {
-      id: "file1",
-      isFolder: false,
-      name: "file1.txt",
-      parent: "root",
-      details: {
-        name: "file1.txt",
-        size: "15KB",
-        type: "text/plain",
-        lastModified: "2023-10-01T12:00:00Z",
-        // File: new File(["content"], "file1.txt", { type: "text/plain" }),
-      },
-    },
-    folder1: {
-      id: "folder1",
-      isFolder: true,
-      name: "folder1",
-      parent: "root",
-      details: {
-        size: 0,
-        lastModified: "2023-10-02T12:00:00Z",
-      },
-      children: ["file2"],
-    },
-    file2: {
-      id: "file2",
-      isFolder: false,
-      name: "file2.jpg",
-      parent: "folder1",
-      details: {
-        name: "file2.jpg",
-        size: "200KB",
-        type: "image/jpeg",
-        lastModified: "2023-10-02T12:00:00Z",
-        // File: new File(["content"], "file2.jpg", { type: "image/jpeg" }),
-      },
-    },
+    // file1: {
+    //   id: "file1",
+    //   isFolder: false,
+    //   name: "file1.txt",
+    //   parent: "root",
+    //   details: {
+    //     name: "file1.txt",
+    //     size: "15KB",
+    //     type: "text/plain",
+    //     lastModified: "2023-10-01T12:00:00Z",
+    //     // File: new File(["content"], "file1.txt", { type: "text/plain" }),
+    //   },
+    // },
+    // folder1: {
+    //   id: "folder1",
+    //   isFolder: true,
+    //   name: "folder1",
+    //   parent: "root",
+    //   details: {
+    //     size: 0,
+    //     lastModified: "2023-10-02T12:00:00Z",
+    //   },
+    //   children: ["file2"],
+    // },
+    // file2: {
+    //   id: "file2",
+    //   isFolder: false,
+    //   name: "file2.jpg",
+    //   parent: "folder1",
+    //   details: {
+    //     name: "file2.jpg",
+    //     size: "200KB",
+    //     type: "image/jpeg",
+    //     lastModified: "2023-10-02T12:00:00Z",
+    //     // File: new File(["content"], "file2.jpg", { type: "image/jpeg" }),
+    //   },
+    // },
   },
   currentFolder: "root",
   backStack: [],
@@ -98,11 +99,15 @@ export const explorerSlice = createSlice({
     addItem: (state, action) => {
       const currentFolderItem = state.explorerItems[state.currentFolder];
       if (currentFolderItem.isFolder) {
+        const uniqueChildren = new Set([
+          ...currentFolderItem.children,
+          action.payload.id,
+        ]);
         state.explorerItems = {
           ...state.explorerItems,
           [state.currentFolder]: {
             ...currentFolderItem,
-            children: [...currentFolderItem.children, action.payload.id],
+            children: [...uniqueChildren],
           },
           [action.payload.id]: action.payload,
         };

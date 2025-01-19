@@ -2,14 +2,14 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { DragDropWrapper, DraggedFilesT } from '@/ui/DragDropWrapper'
 import { nanoid } from '@reduxjs/toolkit'
 import { FC, ReactNode } from 'react'
-import useFileUploads from './hooks/useFileUploads'
+import useFileUploadsAndUpdateState from './hooks/useFileUploadsAndUpdateState'
 
 
 const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
 
     const dispatch = useAppDispatch()
     const currentFolder = useAppSelector((state) => state.explorer.currentFolder)
-    const [getUploadUrls] = useFileUploads();
+    const [getUploadUrls] = useFileUploadsAndUpdateState();
 
     const handlefiles = async (files: DraggedFilesT) => {
         const Arrayfiles = Array.from(files)

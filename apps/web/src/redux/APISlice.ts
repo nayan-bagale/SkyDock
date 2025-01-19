@@ -5,6 +5,7 @@ import {
   fetchBaseQuery,
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
+import { AllFilesResponse } from "@repo/types";
 import { logOut, setCredentials } from "./features/auth";
 import { RootState } from "./store";
 
@@ -80,6 +81,7 @@ const backendApi = createApi({
     getSession: builder.query({
       query: () => `/session`,
     }),
+
     // File Handling Apis (Upload and Download)
     getUploadUrls: builder.mutation({
       query: (files) => ({
@@ -96,6 +98,10 @@ const backendApi = createApi({
         body,
       }),
     }),
+
+    getAllFiles: builder.query<AllFilesResponse[], any>({
+      query: () => "/files",
+    }),
   }),
 });
 
@@ -109,5 +115,6 @@ export const {
   useLogOutApiMutation,
   useGetUploadUrlsMutation,
   useUploadFilesMutation,
+  useGetAllFilesQuery,
 } = backendApi;
 export default backendApi;
