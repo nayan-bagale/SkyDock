@@ -30,5 +30,8 @@ router.post("/files/upload", middleware, async (req, res) => {
 });
 
 // TODO: Add Folder Endpoint
+router.post("/folder/create", middleware, async (req, res) => {
+  await filesController.createFolder(req, res);
+});
 
 export default router;

@@ -1,1 +1,1 @@
-export type { AllFilesResponse } from "./files";
+export type * from "./files";

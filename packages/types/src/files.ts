@@ -12,3 +12,15 @@ export interface AllFilesResponse {
   updatedAt: Date;
   last_modified: Date;
 }
+
+export interface CreateFolderRequest {
+  id: string;
+  isFolder: boolean;
+  name: string;
+  parent: string;
+  details: {
+    size: number;
+    lastModified: string;
+  };
+  children: string[];
+}

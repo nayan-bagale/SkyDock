@@ -1,3 +1,4 @@
+import { CreateFolderRequest } from "@repo/types";
 import { Request, Response } from "express";
 import { prisma } from "../config/db";
 import messages from "../constants/messages";
@@ -127,6 +128,33 @@ class FilesController {
         data: req.body as { name: string },
       });
       res.json({ message: "File updated" });
+    } catch (err) {
+      console.log(err);
+      res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+  }
+
+  async createFolder(req: Request, res: Response) {
+    const data = req.body as CreateFolderRequest;
+    const userId = req.user?.id as string;
+
+    console.log(data);
+    try {
+      await prisma.explorerItems.create({
+        data: {
+          id: data.id,
+          name: data.name,
+          is_folder: true,
+          parent_id: data.parent,
+          user_id: userId,
+          size: "0",
+          mime_type: "folder",
+          last_modified: new Date(),
+        },
+      });
+      res.json({ message: "Folder created" });
     } catch (err) {
       console.log(err);
       res

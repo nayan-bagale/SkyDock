@@ -6,6 +6,7 @@ import { FilesExplorerCard } from "@/ui/Cards/FilesExplorer/FilesExplorer";
 // import { FilesExplorerCard } from "@repo/ui";
 
 import useIntializeFilesAndFolders from "@/components/hooks/useIntializeFilesAndFolders";
+import { useCreateFolderMutation } from "@/redux/APISlice";
 import { setZIndex } from "@/redux/features/apps/appsSlice";
 import { addItem, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
 import { nanoid } from "@reduxjs/toolkit";
@@ -14,7 +15,8 @@ import ExplorerItems from "./ExplorerItems";
 
 const Explorer = () => {
 
-    const dispatch = useAppDispatch()
+    const dispatch = useAppDispatch();
+    const [createFolder] = useCreateFolderMutation()
 
     useIntializeFilesAndFolders();
 
@@ -36,9 +38,10 @@ const Explorer = () => {
         zIndex !== 'Explorer' && dispatch(setZIndex('Explorer'))
     }
 
-    const addFolder = () => {
+    const addFolder = async () => {
         // TODO: Build Endpoint to add folder
-        dispatch(addItem({
+
+        const folderObj = {
             id: nanoid(),
             isFolder: true,
             name: 'New Folder',
@@ -48,7 +51,11 @@ const Explorer = () => {
                 lastModified: new Date().toISOString(),
             },
             children: []
-        }))
+        }
+
+        await createFolder(folderObj);
+
+        dispatch(addItem(folderObj))
     }
 
     const Action = {
