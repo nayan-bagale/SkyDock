@@ -99,10 +99,10 @@ export const explorerSlice = createSlice({
     addItem: (state, action) => {
       const currentFolderItem = state.explorerItems[state.currentFolder];
       if (currentFolderItem.isFolder) {
-        const uniqueChildren = new Set([
-          ...currentFolderItem.children,
-          action.payload.id,
-        ]);
+        const uniqueChildren =
+          currentFolderItem.id === action.payload.parent
+            ? new Set([...currentFolderItem.children, action.payload.id])
+            : new Set([...currentFolderItem.children]);
         state.explorerItems = {
           ...state.explorerItems,
           [state.currentFolder]: {

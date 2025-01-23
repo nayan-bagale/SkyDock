@@ -12,20 +12,40 @@ const useIntializeFilesAndFolders = () => {
       console.log("Error in fetching files and folders");
       return;
     }
-    const filesObj = data.map((file) => ({
-      id: file.id,
-      isFolder: file.is_folder,
-      name: file.name,
-      parent: file.parent_id,
-      details: {
-        name: file.name,
-        size: file.size,
-        type: file.mime_type,
-        lastModified: file.last_modified,
-      },
-    }));
 
-    filesObj.forEach((file) => dispatch(addItem(file)));
+    const itemsObj = data.map((item) => {
+      if (item.is_folder) {
+        return {
+          id: item.id,
+          isFolder: item.is_folder,
+          name: item.name,
+          parent: item.parent_id,
+          details: {
+            size: item.size,
+            lastModified: item.last_modified,
+          },
+          children:
+            data
+              .filter((child) => child.parent_id === item.id)
+              .map((child) => child.id) ?? [],
+        };
+      } else {
+        return {
+          id: item.id,
+          isFolder: item.is_folder,
+          name: item.name,
+          parent: item.parent_id,
+          details: {
+            name: item.name,
+            size: item.size,
+            type: item.mime_type,
+            lastModified: item.last_modified,
+          },
+        };
+      }
+    });
+
+    itemsObj.forEach((item) => dispatch(addItem(item)));
   }, [data]);
 };
 

@@ -22,13 +22,12 @@ const Explorer = () => {
 
     const draggableRef = useRef<HTMLDivElement>(null);
 
-    const currentFolder = useAppSelector((state) => state.explorer.explorerItems[state.explorer.currentFolder].name)
+    const currentFolder = useAppSelector((state) => state.explorer.explorerItems[state.explorer.currentFolder])
     const backStackFoldersName = useAppSelector((state) => state.explorer.backStack.map((id) => ({ id, name: state.explorer.explorerItems[id].name })))
     const backStack = useAppSelector((state) => state.explorer.backStack)
     const forwardStack = useAppSelector((state) => state.explorer.forwardStack)
     const zIndex = useAppSelector((state) => state.apps.zIndex)
 
-    const title = currentFolder === 'root' ? 'CatX' : currentFolder
 
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef
@@ -39,13 +38,11 @@ const Explorer = () => {
     }
 
     const addFolder = async () => {
-        // TODO: Build Endpoint to add folder
-
         const folderObj = {
             id: nanoid(),
             isFolder: true,
             name: 'New Folder',
-            parent: currentFolder,
+            parent: currentFolder.id,
             details: {
                 size: 0,
                 lastModified: new Date().toISOString(),
@@ -89,7 +86,7 @@ const Explorer = () => {
             style={{ x: position.x, y: position.y }}
             onMouseDown={handleMouseDown}
             Action={Action}
-            title={title}
+            title={currentFolder.name}
             settings={settings}
             addFolder={addFolder}
             handleFolderTree={handleFolderTree}
