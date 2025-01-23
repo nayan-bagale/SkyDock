@@ -139,8 +139,6 @@ class FilesController {
   async createFolder(req: Request, res: Response) {
     const data = req.body as CreateFolderRequest;
     const userId = req.user?.id as string;
-
-    console.log(data);
     try {
       await prisma.explorerItems.create({
         data: {
@@ -155,6 +153,25 @@ class FilesController {
         },
       });
       res.json({ message: "Folder created" });
+    } catch (err) {
+      console.log(err);
+      res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+  }
+
+  async deleteFolder(req: Request, res: Response) {
+    const folderItems = req.body as string[];
+    const userId = req.user?.id as string;
+    try {
+      // TODO: Add Obj that contains files: all files ids and folders: all folders ids
+
+      // await prisma.explorerItems.deleteMany({
+      //   where: { id: { in: folderItems }, user_id: userId },
+      // });
+
+      res.json({ message: "Folder deleted" });
     } catch (err) {
       console.log(err);
       res

@@ -29,9 +29,12 @@ router.post("/files/upload", middleware, async (req, res) => {
   await filesController.saveUploadedFilesToDB(req, res);
 });
 
-// TODO: Add Folder Endpoint
 router.post("/folder/create", middleware, async (req, res) => {
   await filesController.createFolder(req, res);
+});
+
+router.post("/folder/delete", middleware, async (req, res) => {
+  await filesController.deleteFolder(req, res);
 });
 
 export default router;

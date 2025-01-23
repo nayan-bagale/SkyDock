@@ -1,6 +1,7 @@
+import useDeleteFolderRecursively from "@/components/hooks/useDeleteFolderRecursively";
 import useFileDownloadWithProgress from "@/components/hooks/useFileDownloadWithProgress";
 import useOnClickOutside from "@/components/hooks/useOnclickOutside";
-import { useDeleteFileMutation, useRenameItemMutation } from "@/redux/APISlice";
+import { useDeleteFileMutation, useDeleteFolderMutation, useRenameItemMutation } from "@/redux/APISlice";
 import { deleteItem, FileT, FolderT, renameItem, setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
@@ -15,6 +16,8 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
         const [contextMenu, SetContextMenu] = useState(false);
         // const [position, setPosition] = useState({ x: 0, y: 0 });
         const [deleteFile] = useDeleteFileMutation();
+        const [getNestedFolderItemsId] = useDeleteFolderRecursively();
+        const [deleteFolder] = useDeleteFolderMutation();
         const { downloadFile } = useFileDownloadWithProgress();
         const [renameItem_] = useRenameItemMutation();
 
@@ -60,7 +63,13 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
 
         const handleDelete = async () => {
             try {
-                await deleteFile(item.id)
+                if (item.isFolder) {
+                    // TODO: Add Obj that contains files: all files ids and folders: all folders ids
+                    const arrayItems = getNestedFolderItemsId(item.id, [item.id])
+                    await deleteFolder(arrayItems)
+                } else {
+                    await deleteFile(item.id)
+                }
                 dispatch(deleteItem(item.id))
             } catch (error) {
                 console.log(error)

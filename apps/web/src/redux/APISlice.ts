@@ -132,6 +132,14 @@ const backendApi = createApi({
         body,
       }),
     }),
+
+    deleteFolder: builder.mutation({
+      query: (body: any) => ({
+        url: `/folder/delete`,
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -150,5 +158,6 @@ export const {
   useGetFileUrlMutation,
   useRenameItemMutation,
   useCreateFolderMutation,
+  useDeleteFolderMutation,
 } = backendApi;
 export default backendApi;

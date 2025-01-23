@@ -44,7 +44,7 @@ const useIntializeFilesAndFolders = () => {
         };
       }
     });
-
+    console.log(itemsObj);
     itemsObj.forEach((item) => dispatch(addItem(item)));
   }, [data]);
 };
