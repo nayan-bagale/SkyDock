@@ -1,14 +1,12 @@
 import HandleDragnDrop from "@/components/HandleDragnDrop";
 import { useDrag } from "@/components/hooks/useDrag";
-import { changeView, FileExplorer, process } from '@/redux/features/apps/app/fileexplorer';
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { FilesExplorerCard } from "@/ui/Cards/FilesExplorer/FilesExplorer";
-// import { FilesExplorerCard } from "@repo/ui";
-
 import useIntializeFilesAndFolders from "@/components/hooks/useIntializeFilesAndFolders";
 import { useCreateFolderMutation } from "@/redux/APISlice";
+import { changeView, FileExplorer, process } from '@/redux/features/apps/app/fileexplorer';
 import { setZIndex } from "@/redux/features/apps/appsSlice";
 import { addItem, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { FilesExplorerCard } from "@/ui/Cards/FilesExplorer/FilesExplorer";
 import { nanoid } from "@reduxjs/toolkit";
 import { useRef } from "react";
 import ExplorerItems from "./ExplorerItems";
@@ -63,7 +61,7 @@ const Explorer = () => {
 
     const settings = {
         func: (v: Pick<FileExplorer, 'view'>) => dispatch(changeView(v)),
-        state: useAppSelector((state: any) => state.filesexplorer.view).view
+        state: useAppSelector((state) => state.filesexplorer.view)
     }
 
     const handleFolderTree = {

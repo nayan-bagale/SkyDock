@@ -2,8 +2,9 @@ import {
   useGetUploadUrlsMutation,
   useUploadFilesMutation,
 } from "@/redux/APISlice";
-import { addItem, FileT } from "@/redux/features/explorer/explorerSlice";
+import { addItem } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch } from "@/redux/hooks";
+import { FileT } from "@repo/types";
 import axios from "axios";
 import { useState } from "react";
 

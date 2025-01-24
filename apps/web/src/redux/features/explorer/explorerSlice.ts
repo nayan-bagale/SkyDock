@@ -1,39 +1,5 @@
+import { ExplorerT, FolderT } from "@/types/explorer";
 import { createSlice } from "@reduxjs/toolkit";
-
-export interface FolderT {
-  id: string;
-  isFolder: boolean;
-  name: string;
-  parent: string;
-  details: {
-    size: number;
-    lastModified: string;
-  };
-  children: string[];
-}
-
-export interface FileT {
-  id: string;
-  isFolder: false;
-  name: string;
-  parent: string;
-  details: {
-    name: string;
-    size: string;
-    type: string;
-    lastModified: string;
-    // File: File;
-  };
-}
-
-interface ExplorerT {
-  explorerItems: {
-    [key: string]: FileT | FolderT;
-  };
-  currentFolder: string;
-  backStack: string[];
-  forwardStack: string[];
-}
 
 const initalState = {
   explorerItems: {
@@ -117,13 +83,13 @@ export const explorerSlice = createSlice({
       state.backStack.push(state.currentFolder);
       state.currentFolder = action.payload;
     },
-    setForwardStack: (state, action) => {
+    setForwardStack: (state) => {
       const temp = state.forwardStack.pop();
       if (temp) state.backStack.push(temp);
       state.currentFolder =
         state.forwardStack[state.forwardStack.length - 1] || "root";
     },
-    setBackStack: (state, action) => {
+    setBackStack: (state) => {
       const temp = state.backStack.pop();
       if (temp) state.currentFolder = temp;
     },

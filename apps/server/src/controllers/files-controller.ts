@@ -111,10 +111,10 @@ class FilesController {
         await tx.explorerItems.delete({ where: { id: fileId } });
       });
 
-      res.json({ message: "File deleted" });
+      return res.json({ message: "File deleted" });
     } catch (err) {
       console.log(err);
-      res
+      return res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
     }
@@ -165,12 +165,23 @@ class FilesController {
     const folderItems = req.body as string[];
     const userId = req.user?.id as string;
     try {
-      // TODO: Add Obj that contains files: all files ids and folders: all folders ids
+      await prisma.$transaction(async (tx) => {
+        const items = await tx.explorerItems.findMany({
+          where: { id: { in: folderItems }, user_id: userId },
+        });
 
-      // await prisma.explorerItems.deleteMany({
-      //   where: { id: { in: folderItems }, user_id: userId },
-      // });
+        const files = items
+          .filter((item) => !item.is_folder)
+          .map((file) => `${userId}/${file.id}.${file.name.split(".").pop()}`);
 
+        await Promise.allSettled(
+          files.map(async (file) => await Store.deleteObject(file))
+        );
+
+        await tx.explorerItems.deleteMany({
+          where: { id: { in: folderItems }, user_id: userId },
+        });
+      });
       res.json({ message: "Folder deleted" });
     } catch (err) {
       console.log(err);

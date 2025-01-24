@@ -21,11 +21,12 @@ interface DisplayFilesIconsT {
         setName: React.Dispatch<React.SetStateAction<string>>;
     },
     saveNewNameToStore: () => void;
+    onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
 
 export const DisplayItemsIcons: FC<DisplayFilesIconsT> =
-    ({ rename, item, Icon, onContextMenu, view = 'grid', onDoubleClick, saveNewNameToStore }) => {
+    ({ rename, item, Icon, onContextMenu, view = 'grid', onDoubleClick, saveNewNameToStore, onKeyDown }) => {
         const [clicked, setClicked] = React.useState(false)
 
         const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -67,6 +68,7 @@ export const DisplayItemsIcons: FC<DisplayFilesIconsT> =
                         exit={{ opacity: 0 }}
                         title={item.name}
                         onDoubleClick={onDoubleClick}
+                        onKeyDown={onKeyDown}
                     // onClick={() => setClicked(!clicked)}
                     >
                         <Icon className=" w-16" />

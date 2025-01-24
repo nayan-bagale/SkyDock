@@ -14,7 +14,6 @@ import { FC, useRef, useState } from "react";
 const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }> =
     ({ item, Icon }) => {
         const [contextMenu, SetContextMenu] = useState(false);
-        // const [position, setPosition] = useState({ x: 0, y: 0 });
         const [deleteFile] = useDeleteFileMutation();
         const [getNestedFolderItemsId] = useDeleteFolderRecursively();
         const [deleteFolder] = useDeleteFolderMutation();
@@ -34,7 +33,7 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
             setName
         }
 
-        const view = useAppSelector((state) => state.filesexplorer.view)
+        const view = useAppSelector((state) => state.filesexplorer.view).view
 
         const position = view === 'grid' ? ' left-4' : ' left-12'
 
@@ -64,7 +63,6 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
         const handleDelete = async () => {
             try {
                 if (item.isFolder) {
-                    // TODO: Add Obj that contains files: all files ids and folders: all folders ids
                     const arrayItems = getNestedFolderItemsId(item.id, [item.id])
                     await deleteFolder(arrayItems)
                 } else {
@@ -94,6 +92,12 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
             SetContextMenu(false)
         }
 
+        const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+            if (e.key === 'Enter') {
+                handleOpen()
+            }
+        }
+
 
         return (
             <div className="relative">
@@ -105,6 +109,7 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
                     item={item}
                     onContextMenu={handleContextMenu}
                     onDoubleClick={handleDoubleClick}
+                    onKeyDown={handleKeyDown}
                 />
                 {contextMenu && (
                     <ContextMenu ref={ref} className={position}>

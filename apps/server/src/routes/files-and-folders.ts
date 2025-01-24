@@ -16,7 +16,6 @@ router.patch("/file/:id", middleware, async (req, res) => {
   await filesController.patchFile(req, res);
 });
 
-// TODO: Add Folder Delete Endpoint (Delete Folder and all its children files)
 router.delete("/file/:id", middleware, async (req, res) => {
   await filesController.deleteFile(req, res);
 });

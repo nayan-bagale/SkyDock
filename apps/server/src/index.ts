@@ -6,7 +6,7 @@ import { corsOptions } from "./config/corsOptions";
 import { OK } from "./constants/status";
 import { middleware } from "./middleware";
 import auth from "./routes/auth";
-import files from "./routes/files";
+import files from "./routes/files-and-folders";
 import { decodeToken } from "./utils/token";
 
 const app = express();
