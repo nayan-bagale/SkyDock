@@ -1,11 +1,11 @@
 import useOnClickOutside from '@/components/hooks/useOnclickOutside';
-import { FileT, FolderT } from '@/redux/features/explorer/explorerSlice';
+import { FileT, FolderT } from '@/types/explorer';
 import cn from '@/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { FC, useEffect, useRef } from 'react';
 
 
-interface DisplayFilesIconsT {
+interface DisplayItemsIconsT {
     children?: React.ReactNode;
     className?: string;
     item: FileT | FolderT;
@@ -25,16 +25,17 @@ interface DisplayFilesIconsT {
 }
 
 
-export const DisplayItemsIcons: FC<DisplayFilesIconsT> =
+export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
     ({ rename, item, Icon, onContextMenu, view = 'grid', onDoubleClick, saveNewNameToStore, onKeyDown }) => {
         const [clicked, setClicked] = React.useState(false)
 
         const textareaRef = useRef<HTMLTextAreaElement>(null);
         const iconRef = useRef<HTMLDivElement>(null);
+
         useOnClickOutside(iconRef, () => {
-            rename.editing && saveNewNameToStore();
+            console.log('clicked outside', rename.editing);
             rename.setEditing(false);
-        })
+        });
 
         useEffect(() => {
             if (rename.editing) {
@@ -56,6 +57,12 @@ export const DisplayItemsIcons: FC<DisplayFilesIconsT> =
             }
         }
 
+        const enhancedOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+            if (!rename.editing) {
+                onKeyDown(e);
+            }
+        }
+
         return <>
             <AnimatePresence>
                 {view === 'grid' &&
@@ -68,7 +75,7 @@ export const DisplayItemsIcons: FC<DisplayFilesIconsT> =
                         exit={{ opacity: 0 }}
                         title={item.name}
                         onDoubleClick={onDoubleClick}
-                        onKeyDown={onKeyDown}
+                        onKeyDown={enhancedOnKeyDown}
                     // onClick={() => setClicked(!clicked)}
                     >
                         <Icon className=" w-16" />
