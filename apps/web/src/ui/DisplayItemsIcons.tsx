@@ -12,7 +12,7 @@ interface DisplayItemsIconsT {
     Icon: ({ className }: { className: string }) => JSX.Element;
     onClick?: () => void;
     onContextMenu?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
-    view?: 'grid' | 'row';
+    view: 'grid' | 'row';
     onDoubleClick?: () => void;
     rename: {
         editing: boolean;
@@ -26,7 +26,7 @@ interface DisplayItemsIconsT {
 
 
 export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
-    ({ rename, item, Icon, onContextMenu, view = 'grid', onDoubleClick, saveNewNameToStore, onKeyDown }) => {
+    ({ rename, item, Icon, onContextMenu, view, onDoubleClick, saveNewNameToStore, onKeyDown }) => {
         const [clicked, setClicked] = React.useState(false)
 
         const textareaRef = useRef<HTMLTextAreaElement>(null);

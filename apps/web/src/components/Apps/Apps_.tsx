@@ -8,7 +8,7 @@ const Explorer = lazy(() => import('@/components/Apps/Explorer/Explorer'))
 
 const Apps_ = () => {
     const terminal = useAppSelector((state) => state.terminal.process);
-    const filesExplorer = useAppSelector((state) => state.filesexplorer.process)
+    const isExplorerOn = useAppSelector((state) => state.explorer.actions.isProcessOn)
 
     return (
         <>
@@ -17,7 +17,7 @@ const Apps_ = () => {
                     <Terminal />
                 </Suspense>
             )}
-            {filesExplorer === 'on' && (
+            {isExplorerOn && (
                 <Suspense fallback={<div>Loding.....</div>}>
                     <Explorer />
                 </Suspense>

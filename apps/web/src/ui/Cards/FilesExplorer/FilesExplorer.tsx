@@ -1,3 +1,4 @@
+import { FolderT } from "@/types/explorer";
 import cn from "@/utils";
 import { Icons } from "@repo/ui/icons";
 import { AnimatePresence, motion } from "framer-motion";
@@ -8,10 +9,10 @@ interface FilesExplorerCardProps {
     style: { x: number, y: number };
     onMouseDown: any;
     children?: ReactNode
-    Action: {
-        process: (p: any) => void;
+    action: {
+        close: () => void;
     };
-    title?: string;
+    currentFolder: FolderT;
     settings: {
         func: (v: any) => void;
         state: 'grid' | 'row'
@@ -39,8 +40,7 @@ interface FilesExplorerCardProps {
 
 
 export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardProps>(
-    ({ style, onMouseDown, Action, children, onMouseDownCard, title = 'CatX', settings, addFolder, className, handleFolderTree: { forward, backward } }, ref) => {
-
+    ({ style, onMouseDown, action, children, onMouseDownCard, currentFolder, settings, addFolder, className, handleFolderTree: { forward, backward } }, ref) => {
         return (
             <AnimatePresence>
                 <motion.div className={cn(" text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] bg-white/80 backdrop-blur rounded-xl overflow-hidden", className)}
@@ -56,7 +56,7 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                     >
                         <div className=" flex gap-1 absolute">
                             <div className=" h-3 w-3 rounded-full bg-red-400 flex items-center justify-center cursor-default hover:bg-red-500 transition-colors hover:shadow"
-                                onClick={() => Action.process("off")}
+                                onClick={() => action.close()}
                             >
                                 {/* <Icons.Cross className=" h-4 w-4" /> */}
                             </div>
@@ -77,17 +77,17 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                                     <Icons.Right_Arrow2 className="h-4 w-4" />
                                 </Button>
                             </div>
-                            <div className=" text-sm">{title}</div>
+                            <div className=" text-sm">{currentFolder.name}</div>
                         </div>
                         <div className=" w-full flex gap-1 justify-end">
                             <Button onClick={addFolder}>
                                 <Icons.Folder_Add className=" h-6 w-6" />
                             </Button>
                             <div className=" border-l border-black mx-2 "></div>
-                            <Button onClick={() => settings.func({ view: 'grid' })} isActive={settings.state === 'grid'} isActiveClassName=" bg-white hover:bg-none">
+                            <Button onClick={() => settings.func('grid')} isActive={settings.state === 'grid'} isActiveClassName=" bg-white hover:bg-none">
                                 <Icons.Grid4 className=" h-5 w-5" />
                             </Button>
-                            <Button onClick={() => settings.func({ view: 'row' })} isActive={settings.state === 'row'} isActiveClassName=" bg-white hover:bg-none">
+                            <Button onClick={() => settings.func('row')} isActive={settings.state === 'row'} isActiveClassName=" bg-white hover:bg-none">
                                 <Icons.Grid2 className=" h-5 w-5" />
                             </Button>
                         </div>
@@ -119,7 +119,7 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                             </div>
                             <div className=" text-xs border-t px-2 py-1 flex items-center w-full ">
                                 <Button onClick={() => backward.onClickBreadCrumb('root')} className=" hover:bg-white p-1" size={'icon'} intent={'ghost'}><Icons.Home className=" h-4 w-4" /></Button>
-                                {backward.backStack.map((item, index) => (
+                                {[...backward.backStack, { id: currentFolder.id, name: currentFolder.name }].map((item, index) => index !== 0 && (
                                     <Fragment key={item.id}>
                                         <Icons.Right_Arrow className=" mt-1 h-5 w-5" />
                                         <Button onClick={() => backward.onClickBreadCrumb(item.id)}>

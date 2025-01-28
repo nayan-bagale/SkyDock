@@ -6,7 +6,7 @@ import { deleteItem, FileT, FolderT, renameItem, setCurrentFolder } from "@/redu
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
 import { ContextMenu, ContextMenuSeparator } from "@/ui/ContextMenu";
-import { DisplayItemsIcons } from "@/ui/DisplayFilesIcons";
+import { DisplayItemsIcons } from "@/ui/DisplayItemsIcons";
 import cn from "@/utils";
 import { Icons } from "@repo/ui/icons";
 import { FC, useRef, useState } from "react";
@@ -33,7 +33,7 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
             setName
         }
 
-        const view = useAppSelector((state) => state.filesexplorer.view).view
+        const view = useAppSelector((state) => state.explorer.settings.view)
 
         const position = view === 'grid' ? ' left-4' : ' left-12'
 
@@ -159,7 +159,7 @@ const FolderIcon: FC<{ folder: FolderT }> = ({ folder }) => {
 const ExplorerItems = () => {
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
     const currentFolder = useAppSelector((state) => state.explorer.currentFolder);
-    const view = useAppSelector((state) => state.filesexplorer.view);
+    const view = useAppSelector((state) => state.explorer.settings.view);
 
     const item = explorerItems[currentFolder]
 

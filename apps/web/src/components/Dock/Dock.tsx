@@ -1,5 +1,4 @@
-import { process as files_explorer_process } from '@/redux/features/apps/app/fileexplorer';
-import { process as terminal_process } from '@/redux/features/apps/app/terminalSlice';
+import { explorerProcess } from '@/redux/features/explorer/explorerSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Dock as DockPanel } from '@/ui/Dock/dock';
 import { DockButton } from '@/ui/Dock/dock_button';
@@ -14,25 +13,25 @@ const Dock = () => {
             name: 'Menu',
             Icon: Menu,
             fun: () => { },
-            active: 'off'
+            active: false
         },
         {
             name: 'React',
             Icon: React,
             fun: () => { },
-            active: 'off'
+            active: false
         },
-        {
-            name: 'Terminal',
-            Icon: Terminal,
-            fun: () => dispatch(terminal_process('on')),
-            active: useAppSelector((state) => state.terminal.process) as string
-        },
+        // {
+        //     name: 'Terminal',
+        //     Icon: Terminal,
+        //     fun: () => dispatch(terminal_process('on')),
+        //     active: useAppSelector((state) => state.terminal.process) as string
+        // },
         {
             name: 'Folder',
             Icon: Folder,
-            fun: () => dispatch(files_explorer_process('on')),
-            active: useAppSelector((state) => state.filesexplorer.process) as string
+            fun: () => dispatch(explorerProcess(true)),
+            active: useAppSelector((state) => state.explorer.actions.isProcessOn)
         },
     ]
 

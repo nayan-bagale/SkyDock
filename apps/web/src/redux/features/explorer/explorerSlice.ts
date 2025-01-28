@@ -1,3 +1,4 @@
+import { X_POSITION, Y_POSITION } from "@/constants";
 import { ExplorerT, FolderT } from "@/types/explorer";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -56,6 +57,16 @@ const initalState = {
   currentFolder: "root",
   backStack: [],
   forwardStack: [],
+  actions: {
+    isMinimized: false,
+    isMaximized: false,
+    isProcessOn: false,
+    lastSize: { width: 0, height: 0 },
+    lastPosition: { x: X_POSITION, y: Y_POSITION },
+  },
+  settings: {
+    view: "grid",
+  },
 } as ExplorerT;
 
 export const explorerSlice = createSlice({
@@ -135,6 +146,24 @@ export const explorerSlice = createSlice({
         },
       };
     },
+
+    changeView: (state, action) => {
+      state.settings.view = action.payload.view;
+    },
+
+    explorerProcess: (state, action) => {
+      state.currentFolder = "root";
+      state.backStack = [];
+      state.forwardStack = [];
+      state.actions.isProcessOn = action.payload;
+    },
+
+    changeExplorerSize: (state) => {
+      state.actions.isMaximized = !state.actions.isMaximized;
+    },
+    changeExplorerMinimized: (state) => {
+      state.actions.isMinimized = !state.actions.isMinimized;
+    },
   },
 });
 
@@ -146,6 +175,10 @@ export const {
   setBreadCrumb,
   deleteItem,
   renameItem,
+  changeView,
+  explorerProcess,
+  changeExplorerSize,
+  changeExplorerMinimized,
 } = explorerSlice.actions;
 
 export default explorerSlice.reducer;

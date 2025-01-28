@@ -2,10 +2,10 @@ import HandleDragnDrop from "@/components/HandleDragnDrop";
 import { useDrag } from "@/components/hooks/useDrag";
 import useIntializeFilesAndFolders from "@/components/hooks/useIntializeFilesAndFolders";
 import { useCreateFolderMutation } from "@/redux/APISlice";
-import { changeView, FileExplorer, process } from '@/redux/features/apps/app/fileexplorer';
 import { setZIndex } from "@/redux/features/apps/appsSlice";
-import { addItem, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
+import { addItem, changeExplorerMinimized, changeExplorerSize, changeView, explorerProcess, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { ExplorerT, FolderT } from "@/types/explorer";
 import { FilesExplorerCard } from "@/ui/Cards/FilesExplorer/FilesExplorer";
 import { nanoid } from "@reduxjs/toolkit";
 import { useRef } from "react";
@@ -54,28 +54,36 @@ const Explorer = () => {
     }
 
     const Action = {
-        process: () => {
-            dispatch(process('off'))
+        close: () => dispatch(explorerProcess(false)),
+        size: {
+            isMaximized: useAppSelector((state) => state.explorer.actions.isMaximized),
+            changeSize: () => dispatch(changeExplorerSize()),
         },
+        minimize: () => dispatch(changeExplorerMinimized()),
     }
 
     const settings = {
-        func: (v: Pick<FileExplorer, 'view'>) => dispatch(changeView(v)),
-        state: useAppSelector((state) => state.filesexplorer.view)
+        func: (v: ExplorerT['settings']['view']) => dispatch(changeView(v)),
+        state: useAppSelector((state) => state.explorer.settings.view)
     }
 
     const handleFolderTree = {
         forward: {
             disabled: forwardStack.length === 0,
-            func: () => dispatch(setForwardStack(''))
+            func: () => dispatch(setForwardStack())
         },
         backward: {
             disabled: backStack.length === 0,
             backStack: backStackFoldersName,
-            func: () => dispatch(setBackStack('')),
+            func: () => dispatch(setBackStack()),
             onClickBreadCrumb: (id: string) => dispatch(setBreadCrumb(id))
         },
     }
+
+    // const lastpostion = {
+    //     width: draggableRef.current?.clientWidth,
+    //     height: draggableRef.current?.clientHeight
+    // }
 
 
     return (
@@ -83,8 +91,8 @@ const Explorer = () => {
             ref={draggableRef}
             style={{ x: position.x, y: position.y }}
             onMouseDown={handleMouseDown}
-            Action={Action}
-            title={currentFolder.name}
+            action={Action}
+            currentFolder={currentFolder as FolderT}
             settings={settings}
             addFolder={addFolder}
             handleFolderTree={handleFolderTree}

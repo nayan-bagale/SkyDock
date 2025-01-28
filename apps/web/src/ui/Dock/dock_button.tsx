@@ -36,7 +36,7 @@ const dockButtonStyles = cva(["font-semibold", "border", "rounded-2xl", "shadow"
 });
 
 type DockButtonProps = HTMLMotionProps<"button"> & VariantProps<typeof dockButtonStyles> & {
-  isActive?: string;
+  isActive?: boolean;
 }
 
 
@@ -56,7 +56,7 @@ export const DockButton = ({
   const item = {
     hidden: { y: 20, opacity: 0 },
     visible: {
-      y: isActive === 'on' ? -10 : 0,
+      y: isActive ? -10 : 0,
       opacity: 1
     }
   }
@@ -83,7 +83,7 @@ export const DockButton = ({
         {children}
       </motion.button>
       <AnimatePresence>
-        {isActive === 'on' &&
+        {isActive &&
           <motion.p
             className=" transition-all p-1.5 backdrop-blur shadow bg-white/60 rounded-full text-gray-600 absolute bottom-0"
             initial={{ opacity: 0, y: -10 }}

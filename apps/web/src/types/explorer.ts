@@ -31,4 +31,14 @@ export interface ExplorerT {
   currentFolder: string;
   backStack: string[];
   forwardStack: string[];
+  actions: {
+    isMinimized: boolean;
+    isMaximized: boolean;
+    isProcessOn: boolean;
+    lastSize: { width: number; height: number };
+    lastPosition: { x: number; y: number };
+  };
+  settings: {
+    view: "grid" | "row";
+  };
 }

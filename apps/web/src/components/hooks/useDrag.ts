@@ -1,3 +1,4 @@
+import { X_POSITION, Y_POSITION } from "@/constants";
 import { useCallback, useEffect, useState } from "react";
 
 export const useDrag = ({
@@ -9,8 +10,8 @@ export const useDrag = ({
 }) => {
   const [dragInfo, setDragInfo] = useState<any>();
   const [finalPosition, setFinalPosition] = useState<{ x: number; y: number }>({
-    x: 100,
-    y: 100,
+    x: X_POSITION,
+    y: Y_POSITION,
   });
   const [isDragging, setIsDragging] = useState(false);
 
