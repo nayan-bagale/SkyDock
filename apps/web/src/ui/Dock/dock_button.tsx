@@ -64,7 +64,7 @@ export const DockButton = ({
 
   return (
     <div className=" flex flex-col items-center">
-      <motion.button onClick={onClick}
+      <motion.button onClick={(event) => !isActive && onClick && onClick(event)}
         type="button"
         className={cn(dockButtonStyles({ intent, className }))}
         whileHover={{ scale: 1.1, y: "-15px" }}

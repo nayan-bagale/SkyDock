@@ -148,7 +148,7 @@ export const explorerSlice = createSlice({
     },
 
     changeView: (state, action) => {
-      state.settings.view = action.payload.view;
+      state.settings.view = action.payload;
     },
 
     explorerProcess: (state, action) => {
@@ -163,6 +163,10 @@ export const explorerSlice = createSlice({
     },
     changeExplorerMinimized: (state) => {
       state.actions.isMinimized = !state.actions.isMinimized;
+    },
+
+    changeExplorerLastSize: (state, action) => {
+      state.actions.lastSize = action.payload;
     },
   },
 });
@@ -179,6 +183,7 @@ export const {
   explorerProcess,
   changeExplorerSize,
   changeExplorerMinimized,
+  changeExplorerLastSize,
 } = explorerSlice.actions;
 
 export default explorerSlice.reducer;

@@ -11,11 +11,21 @@ interface FilesExplorerCardProps {
     children?: ReactNode
     action: {
         close: () => void;
+        size: {
+            isMaximized: boolean;
+            changeSize: () => void;
+            lastSize: {
+                width: number;
+                height: number;
+            };
+        }
     };
     currentFolder: FolderT;
     settings: {
-        func: (v: any) => void;
-        state: 'grid' | 'row'
+        view: {
+            func: (v: 'grid' | 'row') => void;
+            state: 'grid' | 'row'
+        }
     };
     handleFolderTree: {
         forward: {
@@ -41,9 +51,13 @@ interface FilesExplorerCardProps {
 
 export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardProps>(
     ({ style, onMouseDown, action, children, onMouseDownCard, currentFolder, settings, addFolder, className, handleFolderTree: { forward, backward } }, ref) => {
+        // const size_obj = { height: action.size.isMaximized ? remToPx(40) : action.size.lastSize.height, width: action.size.isMaximized ? remToPx(55) : action.size.lastSize.width }
+
         return (
             <AnimatePresence>
-                <motion.div className={cn(" text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] bg-white/80 backdrop-blur rounded-xl overflow-hidden", className)}
+                <motion.div className={cn(" text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] bg-white/80 backdrop-blur rounded-xl overflow-hidden",
+                    // action.size.isMaximized && 'h-[40rem] w-[55rem]', 
+                    className)}
                     ref={ref}
                     style={{ left: style.x, top: style.y }}
                     initial={{ opacity: 0 }}
@@ -58,14 +72,14 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                             <div className=" h-3 w-3 rounded-full bg-red-400 flex items-center justify-center cursor-default hover:bg-red-500 transition-colors hover:shadow"
                                 onClick={() => action.close()}
                             >
-                                {/* <Icons.Cross className=" h-4 w-4" /> */}
+                                {/* <Icons.Cross className=" fill-white h-4 w-4" /> */}
                             </div>
                             {/* <div className=" h-3 w-3 rounded-full bg-yellow-600"
-                            onClick={() => Action("")}
-                        ></div>
-                        <div className=" h-3 w-3 rounded-full bg-green-600"
-                            onClick={() => Action("close")}
-                        ></div> */}
+                                onClick={() => action.size.changeSize()}
+                            ></div> */}
+                            <div className=" h-3 w-3 rounded-full bg-green-600"
+                            // onClick={() => Action("close")}
+                            ></div>
                         </div>
                         <div className="text-xs w-full flex items-center justify-start ml-8 gap-2 cursor-default">
                             <div className=" flex justify-evenly gap-2">
@@ -84,10 +98,10 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                                 <Icons.Folder_Add className=" h-6 w-6" />
                             </Button>
                             <div className=" border-l border-black mx-2 "></div>
-                            <Button onClick={() => settings.func('grid')} isActive={settings.state === 'grid'} isActiveClassName=" bg-white hover:bg-none">
+                            <Button onClick={() => settings.view.func('grid')} isActive={settings.view.state === 'grid'} isActiveClassName=" bg-white hover:bg-none">
                                 <Icons.Grid4 className=" h-5 w-5" />
                             </Button>
-                            <Button onClick={() => settings.func('row')} isActive={settings.state === 'row'} isActiveClassName=" bg-white hover:bg-none">
+                            <Button onClick={() => settings.view.func('row')} isActive={settings.view.state === 'row'} isActiveClassName=" bg-white hover:bg-none">
                                 <Icons.Grid2 className=" h-5 w-5" />
                             </Button>
                         </div>
