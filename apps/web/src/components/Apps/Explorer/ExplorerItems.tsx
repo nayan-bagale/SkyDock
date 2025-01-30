@@ -20,7 +20,7 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
         const { downloadFile } = useFileDownloadWithProgress();
         const [renameItem_] = useRenameItemMutation();
 
-        const ref = useRef<HTMLDivElement>(null)
+        const contextMenuRef = useRef<HTMLDivElement>(null)
         const dispatch = useAppDispatch()
 
         const [editing, setEditing] = useState(false)
@@ -37,7 +37,11 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
 
         const position = view === 'grid' ? ' left-4' : ' left-12'
 
-        useOnClickOutside(ref, () => SetContextMenu(false));
+        useOnClickOutside(contextMenuRef, (currentRef) => {
+
+            console.log(currentRef)
+            SetContextMenu(false)
+        });
 
         const saveNewNameToStore = async () => {
             try {
@@ -112,7 +116,7 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
                     onKeyDown={handleKeyDown}
                 />
                 {contextMenu && (
-                    <ContextMenu ref={ref} className={position}>
+                    <ContextMenu ref={contextMenuRef} className={position}>
                         {item.isFolder && <Button size={'menu'} className=" " onClick={handleOpen}>
                             Open
                         </Button>}

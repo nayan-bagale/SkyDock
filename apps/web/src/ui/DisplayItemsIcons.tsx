@@ -1,4 +1,3 @@
-import useOnClickOutside from '@/components/hooks/useOnclickOutside';
 import { FileT, FolderT } from '@/types/explorer';
 import cn from '@/utils';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -32,11 +31,6 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
         const textareaRef = useRef<HTMLTextAreaElement>(null);
         const iconRef = useRef<HTMLDivElement>(null);
 
-        useOnClickOutside(iconRef, () => {
-            console.log('clicked outside', rename.editing);
-            rename.setEditing(false);
-        });
-
         useEffect(() => {
             if (rename.editing) {
                 textareaRef.current?.focus();
@@ -52,7 +46,6 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
 
         const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
             if (e.key === 'Enter') {
-                rename.setEditing(false);
                 saveNewNameToStore();
             }
         }
@@ -76,7 +69,6 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                         title={item.name}
                         onDoubleClick={onDoubleClick}
                         onKeyDown={enhancedOnKeyDown}
-                    // onClick={() => setClicked(!clicked)}
                     >
                         <Icon className=" w-16" />
                         {rename.editing ? (
@@ -86,7 +78,9 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                                 className={cn(' resize-none w-14 p-0 text-[14px] text-center break-words min-h-1')}
                                 value={rename.name}
                                 onChange={(e) => rename.setName(e.target.value)}
-                                onKeyDown={handleKeyDown}
+                                onBlur={saveNewNameToStore} // When user clicks outside the textarea
+                                // onFocus={() => console.log('focus')}
+                                onKeyDown={handleKeyDown} // When user presses Enter
                             />
                         ) : (
                             <p className={cn('text-[14px] cursor-default text-center select-none ', clicked ? 'w-16 break-words ' : 'truncate h-7 w-[10ch] overflow-hidden')}>{rename.name}</p>
