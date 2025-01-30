@@ -1,7 +1,6 @@
-// import { DraggedFiles } from '@/components/HandleDragnDrop';
 import { Icons } from '@repo/ui/icons';
 import { motion } from 'framer-motion';
-import React, { forwardRef, ReactNode, useState } from 'react';
+import React, { forwardRef, ReactNode, useCallback, useState } from 'react';
 import cn from '../utils';
 
 export type DraggedFilesT = Pick<React.DragEvent<HTMLDivElement>, 'dataTransfer'>['dataTransfer']['files']
@@ -15,31 +14,54 @@ export const DragDropWrapper = forwardRef<HTMLDivElement, DragDropWrapperProps>(
     ({ children, handlefiles }, ref) => {
         const [dragging, setDragging] = useState(false)
 
-        const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-            e.preventDefault()
-        }
-
-        const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-            e.preventDefault()
-            const isFromBrowser = e.dataTransfer.types.includes('text/plain');
-            if (isFromBrowser) {
-                console.log('Element is from the browser.');
-            } else {
-                console.log('Element is from outside the browser.');
-                handlefiles(e.dataTransfer.files);
+        const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+            // Only set dragging true if the drag is from outside the browser
+            if (e.dataTransfer.types.includes("Files") && (e.dataTransfer.types.length === 1)) {
+                setDragging(true);
             }
+        }, [])
+
+        const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+            e.preventDefault()
+
+            // Only set dragging true if the drag is from outside the browser
+            // This is to prevent the drop zone from being highlighted when dragging files within the browser
+            // This will trigger when the file is dragged over the Upload logo and Drag and drop text
+            if (!dragging && (e.dataTransfer.types.includes("Files") && (e.dataTransfer.types.length === 1))) {
+                setDragging(true);
+            }
+
+        }, [dragging])
+
+        const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+            e.preventDefault()
+
+            // Only call handlefiles if the drag is from outside the browser
+            if (e.dataTransfer.types.includes("Files") && (e.dataTransfer.types.length === 1)) {
+                handlefiles(e.dataTransfer.files);
+                // console.log('Element is from the browser.');
+            }
+
             setDragging(false)
-        }
+        }, [handlefiles])
+
+        const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+            const target = e.relatedTarget as HTMLElement | null;
+            // Only set dragging false if the drag leaves the drop zone
+            if (!target || !target.closest('.drop-zone')) {
+                setDragging(false);
+            }
+        }, []);
+
         return (
             <div className=' w-full h-full p-1' ref={ref}>
                 <div className={cn('w-full h-full relative rounded-2xl p-0.5 transition-colors duration-300 ',
-                    dragging ? ' z-50 border-2 border-dashed backdrop-blur bg-white/20 border-gray-400' : '',
-
+                    dragging && ' z-50 border-2 border-dashed backdrop-blur bg-white/20 border-gray-400',
                 )}
                     onDragOver={handleDragOver}
                     onDrop={handleDrop}
-                    onDragEnter={() => setDragging(true)}
-                    onDragLeave={() => setDragging(false)}
+                    onDragEnter={handleDragEnter}
+                    onDragLeave={handleDragLeave}
                 >
                     {!dragging && children}
                     {dragging && (

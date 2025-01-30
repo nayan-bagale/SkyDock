@@ -2,17 +2,21 @@ import useDeleteFolderRecursively from "@/components/hooks/useDeleteFolderRecurs
 import useFileDownloadWithProgress from "@/components/hooks/useFileDownloadWithProgress";
 import useOnClickOutside from "@/components/hooks/useOnclickOutside";
 import { useDeleteFileMutation, useDeleteFolderMutation, useRenameItemMutation } from "@/redux/APISlice";
-import { deleteItem, FileT, FolderT, renameItem, setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
+import { deleteItem, renameItem, setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
 import { ContextMenu, ContextMenuSeparator } from "@/ui/ContextMenu";
 import { DisplayItemsIcons } from "@/ui/DisplayItemsIcons";
 import cn from "@/utils";
+import { FileT, FolderT } from "@repo/types";
 import { Icons } from "@repo/ui/icons";
-import { FC, useRef, useState } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 
-const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }> =
-    ({ item, Icon }) => {
+export type handleDragStartT = (e: React.DragEvent, item: FileT | FolderT) => void;
+export type handleReorderT = (e: React.DragEvent, targetIndex: number) => void;
+
+const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye, handleDragStart: handleDragStartT; handleReorder: handleReorderT }> =
+    ({ item, Icon, handleDragStart, handleReorder }) => {
         const [contextMenu, SetContextMenu] = useState(false);
         const [deleteFile] = useDeleteFileMutation();
         const [getNestedFolderItemsId] = useDeleteFolderRecursively();
@@ -114,6 +118,8 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
                     onContextMenu={handleContextMenu}
                     onDoubleClick={handleDoubleClick}
                     onKeyDown={handleKeyDown}
+                    handleDragStart={handleDragStart}
+                    handleReorder={handleReorder}
                 />
                 {contextMenu && (
                     <ContextMenu ref={contextMenuRef} className={position}>
@@ -137,27 +143,42 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye }>
         )
     }
 
-const FileIcon: FC<{ file: FileT }> = ({ file }) => {
+const SetIcon: FC<{ item: FileT | FolderT; handleDragStart: handleDragStartT; handleReorder: handleReorderT }> = ({ item, handleDragStart, handleReorder }) => {
 
     const imageTypes = ['image/jpeg', 'image/jpg', 'image/pjpeg', 'image/x-jps', 'image/png', 'image/gif', 'image/webp'];
 
-    if (imageTypes.includes(file.details.type)) {
-        return (<ItemsWrapper Icon={Icons.Image} item={file} />);
+    if (item.isFolder) {
+        return (<ItemsWrapper
+            Icon={Icons.Folder}
+            item={item}
+            handleDragStart={handleDragStart}
+            handleReorder={handleReorder}
+        />)
     }
 
-    switch (file.details.type) {
+    const mimeType = 'type' in item.details ? item.details.type : '';
+
+    let Icon = Icons.File;
+
+    if (imageTypes.includes(mimeType)) {
+        Icon = Icons.Image;
+    }
+
+    switch (mimeType) {
         case 'application/pdf':
-            return (<ItemsWrapper Icon={Icons.PDF} item={file} />);
-        default:
-            return (<ItemsWrapper Icon={Icons.File} item={file} />);
+            Icon = Icons.PDF;
+            break;
     }
 
-}
-
-const FolderIcon: FC<{ folder: FolderT }> = ({ folder }) => {
     return (
-        <ItemsWrapper Icon={Icons.Folder} item={folder} />
+        <ItemsWrapper
+            Icon={Icon}
+            item={item}
+            handleDragStart={handleDragStart}
+            handleReorder={handleReorder}
+        />
     )
+
 }
 
 const ExplorerItems = () => {
@@ -167,16 +188,67 @@ const ExplorerItems = () => {
 
     const item = explorerItems[currentFolder]
 
+    const [draggedItem, setDraggedItem] = useState<FileT | FolderT | null>(null);
+    const [files, setFiles] = useState(
+        item?.isFolder ? item.children.map((child) => explorerItems[child]) : []
+    );
+
+    useEffect(() => {
+        if (item?.isFolder) {
+            setFiles(item.children.map((child) => explorerItems[child]).sort((a) => a.isFolder ? -1 : 1))
+        }
+    }, [currentFolder, explorerItems])
+
+    // console.log(files)
+
+
+    // Handle drag start for internal elements
+    const handleDragStart: handleDragStartT = (e, item) => {
+        e.dataTransfer.setData("application/json", JSON.stringify(item));
+        setDraggedItem(item);
+    };
+
+    // Handle reordering items
+    const handleReorder: handleReorderT = (e, targetIndex) => {
+        e.preventDefault();
+        if (!draggedItem) return;
+
+        const updatedFiles = [...files];
+        const draggedIndex = updatedFiles.findIndex((file) => file.id === draggedItem.id);
+
+        if (draggedIndex !== -1) {
+            updatedFiles.splice(draggedIndex, 1);
+            updatedFiles.splice(targetIndex, 0, draggedItem);
+        }
+
+        setFiles(updatedFiles);
+        setDraggedItem(null);
+    };
+
+    // TODO: Complete drag over handler for folders to move files into them
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        if (item.isFolder) {
+            const draggedItem = JSON.parse(e.dataTransfer.getData("application/json")) as FileT | FolderT;
+            console.log("Dragged item:", draggedItem);
+            console.log("Over folder:", item);
+        }
+    };
+
 
     if (item?.isFolder) {
         return (
             <div className={cn('relative', view === 'row' ? ' w-full' : 'flex gap-2 items-start justify-start flex-wrap w-fit')}>
-                {item.children.map((child) => explorerItems[child].isFolder && (
-                    <FolderIcon key={explorerItems[child].id} folder={explorerItems[child]} />
-                ))}
-                {item.children.map((child) => !explorerItems[child].isFolder && (
-                    <FileIcon key={explorerItems[child].id} file={explorerItems[child] as FileT} />
-                ))}
+                {files.map((child, index) => (
+                    <SetIcon
+                        key={child.id}
+                        item={child}
+                        handleDragStart={(e) => handleDragStart(e, child)}
+                        handleReorder={(e) => handleReorder(e, index)}
+                    // handleDragOver={handleDragOver}
+                    />
+                )
+                )}
             </div>
         )
     }

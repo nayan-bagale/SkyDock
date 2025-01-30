@@ -4,7 +4,7 @@ import { Button } from "../../button"
 export const SignInCard = () => {
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        console.log(e)
+        // console.log(e)
     }
     return (
         <div className=" flex flex-col items-center gap-4 text-white border p-4 rounded-xl backdrop-blur bg-white/10">

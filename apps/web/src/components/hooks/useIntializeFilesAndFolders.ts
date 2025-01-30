@@ -9,7 +9,7 @@ const useIntializeFilesAndFolders = () => {
 
   useEffect(() => {
     if (!data) {
-      console.log("Error in fetching files and folders");
+      // console.log("Error in fetching files and folders");
       return;
     }
 

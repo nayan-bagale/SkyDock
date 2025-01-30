@@ -13,7 +13,7 @@ function App() {
   const { data, error, isLoading } = useGetSessionQuery('')
   const handleContext = (e: any) => {
     // e.preventDefault()
-    console.log(e.target)
+    // console.log(e.target)
   }
 
   const token = useAppSelector((state) => state.auth.accessToken)

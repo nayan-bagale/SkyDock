@@ -21,11 +21,22 @@ interface DisplayItemsIconsT {
     },
     saveNewNameToStore: () => void;
     onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
+    handleDragStart: any;
+    handleReorder: any;
 }
-
-
 export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
-    ({ rename, item, Icon, onContextMenu, view, onDoubleClick, saveNewNameToStore, onKeyDown }) => {
+    ({
+        rename,
+        item,
+        Icon,
+        onContextMenu,
+        view,
+        onDoubleClick,
+        saveNewNameToStore,
+        onKeyDown,
+        handleDragStart,
+        handleReorder
+    }) => {
         const [clicked, setClicked] = React.useState(false)
 
         const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -59,7 +70,9 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
         return <>
             <AnimatePresence>
                 {view === 'grid' &&
-                    (<motion.div ref={iconRef} className={cn(' relative w-fit flex flex-col justify-center items-center p-1 rounded-md hover:bg-gray-400/40', clicked && 'bg-gray-400/10 border')}
+                    (<motion.div
+                        ref={iconRef}
+                        className={cn(' relative w-fit flex flex-col justify-center items-center p-1 rounded-md hover:bg-gray-400/40', clicked && 'bg-gray-400/10 border')}
                         id={item.id}
                         whileTap={{ scale: 0.9 }}
                         onContextMenu={onContextMenu}
@@ -69,6 +82,10 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                         title={item.name}
                         onDoubleClick={onDoubleClick}
                         onKeyDown={enhancedOnKeyDown}
+                        draggable
+                        onDragStart={handleDragStart}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={handleReorder}
                     >
                         <Icon className=" w-16" />
                         {rename.editing ? (
@@ -79,7 +96,6 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                                 value={rename.name}
                                 onChange={(e) => rename.setName(e.target.value)}
                                 onBlur={saveNewNameToStore} // When user clicks outside the textarea
-                                // onFocus={() => console.log('focus')}
                                 onKeyDown={handleKeyDown} // When user presses Enter
                             />
                         ) : (
