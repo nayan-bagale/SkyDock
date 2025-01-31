@@ -119,9 +119,17 @@ const backendApi = createApi({
 
     renameItem: builder.mutation({
       query: ({ id, name }: { id: string; name: string }) => ({
-        url: `/file/${id}`,
+        url: `/file/name/${id}`,
         method: "PATCH",
         body: { name },
+      }),
+    }),
+
+    moveFileIntoFolder: builder.mutation({
+      query: ({ fileId, folderId }: { fileId: string; folderId: string }) => ({
+        url: `/file/move`,
+        method: "PATCH",
+        body: { fileId, folderId },
       }),
     }),
 
@@ -159,5 +167,6 @@ export const {
   useRenameItemMutation,
   useCreateFolderMutation,
   useDeleteFolderMutation,
+  useMoveFileIntoFolderMutation,
 } = backendApi;
 export default backendApi;

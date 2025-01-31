@@ -190,6 +190,23 @@ class FilesController {
         .json({ message: messages.INTERNAL_SERVER_ERROR });
     }
   }
+
+  // async moveFileIntoFolder(req: Request, res: Response) {
+  //   const { fileId, folderId } = req.body;
+  //   const userId = req.user?.id as string;
+
+  //   console.log(fileId, folderId);
+  //   try {
+  //     await prisma.explorerItems.update({
+  //       where: { id: fileId },
+  //       data: { parent_id: folderId },
+  //     });
+  //     res.json({ message: "File moved" });
+  //   } catch (err) {
+  //     console.log(err);
+  //   res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
+  //   }
+  }
 }
 
 export default FilesController.getInstance();

@@ -77,7 +77,7 @@ export type handleDropT = (
   e: React.DragEvent,
   item: FileT | FolderT,
   targetIndex: number
-) => void;
+) => Promise<void>;
 
 export type DragEventT = (e: React.DragEvent) => void;
 

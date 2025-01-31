@@ -36,4 +36,8 @@ router.post("/folder/delete", middleware, async (req, res) => {
   await filesController.deleteFolder(req, res);
 });
 
+// router.patch("/file/move", middleware, async (req, res) => {
+//   await filesController.moveFileIntoFolder(req, res);
+// });
+
 export default router;

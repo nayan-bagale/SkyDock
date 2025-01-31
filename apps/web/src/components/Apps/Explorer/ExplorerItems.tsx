@@ -1,7 +1,7 @@
 import useDeleteFolderRecursively from "@/components/hooks/useDeleteFolderRecursively";
 import useFileDownloadWithProgress from "@/components/hooks/useFileDownloadWithProgress";
 import useOnClickOutside from "@/components/hooks/useOnclickOutside";
-import { useDeleteFileMutation, useDeleteFolderMutation, useRenameItemMutation } from "@/redux/APISlice";
+import { useDeleteFileMutation, useDeleteFolderMutation, useMoveFileIntoFolderMutation, useRenameItemMutation } from "@/redux/APISlice";
 import { deleteItem, moveFileIntoFolder, renameItem, setCurrentFolder, setItemDragged } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
@@ -189,8 +189,10 @@ const ExplorerItems = () => {
     const view = useAppSelector((state) => state.explorer.settings.view);
 
     const item = explorerItems[currentFolder]
+
     const dispatch = useAppDispatch()
     const itemDragged = useAppSelector((state) => state.explorer.itemDragged);
+    const [moveFileIntoFolderApi] = useMoveFileIntoFolderMutation();
 
     const files = useMemo(() => {
         if (item?.isFolder) {
@@ -209,13 +211,15 @@ const ExplorerItems = () => {
     };
 
     // Handle reordering items
-    const handleDrop: handleDropT = (e, droppedItem) => {
+    const handleDrop: handleDropT = async (e, droppedItem) => {
         e.preventDefault();
         if (!itemDragged) return;
 
         if (droppedItem.isFolder && (itemDragged.id !== droppedItem.id)) {
             console.log("Dragged index:", itemDragged.name);
             console.log("Target index:", droppedItem.name);
+            // TODO: Move file into folder in the backend and update the store with the new parent id
+            // await moveFileIntoFolderApi({ fileId: itemDragged.id, folderId: droppedItem.id }).unwrap();
             dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id }));
         }
 
