@@ -206,7 +206,7 @@ class FilesController {
   //     console.log(err);
   //   res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
   //   }
-  }
+  // }
 }
 
 export default FilesController.getInstance();
