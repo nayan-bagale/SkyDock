@@ -1,6 +1,6 @@
 import { X_POSITION, Y_POSITION } from "@/constants";
-import { ExplorerT, FolderT } from "@/types/explorer";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ExplorerT, FileT, FolderT } from "@repo/types";
 
 const initalState = {
   explorerItems: {
@@ -67,6 +67,7 @@ const initalState = {
   settings: {
     view: "grid",
   },
+  itemDragged: null,
 } as ExplorerT;
 
 export const explorerSlice = createSlice({
@@ -88,27 +89,6 @@ export const explorerSlice = createSlice({
           },
           [action.payload.id]: action.payload,
         };
-      }
-    },
-    setCurrentFolder: (state, action) => {
-      state.backStack.push(state.currentFolder);
-      state.currentFolder = action.payload;
-    },
-    setForwardStack: (state) => {
-      const temp = state.forwardStack.pop();
-      if (temp) state.backStack.push(temp);
-      state.currentFolder =
-        state.forwardStack[state.forwardStack.length - 1] || "root";
-    },
-    setBackStack: (state) => {
-      const temp = state.backStack.pop();
-      if (temp) state.currentFolder = temp;
-    },
-    setBreadCrumb: (state, action) => {
-      state.currentFolder = action.payload;
-      const index = state.backStack.indexOf(action.payload);
-      if (index !== -1) {
-        state.backStack = state.backStack.slice(0, index);
       }
     },
     deleteItem: (state, action) => {
@@ -147,6 +127,56 @@ export const explorerSlice = createSlice({
       };
     },
 
+    moveFileIntoFolder: (
+      state,
+      action: PayloadAction<{ fileId: FileT["id"]; folderId: FolderT["id"] }>
+    ) => {
+      const { fileId, folderId } = action.payload;
+
+      const fileItem = state.explorerItems[fileId] as FileT;
+      const folderItem = state.explorerItems[folderId] as FolderT;
+
+      state.explorerItems = {
+        ...state.explorerItems,
+        [fileItem.parent]: {
+          ...state.explorerItems[fileItem.parent],
+          children: (
+            state.explorerItems[fileItem.parent] as FolderT
+          ).children.filter((childId) => childId !== fileId),
+        } as FolderT,
+        [folderId]: {
+          ...folderItem,
+          children: [...(folderItem as FolderT).children, fileItem.id],
+        },
+        [fileId]: {
+          ...fileItem,
+          parent: folderId,
+        },
+      };
+    },
+
+    setCurrentFolder: (state, action) => {
+      state.backStack.push(state.currentFolder);
+      state.currentFolder = action.payload;
+    },
+    setForwardStack: (state) => {
+      const temp = state.forwardStack.pop();
+      if (temp) state.backStack.push(temp);
+      state.currentFolder =
+        state.forwardStack[state.forwardStack.length - 1] || "root";
+    },
+    setBackStack: (state) => {
+      const temp = state.backStack.pop();
+      if (temp) state.currentFolder = temp;
+    },
+    setBreadCrumb: (state, action) => {
+      state.currentFolder = action.payload;
+      const index = state.backStack.indexOf(action.payload);
+      if (index !== -1) {
+        state.backStack = state.backStack.slice(0, index);
+      }
+    },
+
     changeView: (state, action) => {
       state.settings.view = action.payload;
     },
@@ -168,6 +198,11 @@ export const explorerSlice = createSlice({
     changeExplorerLastSize: (state, action) => {
       state.actions.lastSize = action.payload;
     },
+
+    // drag and drop
+    setItemDragged: (state, action) => {
+      state.itemDragged = action.payload;
+    },
   },
 });
 
@@ -179,11 +214,13 @@ export const {
   setBreadCrumb,
   deleteItem,
   renameItem,
+  moveFileIntoFolder,
   changeView,
   explorerProcess,
   changeExplorerSize,
   changeExplorerMinimized,
   changeExplorerLastSize,
+  setItemDragged,
 } = explorerSlice.actions;
 
 export default explorerSlice.reducer;

@@ -2,21 +2,27 @@ import useDeleteFolderRecursively from "@/components/hooks/useDeleteFolderRecurs
 import useFileDownloadWithProgress from "@/components/hooks/useFileDownloadWithProgress";
 import useOnClickOutside from "@/components/hooks/useOnclickOutside";
 import { useDeleteFileMutation, useDeleteFolderMutation, useRenameItemMutation } from "@/redux/APISlice";
-import { deleteItem, renameItem, setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
+import { deleteItem, moveFileIntoFolder, renameItem, setCurrentFolder, setItemDragged } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
 import { ContextMenu, ContextMenuSeparator } from "@/ui/ContextMenu";
 import { DisplayItemsIcons } from "@/ui/DisplayItemsIcons";
 import cn from "@/utils";
-import { FileT, FolderT } from "@repo/types";
+import { DragEventT, FileT, FolderT, handleDragStartT, handleDropT, MouseEventT } from "@repo/types";
 import { Icons } from "@repo/ui/icons";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useMemo, useRef, useState } from "react";
 
-export type handleDragStartT = (e: React.DragEvent, item: FileT | FolderT) => void;
-export type handleReorderT = (e: React.DragEvent, targetIndex: number) => void;
 
-const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye, handleDragStart: handleDragStartT; handleReorder: handleReorderT }> =
-    ({ item, Icon, handleDragStart, handleReorder }) => {
+interface ItemsPropsT {
+    item: FileT | FolderT,
+    Icon: typeof Icons.Closed_Eye,
+    handleDragStart: MouseEventT;
+    handleDrop: DragEventT;
+}
+
+
+const ItemsWrapper: FC<ItemsPropsT> =
+    ({ item, Icon, handleDragStart, handleDrop }) => {
         const [contextMenu, SetContextMenu] = useState(false);
         const [deleteFile] = useDeleteFileMutation();
         const [getNestedFolderItemsId] = useDeleteFolderRecursively();
@@ -42,7 +48,6 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye, h
         const position = view === 'grid' ? ' left-4' : ' left-12'
 
         useOnClickOutside(contextMenuRef, (currentRef) => {
-
             console.log(currentRef)
             SetContextMenu(false)
         });
@@ -60,13 +65,11 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye, h
         const handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>,) => {
             e.preventDefault();
             SetContextMenu(!contextMenu);
-            // setPosition({ x: e.clientX, y: e.clientY });
         }
 
         const handleDownload = async () => {
             await downloadFile(item as FileT)
         }
-
 
         const handleDelete = async () => {
             try {
@@ -106,7 +109,6 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye, h
             }
         }
 
-
         return (
             <div className="relative">
                 <DisplayItemsIcons
@@ -119,7 +121,7 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye, h
                     onDoubleClick={handleDoubleClick}
                     onKeyDown={handleKeyDown}
                     handleDragStart={handleDragStart}
-                    handleReorder={handleReorder}
+                    handleDrop={handleDrop}
                 />
                 {contextMenu && (
                     <ContextMenu ref={contextMenuRef} className={position}>
@@ -143,7 +145,7 @@ const ItemsWrapper: FC<{ item: FileT | FolderT, Icon: typeof Icons.Closed_Eye, h
         )
     }
 
-const SetIcon: FC<{ item: FileT | FolderT; handleDragStart: handleDragStartT; handleReorder: handleReorderT }> = ({ item, handleDragStart, handleReorder }) => {
+const SetIcon: FC<Omit<ItemsPropsT, 'Icon'>> = ({ item, handleDragStart, handleDrop }) => {
 
     const imageTypes = ['image/jpeg', 'image/jpg', 'image/pjpeg', 'image/x-jps', 'image/png', 'image/gif', 'image/webp'];
 
@@ -152,7 +154,7 @@ const SetIcon: FC<{ item: FileT | FolderT; handleDragStart: handleDragStartT; ha
             Icon={Icons.Folder}
             item={item}
             handleDragStart={handleDragStart}
-            handleReorder={handleReorder}
+            handleDrop={handleDrop}
         />)
     }
 
@@ -175,7 +177,7 @@ const SetIcon: FC<{ item: FileT | FolderT; handleDragStart: handleDragStartT; ha
             Icon={Icon}
             item={item}
             handleDragStart={handleDragStart}
-            handleReorder={handleReorder}
+            handleDrop={handleDrop}
         />
     )
 
@@ -187,71 +189,63 @@ const ExplorerItems = () => {
     const view = useAppSelector((state) => state.explorer.settings.view);
 
     const item = explorerItems[currentFolder]
+    const dispatch = useAppDispatch()
+    const itemDragged = useAppSelector((state) => state.explorer.itemDragged);
 
-    const [draggedItem, setDraggedItem] = useState<FileT | FolderT | null>(null);
-    const [files, setFiles] = useState(
-        item?.isFolder ? item.children.map((child) => explorerItems[child]) : []
-    );
-
-    useEffect(() => {
+    const files = useMemo(() => {
         if (item?.isFolder) {
-            setFiles(item.children.map((child) => explorerItems[child]).sort((a) => a.isFolder ? -1 : 1))
+            return item.children.map((child) => explorerItems[child]).sort((a) => a.isFolder ? -1 : 1)
         }
+        return []
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentFolder, explorerItems])
-
-    // console.log(files)
 
 
     // Handle drag start for internal elements
     const handleDragStart: handleDragStartT = (e, item) => {
         e.dataTransfer.setData("application/json", JSON.stringify(item));
-        setDraggedItem(item);
+        dispatch(setItemDragged(item));
+
     };
 
     // Handle reordering items
-    const handleReorder: handleReorderT = (e, targetIndex) => {
+    const handleDrop: handleDropT = (e, droppedItem) => {
         e.preventDefault();
-        if (!draggedItem) return;
+        if (!itemDragged) return;
 
-        const updatedFiles = [...files];
-        const draggedIndex = updatedFiles.findIndex((file) => file.id === draggedItem.id);
-
-        if (draggedIndex !== -1) {
-            updatedFiles.splice(draggedIndex, 1);
-            updatedFiles.splice(targetIndex, 0, draggedItem);
+        if (droppedItem.isFolder && (itemDragged.id !== droppedItem.id)) {
+            console.log("Dragged index:", itemDragged.name);
+            console.log("Target index:", droppedItem.name);
+            dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id }));
         }
 
-        setFiles(updatedFiles);
-        setDraggedItem(null);
-    };
 
-    // TODO: Complete drag over handler for folders to move files into them
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        if (item.isFolder) {
-            const draggedItem = JSON.parse(e.dataTransfer.getData("application/json")) as FileT | FolderT;
-            console.log("Dragged item:", draggedItem);
-            console.log("Over folder:", item);
-        }
-    };
+        dispatch(setItemDragged(null));
 
+        // const updatedFiles = [...files];
+        // const draggedIndex = updatedFiles.findIndex((file) => file.id === itemDragged.id);
+        // if (draggedIndex !== -1) {
+        //     updatedFiles.splice(draggedIndex, 1);
+        //     updatedFiles.splice(targetIndex, 0, draggedItem);
+        // }
+        // setFiles(updatedFiles);
+    };
 
     if (item?.isFolder) {
-        return (
-            <div className={cn('relative', view === 'row' ? ' w-full' : 'flex gap-2 items-start justify-start flex-wrap w-fit')}>
+        return (<>
+            <div className={cn('relative h-full', view === 'row' ? ' w-full' : 'flex gap-2 items-start justify-start flex-wrap w-fit')}>
                 {files.map((child, index) => (
                     <SetIcon
                         key={child.id}
                         item={child}
                         handleDragStart={(e) => handleDragStart(e, child)}
-                        handleReorder={(e) => handleReorder(e, index)}
-                    // handleDragOver={handleDragOver}
+                        handleDrop={(e) => handleDrop(e, child, index)}
                     />
-                )
-                )}
+                ))}
             </div>
+        </>
         )
     }
 }
 
-export default ExplorerItems
+export default ExplorerItems;

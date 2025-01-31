@@ -1,7 +1,8 @@
 import { FileT, FolderT } from '@/types/explorer';
 import cn from '@/utils';
+import { DragEventT, MouseEventT } from '@repo/types';
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 
 
 interface DisplayItemsIconsT {
@@ -21,9 +22,10 @@ interface DisplayItemsIconsT {
     },
     saveNewNameToStore: () => void;
     onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
-    handleDragStart: any;
-    handleReorder: any;
+    handleDragStart: MouseEventT;
+    handleDrop: DragEventT;
 }
+
 export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
     ({
         rename,
@@ -35,9 +37,10 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
         saveNewNameToStore,
         onKeyDown,
         handleDragStart,
-        handleReorder
+        handleDrop,
     }) => {
         const [clicked, setClicked] = React.useState(false)
+        const [isOver, setIsOver] = useState(false);
 
         const textareaRef = useRef<HTMLTextAreaElement>(null);
         const iconRef = useRef<HTMLDivElement>(null);
@@ -67,12 +70,32 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
             }
         }
 
+        const handleDragOverInner = (event: React.DragEvent<HTMLDivElement>) => {
+            event.preventDefault();
+            if (item.isFolder) {
+                setIsOver(true); // Set highlight when a file is dragged over
+            }
+        };
+
+        const handleDragLeaveInner = (e: React.DragEvent<HTMLDivElement>) => {
+            e.preventDefault();
+            setIsOver(false); // Remove highlight when the file leaves the folder
+
+        };
+
+        const handleDropInner = (event: React.DragEvent<HTMLDivElement>) => {
+            event.preventDefault();
+
+            setIsOver(false); // ✅ Ensure highlight is removed after dropping
+            handleDrop(event)
+        };
+
         return <>
             <AnimatePresence>
                 {view === 'grid' &&
                     (<motion.div
                         ref={iconRef}
-                        className={cn(' relative w-fit flex flex-col justify-center items-center p-1 rounded-md hover:bg-gray-400/40', clicked && 'bg-gray-400/10 border')}
+                        className={cn(' relative w-fit flex flex-col justify-center items-center p-1 rounded-md hover:bg-gray-400/40', isOver && 'bg-gray-400/10 border')}
                         id={item.id}
                         whileTap={{ scale: 0.9 }}
                         onContextMenu={onContextMenu}
@@ -84,8 +107,9 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                         onKeyDown={enhancedOnKeyDown}
                         draggable
                         onDragStart={handleDragStart}
-                        onDragOver={(e) => e.preventDefault()}
-                        onDrop={handleReorder}
+                        onDragOver={handleDragOverInner}
+                        onDrop={handleDropInner}
+                        onDragLeave={handleDragLeaveInner}
                     >
                         <Icon className=" w-16" />
                         {rename.editing ? (

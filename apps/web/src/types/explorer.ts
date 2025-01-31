@@ -41,4 +41,5 @@ export interface ExplorerT {
   settings: {
     view: "grid" | "row";
   };
+  itemDragged: null | FileT | FolderT;
 }

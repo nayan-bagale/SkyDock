@@ -27,7 +27,7 @@ export interface CreateFolderRequest {
 
 export interface FolderT {
   id: string;
-  isFolder: boolean;
+  isFolder: true;
   name: string;
   parent: string;
   details: {
@@ -50,3 +50,38 @@ export interface FileT {
     // File: File;
   };
 }
+
+export interface ExplorerT {
+  explorerItems: {
+    [key: string]: FileT | FolderT;
+  };
+  currentFolder: string;
+  backStack: string[];
+  forwardStack: string[];
+  actions: {
+    isMinimized: boolean;
+    isMaximized: boolean;
+    isProcessOn: boolean;
+    lastSize: { width: number; height: number };
+    lastPosition: { x: number; y: number };
+  };
+  settings: {
+    view: "grid" | "row";
+  };
+  itemDragged: null | FileT | FolderT;
+}
+
+export type handleDragStartT = (e: any, item: FileT | FolderT) => void;
+
+export type handleDropT = (
+  e: React.DragEvent,
+  item: FileT | FolderT,
+  targetIndex: number
+) => void;
+
+export type DragEventT = (e: React.DragEvent) => void;
+
+export type MouseEventT = (
+  event: MouseEvent | TouchEvent | PointerEvent,
+  info: any
+) => void;

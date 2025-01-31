@@ -4,6 +4,7 @@ import Apps_ from './components/Apps/Apps_'
 import Auth from './components/Auth/Auth'
 import MenuBar from './components/Bar/MenuBar'
 import Dock from './components/Dock/Dock'
+import DraggingItem from './components/DraggingItem'
 import './index.css'
 import { useGetSessionQuery } from './redux/APISlice'
 import { useAppSelector } from './redux/hooks'
@@ -42,6 +43,7 @@ function App() {
             <div className=' justify-self-end'>
               <Dock />
             </div>
+            {<DraggingItem />}
           </>)
         }
       </div>

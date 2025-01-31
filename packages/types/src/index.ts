@@ -1,1 +1,1 @@
-export type * from "./files";
+export type * from "./explorer-items";
