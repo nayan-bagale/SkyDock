@@ -1,6 +1,10 @@
 {
   "name": "nex-cloud",
   "private": true,
+  "author": {
+    "name": "Nayan Bagale",
+    "email": "nvbagale@gmail.com"
+  },
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
@@ -10,7 +14,7 @@
   },
   "devDependencies": {
     "prettier": "^3.2.5",
-    "turbo": "^2.0.6",
+    "turbo": "^2.4.0",
     "typescript": "^5.4.5"
   },
   "engines": {
