@@ -1,17 +1,17 @@
 {
-  "name": "nex-cloud",
+  "name": "skydock-monorepo",
   "private": true,
   "author": {
     "name": "Nayan Bagale",
-    "email": "nvbagale@gmail.com"
+    "email": "nvbagale@yahoo.com"
   },
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "db:studio": "yarn workspace @repo/db run db:studio",
-    "docker:stop": "yarn workspace @repo/docker-dev run docker:stop"
+    "db:studio": "yarn workspace @skydock/db run db:studio",
+    "docker:stop": "yarn workspace @skydock/docker-dev run docker:stop"
   },
   "devDependencies": {
     "prettier": "^3.2.5",

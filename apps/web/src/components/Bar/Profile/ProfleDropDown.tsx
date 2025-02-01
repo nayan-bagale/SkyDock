@@ -4,7 +4,7 @@ import { logOut } from "@/redux/features/auth";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from '@/ui/button';
 import { MainDropDownMenu, MainMenuSeparator } from "@/ui/Cards/Menus/MainDropDownMenu/MainDropDownMenu";
-import { Icons } from '@repo/ui/icons';
+import { Icons } from '@skydock/ui/icons';
 import { useRef, useState } from 'react';
 
 const ProfileDropdown = () => {

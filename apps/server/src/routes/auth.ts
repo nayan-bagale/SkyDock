@@ -1,4 +1,4 @@
-import { LoginBody, RegisterBody } from "@repo/types/Auth";
+import { LoginBody, RegisterBody } from "@skydock/types/Auth";
 import express from "express";
 import messages from "../constants/messages";
 import { INTERNALERROR, OK, UNAUTHORIED } from "../constants/status";
@@ -9,7 +9,7 @@ import {
   verifyToken,
 } from "../utils/token";
 
-import { emailValidation, passwordValidation } from "@repo/validation";
+import { emailValidation, passwordValidation } from "@skydock/validation";
 import bcrypt from "bcrypt";
 import { JwtPayload } from "jsonwebtoken";
 import { prisma } from "../config/db";

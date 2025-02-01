@@ -1,4 +1,4 @@
-import { Icons } from '@repo/ui/icons';
+import { Icons } from '@skydock/ui/icons';
 import { motion } from 'framer-motion';
 import React, { forwardRef, ReactNode, useCallback, useState } from 'react';
 import cn from '../utils';

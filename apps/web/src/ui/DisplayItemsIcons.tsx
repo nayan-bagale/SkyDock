@@ -1,6 +1,6 @@
 import { FileT, FolderT } from '@/types/explorer';
 import cn from '@/utils';
-import { DragEventT, MouseEventT } from '@repo/types';
+import { DragEventT, MouseEventT } from '@skydock/types';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { FC, useEffect, useRef, useState } from 'react';
 

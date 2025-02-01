@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.6",
-    "@repo/ui": "*",
-    "@repo/validation": "*",
+    "@skydock/ui": "*",
+    "@skydock/validation": "*",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -23,7 +23,7 @@
     "tailwind-merge": "^2.4.0"
   },
   "devDependencies": {
-    "@repo/types": "*",
+    "@skydock/types": "*",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.13.1",

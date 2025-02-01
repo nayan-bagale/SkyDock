@@ -1,4 +1,4 @@
-import { Icons } from "@repo/ui/icons"
+import { Icons } from "@skydock/ui/icons"
 
 const Spinner = () => {
     return (

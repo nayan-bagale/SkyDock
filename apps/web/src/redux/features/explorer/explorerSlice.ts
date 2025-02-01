@@ -1,6 +1,6 @@
 import { X_POSITION, Y_POSITION } from "@/constants";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ExplorerT, FileT, FolderT } from "@repo/types";
+import { ExplorerT, FileT, FolderT } from "@skydock/types";
 
 const initalState = {
   explorerItems: {

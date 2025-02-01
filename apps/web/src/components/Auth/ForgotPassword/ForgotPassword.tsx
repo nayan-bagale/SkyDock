@@ -2,7 +2,7 @@ import { Button } from "@/ui/button"
 import { AuthCard } from "@/ui/Cards/AuthFlow/AuthCard"
 import { Form } from "@/ui/Cards/AuthFlow/Form"
 import { Input, InputPassword } from "@/ui/input"
-import { emailValidation, passwordValidation } from "@repo/validation"
+import { emailValidation, passwordValidation } from "@skydock/validation"
 import { FC, useState } from "react"
 import ErrorMessage from "../ErrorMessage"
 

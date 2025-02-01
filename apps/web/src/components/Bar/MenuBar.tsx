@@ -1,6 +1,6 @@
 import { Button } from "@/ui/button";
 import { Bar } from "@/ui/MenuBar/Bar";
-import { Icons } from "@repo/ui/icons";
+import { Icons } from "@skydock/ui/icons";
 import Date_n_Time from "./DatenTime/Date_n_Time";
 import FullScreenBtn from "./FullScreenBtn/FullScreenBtn";
 import Logo from "./Logo/Logo";

@@ -5,7 +5,7 @@ import {
   fetchBaseQuery,
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
-import { AllFilesResponse, PatchItemRequest } from "@repo/types";
+import { AllFilesResponse, PatchItemRequest } from "@skydock/types";
 import { logOut, setCredentials } from "./features/auth";
 import { RootState } from "./store";
 

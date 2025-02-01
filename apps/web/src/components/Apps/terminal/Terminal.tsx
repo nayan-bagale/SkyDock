@@ -4,7 +4,7 @@ import { setZIndex } from '@/redux/features/apps/appsSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { TerminalCard } from '@/ui/Cards/Terminal/TerminalCard';
 import Spinner from '@/ui/Spinner';
-// import { TerminalCard } from '@repo/ui';
+// import { TerminalCard } from '@skydock/ui';
 import { useRef } from 'react';
 
 export const TerminalSkeleton = () => {

@@ -1,4 +1,4 @@
-import { CreateFolderRequest } from "@repo/types";
+import { CreateFolderRequest } from "@skydock/types";
 import { Request, Response } from "express";
 import { prisma } from "../config/db";
 import messages from "../constants/messages";

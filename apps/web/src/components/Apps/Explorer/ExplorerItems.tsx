@@ -8,8 +8,8 @@ import { Button } from "@/ui/button";
 import { ContextMenu, ContextMenuSeparator } from "@/ui/ContextMenu";
 import { DisplayItemsIcons } from "@/ui/DisplayItemsIcons";
 import cn from "@/utils";
-import { DragEventT, FileT, FolderT, handleDragStartT, handleDropT, MouseEventT } from "@repo/types";
-import { Icons } from "@repo/ui/icons";
+import { DragEventT, FileT, FolderT, handleDragStartT, handleDropT, MouseEventT } from "@skydock/types";
+import { Icons } from "@skydock/ui/icons";
 import { FC, useMemo, useRef, useState } from "react";
 
 

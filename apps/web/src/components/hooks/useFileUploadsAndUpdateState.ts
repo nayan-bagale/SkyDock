@@ -4,7 +4,7 @@ import {
 } from "@/redux/APISlice";
 import { addItem } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch } from "@/redux/hooks";
-import { FileT } from "@repo/types";
+import { FileT } from "@skydock/types";
 import axios from "axios";
 import { useState } from "react";
 

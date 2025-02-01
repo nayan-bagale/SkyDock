@@ -2,7 +2,7 @@ import { explorerProcess } from '@/redux/features/explorer/explorerSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Dock as DockPanel } from '@/ui/Dock/dock';
 import { DockButton } from '@/ui/Dock/dock_button';
-import { Icons } from '@repo/ui/icons';
+import { Icons } from '@skydock/ui/icons';
 
 const Dock = () => {
     const { Menu, React, Terminal, Folder, } = Icons;

@@ -1,6 +1,6 @@
 import useFullScreen from "@/components/hooks/useFullScreen";
 import { Button } from "@/ui/button";
-import { Icons } from "@repo/ui/icons";
+import { Icons } from "@skydock/ui/icons";
 
 const FullScreenBtn = () => {
   const [isFullScreen, toggleFullScreen] = useFullScreen();

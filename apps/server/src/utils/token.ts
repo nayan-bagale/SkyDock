@@ -1,4 +1,4 @@
-import { LoginResponse } from "@repo/types/Auth";
+import { LoginResponse } from "@skydock/types/Auth";
 import jwt from "jsonwebtoken";
 import "../config/dotenv";
 

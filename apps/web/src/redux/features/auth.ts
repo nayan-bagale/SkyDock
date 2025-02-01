@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { LoginResponse } from "@repo/types/Auth";
+import { LoginResponse } from "@skydock/types/Auth";
 
 export const authSlice = createSlice({
   name: "auth",
