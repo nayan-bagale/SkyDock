@@ -1,12 +1,8 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
-
-enum AppsT {
-  Terminal = "Terminal",
-  Explorer = "Explorer",
-}
+import { AppsT } from "@skydock/types/enums";
 
 export interface AppsStateT {
-  zIndex: keyof typeof AppsT | "";
+  focusedApp: keyof typeof AppsT | "";
   apps: {
     id: string;
     name: string;
@@ -15,7 +11,7 @@ export interface AppsStateT {
 }
 
 const initialState: AppsStateT = {
-  zIndex: "",
+  focusedApp: "",
   apps: [
     {
       id: nanoid(),
@@ -37,12 +33,13 @@ export const appsSlice = createSlice({
         return app;
       });
     },
-    setZIndex: (state, action) => {
-      state.zIndex = action.payload;
+
+    setFocusedApp: (state, action) => {
+      state.focusedApp = action.payload;
     },
   },
 });
 
-export const { process, setZIndex } = appsSlice.actions;
+export const { process, setFocusedApp } = appsSlice.actions;
 
 export default appsSlice.reducer;

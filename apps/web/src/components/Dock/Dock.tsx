@@ -24,7 +24,7 @@ const Dock = () => {
         // {
         //     name: 'Terminal',
         //     Icon: Terminal,
-        //     fun: () => dispatch(terminal_process('on')),
+        //     fun: () => dispatch(process('on')),
         //     active: useAppSelector((state) => state.terminal.process) as string
         // },
         {

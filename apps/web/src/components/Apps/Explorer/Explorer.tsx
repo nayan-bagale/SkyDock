@@ -1,8 +1,8 @@
 import HandleDragnDrop from "@/components/HandleDragnDrop";
+import useChangeAppFocus from "@/components/hooks/useChangeAppFocus";
 import { useDrag } from "@/components/hooks/useDrag";
 import useIntializeFilesAndFolders from "@/components/hooks/useIntializeFilesAndFolders";
 import { useCreateFolderMutation } from "@/redux/APISlice";
-import { setZIndex } from "@/redux/features/apps/appsSlice";
 import { addItem, changeExplorerLastSize, changeExplorerMinimized, changeExplorerSize, changeView, explorerProcess, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { ExplorerT, FolderT } from "@/types/explorer";
@@ -19,22 +19,24 @@ const Explorer = () => {
 
     useIntializeFilesAndFolders();
 
+    const { handleAppFocus } = useChangeAppFocus('Explorer');
+
     const draggableRef = useRef<HTMLDivElement>(null);
 
     const currentFolder = useAppSelector((state) => state.explorer.explorerItems[state.explorer.currentFolder])
     const backStack = useAppSelector((state) => state.explorer.backStack)
     const backStackFoldersName = Object.values(useAppSelector((state) => state.explorer.explorerItems)).filter((item) => backStack.includes(item.id)).map((item) => ({ id: item.id, name: item.name }))
     const forwardStack = useAppSelector((state) => state.explorer.forwardStack)
-    const zIndex = useAppSelector((state) => state.apps.zIndex)
+    const focusedApp = useAppSelector((state) => state.apps.focusedApp)
 
 
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef
     });
 
-    const handleZIndex = () => {
-        zIndex !== 'Explorer' && dispatch(setZIndex('Explorer'))
-    }
+    // const handleZIndex = () => {
+    //     if (focusedApp !== 'Explorer') dispatch(setFocusedApp('Explorer'))
+    // }
 
     const addFolder = async () => {
         const folderObj = {
@@ -55,7 +57,7 @@ const Explorer = () => {
     }
 
     const Action = {
-        close: () => dispatch(explorerProcess(false)),
+        close: () => { dispatch(explorerProcess(false)); },
         size: {
             isMaximized: useAppSelector((state) => state.explorer.actions.isMaximized),
             lastSize: useAppSelector((state) => state.explorer.actions.lastSize),
@@ -108,8 +110,8 @@ const Explorer = () => {
             settings={settings}
             addFolder={addFolder}
             handleFolderTree={handleFolderTree}
-            onMouseDownCard={handleZIndex}
-            className={zIndex === 'Explorer' ? 'z-20' : ''}
+            onMouseDownCard={handleAppFocus}
+            className={focusedApp === 'Explorer' ? 'z-20' : ''}
         >
             <HandleDragnDrop>
                 <ExplorerItems />

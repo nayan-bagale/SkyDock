@@ -1,6 +1,6 @@
 import { useDrag } from '@/components/hooks/useDrag';
 import { process } from '@/redux/features/apps/app/terminalSlice';
-import { setZIndex } from '@/redux/features/apps/appsSlice';
+import { setFocusedApp } from '@/redux/features/apps/appsSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { TerminalCard } from '@/ui/Cards/Terminal/TerminalCard';
 import Spinner from '@/ui/Spinner';
@@ -22,14 +22,14 @@ const Terminal = () => {
     const dispatch = useAppDispatch()
 
     const draggableRef = useRef<HTMLDivElement>(null);
-    const zIndex = useAppSelector((state) => state.apps.zIndex)
+    const focusedApp = useAppSelector((state) => state.apps.focusedApp)
 
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef
     });
 
     const handleZIndex = () => {
-        zIndex !== 'Terminal' && dispatch(setZIndex('Terminal'))
+        focusedApp !== 'Terminal' && dispatch(setFocusedApp('Terminal'))
     }
 
     const Action = {
@@ -45,7 +45,7 @@ const Terminal = () => {
             onMouseDown={handleMouseDown}
             Action={Action}
             onMouseDownCard={handleZIndex}
-            className={zIndex === 'Terminal' ? 'z-30' : 'z-20'}
+            className={focusedApp === 'Terminal' ? 'z-30' : 'z-20'}
         />
 
     )

@@ -1,3 +1,4 @@
+import { useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
 import { Bar } from "@/ui/MenuBar/Bar";
 import { Icons } from "@skydock/ui/icons";
@@ -7,7 +8,7 @@ import Logo from "./Logo/Logo";
 import ProfileDropdown from "./Profile/ProfleDropDown";
 
 const MenuBar = () => {
-
+  const focusedAppName = useAppSelector((state) => state.apps.focusedApp)
   return (
     <>
       <Bar className=" flex justify-between items-center">
@@ -17,7 +18,7 @@ const MenuBar = () => {
             <Logo />
             <div className=" flex items-center gap-4">
               <div className=" text-xs font-semibold cursor-default ">
-                Terminal
+                {focusedAppName}
               </div>
               <Button size={'small'} className=" drop-shadow">
                 File
