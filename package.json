@@ -11,7 +11,7 @@
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "db:studio": "yarn workspace @repo/db run db:studio",
-    "docker:stop": "yarn workspace @repo/docker-dev run docker:stop",
+    "docker:stop": "yarn workspace @repo/docker-dev run docker:stop"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
