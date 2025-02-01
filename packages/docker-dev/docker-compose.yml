@@ -3,7 +3,7 @@ version: "3.8"
 services:
   postgres:
     image: postgres:latest
-    container_name: nex-cloud-postgres
+    container_name: skydock-postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: mysecretpassword
@@ -14,7 +14,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
   minio:
     image: quay.io/minio/minio
-    container_name: nex-cloud-minio
+    container_name: skydock-minio
     ports:
       - "9000:9000" # MinIO API
       - "9001:9001" # MinIO Console

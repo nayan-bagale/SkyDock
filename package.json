@@ -11,7 +11,8 @@
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "db:studio": "yarn workspace @skydock/db run db:studio",
-    "docker:stop": "yarn workspace @skydock/docker-dev run docker:stop"
+    "db:migrate": "yarn workspace @skydock/db run db:migrate",
+    "docker:down": "yarn workspace @skydock/docker-dev run docker:stop"
   },
   "devDependencies": {
     "prettier": "^3.2.5",

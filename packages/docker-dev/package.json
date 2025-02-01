@@ -2,7 +2,7 @@
   "name": "@skydock/docker-dev",
   "version": "1.0.0",
   "scripts": {
-    "dev": "docker-compose up -d",
+    "dev": "docker-compose up",
     "docker:stop": "docker-compose down"
   }
 }
