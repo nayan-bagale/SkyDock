@@ -120,11 +120,12 @@ class FilesController {
     }
   }
 
-  async patchFile(req: Request, res: Response) {
+  async patchFileAndFolder(req: Request, res: Response) {
     const fileId = req.params.id as string;
+    const user_id = req.user?.id as string;
     try {
       await prisma.explorerItems.update({
-        where: { id: fileId },
+        where: { id: fileId, user_id },
         data: req.body as { name: string },
       });
       res.json({ message: "File updated" });

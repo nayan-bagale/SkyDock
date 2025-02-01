@@ -77,9 +77,9 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                             {/* <div className=" h-3 w-3 rounded-full bg-yellow-600"
                                 onClick={() => action.size.changeSize()}
                             ></div> */}
-                            <div className=" h-3 w-3 rounded-full bg-green-600"
-                            // onClick={() => Action("close")}
-                            ></div>
+                            {/* <div className=" h-3 w-3 rounded-full bg-green-600"
+                            onClick={() => Action("close")}
+                            ></div> */}
                         </div>
                         <div className="text-xs w-full flex items-center justify-start ml-8 gap-2 cursor-default">
                             <div className=" flex justify-evenly gap-2">

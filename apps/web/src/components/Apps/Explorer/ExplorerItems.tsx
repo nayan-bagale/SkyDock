@@ -1,7 +1,7 @@
 import useDeleteFolderRecursively from "@/components/hooks/useDeleteFolderRecursively";
 import useFileDownloadWithProgress from "@/components/hooks/useFileDownloadWithProgress";
 import useOnClickOutside from "@/components/hooks/useOnclickOutside";
-import { useDeleteFileMutation, useDeleteFolderMutation, useMoveFileIntoFolderMutation, useRenameItemMutation } from "@/redux/APISlice";
+import { useDeleteFileMutation, useDeleteFolderMutation, useUpdateItemMutation } from "@/redux/APISlice";
 import { deleteItem, moveFileIntoFolder, renameItem, setCurrentFolder, setItemDragged } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
@@ -28,7 +28,7 @@ const ItemsWrapper: FC<ItemsPropsT> =
         const [getNestedFolderItemsId] = useDeleteFolderRecursively();
         const [deleteFolder] = useDeleteFolderMutation();
         const { downloadFile } = useFileDownloadWithProgress();
-        const [renameItem_] = useRenameItemMutation();
+        const [renameItem_] = useUpdateItemMutation();
 
         const contextMenuRef = useRef<HTMLDivElement>(null)
         const dispatch = useAppDispatch()
@@ -192,7 +192,8 @@ const ExplorerItems = () => {
 
     const dispatch = useAppDispatch()
     const itemDragged = useAppSelector((state) => state.explorer.itemDragged);
-    const [moveFileIntoFolderApi] = useMoveFileIntoFolderMutation();
+    // const [moveFileIntoFolderApi] = useMoveFileIntoFolderMutation();
+    const [updateFileApi] = useUpdateItemMutation();
 
     const files = useMemo(() => {
         if (item?.isFolder) {
@@ -218,8 +219,7 @@ const ExplorerItems = () => {
         if (droppedItem.isFolder && (itemDragged.id !== droppedItem.id)) {
             console.log("Dragged index:", itemDragged.name);
             console.log("Target index:", droppedItem.name);
-            // TODO: Move file into folder in the backend and update the store with the new parent id
-            // await moveFileIntoFolderApi({ fileId: itemDragged.id, folderId: droppedItem.id }).unwrap();
+            await updateFileApi({ id: itemDragged.id, parent_id: droppedItem.id });
             dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id }));
         }
 

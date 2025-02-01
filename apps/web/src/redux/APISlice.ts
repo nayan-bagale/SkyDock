@@ -5,7 +5,7 @@ import {
   fetchBaseQuery,
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
-import { AllFilesResponse } from "@repo/types";
+import { AllFilesResponse, PatchItemRequest } from "@repo/types";
 import { logOut, setCredentials } from "./features/auth";
 import { RootState } from "./store";
 
@@ -117,19 +117,11 @@ const backendApi = createApi({
       }),
     }),
 
-    renameItem: builder.mutation({
-      query: ({ id, name }: { id: string; name: string }) => ({
-        url: `/file/name/${id}`,
+    updateItem: builder.mutation({
+      query: ({ id, ...fields }: PatchItemRequest) => ({
+        url: `/file/${id}`,
         method: "PATCH",
-        body: { name },
-      }),
-    }),
-
-    moveFileIntoFolder: builder.mutation({
-      query: ({ fileId, folderId }: { fileId: string; folderId: string }) => ({
-        url: `/file/move`,
-        method: "PATCH",
-        body: { fileId, folderId },
+        body: { ...fields },
       }),
     }),
 
@@ -164,9 +156,8 @@ export const {
   useGetAllFilesQuery,
   useDeleteFileMutation,
   useGetFileUrlMutation,
-  useRenameItemMutation,
+  useUpdateItemMutation,
   useCreateFolderMutation,
   useDeleteFolderMutation,
-  useMoveFileIntoFolderMutation,
 } = backendApi;
 export default backendApi;

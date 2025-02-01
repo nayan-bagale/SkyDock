@@ -1,3 +1,6 @@
+import { OptionalExceptForId } from "./custom-types";
+import { ExplorerItemsPrismaT } from "./prisma";
+
 export interface AllFilesResponse {
   id: string;
   name: string;
@@ -24,6 +27,11 @@ export interface CreateFolderRequest {
   };
   children: string[];
 }
+
+export type PatchItemRequest = Omit<
+  OptionalExceptForId<ExplorerItemsPrismaT, "id">,
+  "user_id"
+>;
 
 export interface FolderT {
   id: string;

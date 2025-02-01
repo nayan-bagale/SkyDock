@@ -13,7 +13,7 @@ router.get("/file/:id", middleware, async (req, res) => {
 });
 
 router.patch("/file/:id", middleware, async (req, res) => {
-  await filesController.patchFile(req, res);
+  await filesController.patchFileAndFolder(req, res);
 });
 
 router.delete("/file/:id", middleware, async (req, res) => {
@@ -35,9 +35,5 @@ router.post("/folder/create", middleware, async (req, res) => {
 router.post("/folder/delete", middleware, async (req, res) => {
   await filesController.deleteFolder(req, res);
 });
-
-// router.patch("/file/move", middleware, async (req, res) => {
-//   await filesController.moveFileIntoFolder(req, res);
-// });
 
 export default router;
