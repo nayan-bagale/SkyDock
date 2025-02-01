@@ -33,6 +33,7 @@ import settings_svg from './assests/settings-svgrepo-com.svg';
 import vscode_svg from './assests/sln-svgrepo-com.svg';
 import spinner_svg from './assests/spinner-svgrepo-com.svg';
 import terminal_svg from './assests/terminal-svgrepo-com.svg';
+import trash_svg2 from './assests/trash-bin-trash-svgrepo-com.svg';
 import upload_svg from './assests/upload-svgrepo-com.svg';
 import user_svg from './assests/user-circle-svgrepo-com.svg';
 import vite_svg from './assests/vite-svgrepo-com.svg';
@@ -76,5 +77,6 @@ export const Icons = {
   Settings: ({ className }: { className: string }) => $({ svg: settings_svg, name: 'settings', className }),
   Lock: ({ className }: { className: string }) => $({ svg: lock_svg, name: 'lock', className }),
   Logout: ({ className }: { className: string }) => $({ svg: logout_svg, name: 'logout', className }),
+  Trash2: ({ className }: { className: string }) => $({ svg: trash_svg2, name: 'trash', className }),
 }
 

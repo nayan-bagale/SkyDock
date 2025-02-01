@@ -72,7 +72,7 @@ export const Button = ({
     intent,
     size,
     className,
-    title,
+    // title,
     isActive,
     isActiveClassName = " bg-blue-400 text-white",
     ...props

@@ -10,5 +10,8 @@
     ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
   "spellright.language": ["en"],
-  "spellright.documentTypes": ["markdown", "latex", "plaintext", "typescript"]
+  "spellright.documentTypes": ["markdown", "latex", "plaintext", "typescript"],
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

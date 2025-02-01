@@ -91,7 +91,7 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                                     <Icons.Right_Arrow2 className="h-4 w-4" />
                                 </Button>
                             </div>
-                            <div className=" text-sm">{currentFolder.name}</div>
+                            <div className=" font-medium text-sm">{currentFolder.name}</div>
                         </div>
                         <div className=" w-full flex gap-1 justify-end">
                             <Button onClick={addFolder}>
@@ -106,23 +106,35 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                             </Button>
                         </div>
                     </div>
-                    <div className=" flex w-full h-full pb-[1.5rem]">
-                        <div className="max-w-[12rem] min-w-[9rem] text-sm gap-1.5 flex flex-col py-2 ">
-                            <div className=" px-2 py-1 flex flex-col gap-1 ">
-                                <div className=" text-xs font-semibold text-gray-500">Favourites</div>
-                                <div className="">
-                                    <Button className=" px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none">
-                                        <Icons.Folder className=" h-4 w-4" />
-                                        {'Desktop'}
-                                    </Button>
+                    <div className=" flex w-full h-full pb-[1.8rem]">
+                        <div className="max-w-[12rem] h-full min-w-[9rem] text-sm justify-between flex flex-col py-1.5 ">
+
+                            <div className="flex flex-col gap-1.5">
+                                {/* <div className=" px-2 py-1 flex flex-col gap-1 ">
+                                    <div className=" text-xs font-semibold text-gray-500">Favourites</div>
+                                    <div className="">
+                                        <Button className=" px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none">
+                                            <Icons.Folder className=" h-4 w-4" />
+                                            {'Desktop'}
+                                        </Button>
+                                    </div>
+                                </div> */}
+                                <div className=" px-2 py-1 flex flex-col gap-1 ">
+                                    <div className=" text-xs font-semibold text-gray-500">Locations</div>
+                                    <div className="">
+                                        <Button className=" px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none">
+                                            <Icons.Cloud className=" h-4 w-4" />
+                                            {"Sky-Drive"}
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
-                            <div className=" px-2 py-1 flex flex-col gap-1 ">
-                                <div className=" text-xs font-semibold text-gray-500">Locations</div>
+                            <div className=" px-2 py-1 justify-self-end flex flex-col gap-1 ">
+                                {/* <div className=" text-xs font-semibold text-gray-500">Locations</div> */}
                                 <div className="">
                                     <Button className=" px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none">
-                                        <Icons.Cloud className=" h-4 w-4" />
-                                        {"Nayan's CatX"}
+                                        <Icons.Trash2 className=" h-4 w-4" />
+                                        {"Trash"}
                                     </Button>
                                 </div>
                             </div>
@@ -131,7 +143,7 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                             <div className=" flex-1 overflow-y-auto ">
                                 {children}
                             </div>
-                            <div className=" text-xs border-t px-2 py-1 flex items-center w-full ">
+                            <div className=" text-xs border-t px-2 py-0.5 flex items-center w-full ">
                                 <Button onClick={() => backward.onClickBreadCrumb('root')} className=" hover:bg-white p-1" size={'icon'} intent={'ghost'}><Icons.Home className=" h-4 w-4" /></Button>
                                 {[...backward.backStack, { id: currentFolder.id, name: currentFolder.name }].map((item, index) => index !== 0 && (
                                     <Fragment key={item.id}>

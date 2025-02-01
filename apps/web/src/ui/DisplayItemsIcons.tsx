@@ -116,21 +116,21 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                             <textarea
                                 ref={textareaRef}
                                 rows={1}
-                                className={cn(' resize-none w-14 p-0 text-[14px] text-center break-words min-h-1')}
+                                className={cn(' resize-none w-[11ch] p-0 text-[14px] text-center break-words min-h-1')}
                                 value={rename.name}
                                 onChange={(e) => rename.setName(e.target.value)}
                                 onBlur={saveNewNameToStore} // When user clicks outside the textarea
                                 onKeyDown={handleKeyDown} // When user presses Enter
                             />
                         ) : (
-                            <p className={cn('text-[14px] cursor-default text-center select-none ', clicked ? 'w-16 break-words ' : 'truncate h-7 w-[10ch] overflow-hidden')}>{rename.name}</p>
+                            <p className={cn('text-[14px] cursor-default text-center select-none ', clicked ? 'w-16 break-words ' : 'truncate h-7 w-[11ch] overflow-hidden')}>{rename.name}</p>
                         )}
                     </motion.div>)
                 }
             </AnimatePresence>
             <AnimatePresence>
                 {view === 'row' &&
-                    (<motion.div className=' hover:bg-gray-400/40 text-xs relative w-full flex justify-start items-center p-1 gap-2 rounded-md'
+                    (<motion.div className={cn('hover:bg-gray-400/40 text-xs relative w-full flex justify-start items-center p-1 gap-2 rounded-md', isOver && 'bg-gray-400/10 border')}
                         id={item.id}
                         whileTap={{ scale: 0.95 }}
                         onContextMenu={onContextMenu}
@@ -139,12 +139,18 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                         exit={{ opacity: 0 }}
                         title={item.name}
                         onDoubleClick={onDoubleClick}
+                        onKeyDown={enhancedOnKeyDown}
+                        draggable
+                        onDragStart={handleDragStart}
+                        onDragOver={handleDragOverInner}
+                        onDrop={handleDropInner}
+                        onDragLeave={handleDragLeaveInner}
                     >
                         <Icon className=" w-6" />
                         <p className='cursor-default select-none text-center'>{item.name}</p>
-                        {/* <div>{file.fileDetails.type}</div>
-                    <div>{file.fileDetails.lastModified.split(' ').slice(1, 4).join()}</div>
-                    <div>{file.fileDetails.size}</div> */}
+                        {/* <div>{item.fileDetails.type}</div> */}
+                        {/* <div>{item.details.lastModified.split(' ').slice(1, 4).join()}</div>
+                        <div>{item.details.size}</div> */}
                     </motion.div>)
                 }
             </AnimatePresence>

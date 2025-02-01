@@ -3,44 +3,24 @@
   "ui": "tui",
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build",
-        "^db:generate"
-      ],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        ".env*"
-      ],
-      "outputs": [
-        "dist/**",
-        ".next/**",
-        "!.next/cache/**"
-      ]
+      "dependsOn": ["^build", "^db:generate"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "lint": {
-      "dependsOn": [
-        "^lint"
-      ]
+      "dependsOn": ["^lint"]
     },
     "check-types": {
-      "dependsOn": [
-        "^check-types"
-      ]
+      "dependsOn": ["^check-types"]
     },
     "dev": {
-      "dependsOn": [
-        "^db:generate"
-      ],
-      "env": [
-        "DATABASE_URL"
-      ],
+      "dependsOn": ["db:generate"],
+      "env": ["DATABASE_URL"],
       "cache": false,
       "persistent": true
     },
     "db:generate": {
-      "dependsOn": [
-        "^docker:start"
-      ],
+      "dependsOn": ["docker:up"],
       "cache": false
     },
     "db:migrate": {
@@ -53,15 +33,10 @@
     "db:studio": {
       "cache": false
     },
-    "docker:start": {
+    "docker:up": {
       "cache": false
     }
   },
-  "globalDependencies": [
-    "yarn.lock",
-    ".env"
-  ],
-  "globalEnv": [
-    "DATABASE_URL"
-  ]
+  "globalDependencies": ["yarn.lock", ".env"],
+  "globalEnv": ["DATABASE_URL"]
 }

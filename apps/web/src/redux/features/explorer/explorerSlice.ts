@@ -7,7 +7,7 @@ const initalState = {
     root: {
       id: "root",
       isFolder: true,
-      name: "CatX",
+      name: "Sky-Drive",
       parent: "",
       details: {
         size: 0,
