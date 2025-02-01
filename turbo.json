@@ -4,7 +4,8 @@
   "tasks": {
     "build": {
       "dependsOn": [
-        "^build"
+        "^build",
+        "^db:generate"
       ],
       "inputs": [
         "$TURBO_DEFAULT$",
@@ -27,8 +28,40 @@
       ]
     },
     "dev": {
+      "dependsOn": [
+        "^db:generate"
+      ],
+      "env": [
+        "DATABASE_URL"
+      ],
       "cache": false,
       "persistent": true
+    },
+    "db:generate": {
+      "dependsOn": [
+        "^docker:start"
+      ],
+      "cache": false
+    },
+    "db:migrate": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:deploy": {
+      "cache": false
+    },
+    "db:studio": {
+      "cache": false
+    },
+    "docker:start": {
+      "cache": false
     }
-  }
+  },
+  "globalDependencies": [
+    "yarn.lock",
+    ".env"
+  ],
+  "globalEnv": [
+    "DATABASE_URL"
+  ]
 }

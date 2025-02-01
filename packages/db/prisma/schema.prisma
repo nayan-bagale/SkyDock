@@ -38,4 +38,3 @@ model ExplorerItems {
   last_modified DateTime
   user     User     @relation(fields: [user_id], references: [id])
 }
-
