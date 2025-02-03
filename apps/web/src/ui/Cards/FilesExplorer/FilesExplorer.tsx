@@ -110,7 +110,7 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                         <div className="max-w-[12rem] h-full min-w-[9rem] text-sm justify-between flex flex-col py-1.5 ">
 
                             <div className="flex flex-col gap-1.5">
-                                {/* <div className=" px-2 py-1 flex flex-col gap-1 ">
+                                <div className=" px-2 py-1 flex flex-col gap-1 ">
                                     <div className=" text-xs font-semibold text-gray-500">Favourites</div>
                                     <div className="">
                                         <Button className=" px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none">
@@ -118,7 +118,7 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                                             {'Desktop'}
                                         </Button>
                                     </div>
-                                </div> */}
+                                </div>
                                 <div className=" px-2 py-1 flex flex-col gap-1 ">
                                     <div className=" text-xs font-semibold text-gray-500">Locations</div>
                                     <div className="">
