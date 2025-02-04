@@ -15,5 +15,5 @@ export {
 export { DisplayFilesIcons } from "./components/DisplayFilesIcons";
 export { Dock } from "./components/Dock/dock";
 export { DockButton } from "./components/Dock/dock_button";
-export { DragDropWrapper } from "./components/DragDropWrapper";
+// export { DragDropWrapper } from "./components/DragDropWrapper";
 export { Bar } from "./components/MenuBar/Bar";
