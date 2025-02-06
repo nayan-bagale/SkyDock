@@ -155,7 +155,6 @@ export const FilesExplorerCard = forwardRef<HTMLDivElement, FilesExplorerCardPro
                                 ))
                                 }
                             </div>
-
                         </div>
                     </div>
                 </motion.div>

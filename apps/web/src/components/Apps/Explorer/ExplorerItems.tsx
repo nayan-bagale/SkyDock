@@ -6,8 +6,6 @@ import { handleDragStartT, handleDropT } from "@skydock/types";
 import { useMemo } from "react";
 import Item from "./Items";
 
-
-
 const ExplorerItems = () => {
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
     const currentFolder = useAppSelector((state) => state.explorer.currentFolder);
