@@ -5,6 +5,7 @@ import explorerReducer from "@/redux/features/explorer/explorerSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import backendApi from "./APISlice";
 import { appsSlice } from "./features/apps/appsSlice";
+import { controlCenterSlice } from "./features/control-center/controlCenterSlice";
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     filesexplorer: filesexplorerReducer,
     auth: authReducer,
     apps: appsSlice.reducer,
+    controlCenter: controlCenterSlice.reducer,
 
     [backendApi.reducerPath]: backendApi.reducer,
   },

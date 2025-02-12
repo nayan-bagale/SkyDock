@@ -2,6 +2,11 @@ import {
   useGetUploadUrlsMutation,
   useUploadFilesMutation,
 } from "@/redux/APISlice";
+import {
+  addNotification,
+  removeNotification,
+  updateNotification,
+} from "@/redux/features/control-center/controlCenterSlice";
 import { addItem } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { FileT } from "@skydock/types";
@@ -59,6 +64,18 @@ const useFileUploadsAndUpdateState = () => {
       id: file.id,
     }));
 
+    requestFiles.forEach((file) =>
+      dispatch(
+        addNotification({
+          id: file.id,
+          fileName: file.name,
+          type: "upload",
+          status: "pending",
+          progress: 0,
+        })
+      )
+    );
+
     // Get upload urls for each file
     const uploadUrls = await getUploadUrlsSafely(requestFiles);
     if (!uploadUrls) return null;
@@ -84,6 +101,9 @@ const useFileUploadsAndUpdateState = () => {
             onUploadProgress: (progressEvent) => {
               const percentCompleted = Math.round(
                 (progressEvent.loaded * 100) / (progressEvent.total || 1)
+              );
+              dispatch(
+                updateNotification({ id: file.id, progress: percentCompleted })
               );
               console.log(percentCompleted);
             },
@@ -123,6 +143,8 @@ const useFileUploadsAndUpdateState = () => {
 
     // Update the state with the uploaded files
     requestArray.forEach((file) => dispatch(addItem(file)));
+
+    requestArray.forEach((file) => dispatch(removeNotification(file.id)));
 
     return true;
   };
