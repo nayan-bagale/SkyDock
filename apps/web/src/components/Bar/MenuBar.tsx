@@ -1,7 +1,7 @@
 import { useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
+import ControlCenter from "@/ui/Cards/ControlCenter/ControlCenter";
 import { Bar } from "@/ui/MenuBar/Bar";
-import { Icons } from "@skydock/ui/icons";
 import Date_n_Time from "./DatenTime/Date_n_Time";
 import FullScreenBtn from "./FullScreenBtn/FullScreenBtn";
 import Logo from "./Logo/Logo";
@@ -27,9 +27,7 @@ const MenuBar = () => {
           </div>
           <div className=" flex justify-evenly items-center gap-2 px-2">
             <FullScreenBtn />
-            <Button>
-              <Icons.Control_Center className="h-4" />
-            </Button>
+            <ControlCenter />
             <Date_n_Time />
             <ProfileDropdown />
           </div>
