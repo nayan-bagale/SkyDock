@@ -1,6 +1,6 @@
 import useOutsideAlerter from "@/components/hooks/useOnclickOutside"
-import { process } from "@/redux/features/apps/app/terminalSlice"
-import { useAppDispatch } from "@/redux/hooks"
+// import { process } from "@/redux/features/apps/app/terminalSlice"
+// import { useAppDispatch } from "@/redux/hooks"
 import { Button } from "@/ui/button"
 import { MainDropDownMenu, MainMenuSeparator, SubDropDownMenu } from "@/ui/Cards/Menus/MainDropDownMenu/MainDropDownMenu"
 
@@ -10,12 +10,12 @@ import { useRef, useState } from "react"
 const Logo = () => {
     const [show, setShow] = useState(false)
     const ref = useRef<HTMLDivElement>(null)
-    const dispatch = useAppDispatch();
+    // const dispatch = useAppDispatch();
 
     useOutsideAlerter(ref, () => setShow(false));
 
     const apps = {
-        terminal: () => (dispatch(process('on')), setShow(false)),
+        // terminal: () => (dispatch(process('on')), setShow(false)),
     }
 
 
