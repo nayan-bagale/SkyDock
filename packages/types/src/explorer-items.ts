@@ -59,6 +59,18 @@ export interface FileT {
   };
 }
 
+interface ActionsT {
+  isMinimized: boolean;
+  isMaximized: boolean;
+  isProcessOn: boolean;
+  lastSize: { width: number; height: number };
+  lastPosition: { x: number; y: number };
+}
+
+export interface TerminalT {
+  actions: ActionsT;
+}
+
 export interface ExplorerT {
   explorerItems: {
     [key: string]: FileT | FolderT;
@@ -66,13 +78,7 @@ export interface ExplorerT {
   currentFolder: string;
   backStack: string[];
   forwardStack: string[];
-  actions: {
-    isMinimized: boolean;
-    isMaximized: boolean;
-    isProcessOn: boolean;
-    lastSize: { width: number; height: number };
-    lastPosition: { x: number; y: number };
-  };
+  actions: ActionsT;
   settings: {
     view: "grid" | "row";
   };

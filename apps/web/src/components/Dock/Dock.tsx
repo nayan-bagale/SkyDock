@@ -21,12 +21,12 @@ const Dock = () => {
             fun: () => { },
             active: false
         },
-        // {
-        //     name: 'Terminal',
-        //     Icon: Terminal,
-        //     fun: () => dispatch(process('on')),
-        //     active: useAppSelector((state) => state.terminal.process) as string
-        // },
+        {
+            name: 'Terminal',
+            Icon: Terminal,
+            fun: () => dispatch(process('on')),
+            active: useAppSelector((state) => state.terminal.process) as string
+        },
         {
             name: 'Folder',
             Icon: Folder,
