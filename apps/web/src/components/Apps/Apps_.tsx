@@ -1,25 +1,37 @@
 import { TerminalSkeleton } from "@/components/Apps/terminal/Terminal";
 import { useAppSelector } from "@/redux/hooks";
-import { lazy, Suspense } from "react";
-const Terminal = lazy(() => import('@/components/Apps/terminal/Terminal'))
-const Explorer = lazy(() => import('@/components/Apps/Explorer/Explorer'))
+import { AnimatePresence } from "framer-motion";
+import { Suspense } from "react";
+import { Explorer, Settings, Terminal } from "./Apps.Lazy";
 
 const Apps_ = () => {
     const terminal = useAppSelector((state) => state.terminal.actions.isProcessOn);
     const isExplorerOn = useAppSelector((state) => state.explorer.actions.isProcessOn);
+    const isSettingsOn = useAppSelector((state) => state.settings.actions.isProcessOn);
 
     return (
         <>
-            {terminal && (
-                <Suspense fallback={<TerminalSkeleton />}>
-                    <Terminal />
-                </Suspense>
-            )}
-            {isExplorerOn && (
-                <Suspense fallback={<div>Loding.....</div>}>
-                    <Explorer />
-                </Suspense>
-            )}
+            <AnimatePresence>
+                {terminal && (
+                    <Suspense fallback={<TerminalSkeleton />}>
+                        <Terminal />
+                    </Suspense>
+                )}
+            </AnimatePresence>
+            <AnimatePresence>
+                {isExplorerOn && (
+                    <Suspense fallback={<div>Loding.....</div>}>
+                        <Explorer />
+                    </Suspense>
+                )}
+            </AnimatePresence >
+            <AnimatePresence>
+                {isSettingsOn && (
+                    <Suspense fallback={<div>Loding.....</div>}>
+                        <Settings />
+                    </Suspense>
+                )}
+            </AnimatePresence>
         </>
     )
 }

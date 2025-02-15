@@ -33,7 +33,7 @@ const Terminal = () => {
     }
 
     const Action = {
-        process: () => {
+        close: () => {
             dispatch(terminalProcess(false))
         },
     }

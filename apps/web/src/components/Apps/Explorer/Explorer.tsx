@@ -6,7 +6,7 @@ import { useCreateFolderMutation } from "@/redux/APISlice";
 import { addItem, changeExplorerLastSize, changeExplorerMinimized, changeExplorerSize, changeView, explorerProcess, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { ExplorerT, FolderT } from "@/types/explorer";
-import { FilesExplorerCard } from "@/ui/Cards/FilesExplorer/FilesExplorer";
+import { ExplorerCard } from "@/ui/Cards/Explorer/Explorer";
 import remToPx from "@/utils/rem-to-px";
 import { nanoid } from "@reduxjs/toolkit";
 import { useRef } from "react";
@@ -101,7 +101,7 @@ const Explorer = () => {
 
 
     return (
-        <FilesExplorerCard
+        <ExplorerCard
             ref={draggableRef}
             style={{ x: position.x, y: position.y }}
             onMouseDown={handleMouseDown}
@@ -116,7 +116,7 @@ const Explorer = () => {
             <HandleDragnDrop>
                 <ExplorerItems />
             </HandleDragnDrop>
-        </FilesExplorerCard>
+        </ExplorerCard>
     )
 }
 

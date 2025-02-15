@@ -1,11 +1,13 @@
 import { cn } from "../utils";
 
+import account_svg from './assests/account-avatar-multimedia-svgrepo-com.svg';
 import logo_svg from './assests/cat-svgrepo-com.svg';
 import cloud_svg from './assests/cloud-storage-upload-up-arrow-svgrepo-com.svg';
 import control_center_svg from './assests/control-centre-svgrepo-com.svg';
 import cross_svg from './assests/cross-svgrepo-com.svg';
 import trash_svg from './assests/delete-svgrepo-com.svg';
 import docker_svg from './assests/docker-svgrepo-com.svg';
+import dollar_svg from './assests/dollar-svgrepo-com.svg';
 import closed_eye_svg from './assests/eye-closed-svgrepo-com.svg';
 import eye_svg from './assests/eye-svgrepo-com.svg';
 import file_svg from './assests/file-svgrepo-com.svg';
@@ -22,13 +24,16 @@ import loader_svg from './assests/loading-loader-svgrepo-com.svg';
 import lock_svg from './assests/lock-svgrepo-com.svg';
 import logout_svg from './assests/logout-svgrepo-com.svg';
 import menu_svg from './assests/mjml-svgrepo-com.svg';
+import paint_svg from './assests/paint-svgrepo-com.svg';
 import pdf_svg from './assests/pdf-svgrepo-com-1.svg';
 import image_svg from './assests/picture-photo-image-svgrepo-com.svg';
+import pie_svg from './assests/pie-chart-svgrepo-com.svg';
 import python_image from './assests/python-svgrepo-com.svg';
 import react_svg from './assests/react-svgrepo-com.svg';
 import right_arrow2_svg from './assests/right-arrow-backup-2-svgrepo-com.svg';
 import right_arrow_svg from './assests/right-arrow-svgrepo-com.svg';
 import select_multiple_svg from './assests/select-multiple-svgrepo-com.svg';
+import settings2_svg from './assests/settings-2-svgrepo-com.svg';
 import settings_svg from './assests/settings-svgrepo-com.svg';
 import vscode_svg from './assests/sln-svgrepo-com.svg';
 import spinner_svg from './assests/spinner-svgrepo-com.svg';
@@ -78,5 +83,10 @@ export const Icons = {
   Lock: ({ className }: { className: string }) => $({ svg: lock_svg, name: 'lock', className }),
   Logout: ({ className }: { className: string }) => $({ svg: logout_svg, name: 'logout', className }),
   Trash2: ({ className }: { className: string }) => $({ svg: trash_svg2, name: 'trash', className }),
+  Settings2: ({ className }: { className: string }) => $({ svg: settings2_svg, name: 'settings', className }),
+  Paint: ({ className }: { className: string }) => $({ svg: paint_svg, name: 'paint', className }),
+  Pie: ({ className }: { className: string }) => $({ svg: pie_svg, name: 'pie', className }),
+  Account: ({ className }: { className: string }) => $({ svg: account_svg, name: 'account', className }),
+  Dollar: ({ className }: { className: string }) => $({ svg: dollar_svg, name: 'dollar', className }),
 }
 
