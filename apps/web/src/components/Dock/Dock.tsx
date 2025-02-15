@@ -1,4 +1,5 @@
 import { explorerProcess } from '@/redux/features/explorer/explorerSlice';
+import { terminalProcess } from '@/redux/features/terminal/terminalSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Dock as DockPanel } from '@/ui/Dock/dock';
 import { DockButton } from '@/ui/Dock/dock_button';
@@ -24,8 +25,8 @@ const Dock = () => {
         {
             name: 'Terminal',
             Icon: Terminal,
-            fun: () => dispatch(process('on')),
-            active: useAppSelector((state) => state.terminal.process) as string
+            fun: () => dispatch(terminalProcess(true)),
+            active: useAppSelector((state) => state.terminal.actions.isProcessOn)
         },
         {
             name: 'Folder',

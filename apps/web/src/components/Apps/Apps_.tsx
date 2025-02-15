@@ -5,12 +5,12 @@ const Terminal = lazy(() => import('@/components/Apps/terminal/Terminal'))
 const Explorer = lazy(() => import('@/components/Apps/Explorer/Explorer'))
 
 const Apps_ = () => {
-    const terminal = useAppSelector((state) => state.terminal.process);
+    const terminal = useAppSelector((state) => state.terminal.actions.isProcessOn);
     const isExplorerOn = useAppSelector((state) => state.explorer.actions.isProcessOn);
 
     return (
         <>
-            {terminal === 'on' && (
+            {terminal && (
                 <Suspense fallback={<TerminalSkeleton />}>
                     <Terminal />
                 </Suspense>

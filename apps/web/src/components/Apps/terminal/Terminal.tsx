@@ -1,6 +1,6 @@
 import { useDrag } from '@/components/hooks/useDrag';
-import { process } from '@/redux/features/apps/app/terminalSlice';
 import { setFocusedApp } from '@/redux/features/apps/appsSlice';
+import { terminalProcess } from '@/redux/features/terminal/terminalSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { TerminalCard } from '@/ui/Cards/Terminal/TerminalCard';
 import Spinner from '@/ui/Spinner';
@@ -34,7 +34,7 @@ const Terminal = () => {
 
     const Action = {
         process: () => {
-            dispatch(process('off'))
+            dispatch(terminalProcess(false))
         },
     }
 

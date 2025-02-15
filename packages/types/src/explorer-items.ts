@@ -1,3 +1,4 @@
+import { ActionsT } from "./common";
 import { OptionalExceptForId } from "./custom-types";
 import { ExplorerItemsPrismaT } from "./prisma";
 
@@ -57,18 +58,6 @@ export interface FileT {
     lastModified: string;
     // File: File;
   };
-}
-
-interface ActionsT {
-  isMinimized: boolean;
-  isMaximized: boolean;
-  isProcessOn: boolean;
-  lastSize: { width: number; height: number };
-  lastPosition: { x: number; y: number };
-}
-
-export interface TerminalT {
-  actions: ActionsT;
 }
 
 export interface ExplorerT {
