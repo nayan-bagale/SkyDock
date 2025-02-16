@@ -29,7 +29,7 @@ export const SettingsCard = forwardRef<HTMLDivElement, SettingsCardProps>(({ opt
         <motion.div
             ref={ref}
             className={cn(
-                "text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] backdrop-blur rounded-xl overflow-hidden",
+                "text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[24rem] max-h-[40rem] backdrop-blur rounded-xl overflow-hidden",
                 theme.color,
                 className
             )}
@@ -72,7 +72,7 @@ export const SettingsCard = forwardRef<HTMLDivElement, SettingsCardProps>(({ opt
                                     onClick={() => setActiveTab(id)}
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.3 * index }}
+                                    transition={{ delay: index * 0.1 }}
                                 // layout
                                 >
                                     {
@@ -94,7 +94,7 @@ export const SettingsCard = forwardRef<HTMLDivElement, SettingsCardProps>(({ opt
                     </div>
                 </div>
                 <div className="flex flex-col bg-white/80 py-2 w-full h-full">
-                    <div className="flex-1 px-4 overflow-y-auto">
+                    <div className="flex-1 px-4 pb-4 overflow-y-auto">
                         {children}
                     </div>
                 </div>

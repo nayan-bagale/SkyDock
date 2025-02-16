@@ -4,8 +4,12 @@ import { settingsProcess } from "@/redux/features/settings/settingsSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { SettingsCard } from "@/ui/Cards/Settings/Settings";
 import { Icons } from "@skydock/ui/icons";
+import { AnimatePresence } from "framer-motion";
 import { useRef, useState } from "react";
+import Account from "./Account";
 import Apperance from "./Apperance";
+import Billing from "./Billing";
+import Usage from "./Usage";
 
 const Settings = () => {
     const draggableRef = useRef<HTMLDivElement>(null);
@@ -39,16 +43,19 @@ const Settings = () => {
             name: 'Usage',
             Icon: <Icons.Pie className="w-5 h-5" />,
             id: '2',
+            Component: <Usage />
         },
         {
             name: 'Account',
             Icon: <Icons.Account className="w-5 h-5" />,
             id: '3',
+            Component: <Account />
         },
         {
             name: 'Billing',
             Icon: <Icons.Dollar className="w-5 h-5" />,
             id: '4',
+            Component: <Billing />
         },
         {
             name: 'About',
@@ -71,9 +78,9 @@ const Settings = () => {
             setActiveTab={setActiveTab}
 
         >
-
-            {options.find(option => option.id === activeTab)?.Component}
-
+            <AnimatePresence>
+                {options.find(option => option.id === activeTab)?.Component}
+            </AnimatePresence>
         </SettingsCard>
     )
 }

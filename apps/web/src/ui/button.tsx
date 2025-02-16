@@ -2,7 +2,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import { HTMLMotionProps, motion } from "framer-motion";
 import { cn } from "../utils";
 
-const ButtonStyles = cva(["font-semibold", "rounded-md", "w-fit", "flex", " items-center", "transition-colors"], {
+const ButtonStyles = cva(["font-semibold", "outline-sky-400", "rounded-md", "w-fit", "flex", " items-center", "transition-colors"], {
     variants: {
         intent: {
             primary: [
@@ -36,6 +36,13 @@ const ButtonStyles = cva(["font-semibold", "rounded-md", "w-fit", "flex", " item
                 "text-white",
                 "border-transparent",
             ],
+            action: [
+                "bg-sky-400",
+                "text-white",
+                "border-transparent",
+                'w-full',
+                "justify-center"
+            ]
         },
         size: {
             small: ["text-xs", "py-0.5", "px-1"],

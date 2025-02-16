@@ -17,13 +17,13 @@ export const InputPassword: FC<InputPasswordProps> = ({ className, placeholder =
                 type={show ? 'text' : 'password'}
                 placeholder={placeholder}
                 id={id}
-                className={cn("w-full rounded-lg bg-transparent border p-1 px-2 outline-none placeholder:text-white/80", className)}
+                className={cn("w-full rounded-lg bg-transparent border p-1 px-2 outline-sky-400 placeholder:text-white/80", className)}
             />
             <Button
                 onClick={() => setShow(p => !p)}
                 size={'icon'}
                 intent={'primary'}
-                className=" text-white rounded-full flex items-center justify-center absolute top-1 right-1">
+                className=" text-white rounded-full flex items-center outline-sky-400 justify-center absolute top-1 right-1">
                 {show ? <Icons.Eye className=" h-5  w-5 " /> : <Icons.Closed_Eye className=" h-5  w-5  pt-1" />}
             </Button>
         </div>
@@ -39,7 +39,7 @@ interface InputProps {
 
 export const Input: FC<InputProps> = ({ className, placeholder, type = "text", id }) => {
     return (
-        <input className={cn(" w-full rounded-lg bg-transparent border p-1 px-2 outline-none placeholder:text-white/80", className)}
+        <input className={cn(" w-full  rounded-lg bg-transparent border p-1 px-2 outline-sky-400 placeholder:text-white/80", className)}
             placeholder={placeholder}
             type={type}
             id={id}

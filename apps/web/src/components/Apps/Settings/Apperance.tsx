@@ -2,6 +2,7 @@ import { background as Constant_Background, theme as Constant_Theme } from '@/co
 import { changeBackground, changeTheme } from '@/redux/features/settings/settingsSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import cn from '@/utils';
+import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 
 const Apperance = () => {
@@ -19,9 +20,16 @@ const Apperance = () => {
 
     return (
         <div className='flex flex-col gap-4'>
-            <div className="space-y-2">
+            <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ delay: 0.1 }}
+
+            >
                 <h3 className="font-medium">Color</h3>
-                <div className="flex flex-wrap gap-3 bg-white/60 backdrop-blur px-3 py-4 rounded-md">
+                <div className="flex flex-wrap gap-3 shadow bg-white/60 backdrop-blur px-3 py-4 rounded-md">
                     {Constant_Theme.map((bg) => (
                         <button
                             key={bg.id}
@@ -34,10 +42,16 @@ const Apperance = () => {
                         />
                     ))}
                 </div>
-            </div>
-            <div className="space-y-2">
+            </motion.div>
+            <motion.div
+                className="space-y-2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ delay: 0.2 }}
+            >
                 <h3 className="font-medium">Background</h3>
-                <div className="flex flex-wrap gap-4 bg-white/60 backdrop-blur px-4 py-4 rounded-md">
+                <div className="flex flex-wrap gap-4 shadow bg-white/60 backdrop-blur px-4 py-4 rounded-md">
                     {Constant_Background.map((bg) => (
                         <button
                             key={bg.id}
@@ -63,7 +77,7 @@ const Apperance = () => {
                         className="w-full cursor-pointer"
                     />
                 </div> */}
-            </div>
+            </motion.div>
         </div>
     )
 }
