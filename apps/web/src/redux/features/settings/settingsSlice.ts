@@ -1,7 +1,11 @@
+import { theme } from "@/constants/settings";
 import { createSlice } from "@reduxjs/toolkit";
 import { SettingsT } from "@skydock/types";
 
 const intialState = {
+  apperance: {
+    theme: theme[0],
+  },
   actions: {
     isMaximized: false,
     isMinimized: false,
@@ -18,9 +22,12 @@ export const settingsSlice = createSlice({
     settingsProcess: (state, action) => {
       state.actions.isProcessOn = action.payload;
     },
+    changeTheme: (state, action) => {
+      state.apperance.theme = action.payload;
+    },
   },
 });
 
-export const { settingsProcess } = settingsSlice.actions;
+export const { settingsProcess, changeTheme } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

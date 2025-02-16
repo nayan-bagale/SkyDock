@@ -1,5 +1,6 @@
 import { FolderT } from "@/types/explorer";
 import cn from "@/utils";
+import { ThemeT } from "@skydock/types";
 import { Icons } from "@skydock/ui/icons";
 import { motion } from "framer-motion";
 import { forwardRef, Fragment, ReactNode } from "react";
@@ -45,19 +46,22 @@ interface ExplorerCardProps {
     addFolder: () => void;
     onMouseDownCard: () => void;
     className?: string;
+    theme: ThemeT;
 
 }
 
 
 export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
-    ({ style, onMouseDown, action, children, onMouseDownCard, currentFolder, settings, addFolder, className, handleFolderTree: { forward, backward } }, ref) => {
+    ({ style, theme, onMouseDown, action, children, onMouseDownCard, currentFolder, settings, addFolder, className, handleFolderTree: { forward, backward } }, ref) => {
         // const size_obj = { height: action.size.isMaximized ? remToPx(40) : action.size.lastSize.height, width: action.size.isMaximized ? remToPx(55) : action.size.lastSize.width }
 
         return (
             // <AnimatePresence>
-            <motion.div className={cn(" text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] bg-white/80 backdrop-blur rounded-xl overflow-hidden",
-                // action.size.isMaximized && 'h-[40rem] w-[55rem]', 
-                className)}
+            <motion.div
+                className={cn(" text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] bg-white/80 backdrop-blur rounded-xl overflow-hidden",
+                    theme.color,
+                    className
+                )}
                 ref={ref}
                 style={{ left: style.x, top: style.y }}
                 initial={{ opacity: 0, scale: 0 }}

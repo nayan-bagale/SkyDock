@@ -1,8 +1,8 @@
 import { Button } from "@/ui/button";
 import cn from "@/utils";
-import { Icons } from "@skydock/ui/icons";
+import { ThemeT } from "@skydock/types";
 import { HTMLMotionProps, motion } from "framer-motion";
-import { forwardRef, useState } from "react";
+import { forwardRef } from "react";
 
 interface SettingsCardProps extends HTMLMotionProps<'div'> {
     className?: string;
@@ -10,49 +10,27 @@ interface SettingsCardProps extends HTMLMotionProps<'div'> {
     action: {
         close: () => void;
     };
+    theme: ThemeT;
     onMouseDownCard: () => void;
     children?: React.ReactNode;
+    options: {
+        name: string;
+        Icon: React.ReactNode;
+        id: string;
+    }[];
+    activeTab: string;
+    setActiveTab: (id: string) => void;
 
 }
 
-const options = [
-    {
-        name: 'Apperance',
-        Icon: <Icons.Paint className=" h-5 w-5" />,
-        id: '1',
-    },
-    {
-        name: 'Usage',
-        Icon: <Icons.Pie className=" h-5 w-5" />,
-        id: '2',
-    },
-    {
-        name: 'Account',
-        Icon: <Icons.Account className=" h-5 w-5" />,
-        id: '3',
-    },
-    {
-        name: 'Billing',
-        Icon: <Icons.Dollar className=" h-5 w-5" />,
-        id: '4',
-    },
-    {
-        name: 'About',
-        Icon: <Icons.Logo className=" h-5 w-5" />,
-        id: '5',
-    }
-]
-
-export const SettingsCard = forwardRef<HTMLDivElement, SettingsCardProps>(({ className, onMouseDownCard, children, onMouseDown, action, style }, ref) => {
-
-    const [activeTab, setActiveTab] = useState('1')
-
+export const SettingsCard = forwardRef<HTMLDivElement, SettingsCardProps>(({ options, theme, className, onMouseDownCard, children, onMouseDown, action, style, activeTab, setActiveTab }, ref) => {
     return (
         // <AnimatePresence>
         <motion.div
             ref={ref}
             className={cn(
-                "text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] bg-white/80 backdrop-blur rounded-xl overflow-hidden",
+                "text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] backdrop-blur rounded-xl overflow-hidden",
+                theme.color,
                 className
             )}
             style={{ left: style.x, top: style.y }}
@@ -61,29 +39,29 @@ export const SettingsCard = forwardRef<HTMLDivElement, SettingsCardProps>(({ cla
             exit={{ opacity: 0, scale: 0 }}
             onMouseDown={onMouseDownCard}
         >
-            <div className=" flex items-center shadow h-9 relative justify-between px-2 py-1 w-full bg-slate-200/60 rounded"
+            <div className="relative flex justify-between items-center bg-slate-200/60 shadow px-2 py-1 rounded w-full h-9"
                 onMouseDown={onMouseDown}
             >
-                <div className=" flex gap-1 absolute">
-                    <div className=" h-3 w-3 rounded-full bg-red-400 flex items-center justify-center cursor-default hover:bg-red-600 transition-colors hover:shadow"
+                <div className="absolute flex gap-1">
+                    <div className="flex justify-center items-center bg-red-400 hover:bg-red-600 hover:shadow rounded-full w-3 h-3 transition-colors cursor-default"
                         onClick={() => action.close()}
                     >
-                        {/* <Icons.Cross className=" fill-white h-4 w-4" /> */}
+                        {/* <Icons.Cross className="fill-white w-4 h-4" /> */}
 
                     </div>
 
                 </div>
-                <div className="text-base font-medium w-full flex items-center justify-center cursor-default">
+                <div className="flex justify-center items-center w-full font-medium text-base cursor-default">
                     {'Settings'}
                 </div>
-                {/* <div className=" w-full flex gap-1 justify-end">
+                {/* <div className="flex justify-end gap-1 w-full">
                     </div> */}
             </div>
-            <div className=" flex w-full h-full pb-[1.8rem] ">
-                <div className="max-w-[12rem] h-full min-w-[9rem]  text-sm justify-between flex flex-col ">
+            <div className="flex pb-[1.8rem] w-full h-full">
+                <div className="flex flex-col justify-between min-w-[9rem] max-w-[12rem] h-full text-sm">
 
-                    <div className="flex flex-col gap-1.5 pt-1.5 ">
-                        <div className=" px-2 py-1 flex flex-col space-y-2  ">
+                    <div className="flex flex-col gap-1.5 pt-1.5">
+                        <div className="flex flex-col space-y-2 px-2 py-1">
                             {options.map(({ name, id, Icon }, index) => (
                                 <Button
                                     key={id}
@@ -101,42 +79,22 @@ export const SettingsCard = forwardRef<HTMLDivElement, SettingsCardProps>(({ cla
                                         activeTab === id && (
                                             <motion.div
                                                 // layoutId="active-pill"
-                                                className="absolute inset-0 bg-white rounded-md shadow-sm z-0"
+                                                className="z-0 absolute inset-0 bg-white shadow-sm rounded-md"
                                             // transition={{ type: 'spring', duration: 0.5 }}
                                             />
                                         )
                                     }
 
-                                    <span className="flex gap-1 z-10 relative">
+                                    <span className="z-10 relative flex gap-1">
                                         {Icon}{name}
                                     </span>
                                 </Button>
                             ))}
-                            {/* <Button className=" px-1 w-full flex gap-1 shadow-sm bg-white hover:bg-slate-50  drop-shadow-none">
-                                    <Icons.Paint className=" h-5 w-5" />
-                                    {'Apperance'}
-                                </Button>
-                                <Button className=" px-1 w-full flex gap-1  hover:bg-slate-50  drop-shadow-none">
-                                    <Icons.Pie className=" h-5 w-5" />
-                                    {"Usage"}
-                                </Button>
-                                <Button className=" px-1 w-full flex gap-1 hover:bg-slate-50 drop-shadow-none">
-                                    <Icons.Account className=" h-5 w-4" />
-                                    {"Account"}
-                                </Button>
-                                <Button className=" px-1 w-full flex gap-1 hover:bg-slate-50 drop-shadow-none">
-                                    <Icons.Dollar className=" h-5 w-5" />
-                                    {"Blling"}
-                                </Button>
-                                <Button className=" px-1 w-full flex gap-1 hover:bg-slate-50 drop-shadow-none">
-                                    <Icons.Logo className=" h-5 w-5" />
-                                    {"About "}
-                                </Button> */}
                         </div>
                     </div>
                 </div>
-                <div className=" flex flex-col h-full bg-white w-full py-2">
-                    <div className=" flex-1 overflow-y-auto ">
+                <div className="flex flex-col bg-white/80 py-2 w-full h-full">
+                    <div className="flex-1 px-4 overflow-y-auto">
                         {children}
                     </div>
                 </div>

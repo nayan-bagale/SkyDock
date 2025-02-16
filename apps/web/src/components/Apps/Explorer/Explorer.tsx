@@ -94,6 +94,8 @@ const Explorer = () => {
         },
     }
 
+    const theme = useAppSelector((state) => state.settings.apperance.theme)
+
     // const lastpostion = {
     //     width: draggableRef.current?.clientWidth,
     //     height: draggableRef.current?.clientHeight
@@ -112,6 +114,7 @@ const Explorer = () => {
             handleFolderTree={handleFolderTree}
             onMouseDownCard={handleAppFocus}
             className={focusedApp === 'Explorer' ? 'z-20' : ''}
+            theme={theme}
         >
             <HandleDragnDrop>
                 <ExplorerItems />

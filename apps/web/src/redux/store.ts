@@ -1,4 +1,3 @@
-// import filesexplorerReducer from "@/redux/features/apps/app/fileexplorer";
 import authReducer from "@/redux/features/auth";
 import explorerReducer from "@/redux/features/explorer/explorerSlice";
 import { configureStore } from "@reduxjs/toolkit";
@@ -11,7 +10,6 @@ import { terminalSlice } from "./features/terminal/terminalSlice";
 export const store = configureStore({
   reducer: {
     explorer: explorerReducer,
-    // filesexplorer: filesexplorerReducer,
     auth: authReducer,
     apps: appsSlice.reducer,
     controlCenter: controlCenterSlice.reducer,
