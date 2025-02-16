@@ -1,10 +1,11 @@
-import { theme } from "@/constants/settings";
+import { background, theme } from "@/constants/settings";
 import { createSlice } from "@reduxjs/toolkit";
 import { SettingsT } from "@skydock/types";
 
 const intialState = {
   apperance: {
     theme: theme[0],
+    background: background[0],
   },
   actions: {
     isMaximized: false,
@@ -25,9 +26,13 @@ export const settingsSlice = createSlice({
     changeTheme: (state, action) => {
       state.apperance.theme = action.payload;
     },
+    changeBackground: (state, action) => {
+      state.apperance.background = action.payload;
+    },
   },
 });
 
-export const { settingsProcess, changeTheme } = settingsSlice.actions;
+export const { settingsProcess, changeTheme, changeBackground } =
+  settingsSlice.actions;
 
 export default settingsSlice.reducer;
