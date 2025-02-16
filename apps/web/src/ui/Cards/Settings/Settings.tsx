@@ -29,7 +29,7 @@ export const SettingsCard = forwardRef<HTMLDivElement, SettingsCardProps>(({ opt
         <motion.div
             ref={ref}
             className={cn(
-                "text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[24rem] max-h-[40rem] backdrop-blur rounded-xl overflow-hidden",
+                "text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[25rem] max-h-[40rem] backdrop-blur rounded-xl overflow-hidden",
                 theme.color,
                 className
             )}

@@ -8,6 +8,7 @@ import cross_svg from './assests/cross-svgrepo-com.svg';
 import trash_svg from './assests/delete-svgrepo-com.svg';
 import docker_svg from './assests/docker-svgrepo-com.svg';
 import dollar_svg from './assests/dollar-svgrepo-com.svg';
+import exclamation_svg from './assests/exclamation-mark-in-a-circle-svgrepo-com.svg';
 import closed_eye_svg from './assests/eye-closed-svgrepo-com.svg';
 import eye_svg from './assests/eye-svgrepo-com.svg';
 import file_svg from './assests/file-svgrepo-com.svg';
@@ -31,6 +32,7 @@ import pie_svg from './assests/pie-chart-svgrepo-com.svg';
 import python_image from './assests/python-svgrepo-com.svg';
 import react_svg from './assests/react-svgrepo-com.svg';
 import right_arrow2_svg from './assests/right-arrow-backup-2-svgrepo-com.svg';
+import right_arrow_white from './assests/right-arrow-backup-2-white-svgrepo-com.svg';
 import right_arrow_svg from './assests/right-arrow-svgrepo-com.svg';
 import select_multiple_svg from './assests/select-multiple-svgrepo-com.svg';
 import settings2_svg from './assests/settings-2-svgrepo-com.svg';
@@ -88,5 +90,7 @@ export const Icons = {
   Pie: ({ className }: { className: string }) => $({ svg: pie_svg, name: 'pie', className }),
   Account: ({ className }: { className: string }) => $({ svg: account_svg, name: 'account', className }),
   Dollar: ({ className }: { className: string }) => $({ svg: dollar_svg, name: 'dollar', className }),
+  Exclamation: ({ className }: { className: string }) => $({ svg: exclamation_svg, name: 'exclamation', className }),
+  Right_Arrow_White: ({ className }: { className: string }) => $({ svg: right_arrow_white, name: 'right_arrow_white', className }),
 }
 

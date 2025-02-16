@@ -9,6 +9,36 @@ interface CommonProps {
     closeModal: () => void
 }
 
+const ChangeName = ({ closeModal }: CommonProps) => {
+
+    return (
+        <motion.div
+            className=" bg-white p-4 rounded-md shadow border w-full max-w-96"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+        >
+            <div className='flex justify-between items-center'>
+                <h3 className="font-medium">Change Name</h3>
+                <Button
+                    onClick={closeModal}
+                >
+                    <Icons.Cross className="w-5 h-5" />
+                </Button>
+            </div>
+            <div className="w-[95%] pb-2 border-b border-gray-200"></div>
+
+            <Form onSubmit={() => { }} className=" py-2 w-full">
+                <label className=" text-sm self-start" htmlFor="fname">First Name</label>
+                <Input id='fname' type='text' className=' placeholder:text-sm placeholder:text-gray-400' />
+                <label className=" text-sm self-start" htmlFor="lname">Last Name</label>
+                <Input id='lname' type='text' className=' placeholder:text-sm placeholder:text-gray-400' />
+                <Button intent={'action'} className='py-1 mt-2' size={'medium'}>Change Name</Button>
+            </Form>
+        </motion.div>
+    )
+}
+
 const ChangePassword = ({ closeModal }: CommonProps) => {
     return (
         <motion.div
@@ -65,12 +95,43 @@ const ChangeEmail = ({ closeModal }: CommonProps) => {
                 {/* {formError.email && <ErrorMessage>{formError.email}</ErrorMessage>} */}
                 <label className="text-sm self-start" htmlFor="-password">Verify Account Password</label>
                 <InputPassword id='-password' className=' placeholder:text-sm placeholder:text-gray-400' />
-                <Button intent={'action'} className='py-1 mt-2' size={'medium'}>Change Password</Button>
+                <Button intent={'action'} className='py-1 mt-2' size={'medium'}>Change Email</Button>
             </Form>
         </motion.div>
     )
 }
 
+const DeleteAccount = ({ closeModal }: CommonProps) => {
+    return (
+        <motion.div
+            className=" bg-white p-4 rounded-md shadow border w-full max-w-96"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+        >
+            <div className='flex justify-between items-center'>
+                <h3 className="font-medium text-red-600 ">Delete Account</h3>
+                <Button
+                    onClick={closeModal}
+                >
+                    <Icons.Cross className="w-5 h-5" />
+                </Button>
+            </div>
+            <div className="w-[95%] pb-2 border-b border-gray-200"></div>
+            <div className='flex justify-center items-center pt-2'>
+                <Icons.Exclamation className="w-12 h-12" />
+            </div>
+            <p className="text-sm text-red-500 font-semibold py-2 text-center">Are you sure you want to delete your account? All your files and data will be permanently deleted. This action cannot be undone.</p>
+
+            <Form onSubmit={() => { }} className=" py-2 w-full">
+                <label className=" text-sm self-start" htmlFor="password">Account Password</label>
+                <InputPassword id='password' className=' placeholder:text-sm placeholder:text-gray-400' />
+                <Button intent={'action'} className='py-1 mt-2 bg-red-500' size={'medium'}>Proceed with Account Deletion</Button>
+                <Button onClick={closeModal} intent={'action'} className='py-1 mt-' size={'medium'}>Cancel</Button>
+            </Form>
+        </motion.div>
+    )
+}
 
 
 const Account = () => {
@@ -82,6 +143,11 @@ const Account = () => {
 
     const options = [
         {
+            id: '00',
+            name: 'Change Name',
+            Component: ChangeName
+        },
+        {
             id: '01',
             name: 'Change Password',
             Component: ChangePassword
@@ -90,6 +156,11 @@ const Account = () => {
             id: '02',
             name: 'Change Email',
             Component: ChangeEmail
+        },
+        {
+            id: '03',
+            name: 'Delete Account',
+            Component: DeleteAccount
         }
     ]
 
@@ -104,21 +175,40 @@ const Account = () => {
                 >
                     <h3 className="font-medium">Account</h3>
                     <div className='space-y-4'>
-                        {options.map(({ id, name }, index) => (
-                            <Button className="flex gap-3 bg-white w-full max-w-96 shadow backdrop-blur px-3 py-3 rounded-md"
-                                key={id}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: 10 }}
-                                transition={{ delay: index * 0.1 }}
-                                onClick={() => setOpenModal(id)}
-                            >
-                                <div className=" w-full text-sm flex items-center justify-between">
-                                    <div>{name}</div>
-                                    <Icons.Right_Arrow className="w-5 h-5" />
-                                </div>
-                            </Button>
-                        ))}
+                        {options.map(({ id, name }, index) => {
+                            if (id === '03') {
+                                return (
+                                    <Button className="flex gap-3 bg-red-500  w-full max-w-96 shadow backdrop-blur px-3 py-3 rounded-md"
+                                        key={id}
+                                        intent={'action'}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0, transition: { delay: index * 0.1 } }}
+                                        exit={{ opacity: 0, y: 10 }}
+                                        onClick={() => setOpenModal(id)}
+                                    >
+                                        <div className=" w-full text-sm text-white flex items-center justify-between">
+                                            <div>{name}</div>
+                                            <Icons.Right_Arrow_White className="w-5 h-5 scale-50" />
+                                        </div>
+                                    </Button>
+                                )
+                            }
+
+                            return (
+                                <Button className="flex gap-3 bg-white w-full max-w-96 shadow backdrop-blur px-3 py-3 rounded-md"
+                                    key={id}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0, transition: { delay: index * 0.1 } }}
+                                    exit={{ opacity: 0, y: 10 }}
+                                    onClick={() => setOpenModal(id)}
+                                >
+                                    <div className=" w-full text-sm flex items-center justify-between">
+                                        <div>{name}</div>
+                                        <Icons.Right_Arrow className="w-5 h-5" />
+                                    </div>
+                                </Button>
+                            )
+                        })}
                     </div>
                 </motion.div>
             </div>

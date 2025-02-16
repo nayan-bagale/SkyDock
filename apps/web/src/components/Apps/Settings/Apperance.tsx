@@ -15,7 +15,6 @@ const Apperance = () => {
         document.body.style.backgroundImage = `url(${background.src})`;
         document.body.style.backgroundRepeat = "no-repeat";
         // document.body.style.setProperty("--blur", `${blurValue}px`);
-        console.log('background changed');
     }, [background]);
 
     return (
