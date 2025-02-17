@@ -96,16 +96,15 @@ class FilesController {
     const fileId = req.params.id as string;
     const userId = req.user?.id as string;
     try {
+      const file = await prisma.explorerItems.findUnique({
+        where: { id: fileId },
+      });
+      if (!file) {
+        return res.status(INTERNALERROR).json({ message: "File not found" });
+      }
+      const extension = file.name.split(".").pop() as string;
+
       await prisma.$transaction(async (tx) => {
-        const file = await tx.explorerItems.findUnique({
-          where: { id: fileId },
-        });
-        if (!file) {
-          return res.status(INTERNALERROR).json({ message: "File not found" });
-        }
-
-        const extension = file.name.split(".").pop() as string;
-
         await Store.deleteObject(`${userId}/${fileId}.${extension}`);
 
         await tx.explorerItems.delete({ where: { id: fileId } });
@@ -113,7 +112,7 @@ class FilesController {
 
       return res.json({ message: "File deleted" });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       return res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });

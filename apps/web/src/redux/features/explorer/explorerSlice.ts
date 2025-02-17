@@ -21,10 +21,14 @@ const initalState = {
     //   isFolder: false,
     //   name: "file1.txt",
     //   parent: "root",
+    //   state: {
+    //     currentState: "downloading",
+    //     progress: 0,
+    //   },
     //   details: {
     //     name: "file1.txt",
     //     size: "15KB",
-    //     type: "text/plain",
+    //     type: "application/pdf",
     //     lastModified: "2023-10-01T12:00:00Z",
     //     // File: new File(["content"], "file1.txt", { type: "text/plain" }),
     //   },
@@ -38,7 +42,7 @@ const initalState = {
     //     size: 0,
     //     lastModified: "2023-10-02T12:00:00Z",
     //   },
-    //   children: ["file2"],
+    //   children: [],
     // },
     // file2: {
     //   id: "file2",
@@ -123,6 +127,16 @@ export const explorerSlice = createSlice({
         [action.payload.id]: {
           ...item,
           name: action.payload.name,
+        },
+      };
+    },
+    updateItemState: (state, action) => {
+      const item = state.explorerItems[action.payload.id];
+      state.explorerItems = {
+        ...state.explorerItems,
+        [action.payload.id]: {
+          ...item,
+          state: action.payload.state,
         },
       };
     },
@@ -214,6 +228,7 @@ export const {
   setBreadCrumb,
   deleteItem,
   renameItem,
+  updateItemState,
   moveFileIntoFolder,
   changeView,
   explorerProcess,

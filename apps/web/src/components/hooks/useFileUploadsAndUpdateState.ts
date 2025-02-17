@@ -7,7 +7,11 @@ import {
   removeNotification,
   updateNotification,
 } from "@/redux/features/control-center/controlCenterSlice";
-import { addItem } from "@/redux/features/explorer/explorerSlice";
+import {
+  addItem,
+  deleteItem,
+  updateItemState,
+} from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { FileT } from "@skydock/types";
 import axios from "axios";
@@ -93,40 +97,62 @@ const useFileUploadsAndUpdateState = () => {
         }
         const controller = new AbortController();
         try {
-          const response = await axios.put<void>(
-            uploadUrl[file.id],
-            file.details.File,
-            {
-              headers: {
-                "Content-Type": file.details.type,
-              },
-              signal: controller.signal,
-              onUploadProgress: (progressEvent) => {
-                const percentCompleted = Math.round(
-                  (progressEvent.loaded * 100) / (progressEvent.total || 1)
-                );
-                dispatch(
-                  updateNotification({
-                    id: file.id,
+          const fileData = file.details.File;
+          const fileToBeAdded = {
+            ...file,
+            state: { currentState: "downloding", progress: 0 },
+          };
+          delete fileToBeAdded.details.File;
+          dispatch(addItem(fileToBeAdded));
+          const response = await axios.put<void>(uploadUrl[file.id], fileData, {
+            headers: {
+              "Content-Type": file.details.type,
+            },
+            signal: controller.signal,
+            onUploadProgress: (progressEvent) => {
+              const percentCompleted = Math.round(
+                (progressEvent.loaded * 100) / (progressEvent.total || 1)
+              );
+              dispatch(
+                updateNotification({
+                  id: file.id,
+                  progress: percentCompleted,
+                  cancelUpload: () => controller.abort(),
+                })
+              );
+              dispatch(
+                updateItemState({
+                  id: file.id,
+                  state: {
+                    currentState: "downloading",
                     progress: percentCompleted,
-                    cancelUpload: () => controller.abort(),
-                  })
-                );
-              },
-            }
-          );
+                  },
+                })
+              );
+            },
+          });
           delete file.details.File;
           await uploadFilesDetailsSafely([file]);
-          dispatch(addItem(file));
+          // dispatch(addItem(file));
+          dispatch(removeNotification(file.id));
+          dispatch(
+            updateItemState({
+              id: file.id,
+              state: {
+                currentState: "idle",
+                progress: 0,
+              },
+            })
+          );
           return { ...response, details: file as FileT };
         } catch (error: any) {
           setError((prev) => [
             ...prev,
             { id: file.id, error: error?.message || "Upload failed" },
           ]);
-          return null;
-        } finally {
           dispatch(removeNotification(file.id));
+          dispatch(deleteItem(file.id));
+          return null;
         }
       })
     );

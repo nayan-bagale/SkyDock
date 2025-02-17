@@ -54,7 +54,7 @@ const ControlCenter = () => {
                                     <motion.div
                                         key={item.id}
                                         className=" absolute bg-sky-400 inset-8 transition h-2 w-0 left-0 rounded"
-                                        animate={{ width: `${100}%` }}
+                                        animate={{ width: `${item.progress}%` }}
                                     >
                                     </motion.div>
                                 </motion.div>

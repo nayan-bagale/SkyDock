@@ -49,6 +49,16 @@ export interface FolderT {
 export interface FileT {
   id: string;
   isFolder: false;
+  state?: {
+    currentState:
+      | "idle"
+      | "success"
+      | "failed"
+      | "cancelled"
+      | "uploding"
+      | "downloading";
+    progress: number;
+  };
   name: string;
   parent: string;
   details: {

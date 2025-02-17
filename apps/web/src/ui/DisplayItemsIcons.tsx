@@ -1,6 +1,5 @@
-import { FileT, FolderT } from '@/types/explorer';
 import cn from '@/utils';
-import { DragEventT, MouseEventT } from '@skydock/types';
+import { DragEventT, FileT, FolderT, MouseEventT } from '@skydock/types';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { FC, useEffect, useRef, useState } from 'react';
 
@@ -89,13 +88,20 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
             setIsOver(false); // ✅ Ensure highlight is removed after dropping
             handleDrop(event)
         };
+        console.log(!item.isFolder && item?.state?.currentState === 'downloading')
+
+
 
         return <>
             <AnimatePresence>
                 {view === 'grid' &&
                     (<motion.div
                         ref={iconRef}
-                        className={cn(' relative w-fit flex flex-col justify-center items-center p-1 rounded-md hover:bg-gray-400/40', isOver && 'bg-gray-400/10 border')}
+                        className={cn(
+                            ' relative w-fit flex flex-col justify-center items-center p-1 rounded-md hover:bg-gray-400/40',
+                            isOver && 'bg-gray-400/10 border',
+                            // !item.isFolder && item?.state?.currentState === 'downloading' && 'bg-blue-500',
+                        )}
                         id={item.id}
                         whileTap={{ scale: 0.9 }}
                         onContextMenu={onContextMenu}
@@ -112,6 +118,7 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                         onDragLeave={handleDragLeaveInner}
                     >
                         <Icon className=" w-16" />
+
                         {rename.editing ? (
                             <textarea
                                 ref={textareaRef}
@@ -125,6 +132,15 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                         ) : (
                             <p className={cn('text-[14px] cursor-default text-center select-none ', clicked ? 'w-16 break-words ' : 'truncate h-7 w-[11ch] overflow-hidden')}>{rename.name}</p>
                         )}
+                        {!item.isFolder && item?.state && item?.state?.currentState === 'downloading' && (
+                            <>
+                                <div className="absolute top-0 right-0 w-full bg-black/10 rounded-md h-full ">
+                                    <motion.div className="  bg-black/40 rounded-md" initial={{ height: 0 }} animate={{ height: `${item.state.progress}%` }} />
+                                </div>
+                                <div className=' p-2 backdrop-blur bg-black/50 text-white font-bold flex items-center justify-center rounded-full shadow-sm absolute'>{item.state.progress}%</div>
+                            </>
+                        )}
+
                     </motion.div>)
                 }
             </AnimatePresence>
