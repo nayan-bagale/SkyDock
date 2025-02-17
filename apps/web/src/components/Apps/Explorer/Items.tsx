@@ -27,6 +27,8 @@ const Item: FC<ItemPropsT> =
         const { downloadFile } = useFileDownloadWithProgress();
         const [renameItem_] = useUpdateItemMutation();
 
+        console.log(item)
+
         const contextMenuRef = useRef<HTMLDivElement>(null)
         const dispatch = useAppDispatch()
 

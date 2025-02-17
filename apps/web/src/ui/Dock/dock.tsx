@@ -59,6 +59,7 @@ export const Dock = ({
     className,
     ...props
 }: DockProps) => {
+
     return (
         <motion.div
             onClick={onClick}

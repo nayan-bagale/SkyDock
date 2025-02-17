@@ -91,60 +91,77 @@ const useFileUploadsAndUpdateState = () => {
           ]);
           return;
         }
-        const response = await axios.put<void>(
-          uploadUrl[file.id],
-          file.details.File,
-          {
-            headers: {
-              "Content-Type": file.details.type,
-            },
-            onUploadProgress: (progressEvent) => {
-              const percentCompleted = Math.round(
-                (progressEvent.loaded * 100) / (progressEvent.total || 1)
-              );
-              dispatch(
-                updateNotification({ id: file.id, progress: percentCompleted })
-              );
-              console.log(percentCompleted);
-            },
-          }
-        );
-        delete file.details.File;
-        return { ...response, details: file as FileT };
+        const controller = new AbortController();
+        try {
+          const response = await axios.put<void>(
+            uploadUrl[file.id],
+            file.details.File,
+            {
+              headers: {
+                "Content-Type": file.details.type,
+              },
+              signal: controller.signal,
+              onUploadProgress: (progressEvent) => {
+                const percentCompleted = Math.round(
+                  (progressEvent.loaded * 100) / (progressEvent.total || 1)
+                );
+                dispatch(
+                  updateNotification({
+                    id: file.id,
+                    progress: percentCompleted,
+                    cancelUpload: () => controller.abort(),
+                  })
+                );
+              },
+            }
+          );
+          delete file.details.File;
+          await uploadFilesDetailsSafely([file]);
+          dispatch(addItem(file));
+          return { ...response, details: file as FileT };
+        } catch (error: any) {
+          setError((prev) => [
+            ...prev,
+            { id: file.id, error: error?.message || "Upload failed" },
+          ]);
+          return null;
+        } finally {
+          dispatch(removeNotification(file.id));
+        }
       })
     );
     if (!uploadFilesPromise) return null;
 
     // Filter out the rejected promises and get the details of the files
-    const requestArray = uploadFilesPromise
-      .filter((promise) => {
-        if (!promise) return false;
-        if (promise.status === "rejected") {
-          setError((prev) => [
-            ...prev,
-            {
-              id: "unknown",
-              error: promise ? promise.reason?.message : "undefined",
-            },
-          ]);
-          return false;
-        }
-        return true;
-      })
-      .map((promise) => {
-        if (promise.status === "fulfilled") {
-          return promise.value?.details;
-        }
-      }) as FileT[];
+    // const requestArray = uploadFilesPromise
+    //   .filter((promise) => {
+    //     if (!promise) return false;
+    //     if (promise.status === "rejected") {
+    //       setError((prev) => [
+    //         ...prev,
+    //         {
+    //           id: "unknown",
+    //           error: promise ? promise.reason?.message : "undefined",
+    //         },
+    //       ]);
+    //       return false;
+    //     }
+    //     return true;
+    //   })
+    //   .map((promise) => {
+    //     if (promise.status === "fulfilled") {
+    //       return promise.value?.details;
+    //     }
+    //   }) as FileT[];
 
     // Upload the details of the files to the server
-    const finalResponse = await uploadFilesDetailsSafely(requestArray);
-    if (!finalResponse) return null;
+    // const finalResponse = await uploadFilesDetailsSafely(requestArray);
+    // if (!finalResponse) return null;
 
     // Update the state with the uploaded files
-    requestArray.forEach((file) => dispatch(addItem(file)));
+    // requestArray.forEach((file) => dispatch(addItem(file)));
 
-    requestArray.forEach((file) => dispatch(removeNotification(file.id)));
+    // requestArray.forEach((file) => dispatch(removeNotification(file.id)));
 
     return true;
   };

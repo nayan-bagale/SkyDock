@@ -3,7 +3,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion";
 
 
-const dockButtonStyles = cva(["font-semibold", "border", "rounded-2xl", "shadow", "p-1", "w-fit", "backdrop-blur-md", "z-10"], {
+const dockButtonStyles = cva(["font-semibold", "border", "outline-sky-400", "rounded-2xl", "shadow", "p-1", "w-fit", "backdrop-blur-md", "z-10"], {
   variants: {
     intent: {
       primary: [

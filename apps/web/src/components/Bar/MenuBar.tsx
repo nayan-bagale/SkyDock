@@ -8,7 +8,7 @@ import Logo from "./Logo/Logo";
 import ProfileDropdown from "./Profile/ProfleDropDown";
 
 const MenuBar = () => {
-  const focusedAppName = useAppSelector((state) => state.apps.focusedApp)
+  const focusedAppName = useAppSelector((state) => state.apps.focusedApp);
   return (
     <>
       <Bar className=" flex justify-between items-center">

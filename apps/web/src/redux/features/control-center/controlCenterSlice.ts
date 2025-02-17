@@ -5,7 +5,7 @@ export interface Notification {
   fileName: string;
   type: "upload" | "download";
   status: "pending" | "success" | "error";
-
+  cancelUpload?: () => void;
   progress: number;
 }
 
