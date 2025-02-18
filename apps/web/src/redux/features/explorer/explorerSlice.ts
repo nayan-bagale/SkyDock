@@ -22,7 +22,7 @@ const initalState = {
     //   name: "file1.txt",
     //   parent: "root",
     //   state: {
-    //     currentState: "downloading",
+    //     currentState: "idle",
     //     progress: 0,
     //   },
     //   details: {
