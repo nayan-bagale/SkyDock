@@ -14,6 +14,6 @@ const messages = {
   USER_CREATED: "User created",
 
   LOGOUT: "Logged out",
-};
+} as const;
 
 export default messages;
