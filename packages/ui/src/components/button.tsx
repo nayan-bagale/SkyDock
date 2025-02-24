@@ -34,15 +34,6 @@ const ButtonStyles = cva(["font-semibold", "rounded-md", "w-fit", "flex", " item
         },
 
     },
-    // compoundVariants: [
-    //     {
-    //         intent: "ghost",
-    //         class: "uppercase",
-    //         size: "small",
-    //         // **or** if you're a React.js user, `className` may feel more consistent:
-    //         // className: "uppercase"
-    //     },
-    // ],
     defaultVariants: {
         intent: "ghost",
         size: "icon",
