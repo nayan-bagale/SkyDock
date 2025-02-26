@@ -11,8 +11,6 @@ const ButtonStyles = cva(["font-semibold", "rounded-md", "w-fit", "flex", " item
                 "border-transparent",
                 "hover:bg-white/80",
             ],
-            // **or**
-            // primary: "bg-blue-500 text-white border-transparent hover:bg-blue-600",
             secondary: [
                 "bg-white",
                 "text-gray-800",
