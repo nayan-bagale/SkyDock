@@ -14,6 +14,7 @@ import bcrypt from "bcrypt";
 import { JwtPayload } from "jsonwebtoken";
 import { prisma } from "../config/db";
 import { SALT } from "../constants/constants";
+import Email from "../services/email";
 
 const router = express.Router();
 
@@ -34,7 +35,7 @@ router.post("/register", async (req, res) => {
     },
   });
 
-  console.log(isEmailExist);
+  // console.log(isEmailExist);
 
   if (isEmailExist) {
     return res.status(UNAUTHORIED).json({ message: "Email already exist" });
@@ -63,6 +64,11 @@ router.post("/register", async (req, res) => {
       .json({ message: messages.INTERNAL_SERVER_ERROR });
   }
 
+  try {
+    Email.sendThankYouForRegisteringEmail(email);
+  } catch (error) {
+    console.error(error);
+  }
   res.status(OK).json({ message: messages.USER_CREATED });
 });
 
@@ -77,6 +83,12 @@ router.post("/login", async (req, res) => {
 
   if (!user) {
     return res.status(UNAUTHORIED).json({ message: "Email does not exist" });
+  }
+
+  if (!user.verified) {
+    return res
+      .status(UNAUTHORIED)
+      .json({ message: "Account is not activated" });
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
