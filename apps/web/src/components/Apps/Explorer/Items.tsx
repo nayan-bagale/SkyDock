@@ -128,15 +128,24 @@ const Item: FC<ItemPropsT> =
                             Open
                         </Button>}
                         {!(item.isFolder) && <Button size={'menu'} className=" " onClick={handleDownload}>
-                            Download
+                            <div> Download</div>
+                            <Icons.Download className=" h-4" />
                         </Button>}
                         <Button size={'menu'} className=" " onClick={handleRename}>
                             Rename
                         </Button>
+                        <Button size={'menu'} className=" ">
+                            <div>Move to</div>
+                            <Icons.Move className=" h-4" />
+                        </Button>
+                        <Button size={'menu'} className=" ">
+                            <div>Make copy</div>
+                            <Icons.Copy className=" h-4" />
+                        </Button>
                         <ContextMenuSeparator />
                         <Button size={'menu'} className=" hover:bg-red-600" onClick={handleDelete}>
                             <div>Delete</div>
-                            <Icons.Trash className=" h-4" />
+                            <Icons.Trash3 className=" h-4" />
                         </Button>
                     </ContextMenu>
                 )}

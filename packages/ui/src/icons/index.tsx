@@ -4,10 +4,12 @@ import account_svg from './assests/account-avatar-multimedia-svgrepo-com.svg';
 import logo_svg from './assests/cat-svgrepo-com.svg';
 import cloud_svg from './assests/cloud-storage-upload-up-arrow-svgrepo-com.svg';
 import control_center_svg from './assests/control-centre-svgrepo-com.svg';
+import copy_svg from './assests/copy-svgrepo-com.svg';
 import cross_svg from './assests/cross-svgrepo-com.svg';
 import trash_svg from './assests/delete-svgrepo-com.svg';
 import docker_svg from './assests/docker-svgrepo-com.svg';
 import dollar_svg from './assests/dollar-svgrepo-com.svg';
+import download_svg from './assests/download-svgrepo-com.svg';
 import exclamation_svg from './assests/exclamation-mark-in-a-circle-svgrepo-com.svg';
 import closed_eye_svg from './assests/eye-closed-svgrepo-com.svg';
 import eye_svg from './assests/eye-svgrepo-com.svg';
@@ -25,6 +27,7 @@ import loader_svg from './assests/loading-loader-svgrepo-com.svg';
 import lock_svg from './assests/lock-svgrepo-com.svg';
 import logout_svg from './assests/logout-svgrepo-com.svg';
 import menu_svg from './assests/mjml-svgrepo-com.svg';
+import move_svg from './assests/move-to-folder-svgrepo-com.svg';
 import paint_svg from './assests/paint-svgrepo-com.svg';
 import pdf_svg from './assests/pdf-svgrepo-com-1.svg';
 import image_svg from './assests/picture-photo-image-svgrepo-com.svg';
@@ -40,6 +43,7 @@ import settings_svg from './assests/settings-svgrepo-com.svg';
 import vscode_svg from './assests/sln-svgrepo-com.svg';
 import spinner_svg from './assests/spinner-svgrepo-com.svg';
 import terminal_svg from './assests/terminal-svgrepo-com.svg';
+import trash_svg3 from './assests/trash-bin-minimalistic-svgrepo-com.svg';
 import trash_svg2 from './assests/trash-bin-trash-svgrepo-com.svg';
 import upload_svg from './assests/upload-svgrepo-com.svg';
 import user_svg from './assests/user-circle-svgrepo-com.svg';
@@ -92,5 +96,9 @@ export const Icons = {
   Dollar: ({ className }: { className: string }) => $({ svg: dollar_svg, name: 'dollar', className }),
   Exclamation: ({ className }: { className: string }) => $({ svg: exclamation_svg, name: 'exclamation', className }),
   Right_Arrow_White: ({ className }: { className: string }) => $({ svg: right_arrow_white, name: 'right_arrow_white', className }),
+  Move: ({ className }: { className: string }) => $({ svg: move_svg, name: 'move', className }),
+  Copy: ({ className }: { className: string }) => $({ svg: copy_svg, name: 'copy', className }),
+  Download: ({ className }: { className: string }) => $({ svg: download_svg, name: 'download', className }),
+  Trash3: ({ className }: { className: string }) => $({ svg: trash_svg3, name: 'trash', className }),
 }
 
