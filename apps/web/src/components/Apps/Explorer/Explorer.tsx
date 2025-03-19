@@ -3,13 +3,16 @@ import useChangeAppFocus from "@/components/hooks/useChangeAppFocus";
 import { useDrag } from "@/components/hooks/useDrag";
 import useIntializeFilesAndFolders from "@/components/hooks/useIntializeFilesAndFolders";
 import { useCreateFolderMutation } from "@/redux/APISlice";
-import { addItem, changeExplorerLastSize, changeExplorerMinimized, changeExplorerSize, changeView, explorerProcess, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
+import { addItem, changeExplorerLastSize, changeExplorerMinimized, changeExplorerSize, changeView, explorerProcess, setActiveTab, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { ExplorerT, FolderT } from "@/types/explorer";
+// import { ExplorerT, FolderT } from "@/types/explorer";
+import { ExplorerItemsActiveTabs, ExplorerT, FolderT } from "@skydock/types";
+
 import { ExplorerCard } from "@/ui/Cards/Explorer/Explorer";
 import remToPx from "@/utils/rem-to-px";
 import { nanoid } from "@reduxjs/toolkit";
-import { useRef } from "react";
+import { Icons } from "@skydock/ui/icons";
+import { useMemo, useRef } from "react";
 import ExplorerItems from "./ExplorerItems";
 
 const Explorer = () => {
@@ -28,6 +31,7 @@ const Explorer = () => {
     const backStackFoldersName = Object.values(useAppSelector((state) => state.explorer.explorerItems)).filter((item) => backStack.includes(item.id)).map((item) => ({ id: item.id, name: item.name }))
     const forwardStack = useAppSelector((state) => state.explorer.forwardStack)
     const focusedApp = useAppSelector((state) => state.apps.focusedApp)
+    const activeTab = useAppSelector((state) => state.explorer.activeTab)
 
 
     const { position, handleMouseDown } = useDrag({
@@ -37,6 +41,18 @@ const Explorer = () => {
     // const handleZIndex = () => {
     //     if (focusedApp !== 'Explorer') dispatch(setFocusedApp('Explorer'))
     // }
+
+    const tabsOptions = useMemo<{
+        name: string;
+        id: ExplorerItemsActiveTabs;
+        Icon: JSX.Element;
+    }[]>(() => {
+        return [
+            { name: 'Root', id: 'root', Icon: <Icons.Cloud className="w-5 h-5" /> },
+            // { name: 'Trash', id: 'trash', Icon: <Icons.Trash className="w-5 h-5" /> },
+            { name: 'Desktop', id: 'desktop', Icon: <Icons.Folder className="w-5 h-5" /> },
+        ]
+    }, [])
 
     const addFolder = async () => {
         const folderObj = {
@@ -94,6 +110,12 @@ const Explorer = () => {
         },
     }
 
+    const handleActiveTabs = {
+        func: (tab: ExplorerT['activeTab']) => dispatch(setActiveTab(tab)),
+        activeTab,
+        tabsOptions,
+    }
+
     const theme = useAppSelector((state) => state.settings.apperance.theme)
 
     // const lastpostion = {
@@ -113,8 +135,10 @@ const Explorer = () => {
             addFolder={addFolder}
             handleFolderTree={handleFolderTree}
             onMouseDownCard={handleAppFocus}
+            handleActiveTabs={handleActiveTabs}
             className={focusedApp === 'Explorer' ? 'z-20' : ''}
             theme={theme}
+
         >
             <HandleDragnDrop>
                 <ExplorerItems />

@@ -70,6 +70,8 @@ export interface FileT {
   };
 }
 
+export type ExplorerItemsActiveTabs = "root" | "trash" | "desktop";
+
 export interface ExplorerT {
   explorerItems: {
     [key: string]: FileT | FolderT;
@@ -78,6 +80,7 @@ export interface ExplorerT {
   backStack: string[];
   forwardStack: string[];
   actions: ActionsT;
+  activeTab: ExplorerItemsActiveTabs;
   settings: {
     view: "grid" | "row";
   };

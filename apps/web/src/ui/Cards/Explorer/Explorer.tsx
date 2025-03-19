@@ -1,9 +1,9 @@
 import { FolderT } from "@/types/explorer";
 import cn from "@/utils";
-import { ThemeT } from "@skydock/types";
+import { ExplorerItemsActiveTabs, ThemeT } from "@skydock/types";
 import { Icons } from "@skydock/ui/icons";
 import { motion } from "framer-motion";
-import { forwardRef, Fragment, ReactNode } from "react";
+import { forwardRef, Fragment, ReactNode, useState } from "react";
 import { Button } from "../../button";
 
 interface ExplorerCardProps {
@@ -43,6 +43,11 @@ interface ExplorerCardProps {
             func: () => void;
         }
     },
+    handleActiveTabs: {
+        func: (tab: ExplorerItemsActiveTabs) => void;
+        activeTab: ExplorerItemsActiveTabs;
+        tabsOptions: { id: ExplorerItemsActiveTabs, name: string, Icon: JSX.Element }[];
+    };
     addFolder: () => void;
     onMouseDownCard: () => void;
     className?: string;
@@ -52,8 +57,9 @@ interface ExplorerCardProps {
 
 
 export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
-    ({ style, theme, onMouseDown, action, children, onMouseDownCard, currentFolder, settings, addFolder, className, handleFolderTree: { forward, backward } }, ref) => {
+    ({ style, theme, onMouseDown, action, children, onMouseDownCard, currentFolder, settings, addFolder, className, handleFolderTree: { forward, backward }, handleActiveTabs }, ref) => {
         // const size_obj = { height: action.size.isMaximized ? remToPx(40) : action.size.lastSize.height, width: action.size.isMaximized ? remToPx(55) : action.size.lastSize.width }
+        const [isContextMenuOpen, SetIsContextMenuOpen] = useState(false);
 
         return (
             // <AnimatePresence>
@@ -71,6 +77,7 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
             >
                 <div className=" flex items-center shadow relative justify-between px-2 py-1 w-full bg-slate-200/60 rounded"
                     onMouseDown={onMouseDown}
+                    onContextMenu={(e) => e.preventDefault()}
                 >
                     <div className=" flex gap-1 absolute">
                         <div className=" h-3 w-3 rounded-full bg-red-400 flex items-center justify-center cursor-default hover:bg-red-600 transition-colors hover:shadow"
@@ -111,10 +118,13 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
                     </div>
                 </div>
                 <div className=" flex w-full h-full pb-[1.8rem]">
-                    <div className="max-w-[12rem] h-full min-w-[9rem] text-sm justify-between flex flex-col py-1.5 ">
+                    <div className="max-w-[12rem] h-full min-w-[9rem] text-sm justify-between flex flex-col py-1.5 "
+                        onContextMenu={(e) => e.preventDefault()}
+
+                    >
 
                         <div className="flex flex-col gap-1.5">
-                            <div className=" px-2 py-1 flex flex-col gap-1 ">
+                            {/* <div className=" px-2 py-1 flex flex-col gap-1 ">
                                 <div className=" text-xs font-semibold text-gray-500">Favourites</div>
                                 <div className="">
                                     <Button className=" px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none">
@@ -127,28 +137,95 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
                                 <div className=" text-xs font-semibold text-gray-500">Locations</div>
                                 <div className="">
                                     <Button className=" px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none">
+                                        <Icons.Folder className=" h-4 w-4" />
+                                        {'Desktop'}
+                                    </Button>
+                                </div>
+                                <div className="">
+                                    <Button className=" px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none">
                                         <Icons.Cloud className=" h-4 w-4" />
                                         {"Sky-Drive"}
                                     </Button>
                                 </div>
+                            </div> */}
+                            <div className=" px-2 py-1 flex flex-col gap-1 ">
+                                <div className=" text-xs font-semibold text-gray-500">Locations</div>
+
+                                {handleActiveTabs.tabsOptions.map(({ name, id, Icon }, index) => (
+                                    <div className="">
+                                        <Button
+                                            key={id}
+                                            className={cn(
+                                                " px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none relative outline-2 outline-sky-400 focus-visible:outline",
+                                                handleActiveTabs.activeTab !== id && 'hover:bg-white/60'
+                                            )}
+                                            onClick={() => handleActiveTabs.func(id)}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: index * 0.1 }}
+                                        >
+                                            {
+                                                handleActiveTabs.activeTab === id && (
+                                                    <motion.div
+                                                        // layoutId="active-pill"
+                                                        className="z-0 absolute inset-0 bg-white shadow-sm rounded-md"
+                                                    // transition={{ type: 'spring', duration: 0.5 }}
+                                                    />
+                                                )
+                                            }
+
+                                            <span className="z-10 relative flex gap-1">
+                                                {Icon}{name}
+                                            </span>
+                                        </Button>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                         <div className=" px-2 py-1 justify-self-end flex flex-col gap-1 ">
                             {/* <div className=" text-xs font-semibold text-gray-500">Locations</div> */}
                             <div className="">
-                                <Button className=" px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none">
+                                <Button
+
+                                    className={cn(
+                                        " px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none relative outline-2 outline-sky-400 focus-visible:outline",
+                                        handleActiveTabs.activeTab !== 'trash' && 'hover:bg-white/60'
+                                    )}
+                                    onClick={() => handleActiveTabs.func('trash')}
+                                >
+                                    {
+                                        handleActiveTabs.activeTab === 'trash' && (
+                                            <motion.div
+                                                // layoutId="active-pill"
+                                                className="z-0 absolute inset-0 bg-white shadow-sm rounded-md"
+                                            // transition={{ type: 'spring', duration: 0.5 }}
+                                            />
+                                        )
+                                    }
+
+                                    <span className="z-10 relative flex gap-1">
+                                        <Icons.Trash2 className=" h-4 w-4" />
+                                        {"Trash"}
+                                    </span>
+                                </Button>
+                                {/* <Button className=" px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none">
                                     <Icons.Trash2 className=" h-4 w-4" />
                                     {"Trash"}
-                                </Button>
+                                </Button> */}
                             </div>
                         </div>
                     </div>
                     <div className=" flex flex-col h-full bg-white w-full py-2">
-                        <div className=" flex-1 overflow-y-auto ">
+                        <div className=" flex-1 overflow-y-auto "
+                            onContextMenu={(e) => e.preventDefault()}
+                        >
                             {children}
                         </div>
-                        <div className=" text-xs border-t px-2 py-0.5 flex items-center w-full ">
-                            <Button onClick={() => backward.onClickBreadCrumb('root')} className=" hover:bg-white p-1" size={'icon'} intent={'ghost'}><Icons.Home className=" h-4 w-4" /></Button>
+                        <div className=" text-xs border-t px-2 py-0.5 flex items-center w-full "
+                            onContextMenu={(e) => e.preventDefault()}
+
+                        >
+                            <Button onClick={() => backward.onClickBreadCrumb(handleActiveTabs.activeTab)} className=" hover:bg-white p-1" size={'icon'} intent={'ghost'}><Icons.Home className=" h-4 w-4" /></Button>
                             {[...backward.backStack, { id: currentFolder.id, name: currentFolder.name }].map((item, index) => index !== 0 && (
                                 <Fragment key={item.id}>
                                     <Icons.Right_Arrow className=" mt-1 h-5 w-5" />

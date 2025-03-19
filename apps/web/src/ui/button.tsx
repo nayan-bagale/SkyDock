@@ -87,7 +87,7 @@ export const Button = ({
 
     return (
         <motion.button onClick={onClick}
-            whileTap={!props.disabled ? { scale: 0.95 } : {}}
+            whileTap={!props.disabled ? { scale: 0.95, transition: { delay: 0 } } : {}}
             type="button"
             className={cn(
                 ButtonStyles({ intent, size, className }),

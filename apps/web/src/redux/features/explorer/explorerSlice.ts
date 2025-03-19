@@ -16,6 +16,30 @@ const initalState = {
       // children: ["file1", "folder1"],
       children: [],
     },
+    desktop: {
+      id: "desktop",
+      isFolder: true,
+      name: "Desktop",
+      parent: "",
+      details: {
+        size: 0,
+        lastModified: "2023-10-01T12:00:00Z",
+      },
+      // children: ["file1", "folder1"],
+      children: [],
+    },
+    trash: {
+      id: "trash",
+      isFolder: true,
+      name: "Trash",
+      parent: "",
+      details: {
+        size: 0,
+        lastModified: "2023-10-01T12:00:00Z",
+      },
+      // children: ["file1", "folder1"],
+      children: [],
+    },
     // file1: {
     //   id: "file1",
     //   isFolder: false,
@@ -61,6 +85,7 @@ const initalState = {
   currentFolder: "root",
   backStack: [],
   forwardStack: [],
+  activeTab: "root",
   actions: {
     isMinimized: false,
     isMaximized: false,
@@ -183,16 +208,23 @@ export const explorerSlice = createSlice({
       const temp = state.backStack.pop();
       if (temp) state.currentFolder = temp;
     },
+    changeView: (state, action) => {
+      state.settings.view = action.payload;
+    },
+
+    setActiveTab: (state, action) => {
+      state.activeTab = action.payload;
+      state.currentFolder = action.payload;
+      state.backStack = [];
+      state.forwardStack = [];
+    },
+
     setBreadCrumb: (state, action) => {
       state.currentFolder = action.payload;
       const index = state.backStack.indexOf(action.payload);
       if (index !== -1) {
         state.backStack = state.backStack.slice(0, index);
       }
-    },
-
-    changeView: (state, action) => {
-      state.settings.view = action.payload;
     },
 
     explorerProcess: (state, action) => {
@@ -236,6 +268,7 @@ export const {
   changeExplorerMinimized,
   changeExplorerLastSize,
   setItemDragged,
+  setActiveTab,
 } = explorerSlice.actions;
 
 export default explorerSlice.reducer;
