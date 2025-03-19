@@ -43,6 +43,7 @@ import settings_svg from './assests/settings-svgrepo-com.svg';
 import vscode_svg from './assests/sln-svgrepo-com.svg';
 import spinner_svg from './assests/spinner-svgrepo-com.svg';
 import terminal_svg from './assests/terminal-svgrepo-com.svg';
+import rename_svg from './assests/text-field-focus-svgrepo-com.svg';
 import trash_svg3 from './assests/trash-bin-minimalistic-svgrepo-com.svg';
 import trash_svg2 from './assests/trash-bin-trash-svgrepo-com.svg';
 import upload_svg from './assests/upload-svgrepo-com.svg';
@@ -100,5 +101,6 @@ export const Icons = {
   Copy: ({ className }: { className: string }) => $({ svg: copy_svg, name: 'copy', className }),
   Download: ({ className }: { className: string }) => $({ svg: download_svg, name: 'download', className }),
   Trash3: ({ className }: { className: string }) => $({ svg: trash_svg3, name: 'trash', className }),
+  Rename: ({ className }: { className: string }) => $({ svg: rename_svg, name: 'rename', className }),
 }
 

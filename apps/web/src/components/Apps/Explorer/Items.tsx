@@ -132,16 +132,18 @@ const Item: FC<ItemPropsT> =
                             <Icons.Download className=" h-4" />
                         </Button>}
                         <Button size={'menu'} className=" " onClick={handleRename}>
-                            Rename
+                            <div>Rename</div>
+                            <Icons.Rename className=" h-4" />
+
                         </Button>
                         <Button size={'menu'} className=" ">
                             <div>Move to</div>
                             <Icons.Move className=" h-4" />
                         </Button>
-                        <Button size={'menu'} className=" ">
+                        {!(item.isFolder) && <Button size={'menu'} className=" ">
                             <div>Make copy</div>
                             <Icons.Copy className=" h-4" />
-                        </Button>
+                        </Button>}
                         <ContextMenuSeparator />
                         <Button size={'menu'} className=" hover:bg-red-600" onClick={handleDelete}>
                             <div>Delete</div>
