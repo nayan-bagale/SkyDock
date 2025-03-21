@@ -1,3 +1,4 @@
+import IconByMimeType from "@/components/FileIconByMimeType";
 import useDeleteFolderRecursively from "@/components/hooks/useDeleteFolderRecursively";
 import useFileDownloadWithProgress from "@/components/hooks/useFileDownloadWithProgress";
 import useOnClickOutside from "@/components/hooks/useOnclickOutside";
@@ -155,24 +156,6 @@ const Item: FC<ItemPropsT> =
         )
     }
 
-const IconByMimeType = (mimeType: string | null) => {
-    if (!mimeType) {
-        return Icons.Folder
-    }
 
-    const imageTypes = ['image/jpeg', 'image/jpg', 'image/pjpeg', 'image/x-jps', 'image/png', 'image/gif', 'image/webp'];
-
-    if (imageTypes.includes(mimeType)) {
-        return Icons.Image
-    }
-
-    switch (mimeType) {
-        case 'application/pdf':
-            return Icons.PDF
-        default:
-            return Icons.File
-    }
-
-}
 
 export default Item;

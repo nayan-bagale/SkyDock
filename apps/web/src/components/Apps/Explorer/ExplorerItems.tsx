@@ -39,8 +39,8 @@ const ExplorerItems = () => {
         if (!itemDragged) return;
 
         if (droppedItem.isFolder && (itemDragged.id !== droppedItem.id)) {
-            console.log("Dragged index:", itemDragged.name);
-            console.log("Target index:", droppedItem.name);
+            // console.log("Dragged index:", itemDragged.name);
+            // console.log("Target index:", droppedItem.name);
             await updateFileApi({ id: itemDragged.id, parent_id: droppedItem.id });
             dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id }));
         }

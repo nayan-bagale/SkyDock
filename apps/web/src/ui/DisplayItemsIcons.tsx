@@ -3,7 +3,6 @@ import { DragEventT, FileT, FolderT, MouseEventT } from '@skydock/types';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { FC, useEffect, useRef, useState } from 'react';
 
-
 interface DisplayItemsIconsT {
     children?: React.ReactNode;
     className?: string;
@@ -85,10 +84,11 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
         const handleDropInner = (event: React.DragEvent<HTMLDivElement>) => {
             event.preventDefault();
 
+
             setIsOver(false); // ✅ Ensure highlight is removed after dropping
             handleDrop(event)
         };
-        console.log(!item.isFolder && item?.state?.currentState === 'downloading')
+        // console.log(!item.isFolder && item?.state?.currentState === 'downloading')
 
 
 
