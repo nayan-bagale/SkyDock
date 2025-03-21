@@ -1,5 +1,9 @@
-import { moveFileIntoFolder } from "@/redux/features/explorer/explorerSlice";
+import { moveFileIntoFolder, setItemDragged } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { onDropTweak } from "@/tweaks/ElementEvent";
+import cn from "@/utils";
+import { FolderT } from "@skydock/types";
+import { useState } from "react";
 import DesktopItems from "./DesktopItems";
 
 interface DesktopProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -8,37 +12,41 @@ interface DesktopProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Desktop = ({ children }: DesktopProps) => {
     const dispatch = useAppDispatch();
+    const [isOver, setIsOver] = useState(false);
 
     const itemDragged = useAppSelector((state) => state.explorer.itemDragged);
+    const desktopItem = useAppSelector((state) => state.explorer.explorerItems["desktop"]) as FolderT;
 
-    const handleDrop = async (e: React.DragEvent) => {
+    const handleDragOverInner = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        setIsOver(true); // Set highlight when a file is dragged over
+
+    };
+
+    const handleDragLeaveInner = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
-        console.log(e.target);
+        setIsOver(false); // Remove highlight when the file leaves the folder
+
+    };
+
+    const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        setIsOver(false); // ✅ Ensure highlight is removed after dropping
         if (!itemDragged) return;
+        if (desktopItem.children.includes(itemDragged.id)) return;
 
-        const droppedItem = e.target as HTMLElement;
-        // console.log(droppedItem);
-
-        if (droppedItem && itemDragged.id !== droppedItem.id) {
-            // console.log("Dragged index:", itemDragged.name);
-            // console.log("Target index:", droppedItem.id);
-            // await updateFileApi({ id: itemDragged.id, parent_id: droppedItem.id });
-            dispatch(
-                moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id })
-            );
-        }
-
-        // dispatch(setItemDragged(null));
+        dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: desktopItem.id }));
+        dispatch(setItemDragged(null));
     };
 
 
 
     return (
         <div
-            className="flex-1 w-full"
-            id="desktop"
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={handleDrop}
+            className={cn("flex-1 w-full", isOver && "bg-gray-200")}
+            onDragOver={handleDragOverInner}
+            onDragLeave={handleDragLeaveInner}
+            onDrop={(e) => onDropTweak(e, handleDrop)}
         >
             <DesktopItems />
             {children}

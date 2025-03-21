@@ -1,3 +1,4 @@
+import { onDropTweak } from '@/tweaks/ElementEvent';
 import { Icons } from '@skydock/ui/icons';
 import { motion } from 'framer-motion';
 import React, { forwardRef, ReactNode, useCallback, useState } from 'react';
@@ -34,8 +35,6 @@ export const DragDropWrapper = forwardRef<HTMLDivElement, DragDropWrapperProps>(
         }, [dragging])
 
         const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
-            e.preventDefault()
-
             // Only call handlefiles if the drag is from outside the browser
             if (e.dataTransfer.types.includes("Files") && (e.dataTransfer.types.length === 1)) {
                 handlefiles(e.dataTransfer.files);
@@ -59,7 +58,7 @@ export const DragDropWrapper = forwardRef<HTMLDivElement, DragDropWrapperProps>(
                     dragging && ' z-50 border-2 border-dashed backdrop-blur bg-white/20 border-gray-400',
                 )}
                     onDragOver={handleDragOver}
-                    onDrop={handleDrop}
+                    onDrop={(e) => onDropTweak(e, handleDrop)}
                     onDragEnter={handleDragEnter}
                     onDragLeave={handleDragLeave}
                 >

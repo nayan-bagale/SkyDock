@@ -1,3 +1,4 @@
+import { onDropTweak } from '@/tweaks/ElementEvent';
 import cn from '@/utils';
 import { DragEventT, FileT, FolderT, MouseEventT } from '@skydock/types';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -82,9 +83,6 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
         };
 
         const handleDropInner = (event: React.DragEvent<HTMLDivElement>) => {
-            event.preventDefault();
-
-
             setIsOver(false); // ✅ Ensure highlight is removed after dropping
             handleDrop(event)
         };
@@ -114,7 +112,7 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                         draggable
                         onDragStart={handleDragStart}
                         onDragOver={handleDragOverInner}
-                        onDrop={handleDropInner}
+                        onDrop={(e) => onDropTweak(e, handleDropInner)}
                         onDragLeave={handleDragLeaveInner}
                     >
                         <Icon className=" w-16" />
