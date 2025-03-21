@@ -8,11 +8,12 @@ export type DraggedFilesT = Pick<React.DragEvent<HTMLDivElement>, 'dataTransfer'
 
 interface DragDropWrapperProps {
     children?: ReactNode
-    handlefiles: (files: DraggedFilesT) => void
+    handleExternalfiles: (files: DraggedFilesT) => void
+    handleInternalFiles: (e: React.DragEvent<HTMLDivElement>) => void
 }
 
 export const DragDropWrapper = forwardRef<HTMLDivElement, DragDropWrapperProps>(
-    ({ children, handlefiles }, ref) => {
+    ({ children, handleExternalfiles, handleInternalFiles }, ref) => {
         const [dragging, setDragging] = useState(false)
 
         const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {
@@ -37,12 +38,14 @@ export const DragDropWrapper = forwardRef<HTMLDivElement, DragDropWrapperProps>(
         const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
             // Only call handlefiles if the drag is from outside the browser
             if (e.dataTransfer.types.includes("Files") && (e.dataTransfer.types.length === 1)) {
-                handlefiles(e.dataTransfer.files);
+                handleExternalfiles(e.dataTransfer.files);
                 // console.log('Element is from the browser.');
+            } else {
+                handleInternalFiles(e)
             }
 
             setDragging(false)
-        }, [handlefiles])
+        }, [handleExternalfiles, handleInternalFiles])
 
         const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
             const target = e.relatedTarget as HTMLElement | null;

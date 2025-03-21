@@ -1,3 +1,4 @@
+import { useUpdateItemMutation } from "@/redux/APISlice";
 import { moveFileIntoFolder, setItemDragged } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { onDropTweak } from "@/tweaks/ElementEvent";
@@ -16,6 +17,7 @@ const Desktop = ({ children }: DesktopProps) => {
 
     const itemDragged = useAppSelector((state) => state.explorer.itemDragged);
     const desktopItem = useAppSelector((state) => state.explorer.explorerItems["desktop"]) as FolderT;
+    const [updateFileApi] = useUpdateItemMutation();
 
     const handleDragOverInner = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
@@ -30,10 +32,11 @@ const Desktop = ({ children }: DesktopProps) => {
     };
 
     const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
         setIsOver(false); // ✅ Ensure highlight is removed after dropping
         if (!itemDragged) return;
         if (desktopItem.children.includes(itemDragged.id)) return;
+
+        await updateFileApi({ id: itemDragged.id, parent_id: desktopItem.id });
 
         dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: desktopItem.id }));
         dispatch(setItemDragged(null));

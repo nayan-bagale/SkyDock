@@ -28,7 +28,7 @@ const ExplorerItems = () => {
 
     // Handle drag start for internal elements
     const handleDragStart: handleDragStartT = (e, item) => {
-        e.dataTransfer.setData("application/json", JSON.stringify(item));
+        // e.dataTransfer.setData("application/json", JSON.stringify(item));
         dispatch(setItemDragged(item));
 
     };
@@ -59,7 +59,7 @@ const ExplorerItems = () => {
 
     if (item?.isFolder) {
         return (<>
-            <div className={cn('relative h-full', view === 'row' ? ' w-full' : 'flex gap-2 items-start justify-start flex-wrap w-fit')}>
+            <div className={cn('relative', view === 'row' ? ' w-full' : 'flex gap-2 items-start justify-start flex-wrap w-fit')}>
                 {files.map((child, index) => (
                     <Item
                         key={child.id}

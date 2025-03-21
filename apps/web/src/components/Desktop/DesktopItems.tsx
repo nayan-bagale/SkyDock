@@ -1,4 +1,6 @@
-import { useAppSelector } from "@/redux/hooks";
+import { useUpdateItemMutation } from "@/redux/APISlice";
+import { moveFileIntoFolder, setItemDragged } from "@/redux/features/explorer/explorerSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { handleDragStartT, handleDropT } from "@skydock/types";
 import { useMemo } from "react";
 import Item from "../Apps/Explorer/Items";
@@ -7,6 +9,10 @@ const DesktopItems = () => {
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
 
     const desktopItem = explorerItems["desktop"];
+    const dispatch = useAppDispatch();
+    const itemDragged = useAppSelector((state) => state.explorer.itemDragged);
+    const [updateFileApi] = useUpdateItemMutation();
+
 
 
     const files = useMemo(() => {
@@ -17,29 +23,28 @@ const DesktopItems = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [explorerItems])
 
-    // console.log(files)
 
     // Handle drag start for internal elements
     const handleDragStart: handleDragStartT = (e, item) => {
         // e.dataTransfer.setData("application/json", JSON.stringify(item));
-        // dispatch(setItemDragged(item));
+        dispatch(setItemDragged(item));
 
     };
 
     // Handle reordering items
     const handleDrop: handleDropT = async (e, droppedItem) => {
         e.preventDefault();
-        // if (!itemDragged) return;
+        if (!itemDragged) return;
 
-        // if (droppedItem.isFolder && (itemDragged.id !== droppedItem.id)) {
-        //     // console.log("Dragged index:", itemDragged.name);
-        //     // console.log("Target index:", droppedItem.name);
-        //     await updateFileApi({ id: itemDragged.id, parent_id: droppedItem.id });
-        //     dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id }));
-        // }
+        if (droppedItem.isFolder && (itemDragged.id !== droppedItem.id)) {
+            // console.log("Dragged index:", itemDragged.name);
+            // console.log("Target index:", droppedItem.name);
+            await updateFileApi({ id: itemDragged.id, parent_id: droppedItem.id });
+            dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id }));
+        }
 
 
-        // dispatch(setItemDragged(null));
+        dispatch(setItemDragged(null));
 
         // // const updatedFiles = [...files];
         // // const draggedIndex = updatedFiles.findIndex((file) => file.id === itemDragged.id);
