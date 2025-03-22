@@ -79,7 +79,7 @@ const Item: FC<ItemPropsT> =
                 } else {
                     await deleteFile(item.id)
                 }
-                dispatch(deleteItem(item.id))
+                dispatch(deleteItem(item))
             } catch (error) {
                 console.log(error)
             }

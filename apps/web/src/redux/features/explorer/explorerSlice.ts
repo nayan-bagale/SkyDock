@@ -103,23 +103,57 @@ export const explorerSlice = createSlice({
   name: "explorer",
   initialState: initalState,
   reducers: {
+    // addItem: (state, action) => {
+    //   const currentFolderItem = state.explorerItems[state.currentFolder];
+    //   if (currentFolderItem.isFolder) {
+    //     const uniqueChildren =
+    //       currentFolderItem.id === action.payload.parent
+    //         ? new Set([...currentFolderItem.children, action.payload.id])
+    //         : new Set([...currentFolderItem.children]);
+    //     state.explorerItems = {
+    //       ...state.explorerItems,
+    //       [state.currentFolder]: {
+    //         ...currentFolderItem,
+    //         children: [...uniqueChildren],
+    //       },
+    //       [action.payload.id]: action.payload,
+    //     };
+    //   }
+    // },
+
     addItem: (state, action) => {
-      const currentFolderItem = state.explorerItems[state.currentFolder];
-      if (currentFolderItem.isFolder) {
-        const uniqueChildren =
-          currentFolderItem.id === action.payload.parent
-            ? new Set([...currentFolderItem.children, action.payload.id])
-            : new Set([...currentFolderItem.children]);
+      const drives: ExplorerT["activeTab"][] = ["root", "desktop", "trash"];
+      if (drives.includes(action.payload.parent)) {
+        const currentDriveItem = state.explorerItems[
+          action.payload.parent
+        ] as FolderT;
         state.explorerItems = {
           ...state.explorerItems,
-          [state.currentFolder]: {
-            ...currentFolderItem,
-            children: [...uniqueChildren],
+          [currentDriveItem.id]: {
+            ...currentDriveItem,
+            children: [...currentDriveItem.children, action.payload.id],
           },
           [action.payload.id]: action.payload,
         };
+      } else {
+        const currentFolderItem = state.explorerItems[action.payload.parent];
+        if (currentFolderItem.isFolder) {
+          const uniqueChildren =
+            currentFolderItem.id === action.payload.parent
+              ? new Set([...currentFolderItem.children, action.payload.id])
+              : new Set([...currentFolderItem.children]);
+          state.explorerItems = {
+            ...state.explorerItems,
+            [state.currentFolder]: {
+              ...currentFolderItem,
+              children: [...uniqueChildren],
+            },
+            [action.payload.id]: action.payload,
+          };
+        }
       }
     },
+
     deleteItem: (state, action) => {
       const deleteRecursively = (itemId: FolderT["id"]) => {
         const item = state.explorerItems[itemId];
@@ -131,18 +165,18 @@ export const explorerSlice = createSlice({
         delete state.explorerItems[itemId];
       };
 
-      const currentFolderItem = state.explorerItems[state.currentFolder];
+      const currentFolderItem = state.explorerItems[action.payload.parent];
       if (currentFolderItem.isFolder) {
         state.explorerItems = {
           ...state.explorerItems,
           [state.currentFolder]: {
             ...currentFolderItem,
             children: currentFolderItem.children.filter(
-              (child) => child !== action.payload
+              (child) => child !== action.payload.id
             ),
           },
         };
-        deleteRecursively(action.payload);
+        deleteRecursively(action.payload.id);
       }
     },
     renameItem: (state, action) => {
@@ -254,6 +288,7 @@ export const explorerSlice = createSlice({
 
 export const {
   addItem,
+  // iniitalizeExplorerItems,
   setCurrentFolder,
   setForwardStack,
   setBackStack,

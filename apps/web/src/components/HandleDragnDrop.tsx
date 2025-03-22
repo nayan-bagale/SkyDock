@@ -18,7 +18,6 @@ const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
     const dispatch = useAppDispatch()
 
 
-
     const handleExternalfiles = async (files: DraggedFilesT) => {
         const Arrayfiles = Array.from(files)
         const filesObj = Arrayfiles.filter(file => file.type !== '').map((file) => ({
@@ -50,7 +49,6 @@ const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
         await updateFileApi({ id: itemDragged.id, parent_id: droppedItem.id });
         dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id }));
 
-        console.log(itemDragged)
     }
 
     return (

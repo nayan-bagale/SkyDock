@@ -3,8 +3,10 @@ import { moveFileIntoFolder, setItemDragged } from "@/redux/features/explorer/ex
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { onDropTweak } from "@/tweaks/ElementEvent";
 import cn from "@/utils";
+import { nanoid } from "@reduxjs/toolkit";
 import { FolderT } from "@skydock/types";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import useFileUploadsAndUpdateState from "../hooks/useFileUploadsAndUpdateState";
 import DesktopItems from "./DesktopItems";
 
 interface DesktopProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -18,38 +20,80 @@ const Desktop = ({ children }: DesktopProps) => {
     const itemDragged = useAppSelector((state) => state.explorer.itemDragged);
     const desktopItem = useAppSelector((state) => state.explorer.explorerItems["desktop"]) as FolderT;
     const [updateFileApi] = useUpdateItemMutation();
+    const [getUploadUrls] = useFileUploadsAndUpdateState();
 
-    const handleDragOverInner = (event: React.DragEvent<HTMLDivElement>) => {
-        event.preventDefault();
+
+    const handleDragOverInner = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
         setIsOver(true); // Set highlight when a file is dragged over
+        if (!isOver && (e.dataTransfer.types.includes("Files") && (e.dataTransfer.types.length === 1))) {
+            setIsOver(true);
+        }
 
     };
 
     const handleDragLeaveInner = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        setIsOver(false); // Remove highlight when the file leaves the folder
+        const target = e.relatedTarget as HTMLElement | null;
+        // Only set dragging false if the drag leaves the drop zone
+        if (!target || !target.closest('.drop-zone')) {
+            setIsOver(false);
+        }
 
     };
 
+    const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+        // Only set dragging true if the drag is from outside the browser
+        if (e.dataTransfer.types.includes("Files") && (e.dataTransfer.types.length === 1)) {
+            setIsOver(true);
+        }
+    }, [])
+
+
     const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+
+        // Only call handlefiles if the drag is from outside the browser
+        if (e.dataTransfer.types.includes("Files") && (e.dataTransfer.types.length === 1)) {
+            const Arrayfiles = Array.from(e.dataTransfer.files)
+            const filesObj = Arrayfiles.filter(file => file.type !== '').map((file) => ({
+                id: nanoid(),
+                isFolder: false as const,
+                name: file.name,
+                parent: 'desktop',
+                details: {
+                    name: file.name,
+                    size: file.size.toString(),
+                    // size_display: changeBytes(file.size),
+                    type: file.type,
+                    lastModified: file.lastModified.toString(),
+                    File: file
+                }
+            }))
+
+            await getUploadUrls(filesObj)
+        } else {
+
+            if (!itemDragged) return;
+            if (desktopItem.children.includes(itemDragged.id)) return;
+
+            await updateFileApi({ id: itemDragged.id, parent_id: desktopItem.id });
+
+            dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: desktopItem.id }));
+            dispatch(setItemDragged(null));
+        }
+
+
         setIsOver(false); // ✅ Ensure highlight is removed after dropping
-        if (!itemDragged) return;
-        if (desktopItem.children.includes(itemDragged.id)) return;
-
-        await updateFileApi({ id: itemDragged.id, parent_id: desktopItem.id });
-
-        dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: desktopItem.id }));
-        dispatch(setItemDragged(null));
     };
 
 
 
     return (
         <div
-            className={cn("flex-1 w-full", isOver && "bg-gray-200")}
+            className={cn("flex-1 w-full")}
             onDragOver={handleDragOverInner}
             onDragLeave={handleDragLeaveInner}
             onDrop={(e) => onDropTweak(e, handleDrop)}
+            onDragEnter={handleDragEnter}
         >
             <DesktopItems />
             {children}

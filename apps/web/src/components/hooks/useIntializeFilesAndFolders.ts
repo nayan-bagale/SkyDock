@@ -12,7 +12,7 @@ const useIntializeFilesAndFolders = () => {
       // console.log("Error in fetching files and folders");
       return;
     }
-
+    // TODO: Handle items on desktop
     const itemsObj = data.map((item) => {
       if (item.is_folder) {
         return {

@@ -217,7 +217,7 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
                     </div>
                     <div className=" flex flex-col h-full bg-white w-full py-2">
                         <div className=" flex-1 overflow-y-auto "
-                            onContextMenu={(e) => e.preventDefault()}
+                            onContextMenu={(e) => { e.preventDefault(); e.stopPropagation() }}
                         >
                             {children}
                         </div>
