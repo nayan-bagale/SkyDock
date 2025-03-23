@@ -169,7 +169,7 @@ export const explorerSlice = createSlice({
       if (currentFolderItem.isFolder) {
         state.explorerItems = {
           ...state.explorerItems,
-          [state.currentFolder]: {
+          [currentFolderItem.id]: {
             ...currentFolderItem,
             children: currentFolderItem.children.filter(
               (child) => child !== action.payload.id
