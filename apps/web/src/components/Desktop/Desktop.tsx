@@ -25,7 +25,7 @@ const Desktop = ({ children }: DesktopProps) => {
 
     const handleDragOverInner = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
-        setIsOver(true); // Set highlight when a file is dragged over
+        // setIsOver(true); // Set highlight when a file is dragged over
         if (!isOver && (e.dataTransfer.types.includes("Files") && (e.dataTransfer.types.length === 1))) {
             setIsOver(true);
         }
@@ -89,13 +89,13 @@ const Desktop = ({ children }: DesktopProps) => {
 
     return (
         <div
-            className={cn("flex-1 w-full")}
+            className={cn("flex-1 w-full " + (isOver ? " bg-gray-200" : ""))}
             onDragOver={handleDragOverInner}
             onDragLeave={handleDragLeaveInner}
             onDrop={(e) => onDropTweak(e, handleDrop)}
             onDragEnter={handleDragEnter}
         >
-            <DesktopItems />
+            {!isOver && <DesktopItems />}
             {children}
         </div>
     );
