@@ -56,7 +56,7 @@ const DesktopItems = () => {
     };
 
     return (
-        <div className={'relative h-full flex gap-2 items-start justify-start flex-wrap w-fit'}>
+        <div className={'relative flex gap-2 items-start justify-start flex-wrap w-fit'}>
             {files.map((child, index) => (
                 <Item
                     key={child.id}

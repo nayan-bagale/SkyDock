@@ -89,14 +89,18 @@ const Desktop = ({ children }: DesktopProps) => {
 
     return (
         <div
-            className={cn("flex-1 w-full " + (isOver ? " bg-gray-200" : ""))}
+            className={cn("flex-1 w-full", (isOver && 'border-2 m-1 rounded-2xl border-dashed bg-white/20 border-gray-400'))}
             onDragOver={handleDragOverInner}
             onDragLeave={handleDragLeaveInner}
             onDrop={(e) => onDropTweak(e, handleDrop)}
             onDragEnter={handleDragEnter}
         >
             {!isOver && <DesktopItems />}
+            {/* {isOver && <div className='absolute inset-0 bg-white/20 backdrop-blur z-50 flex items-center justify-center'>
+                <p className='text-lg text-gray-400'>Drop here</p>
+            </div>} */}
             {children}
+
         </div>
     );
 };
