@@ -4,8 +4,8 @@ import { ExplorerT, FileT, FolderT } from "@skydock/types";
 
 const initalState = {
   explorerItems: {
-    root: {
-      id: "root",
+    skydrive: {
+      id: "skydrive",
       isFolder: true,
       name: "Sky-Drive",
       parent: "",
@@ -44,7 +44,7 @@ const initalState = {
     //   id: "file1",
     //   isFolder: false,
     //   name: "file1.txt",
-    //   parent: "root",
+    //   parent: "skydrive",
     //   state: {
     //     currentState: "idle",
     //     progress: 0,
@@ -61,7 +61,7 @@ const initalState = {
     //   id: "folder1",
     //   isFolder: true,
     //   name: "folder1",
-    //   parent: "root",
+    //   parent: "skydrive",
     //   details: {
     //     size: 0,
     //     lastModified: "2023-10-02T12:00:00Z",
@@ -82,10 +82,10 @@ const initalState = {
     //   },
     // },
   },
-  currentFolder: "root",
+  currentFolder: "skydrive",
   backStack: [],
   forwardStack: [],
-  activeTab: "root",
+  activeTab: "skydrive",
   actions: {
     isMinimized: false,
     isMaximized: false,
@@ -122,7 +122,7 @@ export const explorerSlice = createSlice({
     // },
 
     addItem: (state, action) => {
-      const drives: ExplorerT["activeTab"][] = ["root", "desktop", "trash"];
+      const drives: ExplorerT["activeTab"][] = ["skydrive", "desktop", "trash"];
       if (drives.includes(action.payload.parent)) {
         const currentDriveItem = state.explorerItems[
           action.payload.parent
@@ -232,11 +232,24 @@ export const explorerSlice = createSlice({
       state.backStack.push(state.currentFolder);
       state.currentFolder = action.payload;
     },
+
+    setCurrentFolderAndCurrentTab: (
+      state,
+      action: PayloadAction<{
+        currentFolder: string;
+        activeTab: ExplorerT["activeTab"];
+      }>
+    ) => {
+      state.currentFolder = action.payload.currentFolder;
+      state.activeTab = action.payload.activeTab;
+      state.backStack = [];
+      state.forwardStack = [];
+    },
     setForwardStack: (state) => {
       const temp = state.forwardStack.pop();
       if (temp) state.backStack.push(temp);
       state.currentFolder =
-        state.forwardStack[state.forwardStack.length - 1] || "root";
+        state.forwardStack[state.forwardStack.length - 1] || "skydrive";
     },
     setBackStack: (state) => {
       const temp = state.backStack.pop();
@@ -262,10 +275,14 @@ export const explorerSlice = createSlice({
     },
 
     explorerProcess: (state, action) => {
-      state.currentFolder = "root";
+      state.currentFolder = "skydrive";
       state.backStack = [];
       state.forwardStack = [];
       state.actions.isProcessOn = action.payload;
+    },
+
+    openExplorer: (state) => {
+      state.actions.isProcessOn = true;
     },
 
     changeExplorerSize: (state) => {
@@ -290,6 +307,7 @@ export const {
   addItem,
   // iniitalizeExplorerItems,
   setCurrentFolder,
+  setCurrentFolderAndCurrentTab,
   setForwardStack,
   setBackStack,
   setBreadCrumb,
@@ -299,6 +317,7 @@ export const {
   moveFileIntoFolder,
   changeView,
   explorerProcess,
+  openExplorer,
   changeExplorerSize,
   changeExplorerMinimized,
   changeExplorerLastSize,

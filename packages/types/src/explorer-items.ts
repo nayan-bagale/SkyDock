@@ -70,7 +70,7 @@ export interface FileT {
   };
 }
 
-export type ExplorerItemsActiveTabs = "root" | "trash" | "desktop";
+export type ExplorerItemsActiveTabs = "skydrive" | "trash" | "desktop";
 
 export interface ExplorerT {
   explorerItems: {

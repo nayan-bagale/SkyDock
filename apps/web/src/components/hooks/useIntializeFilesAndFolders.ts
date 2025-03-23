@@ -3,8 +3,8 @@ import { addItem } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { useEffect } from "react";
 
-const useIntializeFilesAndFolders = () => {
-  const { data, isError } = useGetAllFilesQuery("");
+const useIntializeFilesAndFolders = ({ skip }: { skip: boolean }) => {
+  const { data, isError } = useGetAllFilesQuery("", { skip });
   const dispatch = useAppDispatch();
 
   useEffect(() => {

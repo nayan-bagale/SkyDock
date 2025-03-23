@@ -1,7 +1,6 @@
 import HandleDragnDrop from "@/components/HandleDragnDrop";
 import useChangeAppFocus from "@/components/hooks/useChangeAppFocus";
 import { useDrag } from "@/components/hooks/useDrag";
-import useIntializeFilesAndFolders from "@/components/hooks/useIntializeFilesAndFolders";
 import { useCreateFolderMutation } from "@/redux/APISlice";
 import { addItem, changeExplorerLastSize, changeExplorerMinimized, changeExplorerSize, changeView, explorerProcess, setActiveTab, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -20,7 +19,6 @@ const Explorer = () => {
     const dispatch = useAppDispatch();
     const [createFolder] = useCreateFolderMutation()
 
-    useIntializeFilesAndFolders();
 
     const { handleAppFocus } = useChangeAppFocus('Explorer');
 
@@ -48,7 +46,7 @@ const Explorer = () => {
         Icon: JSX.Element;
     }[]>(() => {
         return [
-            { name: 'Root', id: 'root', Icon: <Icons.Cloud className="w-5 h-5" /> },
+            { name: 'Sky-Drive', id: 'skydrive', Icon: <Icons.Cloud className="w-5 h-5" /> },
             // { name: 'Trash', id: 'trash', Icon: <Icons.Trash className="w-5 h-5" /> },
             { name: 'Desktop', id: 'desktop', Icon: <Icons.Folder className="w-5 h-5" /> },
         ]

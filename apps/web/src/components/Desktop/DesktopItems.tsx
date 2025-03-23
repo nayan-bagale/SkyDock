@@ -3,7 +3,7 @@ import { moveFileIntoFolder, setItemDragged } from "@/redux/features/explorer/ex
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { handleDragStartT, handleDropT } from "@skydock/types";
 import { useMemo } from "react";
-import Item from "../Apps/Explorer/Items";
+import Item from "./Items";
 
 const DesktopItems = () => {
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
@@ -46,17 +46,17 @@ const DesktopItems = () => {
 
         dispatch(setItemDragged(null));
 
-        // // const updatedFiles = [...files];
-        // // const draggedIndex = updatedFiles.findIndex((file) => file.id === itemDragged.id);
-        // // if (draggedIndex !== -1) {
-        // //     updatedFiles.splice(draggedIndex, 1);
-        // //     updatedFiles.splice(targetIndex, 0, draggedItem);
-        // // }
-        // // setFiles(updatedFiles);
+        // const updatedFiles = [...files];
+        // const draggedIndex = updatedFiles.findIndex((file) => file.id === itemDragged.id);
+        // if (draggedIndex !== -1) {
+        //     updatedFiles.splice(draggedIndex, 1);
+        //     updatedFiles.splice(targetIndex, 0, draggedItem);
+        // }
+        // setFiles(updatedFiles);
     };
 
     return (
-        <div className={'relative flex gap-2 items-start justify-start flex-wrap w-fit'}>
+        <div className={'relative max-h-[90vh] inline-flex flex-col gap-2 items-start justify-start flex-wrap p-2'}>
             {files.map((child, index) => (
                 <Item
                     key={child.id}

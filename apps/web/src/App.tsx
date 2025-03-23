@@ -5,6 +5,7 @@ import MenuBar from './components/Bar/MenuBar'
 import Desktop from './components/Desktop/Desktop'
 import Dock from './components/Dock/Dock'
 import DraggingItem from './components/DraggingItem'
+import useIntializeFilesAndFolders from './components/hooks/useIntializeFilesAndFolders'
 import './index.css'
 import { useGetSessionQuery } from './redux/APISlice'
 import { useAppSelector } from './redux/hooks'
@@ -12,11 +13,14 @@ import cn from './utils'
 
 function App() {
 
-  const { data, error, isLoading } = useGetSessionQuery('')
+  const { data, error, isLoading, } = useGetSessionQuery('')
   const handleContext = (e: any) => {
     // e.preventDefault()
     // console.log(e.target)
   }
+
+  useIntializeFilesAndFolders({ skip: isLoading });
+
 
   const token = useAppSelector((state) => state.auth.accessToken);
 
