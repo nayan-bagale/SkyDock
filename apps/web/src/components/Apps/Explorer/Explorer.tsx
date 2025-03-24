@@ -24,7 +24,8 @@ const Explorer = () => {
 
     const draggableRef = useRef<HTMLDivElement>(null);
 
-    const currentFolder = useAppSelector((state) => state.explorer.explorerItems[state.explorer.currentFolder])
+    const explorerItems = useAppSelector((state) => state.explorer.explorerItems)
+    const currentFolder = useAppSelector((state) => state.explorer.explorerItems[state.explorer.currentFolder]) as FolderT
     const backStack = useAppSelector((state) => state.explorer.backStack)
     const backStackFoldersName = Object.values(useAppSelector((state) => state.explorer.explorerItems)).filter((item) => backStack.includes(item.id)).map((item) => ({ id: item.id, name: item.name }))
     const forwardStack = useAppSelector((state) => state.explorer.forwardStack)
@@ -53,10 +54,24 @@ const Explorer = () => {
     }, [])
 
     const addFolder = async () => {
+        // Get all folders in current directory
+        const currentFolderChildren = currentFolder.children;
+        const existingFolders = Object.values(explorerItems)
+            .filter(item => currentFolderChildren.includes(item.id));
+
+        // Generate new folder name
+        let newFolderName = 'New Folder';
+        let counter = 1;
+
+        while (existingFolders.some(folder => folder.name === newFolderName)) {
+            newFolderName = `New Folder (${counter})`;
+            counter++;
+        }
+
         const folderObj = {
             id: nanoid(),
             isFolder: true,
-            name: 'New Folder',
+            name: newFolderName,
             parent: currentFolder.id,
             details: {
                 size: 0,
@@ -66,7 +81,6 @@ const Explorer = () => {
         }
 
         await createFolder(folderObj);
-
         dispatch(addItem(folderObj))
     }
 
@@ -128,7 +142,7 @@ const Explorer = () => {
             style={{ x: position.x, y: position.y }}
             onMouseDown={handleMouseDown}
             action={Action}
-            currentFolder={currentFolder as FolderT}
+            currentFolder={currentFolder}
             settings={settings}
             addFolder={addFolder}
             handleFolderTree={handleFolderTree}
