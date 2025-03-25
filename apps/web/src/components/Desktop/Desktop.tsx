@@ -1,4 +1,5 @@
 import { useUpdateItemMutation } from "@/redux/APISlice";
+import { openContextMenu } from '@/redux/features/contextMenu/contextMenuSlice';
 import { moveFileIntoFolder, setItemDragged } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { onDropTweak } from "@/tweaks/ElementEvent";
@@ -85,7 +86,14 @@ const Desktop = ({ children }: DesktopProps) => {
         setIsOver(false); // ✅ Ensure highlight is removed after dropping
     };
 
-
+    const handleContextMenu = (e: React.MouseEvent) => {
+        e.preventDefault();
+        dispatch(openContextMenu({
+            position: { x: e.clientX, y: e.clientY },
+            location: 'desktop',
+            additionalData: { desktopItem }
+        }));
+    };
 
     return (
         <div
@@ -94,10 +102,11 @@ const Desktop = ({ children }: DesktopProps) => {
             onDragLeave={handleDragLeaveInner}
             onDrop={(e) => onDropTweak(e, handleDrop)}
             onDragEnter={handleDragEnter}
+            onContextMenu={handleContextMenu}
         >
             {!isOver && <DesktopItems />}
-            {/* {isOver && <div className='absolute inset-0 bg-white/20 backdrop-blur z-50 flex items-center justify-center'>
-                <p className='text-lg text-gray-400'>Drop here</p>
+            {/* {isOver && <div className='z-50 absolute inset-0 flex justify-center items-center bg-white/20 backdrop-blur'>
+                <p className='text-gray-400 text-lg'>Drop here</p>
             </div>} */}
             {children}
 

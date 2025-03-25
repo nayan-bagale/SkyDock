@@ -2,8 +2,7 @@ import { useUpdateItemMutation } from "@/redux/APISlice";
 import { moveFileIntoFolder, setItemDragged } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import cn from "@/utils";
-import { handleDragStartT, handleDropT } from "@skydock/types";
-import { useMemo } from "react";
+import { FolderT, handleDragStartT, handleDropT } from "@skydock/types";
 import Item from "./Items";
 
 const ExplorerItems = () => {
@@ -17,13 +16,15 @@ const ExplorerItems = () => {
     const itemDragged = useAppSelector((state) => state.explorer.itemDragged);
     const [updateFileApi] = useUpdateItemMutation();
 
-    const files = useMemo(() => {
-        if (item?.isFolder) {
-            return item.children.map((child) => explorerItems[child]).sort((a) => a.isFolder ? -1 : 1)
-        }
-        return []
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentFolder, explorerItems])
+    // const files = useMemo(() => {
+    //     if (item?.isFolder) {
+    //         return item.children.map((child) => explorerItems[child]).sort((a) => a.isFolder ? -1 : 1)
+    //     }
+    //     return []
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [currentFolder, explorerItems])
+
+    const files = (item as FolderT)?.children.map((child) => explorerItems[child]).sort((a) => a.isFolder ? -1 : 1)
 
 
     // Handle drag start for internal elements
@@ -39,8 +40,6 @@ const ExplorerItems = () => {
         if (!itemDragged) return;
 
         if (droppedItem.isFolder && (itemDragged.id !== droppedItem.id)) {
-            // console.log("Dragged index:", itemDragged.name);
-            // console.log("Target index:", droppedItem.name);
             await updateFileApi({ id: itemDragged.id, parent_id: droppedItem.id });
             dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id }));
         }

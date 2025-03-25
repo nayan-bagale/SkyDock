@@ -1,3 +1,4 @@
+import GlobalContextMenu from '@/components/GlobalContextMenu/GlobalContextMenu'
 import { AnimatePresence } from 'framer-motion'
 import Apps_ from './components/Apps/Apps_'
 import Auth from './components/Auth/Auth'
@@ -27,7 +28,7 @@ function App() {
   if (isLoading) return <div>Loading...</div>
 
   return (
-    <main className='h-screen pb-4' onContextMenu={handleContext}>
+    <main className='pb-4 h-screen' onContextMenu={handleContext}>
       {/* <CheckDevice /> */}
       <div className={cn('flex flex-col items-center h-full', !token ? 'justify-center' : 'justify-between')}>
         <AnimatePresence>
@@ -48,9 +49,11 @@ function App() {
               <Dock />
             </div>
             {<DraggingItem />}
+
           </>)
         }
       </div>
+      <GlobalContextMenu />
     </main>
   )
 }

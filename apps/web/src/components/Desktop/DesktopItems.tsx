@@ -37,22 +37,12 @@ const DesktopItems = () => {
         if (!itemDragged) return;
 
         if (droppedItem.isFolder && (itemDragged.id !== droppedItem.id)) {
-            // console.log("Dragged index:", itemDragged.name);
-            // console.log("Target index:", droppedItem.name);
             await updateFileApi({ id: itemDragged.id, parent_id: droppedItem.id });
             dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id }));
         }
 
 
         dispatch(setItemDragged(null));
-
-        // const updatedFiles = [...files];
-        // const draggedIndex = updatedFiles.findIndex((file) => file.id === itemDragged.id);
-        // if (draggedIndex !== -1) {
-        //     updatedFiles.splice(draggedIndex, 1);
-        //     updatedFiles.splice(targetIndex, 0, draggedItem);
-        // }
-        // setFiles(updatedFiles);
     };
 
     return (

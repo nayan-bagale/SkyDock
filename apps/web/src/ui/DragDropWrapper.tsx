@@ -71,7 +71,7 @@ export const DragDropWrapper = forwardRef<HTMLDivElement, DragDropWrapperProps>(
         }, []);
 
         return (
-            <div className=' w-full h-full p-1' ref={ref}>
+            <div className='p-1 w-full h-full' ref={ref}>
                 <div className={cn('w-full h-full relative rounded-2xl p-0.5 transition-colors duration-300 ',
                     dragging && ' z-50 border-2 border-dashed backdrop-blur bg-white/20 border-gray-400',
                 )}
@@ -82,16 +82,16 @@ export const DragDropWrapper = forwardRef<HTMLDivElement, DragDropWrapperProps>(
                 >
                     {!dragging && children}
                     {dragging && (
-                        <div className=' absolute bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 text-xs w-fit'
+                        <div className='bottom-6 left-1/2 absolute flex flex-col items-center gap-2 w-fit text-xs -translate-x-1/2 transform'
 
                         >
-                            <motion.div className=' bg-white p-1 w-fit shadow rounded-full'
+                            <motion.div className='bg-white shadow p-1 rounded-full w-fit'
                                 animate={{ y: [0, -10, 0] }}
                                 transition={{ duration: 1, repeat: Infinity }}
                             >
                                 <Icons.Upload className='h-10' />
                             </motion.div>
-                            <div className=' text-center shadow w-fit bg-white rounded-2xl p-4'>
+                            <div className='bg-white shadow p-4 rounded-2xl w-fit text-center'>
                                 <div>
                                     Drag and drop your files here
                                 </div>

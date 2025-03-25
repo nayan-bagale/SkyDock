@@ -3,6 +3,7 @@ import explorerReducer from "@/redux/features/explorer/explorerSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import backendApi from "./APISlice";
 import { appsSlice } from "./features/apps/appsSlice";
+import contextMenuReducer from "./features/contextMenu/contextMenuSlice";
 import { controlCenterSlice } from "./features/control-center/controlCenterSlice";
 import { settingsSlice } from "./features/settings/settingsSlice";
 import { terminalSlice } from "./features/terminal/terminalSlice";
@@ -15,6 +16,7 @@ export const store = configureStore({
     controlCenter: controlCenterSlice.reducer,
     terminal: terminalSlice.reducer,
     settings: settingsSlice.reducer,
+    contextMenu: contextMenuReducer,
 
     [backendApi.reducerPath]: backendApi.reducer,
   },

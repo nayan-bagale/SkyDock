@@ -12,15 +12,15 @@ interface ContextMenuT {
 
 export const ContextMenu = forwardRef<HTMLDivElement, ContextMenuT>(
     ({ children, className, position }, ref) => {
-
         return (
             <AnimatePresence>
-                <motion.div className={cn(" z-10 absolute bg-gray-50 py-1 px-0.5 text-xs min-w-[10rem] gap-1 shadow-md flex flex-col rounded", className,
-                )}
+                <motion.div className={cn("bg-gray-50 py-1 px-0.5 text-xs min-w-[10rem] gap-1 shadow-md flex flex-col rounded", className)}
                     ref={ref}
                     style={{
-                        x: position?.x,
-                        y: position?.y
+                        left: position?.x,
+                        top: position?.y,
+                        zIndex: 9999,
+                        position: 'absolute'
                     }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -28,13 +28,13 @@ export const ContextMenu = forwardRef<HTMLDivElement, ContextMenuT>(
                 >
                     {children}
                 </motion.div>
-            </AnimatePresence>
+            // </AnimatePresence>
         )
     })
 
 export const ContextMenuSeparator = () => {
     return (
-        <div className=" w-[calc(100%-1rem)] mx-auto border-b border-gray-400 " ></div>
+        <div className="mx-auto border-gray-400 border-b w-[calc(100%-1rem)]" ></div>
     )
 }
 
@@ -65,10 +65,10 @@ export const ContextMenuSub: FC<ContextMenuSubT> = ({
     }
 
     return (
-        <div className=" relative" onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)} >
+        <div className="relative" onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)} >
             <Button size={'menu'} isActive={show} >
                 <div>{name}</div>
-                <Icons.Right_Arrow className=" h-4" />
+                <Icons.Right_Arrow className="h-4" />
             </Button>
             {show && (
                 <AnimatePresence>

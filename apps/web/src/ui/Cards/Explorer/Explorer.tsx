@@ -3,7 +3,7 @@ import cn from "@/utils";
 import { ExplorerItemsActiveTabs, ThemeT } from "@skydock/types";
 import { Icons } from "@skydock/ui/icons";
 import { motion } from "framer-motion";
-import { forwardRef, Fragment, ReactNode, useState } from "react";
+import { forwardRef, Fragment, ReactNode } from "react";
 import { Button } from "../../button";
 
 interface ExplorerCardProps {
@@ -52,14 +52,13 @@ interface ExplorerCardProps {
     onMouseDownCard: () => void;
     className?: string;
     theme: ThemeT;
+    onContextMenu: (e: React.MouseEvent) => void
 
 }
 
 
 export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
-    ({ style, theme, onMouseDown, action, children, onMouseDownCard, currentFolder, settings, addFolder, className, handleFolderTree: { forward, backward }, handleActiveTabs }, ref) => {
-        // const size_obj = { height: action.size.isMaximized ? remToPx(40) : action.size.lastSize.height, width: action.size.isMaximized ? remToPx(55) : action.size.lastSize.width }
-        const [isContextMenuOpen, SetIsContextMenuOpen] = useState(false);
+    ({ style, theme, onMouseDown, action, children, onMouseDownCard, currentFolder, settings, addFolder, className, handleFolderTree: { forward, backward }, handleActiveTabs, onContextMenu }, ref) => {
 
         return (
             // <AnimatePresence>
@@ -74,82 +73,59 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0 }}
                 onMouseDown={onMouseDownCard}
+                onContextMenu={(e) => { e.preventDefault(); e.stopPropagation() }}
             >
-                <div className=" flex items-center shadow relative justify-between px-2 py-1 w-full bg-slate-200/60 rounded"
+                <div className="relative flex justify-between items-center bg-slate-200/60 shadow px-2 py-1 rounded w-full"
                     onMouseDown={onMouseDown}
                     onContextMenu={(e) => e.preventDefault()}
                 >
-                    <div className=" flex gap-1 absolute">
-                        <div className=" h-3 w-3 rounded-full bg-red-400 flex items-center justify-center cursor-default hover:bg-red-600 transition-colors hover:shadow"
+                    <div className="absolute flex gap-1">
+                        <div className="flex justify-center items-center bg-red-400 hover:bg-red-600 hover:shadow rounded-full w-3 h-3 transition-colors cursor-default"
                             onClick={() => action.close()}
                         >
-                            {/* <Icons.Cross className=" fill-white h-4 w-4" /> */}
+                            {/* <Icons.Cross className="fill-white w-4 h-4" /> */}
                         </div>
-                        {/* <div className=" h-3 w-3 rounded-full bg-yellow-600"
+                        {/* <div className="bg-yellow-600 rounded-full w-3 h-3"
                                 onClick={() => action.size.changeSize()}
                             ></div> */}
-                        {/* <div className=" h-3 w-3 rounded-full bg-green-600"
+                        {/* <div className="bg-green-600 rounded-full w-3 h-3"
                             onClick={() => Action("close")}
                             ></div> */}
                     </div>
-                    <div className="text-xs w-full flex items-center justify-start ml-8 gap-2 cursor-default">
-                        <div className=" flex justify-evenly gap-2">
-                            <Button intent={'ghost'} size={'icon'} disabled={backward.disabled} onClick={backward.func} className=" p-1">
-                                <Icons.Left_Arrow className="h-4 w-4" />
+                    <div className="flex justify-start items-center gap-2 ml-8 w-full text-xs cursor-default">
+                        <div className="flex justify-evenly gap-2">
+                            <Button intent={'ghost'} size={'icon'} disabled={backward.disabled} onClick={backward.func} className="p-1">
+                                <Icons.Left_Arrow className="w-4 h-4" />
                             </Button>
                             {/* TODO: Added Forward Functionality. */}
-                            <Button intent={'ghost'} size={'icon'} disabled={true || forward.disabled} onClick={forward.func} className=" p-1">
-                                <Icons.Right_Arrow2 className="h-4 w-4" />
+                            <Button intent={'ghost'} size={'icon'} disabled={true || forward.disabled} onClick={forward.func} className="p-1">
+                                <Icons.Right_Arrow2 className="w-4 h-4" />
                             </Button>
                         </div>
-                        <div className=" font-medium text-sm">{currentFolder.name}</div>
+                        <div className="font-medium text-sm">{currentFolder.name}</div>
                     </div>
-                    <div className=" w-full flex gap-1 justify-end">
+                    <div className="flex justify-end gap-1 w-full">
                         <Button onClick={addFolder}>
-                            <Icons.Folder_Add className=" h-6 w-6" />
+                            <Icons.Folder_Add className="w-6 h-6" />
                         </Button>
-                        <div className=" border-l border-black mx-2 "></div>
+                        <div className="mx-2 border-black border-l"></div>
                         <Button onClick={() => settings.view.func('grid')} isActive={settings.view.state === 'grid'} isActiveClassName=" bg-white hover:bg-none">
-                            <Icons.Grid4 className=" h-5 w-5" />
+                            <Icons.Grid4 className="w-5 h-5" />
                         </Button>
                         <Button onClick={() => settings.view.func('row')} isActive={settings.view.state === 'row'} isActiveClassName=" bg-white hover:bg-none">
-                            <Icons.Grid2 className=" h-5 w-5" />
+                            <Icons.Grid2 className="w-5 h-5" />
                         </Button>
                     </div>
                 </div>
-                <div className=" flex w-full h-full pb-[1.8rem]">
-                    <div className="max-w-[12rem] h-full min-w-[9rem] text-sm justify-between flex flex-col py-1.5 "
+                <div className="flex pb-[1.8rem] w-full h-full">
+                    <div className="flex flex-col justify-between py-1.5 min-w-[9rem] max-w-[12rem] h-full text-sm"
                         onContextMenu={(e) => e.preventDefault()}
 
                     >
 
                         <div className="flex flex-col gap-1.5">
-                            {/* <div className=" px-2 py-1 flex flex-col gap-1 ">
-                                <div className=" text-xs font-semibold text-gray-500">Favourites</div>
-                                <div className="">
-                                    <Button className=" px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none">
-                                        <Icons.Folder className=" h-4 w-4" />
-                                        {'Desktop'}
-                                    </Button>
-                                </div>
-                            </div>
-                            <div className=" px-2 py-1 flex flex-col gap-1 ">
-                                <div className=" text-xs font-semibold text-gray-500">Locations</div>
-                                <div className="">
-                                    <Button className=" px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none">
-                                        <Icons.Folder className=" h-4 w-4" />
-                                        {'Desktop'}
-                                    </Button>
-                                </div>
-                                <div className="">
-                                    <Button className=" px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none">
-                                        <Icons.Cloud className=" h-4 w-4" />
-                                        {"Sky-Drive"}
-                                    </Button>
-                                </div>
-                            </div> */}
-                            <div className=" px-2 py-1 flex flex-col gap-1 ">
-                                <div className=" text-xs font-semibold text-gray-500">Locations</div>
+                            <div className="flex flex-col gap-1 px-2 py-1">
+                                <div className="font-semibold text-gray-500 text-xs">Locations</div>
 
                                 {handleActiveTabs.tabsOptions.map(({ name, id, Icon }, index) => (
                                     <div className="">
@@ -182,8 +158,8 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
                                 ))}
                             </div>
                         </div>
-                        <div className=" px-2 py-1 justify-self-end flex flex-col gap-1 ">
-                            {/* <div className=" text-xs font-semibold text-gray-500">Locations</div> */}
+                        <div className="flex flex-col justify-self-end gap-1 px-2 py-1">
+                            {/* <div className="font-semibold text-gray-500 text-xs">Locations</div> */}
                             <div className="">
                                 <Button
 
@@ -204,31 +180,31 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
                                     }
 
                                     <span className="z-10 relative flex gap-1">
-                                        <Icons.Trash2 className=" h-4 w-4" />
+                                        <Icons.Trash2 className="w-4 h-4" />
                                         {"Trash"}
                                     </span>
                                 </Button>
-                                {/* <Button className=" px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none">
-                                    <Icons.Trash2 className=" h-4 w-4" />
+                                {/* <Button className="flex gap-1 hover:bg-slate-100 drop-shadow-none px-1 w-full">
+                                    <Icons.Trash2 className="w-4 h-4" />
                                     {"Trash"}
                                 </Button> */}
                             </div>
                         </div>
                     </div>
-                    <div className=" flex flex-col h-full bg-white w-full py-2">
-                        <div className=" flex-1 overflow-y-auto "
-                            onContextMenu={(e) => { e.preventDefault(); e.stopPropagation() }}
+                    <div className="flex flex-col bg-white py-2 w-full h-full">
+                        <div className="flex-1 overflow-y-auto"
+                            onContextMenu={onContextMenu}
                         >
                             {children}
                         </div>
-                        <div className=" text-xs border-t px-2 py-0.5 flex items-center w-full "
+                        <div className="flex items-center px-2 py-0.5 border-t w-full text-xs"
                             onContextMenu={(e) => e.preventDefault()}
 
                         >
-                            <Button onClick={() => backward.onClickBreadCrumb(handleActiveTabs.activeTab)} className=" hover:bg-white p-1" size={'icon'} intent={'ghost'}><Icons.Home className=" h-4 w-4" /></Button>
+                            <Button onClick={() => backward.onClickBreadCrumb(handleActiveTabs.activeTab)} className="hover:bg-white p-1" size={'icon'} intent={'ghost'}><Icons.Home className="w-4 h-4" /></Button>
                             {[...backward.backStack, { id: currentFolder.id, name: currentFolder.name }].map((item, index) => index !== 0 && (
                                 <Fragment key={item.id}>
-                                    <Icons.Right_Arrow className=" mt-1 h-5 w-5" />
+                                    <Icons.Right_Arrow className="mt-1 w-5 h-5" />
                                     <Button onClick={() => backward.onClickBreadCrumb(item.id)}>
                                         {item.name}
                                     </Button>

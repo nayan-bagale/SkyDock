@@ -2,7 +2,7 @@ import { onDropTweak } from '@/tweaks/ElementEvent';
 import cn from '@/utils';
 import { DragEventT, FileT, FolderT, MouseEventT } from '@skydock/types';
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useRef, useState } from 'react';
 
 interface DisplayItemsIconsT {
     children?: React.ReactNode;
@@ -13,13 +13,6 @@ interface DisplayItemsIconsT {
     onContextMenu?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     view: 'grid' | 'row';
     onDoubleClick?: () => void;
-    rename: {
-        editing: boolean;
-        name: string;
-        setEditing: React.Dispatch<React.SetStateAction<boolean>>;
-        setName: React.Dispatch<React.SetStateAction<string>>;
-    },
-    saveNewNameToStore: () => void;
     onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
     handleDragStart: MouseEventT;
     handleDrop: DragEventT;
@@ -27,46 +20,22 @@ interface DisplayItemsIconsT {
 
 export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
     ({
-        rename,
         item,
         Icon,
         onContextMenu,
         view,
         onDoubleClick,
-        saveNewNameToStore,
         onKeyDown,
         handleDragStart,
         handleDrop,
     }) => {
-        const [clicked, setClicked] = React.useState(false)
         const [isOver, setIsOver] = useState(false);
 
-        const textareaRef = useRef<HTMLTextAreaElement>(null);
         const iconRef = useRef<HTMLDivElement>(null);
 
-        useEffect(() => {
-            if (rename.editing) {
-                textareaRef.current?.focus();
-            }
-        }, [rename.editing])
-
-        useEffect(() => {
-            if (textareaRef.current) {
-                textareaRef.current.style.height = 'auto';
-                textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-            }
-        }, [rename.name]);
-
-        const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-            if (e.key === 'Enter') {
-                saveNewNameToStore();
-            }
-        }
-
         const enhancedOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-            if (!rename.editing) {
-                onKeyDown(e);
-            }
+            onKeyDown(e);
+
         }
 
         const handleDragOverInner = (event: React.DragEvent<HTMLDivElement>) => {
@@ -86,9 +55,6 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
             setIsOver(false); // ✅ Ensure highlight is removed after dropping
             handleDrop(event)
         };
-        // console.log(!item.isFolder && item?.state?.currentState === 'downloading')
-
-
 
         return <>
             <AnimatePresence>
@@ -115,27 +81,14 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                         onDrop={(e) => onDropTweak(e, handleDropInner)}
                         onDragLeave={handleDragLeaveInner}
                     >
-                        <Icon className=" w-16" />
-
-                        {rename.editing ? (
-                            <textarea
-                                ref={textareaRef}
-                                rows={1}
-                                className={cn(' resize-none w-[11ch] p-0 text-[14px] text-center break-words min-h-1')}
-                                value={rename.name}
-                                onChange={(e) => rename.setName(e.target.value)}
-                                onBlur={saveNewNameToStore} // When user clicks outside the textarea
-                                onKeyDown={handleKeyDown} // When user presses Enter
-                            />
-                        ) : (
-                            <p className={cn('text-[14px] cursor-default text-center select-none ', clicked ? 'w-16 break-words ' : 'truncate h-7 w-[11ch] overflow-hidden')}>{rename.name}</p>
-                        )}
+                        <Icon className="w-16" />
+                        <p className={cn('text-[14px] cursor-default text-center select-none ', 'truncate h-7 w-[11ch] overflow-hidden')}>{item.name}</p>
                         {!item.isFolder && item?.state && item?.state?.currentState === 'downloading' && (
                             <>
-                                <div className="absolute top-0 right-0 w-full bg-black/10 rounded-md h-full ">
-                                    <motion.div className="  bg-black/40 rounded-md" initial={{ height: 0 }} animate={{ height: `${item.state.progress}%` }} />
+                                <div className="top-0 right-0 absolute bg-black/10 rounded-md w-full h-full">
+                                    <motion.div className="bg-black/40 rounded-md" initial={{ height: 0 }} animate={{ height: `${item.state.progress}%` }} />
                                 </div>
-                                <div className=' p-2 backdrop-blur bg-black/50 text-white font-bold flex items-center justify-center rounded-full shadow-sm absolute'>{item.state.progress}%</div>
+                                <div className='absolute flex justify-center items-center bg-black/50 shadow-sm backdrop-blur p-2 rounded-full font-bold text-white'>{item.state.progress}%</div>
                             </>
                         )}
 
@@ -160,8 +113,8 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                         onDrop={handleDropInner}
                         onDragLeave={handleDragLeaveInner}
                     >
-                        <Icon className=" w-6" />
-                        <p className='cursor-default select-none text-center'>{item.name}</p>
+                        <Icon className="w-6" />
+                        <p className='text-center cursor-default select-none'>{item.name}</p>
                         {/* <div>{item.fileDetails.type}</div> */}
                         {/* <div>{item.details.lastModified.split(' ').slice(1, 4).join()}</div>
                         <div>{item.details.size}</div> */}

@@ -2,14 +2,13 @@ import HandleDragnDrop from "@/components/HandleDragnDrop";
 import useChangeAppFocus from "@/components/hooks/useChangeAppFocus";
 import { useDrag } from "@/components/hooks/useDrag";
 import { useCreateFolderMutation } from "@/redux/APISlice";
+import { openContextMenu } from '@/redux/features/contextMenu/contextMenuSlice';
 import { addItem, changeExplorerLastSize, changeExplorerMinimized, changeExplorerSize, changeView, explorerProcess, setActiveTab, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-// import { ExplorerT, FolderT } from "@/types/explorer";
-import { ExplorerItemsActiveTabs, ExplorerT, FolderT } from "@skydock/types";
-
 import { ExplorerCard } from "@/ui/Cards/Explorer/Explorer";
 import remToPx from "@/utils/rem-to-px";
 import { nanoid } from "@reduxjs/toolkit";
+import { ExplorerItemsActiveTabs, ExplorerT, FolderT } from "@skydock/types";
 import { Icons } from "@skydock/ui/icons";
 import { useMemo, useRef } from "react";
 import ExplorerItems from "./ExplorerItems";
@@ -37,9 +36,6 @@ const Explorer = () => {
         ref: draggableRef
     });
 
-    // const handleZIndex = () => {
-    //     if (focusedApp !== 'Explorer') dispatch(setFocusedApp('Explorer'))
-    // }
 
     const tabsOptions = useMemo<{
         name: string;
@@ -130,11 +126,15 @@ const Explorer = () => {
 
     const theme = useAppSelector((state) => state.settings.apperance.theme)
 
-    // const lastpostion = {
-    //     width: draggableRef.current?.clientWidth,
-    //     height: draggableRef.current?.clientHeight
-    // }
 
+    const handleContextMenu = (e: React.MouseEvent) => {
+        e.preventDefault();
+        dispatch(openContextMenu({
+            position: { x: e.clientX, y: e.clientY },
+            location: 'explorer',
+            additionalData: { currentFolder }
+        }));
+    };
 
     return (
         <ExplorerCard
@@ -150,7 +150,7 @@ const Explorer = () => {
             handleActiveTabs={handleActiveTabs}
             className={focusedApp === 'Explorer' ? 'z-20' : ''}
             theme={theme}
-
+            onContextMenu={handleContextMenu}
         >
             <HandleDragnDrop>
                 <ExplorerItems />
