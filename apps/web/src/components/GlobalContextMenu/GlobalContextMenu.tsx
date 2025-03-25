@@ -5,8 +5,6 @@ import { useRef } from 'react';
 import useOnClickOutside from '../hooks/useOnclickOutside';
 import DesktopContextMenu from './DesktopContextMenu';
 import ExplorerContextMenu from './ExplorerContextMenu';
-// import SettingsContextMenu from './SettingsContextMenu';
-// import TerminalContextMenu from '@components/TerminalContextMenu';
 
 const GlobalContextMenu = () => {
     const dispatch = useAppDispatch();
@@ -17,7 +15,6 @@ const GlobalContextMenu = () => {
 
     // Close context menu when clicking outside
     useOnClickOutside(contextMenuRef, (currentRef) => {
-        console.log(currentRef)
         dispatch(closeContextMenu());
     });
 
@@ -38,12 +35,6 @@ const GlobalContextMenu = () => {
             {location === 'desktop' && (
                 <DesktopContextMenu targetId={targetId} additionalData={additionalData} />
             )}
-            {/* {location === 'terminal' && (
-                <TerminalContextMenu targetId={targetId} additionalData={additionalData} />
-            )}
-            {location === 'settings' && (
-                <SettingsContextMenu targetId={targetId} additionalData={additionalData} />
-            )} */}
         </ContextMenu>
     );
 };
