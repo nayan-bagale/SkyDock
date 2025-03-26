@@ -2,6 +2,7 @@ import { cn } from "../utils";
 
 import account_svg from './assests/account-avatar-multimedia-svgrepo-com.svg';
 import logo_svg from './assests/cat-svgrepo-com.svg';
+import paste_svg from './assests/clipboard-svgrepo-com.svg';
 import cloud_svg from './assests/cloud-storage-upload-up-arrow-svgrepo-com.svg';
 import control_center_svg from './assests/control-centre-svgrepo-com.svg';
 import copy_svg from './assests/copy-svgrepo-com.svg';
@@ -102,5 +103,6 @@ export const Icons = {
   Download: ({ className }: { className: string }) => $({ svg: download_svg, name: 'download', className }),
   Trash3: ({ className }: { className: string }) => $({ svg: trash_svg3, name: 'trash', className }),
   Rename: ({ className }: { className: string }) => $({ svg: rename_svg, name: 'rename', className }),
+  Paste: ({ className }: { className: string }) => $({ svg: paste_svg, name: 'paste', className }),
 }
 

@@ -2,7 +2,7 @@ import { X_POSITION, Y_POSITION } from "@/constants";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ExplorerT, FileT, FolderT } from "@skydock/types";
 
-const initalState = {
+const initialState = {
   explorerItems: {
     skydrive: {
       id: "skydrive",
@@ -13,7 +13,6 @@ const initalState = {
         size: 0,
         lastModified: "2023-10-01T12:00:00Z",
       },
-      // children: ["file1", "folder1"],
       children: [],
     },
     desktop: {
@@ -25,7 +24,6 @@ const initalState = {
         size: 0,
         lastModified: "2023-10-01T12:00:00Z",
       },
-      // children: ["file1", "folder1"],
       children: [],
     },
     trash: {
@@ -37,50 +35,8 @@ const initalState = {
         size: 0,
         lastModified: "2023-10-01T12:00:00Z",
       },
-      // children: ["file1", "folder1"],
       children: [],
     },
-    // file1: {
-    //   id: "file1",
-    //   isFolder: false,
-    //   name: "file1.txt",
-    //   parent: "skydrive",
-    //   state: {
-    //     currentState: "idle",
-    //     progress: 0,
-    //   },
-    //   details: {
-    //     name: "file1.txt",
-    //     size: "15KB",
-    //     type: "application/pdf",
-    //     lastModified: "2023-10-01T12:00:00Z",
-    //     // File: new File(["content"], "file1.txt", { type: "text/plain" }),
-    //   },
-    // },
-    // folder1: {
-    //   id: "folder1",
-    //   isFolder: true,
-    //   name: "folder1",
-    //   parent: "skydrive",
-    //   details: {
-    //     size: 0,
-    //     lastModified: "2023-10-02T12:00:00Z",
-    //   },
-    //   children: [],
-    // },
-    // file2: {
-    //   id: "file2",
-    //   isFolder: false,
-    //   name: "file2.jpg",
-    //   parent: "folder1",
-    //   details: {
-    //     name: "file2.jpg",
-    //     size: "200KB",
-    //     type: "image/jpeg",
-    //     lastModified: "2023-10-02T12:00:00Z",
-    //     // File: new File(["content"], "file2.jpg", { type: "image/jpeg" }),
-    //   },
-    // },
   },
   currentFolder: "skydrive",
   backStack: [],
@@ -97,30 +53,17 @@ const initalState = {
     view: "grid",
   },
   itemDragged: null,
+  clipboard: {
+    items: [],
+    operation: null,
+    // sourceFolder: null,
+  },
 } as ExplorerT;
 
 export const explorerSlice = createSlice({
   name: "explorer",
-  initialState: initalState,
+  initialState,
   reducers: {
-    // addItem: (state, action) => {
-    //   const currentFolderItem = state.explorerItems[state.currentFolder];
-    //   if (currentFolderItem.isFolder) {
-    //     const uniqueChildren =
-    //       currentFolderItem.id === action.payload.parent
-    //         ? new Set([...currentFolderItem.children, action.payload.id])
-    //         : new Set([...currentFolderItem.children]);
-    //     state.explorerItems = {
-    //       ...state.explorerItems,
-    //       [state.currentFolder]: {
-    //         ...currentFolderItem,
-    //         children: [...uniqueChildren],
-    //       },
-    //       [action.payload.id]: action.payload,
-    //     };
-    //   }
-    // },
-
     addItem: (state, action) => {
       const drives: ExplorerT["activeTab"][] = ["skydrive", "desktop", "trash"];
       if (drives.includes(action.payload.parent)) {
@@ -296,16 +239,37 @@ export const explorerSlice = createSlice({
       state.actions.lastSize = action.payload;
     },
 
-    // drag and drop
     setItemDragged: (state, action) => {
       state.itemDragged = action.payload;
+    },
+
+    copyToClipboard: (state, action: PayloadAction<string[]>) => {
+      state.clipboard.items = action.payload;
+      state.clipboard.operation = "copy";
+      // state.clipboard.sourceFolder = state.currentFolder;
+    },
+
+    cutToClipboard: (state, action: PayloadAction<string[]>) => {
+      state.clipboard.items = action.payload;
+      state.clipboard.operation = "cut";
+      // state.clipboard.sourceFolder = state.currentFolder;
+    },
+
+    clearClipboard: (state) => {
+      state.clipboard.items = [];
+      state.clipboard.operation = null;
+      // state.clipboard.sourceFolder = null;
+    },
+
+    pasteFromClipboard: (state, action: PayloadAction<string>) => {
+      // This will be handled in a thunk action
+      // The actual paste logic is complex and requires API calls
     },
   },
 });
 
 export const {
   addItem,
-  // iniitalizeExplorerItems,
   setCurrentFolder,
   setCurrentFolderAndCurrentTab,
   setForwardStack,
@@ -323,6 +287,10 @@ export const {
   changeExplorerLastSize,
   setItemDragged,
   setActiveTab,
+  copyToClipboard,
+  cutToClipboard,
+  clearClipboard,
+  pasteFromClipboard,
 } = explorerSlice.actions;
 
 export default explorerSlice.reducer;

@@ -100,7 +100,7 @@ const Explorer = () => {
 
     const settings = {
         view: {
-            func: (v: ExplorerT['settings']['view']) => dispatch(changeView(v)),
+            func: (v: ExplorerT['settings']['view']) => { dispatch(changeView(v)) },
             state: useAppSelector((state) => state.explorer.settings.view)
         }
     }

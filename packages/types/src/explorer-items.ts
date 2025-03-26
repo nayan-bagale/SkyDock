@@ -85,6 +85,11 @@ export interface ExplorerT {
     view: "grid" | "row";
   };
   itemDragged: null | FileT | FolderT;
+  clipboard: {
+    items: string[];
+    operation: "copy" | "cut" | null;
+    // sourceFolder: string | null;
+  };
 }
 
 export type handleDragStartT = (e: any, item: FileT | FolderT) => void;

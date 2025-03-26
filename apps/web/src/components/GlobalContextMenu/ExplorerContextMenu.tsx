@@ -1,15 +1,14 @@
-import useDeleteFolderRecursively from '@/components/hooks/useDeleteFolderRecursively';
-import useFileDownloadWithProgress from '@/components/hooks/useFileDownloadWithProgress';
-import { useCreateFolderMutation, useDeleteFileMutation, useDeleteFolderMutation, useUpdateItemMutation } from '@/redux/APISlice';
+import { useUpdateItemMutation } from '@/redux/APISlice';
 import { closeContextMenu } from '@/redux/features/contextMenu/contextMenuSlice';
-import { addItem, deleteItem, renameItem, setCurrentFolder } from '@/redux/features/explorer/explorerSlice';
+import { copyToClipboard, renameItem } from '@/redux/features/explorer/explorerSlice';
+// import { pasteItems } from '@/redux/features/explorer/explorerThunks';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Button } from '@/ui/button';
 import { ContextMenuSeparator } from '@/ui/ContextMenu';
-import { nanoid } from '@reduxjs/toolkit';
 import { FolderT } from '@skydock/types';
 import { Icons } from '@skydock/ui/icons';
 import { useState } from 'react';
+import useContextMenu from '../hooks/useContextMenu';
 
 interface ExplorerContextMenuProps {
     targetId: string | null;
@@ -20,86 +19,15 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
     const dispatch = useAppDispatch();
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
     const currentFolder = useAppSelector((state) => state.explorer.explorerItems[state.explorer.currentFolder]) as FolderT;
-    const [deleteFile] = useDeleteFileMutation();
-    const [deleteFolder] = useDeleteFolderMutation();
-    const [getNestedFolderItemsId] = useDeleteFolderRecursively();
-    const { downloadFile } = useFileDownloadWithProgress();
+    const clipboardItems = useAppSelector((state) => state.explorer.clipboard);
     const [updateItem] = useUpdateItemMutation();
-    const [createFolder] = useCreateFolderMutation();
     const [isRenaming, setIsRenaming] = useState(false);
     const [newName, setNewName] = useState('');
-
 
     // If targetId exists, we're right-clicking on an item
     const targetItem = targetId ? explorerItems[targetId] : null;
 
-    const handleAddFolder = async () => {
-        // Get all folders in current directory
-        const currentFolderChildren = currentFolder.children;
-        const existingFolders = Object.values(explorerItems)
-            .filter(item => currentFolderChildren.includes(item.id));
-
-        // Generate new folder name
-        let newFolderName = 'New Folder';
-        let counter = 1;
-
-        while (existingFolders.some(folder => folder.name === newFolderName)) {
-            newFolderName = `New Folder (${counter})`;
-            counter++;
-        }
-
-        const folderObj = {
-            id: nanoid(),
-            isFolder: true,
-            name: newFolderName,
-            parent: currentFolder.id,
-            details: {
-                size: 0,
-                lastModified: new Date().toISOString(),
-            },
-            children: []
-        };
-
-        try {
-            await createFolder(folderObj);
-            dispatch(addItem(folderObj));
-            dispatch(closeContextMenu());
-        } catch (error) {
-            console.error('Error creating folder:', error);
-        }
-    };
-
-    const handleOpen = () => {
-        if (targetItem && targetItem.isFolder) {
-            dispatch(setCurrentFolder(targetItem.id));
-        }
-        dispatch(closeContextMenu());
-    };
-
-    const handleDelete = async () => {
-        if (!targetItem) return;
-
-        try {
-            if (targetItem.isFolder) {
-                const arrayItems = getNestedFolderItemsId(targetItem.id, [targetItem.id]);
-                await deleteFolder(arrayItems);
-            } else {
-                await deleteFile(targetItem.id);
-            }
-            dispatch(deleteItem(targetItem));
-        } catch (error) {
-            console.log(error);
-        }
-
-        dispatch(closeContextMenu());
-    };
-
-    const handleDownload = async () => {
-        if (targetItem && !targetItem.isFolder) {
-            await downloadFile(targetItem);
-        }
-        dispatch(closeContextMenu());
-    };
+    const { handleAddFolder, handleOpen, handleDelete, handleDownload, handleCut, handlePaste } = useContextMenu(targetItem);
 
     const handleRename = () => {
         if (!targetItem) return;
@@ -122,17 +50,45 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
         }
     };
 
+    const handleCopy = () => {
+        if (!targetItem) return;
+        dispatch(copyToClipboard([targetItem.id]));
+        dispatch(closeContextMenu());
+    };
+
+    // const handlePaste = () => {
+    //     if (clipboardItems.operation === 'cut') {
+    //         clipboardItems.items.forEach((itemId) => {
+    //             if (!(currentFolder.children.includes(itemId))) {
+    //                 dispatch(moveFileIntoFolder({ fileId: itemId, folderId: currentFolder.id }))
+    //             }
+    //         })
+    //     }
+
+    //     dispatch(clearClipboard())
+    //     dispatch(closeContextMenu());
+    // };
+
     // If we're right-clicking on an empty area (no targetId)
     if (!targetItem) {
+
+        const hasClipboardItems = clipboardItems.items.length > 0 && clipboardItems.operation !== null;
+
+
         return (
             <>
-                <Button size={'menu'} onClick={handleAddFolder}>
+                <Button size={'menu'} onClick={() => handleAddFolder(currentFolder)}>
                     <div>New Folder</div>
                     <Icons.Folder_Add className="h-4" />
                 </Button>
-                <Button size={'menu'}>
+                <Button
+                    size={'menu'}
+                    onClick={() => handlePaste(currentFolder)}
+                    disabled={!hasClipboardItems}
+                    className={!hasClipboardItems ? "opacity-50 cursor-not-allowed" : ""}
+                >
                     <div>Paste</div>
-                    {/* <Icons.Clipboard className="h-4" /> */}
+                    <Icons.Paste className="h-4" />
                 </Button>
             </>
         );
@@ -168,7 +124,7 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
     return (
         <>
             {targetItem.isFolder && (
-                <Button size={'menu'} onClick={handleOpen}>
+                <Button size={'menu'} onClick={() => handleOpen(targetItem, 'explorer')}>
                     <div>Open</div>
                 </Button>
             )}
@@ -182,14 +138,14 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
                 <div>Rename</div>
                 <Icons.Rename className="h-4" />
             </Button>
-            <Button size={'menu'}>
+            <Button size={'menu'} onClick={handleCopy}>
                 <div>Copy</div>
                 <Icons.Copy className="h-4" />
             </Button>
-            {/* <Button size={'menu'}>
+            <Button size={'menu'} onClick={handleCut}>
                 <div>Cut</div>
-                <Icons.Cut className="h-4" />
-            </Button> */}
+                {/* <Icons.Cut className="h-4" /> */}
+            </Button>
             <ContextMenuSeparator />
             <Button size={'menu'} className="hover:bg-red-600" onClick={handleDelete}>
                 <div>Delete</div>
