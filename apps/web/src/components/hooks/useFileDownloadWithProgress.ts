@@ -1,5 +1,6 @@
 import { useGetFileUrlMutation } from "@/redux/APISlice";
-import { FileT } from "@/redux/features/explorer/explorerSlice";
+import { FileT } from "@skydock/types";
+// import { FileT } from "@/redux/features/explorer/explorerSlice";
 
 const useFileDownloadWithProgress = () => {
   const [getFileUrl] = useGetFileUrlMutation();

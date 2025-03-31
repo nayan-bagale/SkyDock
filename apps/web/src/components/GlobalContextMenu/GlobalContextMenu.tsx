@@ -5,6 +5,7 @@ import { useRef } from 'react';
 import useOnClickOutside from '../hooks/useOnclickOutside';
 import DesktopContextMenu from './DesktopContextMenu';
 import ExplorerContextMenu from './ExplorerContextMenu';
+import ImageViewerContextMenu from './ImageViewerContextMenu';
 
 const GlobalContextMenu = () => {
     const dispatch = useAppDispatch();
@@ -34,6 +35,9 @@ const GlobalContextMenu = () => {
             )}
             {location === 'desktop' && (
                 <DesktopContextMenu targetId={targetId} additionalData={additionalData} />
+            )}
+            {location === 'imageViewer' && (
+                <ImageViewerContextMenu additionalData={additionalData} />
             )}
         </ContextMenu>
     );

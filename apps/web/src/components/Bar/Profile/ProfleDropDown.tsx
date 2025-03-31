@@ -1,6 +1,7 @@
 import useOutsideAlerter from "@/components/hooks/useOnclickOutside";
 import { useLogOutApiMutation } from "@/redux/APISlice";
 import { logOut } from "@/redux/features/auth";
+import { lockScreen } from "@/redux/features/lockScreen/lockScreenSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from '@/ui/button';
 import { MainDropDownMenu, MainMenuSeparator } from "@/ui/Cards/Menus/MainDropDownMenu/MainDropDownMenu";
@@ -24,6 +25,10 @@ const ProfileDropdown = () => {
         setShow(!show);
     };
 
+    const handleLockScreen = () => {
+        dispatch(lockScreen());
+    };
+
     return (
         <div className="relative">
             <Button className=""
@@ -33,21 +38,21 @@ const ProfileDropdown = () => {
 
             </Button>
             {show && (
-                <MainDropDownMenu ref={ref} className=" right-0">
-                    {/* <div className="absolute right-0 mt-2 py-2 w-64 bg-gradient-to-r from-pink-500/50 via-purple-500/50 to-indigo-500/50 backdrop-blur-lg rounded-lg shadow-xl border border-gray-100"> */}
+                <MainDropDownMenu ref={ref} className="right-0">
+                    {/* <div className="right-0 absolute bg-gradient-to-r from-pink-500/50 via-purple-500/50 to-indigo-500/50 shadow-xl backdrop-blur-lg mt-2 py-2 border border-gray-100 rounded-lg w-64"> */}
                     <div className="px-4 py-2">
-                        <Icons.User className="h-12 mx-auto" />
-                        {/* <img src="https://picsum.photos/64/64" alt="Profile" className="rounded-full mx-auto" /> */}
-                        <div className="text-center mt-2">
-                            <p className="text-lg font-semibold">{user?.name}</p>
-                            <p className="text-sm text-gray-600">{user?.email}</p>
+                        <Icons.User className="mx-auto h-12" />
+                        {/* <img src="https://picsum.photos/64/64" alt="Profile" className="mx-auto rounded-full" /> */}
+                        <div className="mt-2 text-center">
+                            <p className="font-semibold text-lg">{user?.name}</p>
+                            <p className="text-gray-600 text-sm">{user?.email}</p>
                         </div>
                     </div>
                     <div className="px-4 py-2">
-                        <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-300">
-                            <div className="bg-blue-600 h-2 rounded-full" style={{ width: '50%' }}></div>
+                        <div className="bg-gray-200 dark:bg-gray-300 rounded-full w-full h-2">
+                            <div className="bg-blue-600 rounded-full h-2" style={{ width: '50%' }}></div>
                         </div>
-                        <p className="text-xs text-gray-600 mt-2">250mb of 500mb used</p>
+                        <p className="mt-2 text-gray-600 text-xs">250mb of 500mb used</p>
                     </div>
                     <div className="px-4 py-2">
                         <Button size={'cta'} intent={'cta'}>
@@ -55,15 +60,15 @@ const ProfileDropdown = () => {
                         </Button>
                     </div>
                     <MainMenuSeparator />
-                    <div className="px-4 flex justify-between">
-                        <Button className=" p-1">
+                    <div className="flex justify-between px-4">
+                        <Button className="p-1">
                             <Icons.Settings className="h-4" />
                         </Button>
-                        <Button className=" p-1">
+                        <Button className="p-1" onClick={handleLockScreen}>
                             <Icons.Lock className="h-5" />
                         </Button>
-                        <Button onClick={signOut} className=" p-1 hover:bg-red-600">
-                            <Icons.Logout className="h-5 " />
+                        <Button onClick={signOut} className="hover:bg-red-600 p-1">
+                            <Icons.Logout className="h-5" />
                         </Button>
                     </div>
                     {/* </div> */}

@@ -5,6 +5,7 @@ export type ContextMenuLocation =
   | "desktop"
   | "terminal"
   | "settings"
+  | "imageViewer"
   | null;
 
 interface ContextMenuState {

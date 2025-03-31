@@ -1,6 +1,7 @@
 import IconByMimeType from "@/components/FileIconByMimeType";
 import { openContextMenu } from "@/redux/features/contextMenu/contextMenuSlice";
 import { setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
+import { openImageViewer } from "@/redux/features/imageViewer/imageViewerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { DisplayItemsIcons } from "@/ui/DisplayItemsIcons";
 import { DragEventT, FileT, FolderT, MouseEventT } from "@skydock/types";
@@ -34,16 +35,15 @@ const Item: FC<ItemPropsT> =
 
 
         const handleOpen = () => {
-            console.log('open')
             if (item.isFolder) {
-                dispatch(setCurrentFolder(item.id))
+                dispatch(setCurrentFolder(item.id));
+            } else if (item.details.type?.startsWith('image/')) {
+                dispatch(openImageViewer(item.id));
             }
         }
 
         const handleDoubleClick = () => {
-            if (item.isFolder) {
-                dispatch(setCurrentFolder(item.id))
-            }
+            handleOpen()
         }
 
 

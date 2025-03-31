@@ -5,6 +5,8 @@ import backendApi from "./APISlice";
 import { appsSlice } from "./features/apps/appsSlice";
 import contextMenuReducer from "./features/contextMenu/contextMenuSlice";
 import { controlCenterSlice } from "./features/control-center/controlCenterSlice";
+import contextImageViewer from "./features/imageViewer/imageViewerSlice";
+import lockScreenReducer from "./features/lockScreen/lockScreenSlice";
 import { settingsSlice } from "./features/settings/settingsSlice";
 import { terminalSlice } from "./features/terminal/terminalSlice";
 
@@ -17,6 +19,8 @@ export const store = configureStore({
     terminal: terminalSlice.reducer,
     settings: settingsSlice.reducer,
     contextMenu: contextMenuReducer,
+    imageViewer: contextImageViewer,
+    lockScreen: lockScreenReducer,
 
     [backendApi.reducerPath]: backendApi.reducer,
   },

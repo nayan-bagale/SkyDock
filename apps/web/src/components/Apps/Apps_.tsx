@@ -2,12 +2,13 @@ import { TerminalSkeleton } from "@/components/Apps/terminal/Terminal";
 import { useAppSelector } from "@/redux/hooks";
 import { AnimatePresence } from "framer-motion";
 import { Suspense } from "react";
-import { Explorer, Settings, Terminal } from "./Apps.Lazy";
+import { Explorer, ImageViewer, Settings, Terminal } from "./Apps.Lazy";
 
 const Apps_ = () => {
     const terminal = useAppSelector((state) => state.terminal.actions.isProcessOn);
     const isExplorerOn = useAppSelector((state) => state.explorer.actions.isProcessOn);
     const isSettingsOn = useAppSelector((state) => state.settings.actions.isProcessOn);
+    const isImageViewerOpen = useAppSelector((state) => state.imageViewer.actions.isProcessOn);
 
     return (
         <>
@@ -31,6 +32,11 @@ const Apps_ = () => {
                         <Settings />
                     </Suspense>
                 )}
+            </AnimatePresence>
+            <AnimatePresence>
+                <Suspense fallback={<div>Loding.....</div>}>
+                    {isImageViewerOpen && <ImageViewer />}
+                </Suspense>
             </AnimatePresence>
         </>
     )

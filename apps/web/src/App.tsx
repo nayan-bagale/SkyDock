@@ -1,4 +1,6 @@
 import GlobalContextMenu from '@/components/GlobalContextMenu/GlobalContextMenu'
+import LockScreen from '@/components/LockScreen/LockScreen'
+import useAutoLock from '@/components/hooks/useAutoLock'
 import { AnimatePresence } from 'framer-motion'
 import Apps_ from './components/Apps/Apps_'
 import Auth from './components/Auth/Auth'
@@ -22,6 +24,8 @@ function App() {
 
   useIntializeFilesAndFolders({ skip: isLoading });
 
+  // Use the auto-lock hook with a custom timeout (e.g., 10 minutes)
+  useAutoLock(10 * 60 * 1000);
 
   const token = useAppSelector((state) => state.auth.accessToken);
 
@@ -29,7 +33,9 @@ function App() {
 
   return (
     <main className='pb-4 h-screen' onContextMenu={handleContext}>
-      {/* <CheckDevice /> */}
+      <AnimatePresence>
+        <LockScreen />
+      </AnimatePresence>
       <div className={cn('flex flex-col items-center h-full', !token ? 'justify-center' : 'justify-between')}>
         <AnimatePresence>
           {!token && (
