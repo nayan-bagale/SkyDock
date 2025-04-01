@@ -14,18 +14,17 @@ const ProfileDropdown = () => {
     useOutsideAlerter(ref, () => setShow(false));
     const dispatch = useAppDispatch();
 
-
     const [logOutApi] = useLogOutApiMutation();
     const signOut = () => logOutApi('').then(() => dispatch(logOut()))
 
     const user = useAppSelector(state => state.auth.user);
-
 
     const toggleDropdown = () => {
         setShow(!show);
     };
 
     const handleLockScreen = () => {
+        setShow(false)
         dispatch(lockScreen());
     };
 

@@ -53,7 +53,7 @@ export const ImageViewerCard = forwardRef<HTMLDivElement, ImageViewerCardProps>(
                         <span className="font-medium text-sm">{title}</span>
                     </div>
                 </div>
-                <div className="w-full h-[calc(100%-2rem)]">
+                <div className="w-full h-[calc(100%-1.7rem)]">
                     {children}
                 </div>
             </motion.div>

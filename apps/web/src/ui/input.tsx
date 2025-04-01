@@ -1,9 +1,9 @@
 import cn from "@/utils"
 import { Icons } from "@skydock/ui/icons"
-import { FC, useState } from "react"
+import { FC, InputHTMLAttributes, useState } from "react"
 import { Button } from "./button"
 
-interface InputPasswordProps {
+interface InputPasswordProps extends InputHTMLAttributes<HTMLInputElement> {
     className?: string
     placeholder?: string
     id?: string
@@ -12,7 +12,7 @@ interface InputPasswordProps {
 export const InputPassword: FC<InputPasswordProps> = ({ className, placeholder = "Password", id }) => {
     const [show, setShow] = useState(false)
     return (
-        <div className=" relative w-full ">
+        <div className="relative w-full">
             <input
                 type={show ? 'text' : 'password'}
                 placeholder={placeholder}
@@ -23,8 +23,8 @@ export const InputPassword: FC<InputPasswordProps> = ({ className, placeholder =
                 onClick={() => setShow(p => !p)}
                 size={'icon'}
                 intent={'primary'}
-                className=" text-white rounded-full flex items-center outline-sky-400 justify-center absolute top-1 right-1">
-                {show ? <Icons.Eye className=" h-5  w-5 " /> : <Icons.Closed_Eye className=" h-5  w-5  pt-1" />}
+                className="top-1 right-1 absolute flex justify-center items-center rounded-full outline-sky-400 text-white">
+                {show ? <Icons.Eye className="w-5 h-5" /> : <Icons.Closed_Eye className="pt-1 w-5 h-5" />}
             </Button>
         </div>
     )

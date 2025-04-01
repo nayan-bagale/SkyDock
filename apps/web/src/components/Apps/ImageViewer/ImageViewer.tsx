@@ -4,8 +4,11 @@ import useGetFileURl from '@/components/hooks/useGetFileURl';
 import { openContextMenu } from '@/redux/features/contextMenu/contextMenuSlice';
 import { closeImageViewer } from '@/redux/features/imageViewer/imageViewerSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { Button } from '@/ui/button';
 import { ImageViewerCard } from '@/ui/Cards/ImageViewer/ImageViewer';
+import cn from '@/utils';
 import { FileT } from '@skydock/types';
+import { Icons } from '@skydock/ui/icons';
 import { useEffect, useRef, useState } from 'react';
 
 const ImageViewer = () => {
@@ -102,23 +105,8 @@ const ImageViewer = () => {
             title={imageTitle}
             onContextMenu={handleContextMenu}
         >
-            <div className="flex flex-col h-full">
-                <div className="flex justify-center gap-2 p-2 border-b">
-                    <button onClick={handleZoomIn} className="hover:bg-gray-200 p-1 rounded">
-                        {/* <Icons.ZoomIn className="w-5 h-5" /> */}
-                    </button>
-                    <button onClick={handleZoomOut} className="hover:bg-gray-200 p-1 rounded">
-                        {/* <Icons.ZoomOut className="w-5 h-5" /> */}
-                    </button>
-                    <button onClick={handleRotate} className="hover:bg-gray-200 p-1 rounded">
-                        {/* <Icons.Rotate className="w-5 h-5" /> */}
-                    </button>
-                    <button onClick={handleReset} className="hover:bg-gray-200 p-1 rounded">
-                        {/* <Icons.Reset className="w-5 h-5" /> */}
-                    </button>
-                </div>
-
-                <div className="flex flex-1 justify-center items-center bg-gray-100 overflow-auto">
+            <div className="flex flex-col bg-white pt-1 w-full h-full">
+                <div className="flex flex-1 justify-center items-center overflow-auto">
                     {currentImage ? (
                         <img
                             src={currentImage}
@@ -132,6 +120,20 @@ const ImageViewer = () => {
                     ) : (
                         <div className="text-gray-400">No image selected</div>
                     )}
+                </div>
+                <div className={cn("flex justify-center gap-2 bg-black/5 shadow backdrop-blur mx-auto my-1 p-1 border-b rounded-lg w-fit")}>
+                    <Button onClick={handleZoomIn} className="hover:bg-gray-200 rounded">
+                        <Icons.Zoom_In className="w-5 h-5" />
+                    </Button>
+                    <Button onClick={handleZoomOut} className="hover:bg-gray-200 rounded">
+                        <Icons.Zoom_Out className="w-5 h-5" />
+                    </Button>
+                    <Button onClick={handleRotate} className="hover:bg-gray-200 rounded">
+                        <Icons.Rotate className="w-5 h-5" />
+                    </Button>
+                    <Button onClick={handleReset} className="hover:bg-gray-200 rounded">
+                        <Icons.Reset className="w-6 h-6" />
+                    </Button>
                 </div>
             </div>
         </ImageViewerCard>

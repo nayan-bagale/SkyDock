@@ -1,6 +1,7 @@
 import IconByMimeType from "@/components/FileIconByMimeType";
 import { openContextMenu } from '@/redux/features/contextMenu/contextMenuSlice';
 import { openExplorer, setCurrentFolderAndCurrentTab } from "@/redux/features/explorer/explorerSlice";
+import { openImageViewer } from "@/redux/features/imageViewer/imageViewerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { DisplayItemsIcons } from "@/ui/DisplayItemsIcons";
 import { DragEventT, FileT, FolderT, MouseEventT } from "@skydock/types";
@@ -39,6 +40,8 @@ const Item: FC<ItemPropsT> =
                     currentFolder: item.id,
                     activeTab: 'desktop'
                 }))
+            } else if (item.details.type?.startsWith('image/')) {
+                dispatch(openImageViewer(item.id));
             }
         }
 

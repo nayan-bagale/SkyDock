@@ -34,9 +34,11 @@ const Apps_ = () => {
                 )}
             </AnimatePresence>
             <AnimatePresence>
-                <Suspense fallback={<div>Loding.....</div>}>
-                    {isImageViewerOpen && <ImageViewer />}
-                </Suspense>
+                {isImageViewerOpen &&
+                    <Suspense fallback={<div>Loding.....</div>}>
+                        <ImageViewer />
+                    </Suspense>
+                }
             </AnimatePresence>
         </>
     )

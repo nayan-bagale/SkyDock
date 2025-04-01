@@ -27,6 +27,8 @@ import left_arrow from './assests/left-arrow-backup-2-svgrepo-com.svg';
 import loader_svg from './assests/loading-loader-svgrepo-com.svg';
 import lock_svg from './assests/lock-svgrepo-com.svg';
 import logout_svg from './assests/logout-svgrepo-com.svg';
+import zoom_in_svg from './assests/magnifer-zoom-in-svgrepo-com.svg';
+import zoom_out_svg from './assests/magnifer-zoom-out-svgrepo-com.svg';
 import menu_svg from './assests/mjml-svgrepo-com.svg';
 import move_svg from './assests/move-to-folder-svgrepo-com.svg';
 import paint_svg from './assests/paint-svgrepo-com.svg';
@@ -35,9 +37,11 @@ import image_svg from './assests/picture-photo-image-svgrepo-com.svg';
 import pie_svg from './assests/pie-chart-svgrepo-com.svg';
 import python_image from './assests/python-svgrepo-com.svg';
 import react_svg from './assests/react-svgrepo-com.svg';
+import reset_svg from './assests/reset-svgrepo-com.svg';
 import right_arrow2_svg from './assests/right-arrow-backup-2-svgrepo-com.svg';
 import right_arrow_white from './assests/right-arrow-backup-2-white-svgrepo-com.svg';
 import right_arrow_svg from './assests/right-arrow-svgrepo-com.svg';
+import rotate_svg from './assests/rotate-right-1-svgrepo-com.svg';
 import select_multiple_svg from './assests/select-multiple-svgrepo-com.svg';
 import settings2_svg from './assests/settings-2-svgrepo-com.svg';
 import settings_svg from './assests/settings-svgrepo-com.svg';
@@ -104,5 +108,10 @@ export const Icons = {
   Trash3: ({ className }: { className: string }) => $({ svg: trash_svg3, name: 'trash', className }),
   Rename: ({ className }: { className: string }) => $({ svg: rename_svg, name: 'rename', className }),
   Paste: ({ className }: { className: string }) => $({ svg: paste_svg, name: 'paste', className }),
+  Zoom_In: ({ className }: { className: string }) => $({ svg: zoom_in_svg, name: 'zoom_in', className }),
+  Zoom_Out: ({ className }: { className: string }) => $({ svg: zoom_out_svg, name: 'zoom_out', className }),
+  Reset: ({ className }: { className: string }) => $({ svg: reset_svg, name: 'reset', className }),
+  Rotate: ({ className }: { className: string }) => $({ svg: rotate_svg, name: 'rotate', className }),
+
 }
 

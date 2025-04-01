@@ -9,8 +9,8 @@ interface LockScreenState {
 }
 
 const initialState: LockScreenState = {
-  isLocked: false,
-  pin: null,
+  isLocked: true,
+  pin: "123",
   attempts: 0,
   maxAttempts: 3,
   lockTime: null,
