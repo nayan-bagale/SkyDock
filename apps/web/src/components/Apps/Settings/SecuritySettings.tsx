@@ -69,7 +69,7 @@ const SecuritySettings = () => {
                             className="top-8 right-3 absolute text-gray-500 hover:text-gray-700"
                             onClick={() => setShowPin(!showPin)}
                         >
-                            {showPin ? <Icons.EyeOff className="w-5 h-5" /> : <Icons.Eye className="w-5 h-5" />}
+                            {showPin ? <Icons.Closed_Eye className="w-5 h-5" /> : <Icons.Eye className="w-5 h-5" />}
                         </button>
                     </div>
 

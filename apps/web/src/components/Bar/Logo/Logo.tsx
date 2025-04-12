@@ -22,13 +22,13 @@ const Logo = () => {
 
     return (
         <>
-            <Button className=" p-0 hover:bg-transparent hover:drop-shadow-[0px_0px_5px_#ffffff]"
+            <Button className="hover:bg-transparent hover:drop-shadow-[0px_0px_5px_#ffffff] p-0"
                 onClick={() => setShow(true)}
             >
-                <Icons.Logo className=" h-7" />
+                <Icons.Logo className="h-7" />
             </Button>
             {show && (
-                <MainDropDownMenu ref={ref} className=" left-3">
+                <MainDropDownMenu ref={ref} className="left-3">
                     <Button size={'menu'}>
                         About CatOs
                     </Button>
@@ -37,7 +37,7 @@ const Logo = () => {
                         MainDropDownMenu
                     </Button>
                     <SubDropDownMenu name="Recent.." >
-                        <Button size={'menu'} onClick={apps.terminal} >
+                        <Button size={'menu'}>
                             Terminal
                         </Button>
                         <MainMenuSeparator />

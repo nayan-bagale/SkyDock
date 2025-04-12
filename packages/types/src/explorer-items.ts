@@ -1,3 +1,4 @@
+import React from "react";
 import { ActionsT } from "./common";
 import { OptionalExceptForId } from "./custom-types";
 import { ExplorerItemsPrismaT } from "./prisma";
@@ -95,12 +96,12 @@ export interface ExplorerT {
 export type handleDragStartT = (e: any, item: FileT | FolderT) => void;
 
 export type handleDropT = (
-  e: React.DragEvent,
+  e: React.DragEvent<HTMLElement>,
   item: FileT | FolderT,
   targetIndex: number
 ) => Promise<void>;
 
-export type DragEventT = (e: React.DragEvent) => void;
+export type DragEventT = (e: React.DragEvent<HTMLElement>) => void;
 
 export type MouseEventT = (
   event: MouseEvent | TouchEvent | PointerEvent,

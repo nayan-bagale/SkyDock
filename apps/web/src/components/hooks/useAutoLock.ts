@@ -8,21 +8,21 @@ const useAutoLock = (inactivityTime = 5 * 60 * 1000) => {
   const isLocked = useAppSelector((state) => state.lockScreen.isLocked);
 
   // Handle tab visibility changes
-  useEffect(() => {
-    if (isLocked) return;
+  // useEffect(() => {
+  //   if (isLocked) return;
 
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "hidden") {
-        dispatch(lockScreen());
-      }
-    };
+  //   const handleVisibilityChange = () => {
+  //     if (document.visibilityState === "hidden") {
+  //       dispatch(lockScreen());
+  //     }
+  //   };
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+  //   document.addEventListener("visibilitychange", handleVisibilityChange);
 
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [dispatch, isLocked]);
+  //   return () => {
+  //     document.removeEventListener("visibilitychange", handleVisibilityChange);
+  //   };
+  // }, [dispatch, isLocked]);
 
   // Handle inactivity
   useEffect(() => {

@@ -38,7 +38,7 @@ const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
         await getUploadUrls(filesObj)
     }
 
-    const handleInternalFiles = async (e) => {
+    const handleInternalFiles = async (e: any) => {
 
         if (!itemDragged) return
 

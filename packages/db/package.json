@@ -10,7 +10,10 @@
     "db:studio": "prisma studio"
   },
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "import": "./src/index.ts",
+      "require": "./dist/index.js"
+    }
   },
   "devDependencies": {
     "prisma": "^6.3.0"
