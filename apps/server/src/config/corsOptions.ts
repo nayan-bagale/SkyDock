@@ -1,11 +1,11 @@
 import { CorsOptions } from "cors";
 
 export const allowedOrigins = [
-  "https://www.yoursite.com",
   "http://127.0.0.1:5500",
   "http://localhost:3500",
   "http://localhost:5173",
   "http://localhost:4173",
+  "https://skydock.nayanbagale.me",
 ];
 
 export const corsOptions: CorsOptions = {
@@ -19,4 +19,6 @@ export const corsOptions: CorsOptions = {
   optionsSuccessStatus: 200,
   // preflightContinue: true,
   credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
