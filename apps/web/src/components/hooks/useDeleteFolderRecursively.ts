@@ -13,11 +13,14 @@ const useDeleteFolderRecursively = () => {
       }
 
       for (const child of folder.children) {
-        arr.push(child);
         if (items[child].isFolder) {
-          return deleteFolderRecursively(child, arr);
+          deleteFolderRecursively(child, arr); // recurse without returning early
+        } else {
+          arr.push(child);
         }
       }
+
+      arr.push(itemId);
 
       return arr;
     },

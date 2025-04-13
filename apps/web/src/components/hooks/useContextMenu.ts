@@ -100,9 +100,8 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
 
     try {
       if (targetItem.isFolder) {
-        const arrayItems = getNestedFolderItemsId(targetItem.id, [
-          targetItem.id,
-        ]);
+        const arrayItems = getNestedFolderItemsId(targetItem.id, []);
+        console.log(arrayItems);
         await deleteFolder(arrayItems);
       } else {
         await deleteFile(targetItem.id);

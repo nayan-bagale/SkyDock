@@ -1,5 +1,4 @@
 import GlobalContextMenu from "@/components/GlobalContextMenu/GlobalContextMenu";
-import LockScreen from "@/components/LockScreen/LockScreen";
 import useAutoLock from "@/components/hooks/useAutoLock";
 import { AnimatePresence } from "framer-motion";
 import { useMemo } from "react";
@@ -61,11 +60,11 @@ function App() {
       >
         {token ? (
           <>
-            <AnimatePresence>
+            {/* <AnimatePresence>
               {isLocked && (
                 <LockScreen />
               )}
-            </AnimatePresence>
+            </AnimatePresence> */}
             {MainScreen}
           </>
         ) : (

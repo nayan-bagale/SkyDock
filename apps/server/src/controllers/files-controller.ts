@@ -23,7 +23,7 @@ class FilesController {
     const userId = req.user?.id as string;
     const signed_urls = await Promise.all(
       files.map(async (file) => {
-        const [filename, extension] = file.name.split(".");
+        const extension = file.name.split(".").pop();
         const url = await Store.putObjectUrl(
           userId,
           // `${filename?.split(" ").join("-")}-${file.id}.${extension}`,

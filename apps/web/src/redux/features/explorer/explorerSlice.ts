@@ -97,6 +97,28 @@ export const explorerSlice = createSlice({
       }
     },
 
+    initializeItems: (state, action) => {
+      const drives: ExplorerT["activeTab"][] = ["skydrive", "desktop", "trash"];
+      if (drives.includes(action.payload.parent)) {
+        const currentDriveItem = state.explorerItems[
+          action.payload.parent
+        ] as FolderT;
+        state.explorerItems = {
+          ...state.explorerItems,
+          [currentDriveItem.id]: {
+            ...currentDriveItem,
+            children: [...currentDriveItem.children, action.payload.id],
+          },
+          [action.payload.id]: action.payload,
+        };
+      } else {
+        state.explorerItems = {
+          ...state.explorerItems,
+          [action.payload.id]: action.payload,
+        };
+      }
+    },
+
     deleteItem: (state, action) => {
       const deleteRecursively = (itemId: FolderT["id"]) => {
         const item = state.explorerItems[itemId];
@@ -122,6 +144,7 @@ export const explorerSlice = createSlice({
         deleteRecursively(action.payload.id);
       }
     },
+
     renameItem: (state, action) => {
       const item = state.explorerItems[action.payload.id];
       state.explorerItems = {
@@ -269,6 +292,7 @@ export const explorerSlice = createSlice({
 });
 
 export const {
+  initializeItems,
   addItem,
   setCurrentFolder,
   setCurrentFolderAndCurrentTab,

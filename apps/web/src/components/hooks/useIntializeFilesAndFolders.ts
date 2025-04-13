@@ -1,5 +1,5 @@
 import { useGetAllFilesQuery } from "@/redux/APISlice";
-import { addItem } from "@/redux/features/explorer/explorerSlice";
+import { initializeItems } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { useEffect } from "react";
 
@@ -45,7 +45,9 @@ const useIntializeFilesAndFolders = ({ skip }: { skip: boolean }) => {
       }
     });
 
-    itemsObj.forEach((item) => dispatch(addItem(item)));
+    console.log("itemsObj", itemsObj);
+
+    itemsObj.forEach((item) => dispatch(initializeItems(item)));
   }, [data]);
 };
 
