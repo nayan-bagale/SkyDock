@@ -25,7 +25,27 @@ class Email {
       html: "<strong>Our team will activate your account soon. Thank you for registering to SkyDock</strong>",
     };
 
-    return sgMail.send(msg);
+    const msgToDev: MailDataRequired = {
+      to: "skydockos@gmail.com",
+      from: {
+        name: "SkyDock Devs",
+        email: "skydockos@gmail.com",
+      },
+      subject: "New user registered",
+      text: `New user registered with email: ${toEmail}`,
+      html: `<strong>New user registered with email: ${toEmail}</strong>`,
+    };
+
+    sgMail
+      .send(msg)
+      .then(() => {
+        console.log("Email sent");
+        sgMail.send(msgToDev);
+        console.log("Email sent to dev");
+      })
+      .catch((error) => {
+        console.error("Error sending email:", error);
+      });
   }
 }
 

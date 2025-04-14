@@ -45,8 +45,6 @@ const useIntializeFilesAndFolders = ({ skip }: { skip: boolean }) => {
       }
     });
 
-    console.log("itemsObj", itemsObj);
-
     itemsObj.forEach((item) => dispatch(initializeItems(item)));
   }, [data]);
 };
