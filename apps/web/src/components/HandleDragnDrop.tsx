@@ -9,9 +9,10 @@ import useFileUploadsAndUpdateState from './hooks/useFileUploadsAndUpdateState'
 
 
 const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
+    const isGuestMode = useAppSelector((state) => state.auth.guestMode);
 
     const currentFolder = useAppSelector((state) => state.explorer.currentFolder)
-    const [getUploadUrls] = useFileUploadsAndUpdateState();
+    const [getUploadUrls, uploadGuestModeFiles] = useFileUploadsAndUpdateState();
     const itemDragged = useAppSelector((state) => state.explorer.itemDragged);
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
     const [updateFileApi] = useUpdateItemMutation();
@@ -34,8 +35,11 @@ const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
                 File: file
             }
         }))
-
-        await getUploadUrls(filesObj)
+        if (isGuestMode) {
+            uploadGuestModeFiles(filesObj)
+        } else {
+            await getUploadUrls(filesObj)
+        }
     }
 
     const handleInternalFiles = async (e: any) => {
@@ -45,8 +49,9 @@ const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
         const droppedItem = explorerItems[currentFolder] as FolderT
 
         if (droppedItem.children.includes(itemDragged.id)) return
-
-        await updateFileApi({ id: itemDragged.id, parent_id: droppedItem.id });
+        if (!isGuestMode) {
+            await updateFileApi({ id: itemDragged.id, parent_id: droppedItem.id });
+        }
         dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id }));
 
     }

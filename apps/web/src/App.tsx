@@ -15,14 +15,17 @@ import { useAppSelector } from "./redux/hooks";
 import cn from "./utils";
 
 function App() {
-  const { data, error, isLoading } = useGetSessionQuery("");
+  const isGuestMode = useAppSelector((state) => state.auth.guestMode);
+  const { data, error, isLoading } = useGetSessionQuery("", {
+    skip: isGuestMode,
+  });
   const { isLocked } = useAppSelector((state) => state.lockScreen);
   const handleContext = (e: any) => {
     // e.preventDefault()
     // console.log(e.target)
   };
 
-  useIntializeFilesAndFolders({ skip: isLoading });
+  useIntializeFilesAndFolders({ skip: isLoading || isGuestMode });
 
   // Use the auto-lock hook with a custom timeout (e.g., 10 minutes)
   useAutoLock(10 * 60 * 1000);
@@ -55,10 +58,10 @@ function App() {
       <div
         className={cn(
           "flex flex-col items-center h-full",
-          !token ? "justify-center" : "justify-between"
+          !token && !isGuestMode ? "justify-center" : "justify-between"
         )}
       >
-        {token ? (
+        {token || isGuestMode ? (
           <>
             {/* <AnimatePresence>
               {isLocked && (

@@ -1,5 +1,5 @@
 import { useLoginMutation } from "@/redux/APISlice"
-import { setCredentials } from "@/redux/features/auth"
+import { setCredentials, setGuestMode } from "@/redux/features/auth"
 import { useAppDispatch } from "@/redux/hooks"
 import { Button } from "@/ui/button"
 import { AuthCard } from "@/ui/Cards/AuthFlow/AuthCard"
@@ -57,6 +57,10 @@ const Signin: FC<SigninProps> = ({ windowChange }) => {
         }
     }
 
+    const handleGuestMode = () => {
+        dispatch(setGuestMode(true));
+    }
+
     return (
         <AuthCard>
             <h1 className=" text-2xl font-bold text-white ">Login</h1>
@@ -83,6 +87,9 @@ const Signin: FC<SigninProps> = ({ windowChange }) => {
                     <p>Don't have account? </p>
                     <Button className=" hover:bg-transparent text-white " disabled={isLoading} onClick={() => windowChange('signup')}>Register</Button>
                 </div>
+                <Button size={'medium'} onClick={handleGuestMode} className=" w-full flex items-center justify-center my-2 " intent={'secondary'}>
+                    Continue as Guest
+                </Button>
             </Form>
         </AuthCard>
     )

@@ -6,6 +6,7 @@ export const authSlice = createSlice({
   initialState: {
     accessToken: "",
     user: null as LoginResponse | null,
+    guestMode: false,
   },
   reducers: {
     setCredentials: (state, action) => {
@@ -15,10 +16,14 @@ export const authSlice = createSlice({
     logOut: (state) => {
       state.accessToken = "";
       state.user = null;
+      state.guestMode = false;
+    },
+    setGuestMode: (state, action) => {
+      state.guestMode = action.payload;
     },
   },
 });
 
-export const { setCredentials, logOut } = authSlice.actions;
+export const { setCredentials, logOut, setGuestMode } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -192,7 +192,35 @@ const useFileUploadsAndUpdateState = () => {
     return true;
   };
 
-  return [uploadFiles, { isErrors: error.length > 0, errors: error }] as const;
+  const uploadGuestModeFiles = (files: FileTWithFile[]) => {
+    files.forEach((file) =>
+      dispatch(
+        addItem({
+          name: file.name,
+          id: file.id,
+          isFolder: false,
+          parent: file.parent,
+          details: {
+            name: file.name,
+            size: file.details.size,
+            type: file.details.type,
+            lastModified: file.details.lastModified,
+          },
+          state: {
+            currentState: "idle",
+            progress: 0,
+          },
+        })
+      )
+    );
+    return true;
+  };
+
+  return [
+    uploadFiles,
+    uploadGuestModeFiles,
+    { isErrors: error.length > 0, errors: error },
+  ] as const;
 };
 
 export default useFileUploadsAndUpdateState;
