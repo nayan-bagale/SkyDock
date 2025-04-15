@@ -1,11 +1,18 @@
 import { useGetAllFilesQuery } from "@/redux/APISlice";
 import { initializeItems } from "@/redux/features/explorer/explorerSlice";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useEffect } from "react";
 
 const useIntializeFilesAndFolders = ({ skip }: { skip: boolean }) => {
-  const { data, isError } = useGetAllFilesQuery("", { skip });
+  const { data, isError, refetch } = useGetAllFilesQuery("", { skip });
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    if (user) {
+      refetch();
+    }
+  }, [refetch, user]);
 
   useEffect(() => {
     if (!data) {
