@@ -13,7 +13,7 @@ class Email {
     return Email.instance;
   }
 
-  sendThankYouForRegisteringEmail(toEmail: string) {
+  sendThankYouForRegisteringEmail(toEmail: string, url: string) {
     const msg: MailDataRequired = {
       to: toEmail,
       from: {
@@ -21,9 +21,11 @@ class Email {
         email: "skydockos@gmail.com",
       },
       subject: "Thank you for registering to SkyDock",
-      text: "Our team will activate your account soon. Thank you for registering to SkyDock",
+      text: `Here is activation link ${url} . Thank you for registering to SkyDock`,
       html: "<strong>Our team will activate your account soon. Thank you for registering to SkyDock</strong>",
     };
+
+    console.log(url);
 
     const msgToDev: MailDataRequired = {
       to: "skydockos@gmail.com",
