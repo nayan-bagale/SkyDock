@@ -9,6 +9,7 @@ import Desktop from "./components/Desktop/Desktop";
 import Dock from "./components/Dock/Dock";
 import DraggingItem from "./components/DraggingItem";
 import useIntializeFilesAndFolders from "./components/hooks/useIntializeFilesAndFolders";
+import useTheme from "./components/hooks/useTheme";
 import "./index.css";
 import { useGetSessionQuery } from "./redux/APISlice";
 import { useAppSelector } from "./redux/hooks";
@@ -25,6 +26,7 @@ function App() {
     // console.log(e.target)
   };
 
+  useTheme();
   useIntializeFilesAndFolders({ skip: isLoading || isGuestMode });
 
   // Use the auto-lock hook with a custom timeout (e.g., 10 minutes)

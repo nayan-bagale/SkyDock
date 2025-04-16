@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { FC, ReactNode } from 'react'
 
 export const Bar: FC<{ children?: ReactNode, className?: string }> = ({ children, className }) => {
-  const color = useAppSelector((state) => state.settings.apperance.theme.color)
+  const color = useAppSelector((state) => state.settings.apperance.theme?.color)
   return (
     <motion.div className={cn(" w-full h-6 bg-white/60", color, className)}
       initial={{ y: -22, opacity: 0 }}

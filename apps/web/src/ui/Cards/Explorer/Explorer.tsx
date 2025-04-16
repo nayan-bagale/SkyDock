@@ -51,7 +51,7 @@ interface ExplorerCardProps {
     addFolder: () => void;
     onMouseDownCard: () => void;
     className?: string;
-    theme: ThemeT;
+    theme: ThemeT | null;
     onContextMenu: (e: React.MouseEvent) => void
 
 }
@@ -64,7 +64,7 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
             // <AnimatePresence>
             <motion.div
                 className={cn(" text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] bg-white/80 backdrop-blur rounded-xl overflow-hidden",
-                    theme.color,
+                    theme?.color,
                     className
                 )}
                 ref={ref}

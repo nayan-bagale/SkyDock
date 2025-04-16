@@ -12,7 +12,7 @@ const Apperance = () => {
     const background = useAppSelector((state) => state.settings.apperance.background);
 
     useEffect(() => {
-        document.body.style.backgroundImage = `url(${background.src})`;
+        document.body.style.backgroundImage = `url(${background?.src})`;
         document.body.style.backgroundRepeat = "no-repeat";
         // document.body.style.setProperty("--blur", `${blurValue}px`);
     }, [background]);
@@ -36,7 +36,7 @@ const Apperance = () => {
                             className={cn(
                                 "w-8 h-8 shadow-md rounded-full outline-sky-500 transition-all",
                                 bg.color,
-                                theme.id === bg.id ? "ring-2 ring-sky-500 scale-110" : " hover:scale-105"
+                                theme?.id === bg.id ? "ring-2 ring-sky-500 scale-110" : " hover:scale-105"
                             )}
                         />
                     ))}
@@ -57,7 +57,7 @@ const Apperance = () => {
                             onClick={() => dispatch(changeBackground(bg))}
                             className={cn(
                                 " w-32 overflow-hidden shadow-md rounded-md outline-sky-500 transition-all",
-                                background.id === bg.id ? "ring-2 p-0.5 ring-sky-500 scale-110" : " hover:scale-105"
+                                background?.id === bg.id ? "ring-2 p-0.5 ring-sky-500 scale-110" : " hover:scale-105"
                             )}
                         >
                             <img className='aspect-video object-fill rounded-md' src={bg.src} alt={bg.id} />

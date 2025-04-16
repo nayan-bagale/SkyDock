@@ -12,8 +12,8 @@ export interface BackgroundT {
 
 export interface SettingsT {
   apperance: {
-    theme: ThemeT;
-    background: BackgroundT;
+    theme: ThemeT | null;
+    background: BackgroundT | null;
   };
   actions: ActionsT;
 }

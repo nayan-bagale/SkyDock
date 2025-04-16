@@ -20,7 +20,7 @@ interface ImageViewerCardProps {
     };
     onMouseDownCard: () => void;
     className?: string;
-    theme: ThemeT;
+    theme: ThemeT | null;
     title: string;
     onContextMenu: (e: React.MouseEvent) => void;
 }
@@ -30,7 +30,7 @@ export const ImageViewerCard = forwardRef<HTMLDivElement, ImageViewerCardProps>(
         return (
             <motion.div
                 className={cn("text-black resize shadow absolute w-[40rem] h-[30rem] min-w-[30rem] max-w-[60rem] min-h-[20rem] max-h-[45rem] bg-white/80 backdrop-blur rounded-xl overflow-hidden",
-                    theme.color,
+                    theme?.color,
                     className
                 )}
                 ref={ref}
