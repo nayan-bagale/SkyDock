@@ -22,7 +22,7 @@ class Email {
       },
       subject: "Thank you for registering to SkyDock",
       text: `Here is activation link ${url} . Thank you for registering to SkyDock`,
-      html: "<strong>Our team will activate your account soon. Thank you for registering to SkyDock</strong>",
+      html: `<strong>Here is activation <a href="${url}">link</a> . Thank you for registering to SkyDock</strong>`,
     };
 
     console.log(url);

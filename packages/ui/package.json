@@ -6,7 +6,8 @@
     "./icons": "./src/icons/index.tsx",
     "./styles": "./style.css",
     "./utils": "./src/utils/index.ts",
-    "./framer-motion": "./src/framer-motion.ts"
+    "./framer-motion": "./src/framer-motion.ts",
+    "./toast": "./src/components/toast/index.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
@@ -26,8 +27,10 @@
   },
   "dependencies": {
     "class-variance-authority": "^0.7.0",
+    "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "framer-motion": "^11.2.13",
+    "sonner": "^2.0.3",
     "tailwind-merge": "^2.3.0"
   }
 }

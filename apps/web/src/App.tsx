@@ -11,7 +11,7 @@ import DraggingItem from "./components/DraggingItem";
 import useIntializeFilesAndFolders from "./components/hooks/useIntializeFilesAndFolders";
 import useTheme from "./components/hooks/useTheme";
 import "./index.css";
-import { useGetSessionQuery } from "./redux/APISlice";
+import { useGetSessionQuery } from "./redux/apis/userAuthApi";
 import { useAppSelector } from "./redux/hooks";
 import cn from "./utils";
 

@@ -120,7 +120,7 @@ class AuthController {
     if (!user.verified) {
       return res
         .status(UNAUTHORIED)
-        .json({ message: "Account is not activated" });
+        .json({ message: "Account is not activated", verifyEmail: true });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -267,6 +267,18 @@ class AuthController {
     const decoded = decodeToken(token) as JwtPayload;
 
     try {
+      const isEmailVerified = await prisma.user.findUnique({
+        where: {
+          id: decoded.user.id,
+        },
+      });
+
+      if (isEmailVerified?.verified) {
+        return res
+          .status(UNAUTHORIED)
+          .json({ message: "Email already verified" });
+      }
+
       await prisma.user.update({
         where: { id: decoded.user.id },
         data: { verified: true },
