@@ -7,7 +7,12 @@ import { cookieOptions } from "../config/cookiesAndJwt";
 import { prisma } from "../config/db";
 import { SALT } from "../constants/constants";
 import messages from "../constants/messages";
-import { INTERNALERROR, OK, UNAUTHORIED } from "../constants/status";
+import {
+  BADREQUEST,
+  INTERNALERROR,
+  OK,
+  UNAUTHORIED,
+} from "../constants/status";
 import Email from "../services/email";
 import { emailVerifyUrlGenerator } from "../services/emailVerifyTokenGenerator";
 import {
@@ -185,11 +190,12 @@ class AuthController {
   async updateName(req: Request, res: Response) {
     const { fname, lname } = req.body;
     const userId = req.user?.id as string;
-
-    if (!fname || !lname)
+    console.log(req.body);
+    if (!fname || !lname) {
       return res
-        .status(UNAUTHORIED)
+        .status(BADREQUEST)
         .json({ message: "All fields are required" });
+    }
 
     try {
       await prisma.user.update({
@@ -212,12 +218,12 @@ class AuthController {
     const userId = req.user?.id as string;
     if (!oldPassword || !newPassword)
       return res
-        .status(UNAUTHORIED)
+        .status(BADREQUEST)
         .json({ message: "All fields are required" });
 
     if (!passwordValidation(newPassword).valid) {
       return res
-        .status(UNAUTHORIED)
+        .status(BADREQUEST)
         .json({ message: passwordValidation(newPassword).message });
     }
     const user = await prisma.user.findUnique({
@@ -226,11 +232,11 @@ class AuthController {
       },
     });
     if (!user) {
-      return res.status(UNAUTHORIED).json({ message: "User does not exist" });
+      return res.status(BADREQUEST).json({ message: "User does not exist" });
     }
     const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
     if (!isPasswordValid) {
-      return res.status(UNAUTHORIED).json({ message: "Invalid password" });
+      return res.status(BADREQUEST).json({ message: "Invalid password" });
     }
     const hashedPassword = await bcrypt.hash(newPassword, SALT);
     try {
@@ -319,14 +325,14 @@ class AuthController {
         .status(UNAUTHORIED)
         .json({ message: "Email already verified" });
     }
-    Email.sendThankYouForRegisteringEmail(
-      email,
-      emailVerifyUrlGenerator({
-        id: user.id,
-        email: user.email,
-        name: user.name,
-      })
-    );
+    // Email.sendThankYouForRegisteringEmail(
+    //   email,
+    //   emailVerifyUrlGenerator({
+    //     id: user.id,
+    //     email: user.email,
+    //     name: user.name,
+    //   })
+    // );
     res.status(OK).json({ message: "Verification email sent" });
   }
 }

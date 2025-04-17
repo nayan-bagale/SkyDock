@@ -1,4 +1,4 @@
-import { useLoginMutation } from "@/redux/apis/userAuthApi"
+import { useLoginMutation, useSendEmailVerificationMutation } from "@/redux/apis/userAuthApi"
 import { setCredentials, setGuestMode } from "@/redux/features/auth"
 import { useAppDispatch } from "@/redux/hooks"
 import { Button } from "@/ui/button"
@@ -14,7 +14,7 @@ import ErrorMessage from "./ErrorMessage"
 import InfoMessage from "./InfoMessage"
 
 interface SigninProps {
-    windowChange: (window: 'signin' | 'signup') => void;
+    windowChange: (window: 'signin' | 'signup' | 'forgot') => void;
 }
 
 const Signin: FC<SigninProps> = ({ windowChange }) => {
@@ -24,12 +24,33 @@ const Signin: FC<SigninProps> = ({ windowChange }) => {
     })
 
     const [serverError, setServerError] = useServerErrors();
-    const [emailVerification, setEmailVerification] = useState(false)
+    const [emailVerification, setEmailVerification] = useState(false);
+    const [email, setEmail] = useState('')
 
 
-    const [login, { isLoading }] = useLoginMutation();
+    const [login, { isLoading: isLoginLoading }] = useLoginMutation();
+    const [sendEmailVerification, { isLoading: isSendEmailVerificationLoading }] = useSendEmailVerificationMutation();
 
+    const isLoading = isLoginLoading || isSendEmailVerificationLoading;
     const dispatch = useAppDispatch()
+
+    const handleEmailVerification = async () => {
+        try {
+            await sendEmailVerification(email).unwrap()
+            showToast(
+                'Verification email sent',
+                'success'
+            )
+        } catch (e: any) {
+            showToast(
+                e.data.message,
+                'error'
+            )
+        } finally {
+            setEmailVerification(false)
+            setServerError('')
+        }
+    }
 
 
     const handleSubmit = async (e: any) => {
@@ -81,11 +102,12 @@ const Signin: FC<SigninProps> = ({ windowChange }) => {
             {emailVerification && <InfoMessage className=" inline-flex justify-between"> Click to resend verification email
                 <a href="#" onClick={(e) => {
                     e.preventDefault();
+                    handleEmailVerification()
                 }}>Resend</a>
             </InfoMessage>}
             <Form onSubmit={handleSubmit}>
                 <label className=" self-start" htmlFor="">Email</label>
-                <Input placeholder="name@example.com" type='email' />
+                <Input onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" type='email' />
                 {formError.email && <ErrorMessage>{formError.email}</ErrorMessage>}
 
                 <label className=" self-start" htmlFor="">Password</label>
@@ -96,7 +118,7 @@ const Signin: FC<SigninProps> = ({ windowChange }) => {
                         {/* <input id="remember-me" type="checkbox" />
                         <label htmlFor="remember-me"> Remember Me</label> */}
                     </div>
-                    <Button className="hover:bg-transparent text-white">Forgot Password</Button>
+                    <Button className="hover:bg-transparent text-white" disabled={isLoading} onClick={() => windowChange('forgot')} >Forgot Password</Button>
                 </div>
                 <Button size={'medium'} className=" w-full flex items-center justify-center my-2 " disabled={isLoading} intent={'secondary'} type="submit">
                     {isLoading ? <span className=" animate-spin"><Icons.Loader className=" h-6 w-6" /> </span> : "Login"}

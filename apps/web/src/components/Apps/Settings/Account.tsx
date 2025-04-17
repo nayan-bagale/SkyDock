@@ -1,15 +1,57 @@
+import ErrorMessage from '@/components/Auth/ErrorMessage'
+import { useChangeNameMutation, useChangePasswordMutation } from '@/redux/apis/userAuthApi'
 import { Button } from '@/ui/button'
 import { Form } from '@/ui/Cards/AuthFlow/Form'
 import { Input, InputPassword } from '@/ui/input'
 import { Icons } from '@skydock/ui/icons'
+import { showToast } from '@skydock/ui/toast'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 
 interface CommonProps {
     closeModal: () => void
 }
 
-const ChangeName = ({ closeModal }: CommonProps) => {
+const ChangeName = memo(({ closeModal }: CommonProps) => {
+
+    const [changeName, { isLoading }] = useChangeNameMutation()
+    const [formError, setFormError] = useState({
+        firstName: '',
+        lastName: ''
+    })
+
+    const handleSubmit = async (e: any) => {
+        e.preventDefault()
+        setFormError({
+            firstName: '',
+            lastName: ''
+        })
+        const firstName = e.target[0].value
+        const lastName = e.target[1].value
+        if (!firstName) {
+            setFormError((prev) => ({ ...prev, firstName: 'First name is required' }))
+            return
+        }
+        if (!lastName) {
+            setFormError((prev) => ({ ...prev, lastName: 'Last name is required' }))
+            return
+        }
+        try {
+            const res = await changeName({ fname: firstName, lname: lastName }).unwrap()
+            console.log(res)
+            closeModal()
+            showToast(
+                res.message ?? 'Name changed successfully',
+                'success'
+            )
+        } catch (e: any) {
+            console.log(e)
+            showToast(
+                e.data.message,
+                'error'
+            )
+        }
+    }
 
     return (
         <motion.div
@@ -28,18 +70,82 @@ const ChangeName = ({ closeModal }: CommonProps) => {
             </div>
             <div className="w-[95%] pb-2 border-b border-gray-200"></div>
 
-            <Form onSubmit={() => { }} className=" py-2 w-full">
+            <Form onSubmit={handleSubmit} className=" py-2 w-full">
                 <label className=" text-sm self-start" htmlFor="fname">First Name</label>
                 <Input id='fname' type='text' className=' placeholder:text-sm placeholder:text-gray-400' />
+                {formError.firstName && <ErrorMessage>{formError.firstName}</ErrorMessage>}
                 <label className=" text-sm self-start" htmlFor="lname">Last Name</label>
                 <Input id='lname' type='text' className=' placeholder:text-sm placeholder:text-gray-400' />
-                <Button intent={'action'} className='py-1 mt-2' size={'medium'}>Change Name</Button>
+                {formError.lastName && <ErrorMessage>{formError.lastName}</ErrorMessage>}
+
+                <Button intent={'action'} type='submit' disabled={isLoading} className='py-1 mt-2' size={'medium'}>Change Name</Button>
             </Form>
         </motion.div>
     )
-}
+});
 
-const ChangePassword = ({ closeModal }: CommonProps) => {
+const ChangePassword = memo(({ closeModal }: CommonProps) => {
+    const [formError, setFormError] = useState({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+    })
+
+    const [changePassword] = useChangePasswordMutation()
+
+    const handleSubmit = async (e: any) => {
+        e.preventDefault()
+        setFormError({
+            currentPassword: '',
+            newPassword: '',
+            confirmPassword: ''
+        })
+        const currentPassword = e.target[0].value
+        const newPassword = e.target[2].value
+        const confirmPassword = e.target[4].value
+
+        console.log(currentPassword, newPassword, confirmPassword)
+
+        if (!currentPassword) {
+            setFormError((prev) => ({ ...prev, currentPassword: 'Current password is required' }))
+            return
+        }
+        if (!newPassword) {
+            setFormError((prev) => ({ ...prev, newPassword: 'New password is required' }))
+            return
+        }
+        if (newPassword !== confirmPassword) {
+            setFormError((prev) => ({ ...prev, confirmPassword: 'Passwords do not match' }))
+            return
+        }
+        if (newPassword.length < 6) {
+            setFormError((prev) => ({ ...prev, newPassword: 'Password must be at least 6 characters' }))
+            return
+        }
+        if (currentPassword === newPassword) {
+            setFormError((prev) => ({ ...prev, newPassword: 'New password must be different from current password' }))
+            return
+        }
+
+        try {
+
+            const res = await changePassword({ oldPassword: currentPassword, newPassword }).unwrap()
+            console.log(res)
+            showToast(
+                res.message ?? 'Password changed successfully',
+                'success'
+            )
+            closeModal()
+
+        } catch (e: any) {
+            console.log(e)
+            showToast(
+                e.data.message,
+                'error'
+            )
+        }
+
+    }
     return (
         <motion.div
             className=" bg-white p-4 rounded-md shadow border w-full max-w-96"
@@ -57,19 +163,21 @@ const ChangePassword = ({ closeModal }: CommonProps) => {
             </div>
             <div className="w-[95%] pb-2 border-b border-gray-200"></div>
 
-            <Form onSubmit={() => { }} className=" py-2 w-full">
+            <Form onSubmit={handleSubmit} className=" py-2 w-full">
                 <label className=" text-sm self-start" htmlFor="current-password">Current Password</label>
                 <InputPassword id='current-password' className=' placeholder:text-sm placeholder:text-gray-400' />
-                {/* {formError.email && <ErrorMessage>{formError.email}</ErrorMessage>} */}
+                {formError.currentPassword && <ErrorMessage>{formError.currentPassword}</ErrorMessage>}
                 <label className="text-sm self-start" htmlFor="new-password">New Password</label>
                 <InputPassword id='new-password' className=' placeholder:text-sm placeholder:text-gray-400' />
+                {formError.newPassword && <ErrorMessage>{formError.newPassword}</ErrorMessage>}
                 <label className="text-sm self-start" htmlFor="confirm-new-password">Confirm Password</label>
                 <InputPassword id='confirm-new-password' className=' placeholder:text-sm placeholder:text-gray-400' />
-                <Button intent={'action'} className='py-1 mt-2' size={'medium'}>Change Password</Button>
+                {formError.confirmPassword && <ErrorMessage>{formError.confirmPassword}</ErrorMessage>}
+                <Button intent={'action'} type='submit' className='py-1 mt-2' size={'medium'}>Change Password</Button>
             </Form>
         </motion.div>
     )
-}
+});
 
 const ChangeEmail = ({ closeModal }: CommonProps) => {
     return (
@@ -152,17 +260,19 @@ const Account = () => {
             name: 'Change Password',
             Component: ChangePassword
         },
-        {
-            id: '02',
-            name: 'Change Email',
-            Component: ChangeEmail
-        },
-        {
-            id: '03',
-            name: 'Delete Account',
-            Component: DeleteAccount
-        }
+        // {
+        //     id: '02',
+        //     name: 'Change Email',
+        //     Component: ChangeEmail
+        // },
+        // {
+        //     id: '03',
+        //     name: 'Delete Account',
+        //     Component: DeleteAccount
+        // }
     ]
+
+    const Component = options.find(option => option.id === openModal)?.Component
 
     return (
         <>
@@ -220,7 +330,8 @@ const Account = () => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                     >
-                        {options.find(option => option.id === openModal)?.Component({ closeModal })}
+                        {/* {options.find(option => option.id === openModal)?.Component({ closeModal })} */}
+                        <Component closeModal={closeModal} />
                     </motion.div>
                 )}
             </AnimatePresence>

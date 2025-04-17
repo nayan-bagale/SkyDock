@@ -35,14 +35,16 @@ interface InputProps {
     placeholder?: string
     type?: 'text' | 'email' | 'password'
     id?: string
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export const Input: FC<InputProps> = ({ className, placeholder, type = "text", id }) => {
+export const Input: FC<InputProps> = ({ className, placeholder, type = "text", id, onChange }) => {
     return (
         <input className={cn(" w-full  rounded-lg bg-transparent border p-1 px-2 outline-sky-400 placeholder:text-white/80", className)}
             placeholder={placeholder}
             type={type}
             id={id}
+            onChange={onChange}
         />
     )
 }

@@ -1,5 +1,4 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { AllFilesResponse, PatchItemRequest } from "@skydock/types";
 import baseQueryWithReAuth from "./baseQueryWithReAuth";
 
 // Define a service using a base URL and expected endpoints
@@ -31,62 +30,29 @@ const userAuthApi = createApi({
       query: () => `/session`,
     }),
 
-    // File Handling Apis (Upload and Download)
-    getUploadUrls: builder.mutation({
-      query: (files) => ({
-        url: "/files/generate-upload-urls",
-        method: "POST",
-        body: { files },
-      }),
-    }),
-
-    uploadFiles: builder.mutation({
-      query: (body) => ({
-        url: "/files/upload",
-        method: "POST",
-        body,
-      }),
-    }),
-
-    getAllFiles: builder.query<AllFilesResponse[], any>({
-      query: () => "/files",
-    }),
-
-    getFileUrl: builder.mutation<{ url: string }, any>({
-      query: (id: string) => ({
-        url: `/file/${id}`,
+    sendEmailVerification: builder.mutation({
+      query: (email) => ({
+        url: `/auth/send-verification-email`,
         method: "GET",
+        params: {
+          email,
+        },
       }),
     }),
 
-    deleteFile: builder.mutation({
-      query: (id: string) => ({
-        url: `/file/${id}`,
-        method: "DELETE",
-      }),
-    }),
-
-    updateItem: builder.mutation({
-      query: ({ id, ...fields }: PatchItemRequest) => ({
-        url: `/file/${id}`,
+    changeName: builder.mutation({
+      query: (name) => ({
+        url: `/auth/update/name`,
         method: "PATCH",
-        body: { ...fields },
+        body: name,
       }),
     }),
 
-    createFolder: builder.mutation({
-      query: (body: any) => ({
-        url: `/folder/create`,
-        method: "POST",
-        body,
-      }),
-    }),
-
-    deleteFolder: builder.mutation({
-      query: (body: any) => ({
-        url: `/folder/delete`,
-        method: "POST",
-        body,
+    changePassword: builder.mutation({
+      query: (password) => ({
+        url: `/auth/update/password`,
+        method: "PUT",
+        body: password,
       }),
     }),
   }),
@@ -100,5 +66,8 @@ export const {
   useProtectedMutation,
   useGetSessionQuery,
   useLogOutApiMutation,
+  useSendEmailVerificationMutation,
+  useChangeNameMutation,
+  useChangePasswordMutation,
 } = userAuthApi;
 export default userAuthApi;
