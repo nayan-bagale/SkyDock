@@ -1,7 +1,8 @@
 import authReducer from "@/redux/features/auth";
 import explorerReducer from "@/redux/features/explorer/explorerSlice";
 import { configureStore } from "@reduxjs/toolkit";
-import backendApi from "./APISlice";
+import filesAndFolderApi from "./apis/filesAndFolderApi";
+import userAuthApi from "./apis/userAuthApi";
 import { appsSlice } from "./features/apps/appsSlice";
 import contextMenuReducer from "./features/contextMenu/contextMenuSlice";
 import { controlCenterSlice } from "./features/control-center/controlCenterSlice";
@@ -22,10 +23,13 @@ export const store = configureStore({
     imageViewer: contextImageViewer,
     lockScreen: lockScreenReducer,
 
-    [backendApi.reducerPath]: backendApi.reducer,
+    [userAuthApi.reducerPath]: userAuthApi.reducer,
+    [filesAndFolderApi.reducerPath]: filesAndFolderApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(backendApi.middleware),
+    getDefaultMiddleware()
+      .concat(userAuthApi.middleware)
+      .concat(filesAndFolderApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

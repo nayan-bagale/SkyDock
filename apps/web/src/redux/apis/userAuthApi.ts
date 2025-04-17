@@ -1,60 +1,9 @@
-import {
-  BaseQueryFn,
-  createApi,
-  FetchArgs,
-  fetchBaseQuery,
-  FetchBaseQueryError,
-} from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react";
 import { AllFilesResponse, PatchItemRequest } from "@skydock/types";
-import { logOut, setCredentials } from "./features/auth";
-import { RootState } from "./store";
-
-const baseQuery = fetchBaseQuery({
-  baseUrl: `${import.meta.env.VITE_BACKEND_URL}`,
-  credentials: "include",
-  prepareHeaders: (headers, { getState }) => {
-    const { accessToken } = (getState() as RootState).auth;
-    if (accessToken) headers.set("Authorization", `Bearer ${accessToken}`);
-    return headers;
-  },
-});
-
-const baseQueryWithReAuth: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, store, extraOptions) => {
-  const result = await baseQuery(args, store, extraOptions);
-
-  if (result.error?.status === 401 || result.error?.status === 403) {
-    store.dispatch(logOut());
-  }
-
-  if (result.error?.status === 498) {
-    const response = await baseQuery(
-      `${import.meta.env.VITE_BACKEND_URL}/auth/refresh`,
-      store,
-      extraOptions
-    );
-
-    if (response.data) {
-      store.dispatch(setCredentials(response.data));
-      return await baseQuery(args, store, extraOptions);
-    } else if (
-      response.error?.status === 401 ||
-      response.error?.status === 403 ||
-      response.error?.status === 500
-    ) {
-      store.dispatch(logOut());
-      return response;
-    }
-  }
-
-  return result;
-};
+import baseQueryWithReAuth from "./baseQueryWithReAuth";
 
 // Define a service using a base URL and expected endpoints
-const backendApi = createApi({
+const userAuthApi = createApi({
   reducerPath: "backendApi",
   baseQuery: baseQueryWithReAuth,
   endpoints: (builder) => ({
@@ -151,13 +100,5 @@ export const {
   useProtectedMutation,
   useGetSessionQuery,
   useLogOutApiMutation,
-  useGetUploadUrlsMutation,
-  useUploadFilesMutation,
-  useGetAllFilesQuery,
-  useDeleteFileMutation,
-  useGetFileUrlMutation,
-  useUpdateItemMutation,
-  useCreateFolderMutation,
-  useDeleteFolderMutation,
-} = backendApi;
-export default backendApi;
+} = userAuthApi;
+export default userAuthApi;

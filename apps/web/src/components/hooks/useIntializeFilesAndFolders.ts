@@ -1,4 +1,4 @@
-import { useGetAllFilesQuery } from "@/redux/APISlice";
+import { useGetAllFilesQuery } from "@/redux/apis/filesAndFolderApi";
 import { initializeItems } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { useEffect } from "react";

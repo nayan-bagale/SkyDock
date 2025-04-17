@@ -1,4 +1,4 @@
-import { useGetFileUrlMutation } from "@/redux/APISlice";
+import { useGetFileUrlMutation } from "@/redux/apis/filesAndFolderApi";
 
 const useGetFileURl = () => {
   const [getFileUrl] = useGetFileUrlMutation();

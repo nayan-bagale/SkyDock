@@ -1,5 +1,5 @@
 import useOutsideAlerter from "@/components/hooks/useOnclickOutside";
-import { useLogOutApiMutation } from "@/redux/APISlice";
+import { useLogOutApiMutation } from "@/redux/apis/userAuthApi";
 import { logOut } from "@/redux/features/auth";
 import { lockScreen } from "@/redux/features/lockScreen/lockScreenSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";

@@ -1,7 +1,7 @@
 import {
   useGetUploadUrlsMutation,
   useUploadFilesMutation,
-} from "@/redux/APISlice";
+} from "@/redux/apis/filesAndFolderApi";
 import {
   addNotification,
   removeNotification,

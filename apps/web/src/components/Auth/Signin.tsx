@@ -1,4 +1,4 @@
-import { useLoginMutation } from "@/redux/APISlice"
+import { useLoginMutation } from "@/redux/apis/userAuthApi"
 import { setCredentials, setGuestMode } from "@/redux/features/auth"
 import { useAppDispatch } from "@/redux/hooks"
 import { Button } from "@/ui/button"
@@ -6,10 +6,12 @@ import { AuthCard } from "@/ui/Cards/AuthFlow/AuthCard"
 import { Form } from "@/ui/Cards/AuthFlow/Form"
 import { Input, InputPassword } from "@/ui/input"
 import { Icons } from "@skydock/ui/icons"
+import { showToast } from "@skydock/ui/toast"
 import { emailValidation, passwordValidation } from "@skydock/validation"
 import { FC, useState } from "react"
 import useServerErrors from "../hooks/useServerErrors"
 import ErrorMessage from "./ErrorMessage"
+import InfoMessage from "./InfoMessage"
 
 interface SigninProps {
     windowChange: (window: 'signin' | 'signup') => void;
@@ -21,7 +23,8 @@ const Signin: FC<SigninProps> = ({ windowChange }) => {
         password: ''
     })
 
-    const [serverError, setServerError] = useServerErrors()
+    const [serverError, setServerError] = useServerErrors();
+    const [emailVerification, setEmailVerification] = useState(false)
 
 
     const [login, { isLoading }] = useLoginMutation();
@@ -53,7 +56,17 @@ const Signin: FC<SigninProps> = ({ windowChange }) => {
             dispatch(setCredentials(data))
             e.target.reset()
         } catch (e: any) {
-            setServerError(e.data.message)
+
+            if (e.data.verifyEmail) {
+                setEmailVerification(true)
+            } else {
+                showToast(
+                    e.data.message,
+                    'error'
+                )
+                setServerError(e.data.message)
+                setEmailVerification(false)
+            }
         }
     }
 
@@ -65,6 +78,11 @@ const Signin: FC<SigninProps> = ({ windowChange }) => {
         <AuthCard>
             <h1 className=" text-2xl font-bold text-white ">Login</h1>
             {serverError && <ErrorMessage>{serverError}</ErrorMessage>}
+            {emailVerification && <InfoMessage className=" inline-flex justify-between"> Click to resend verification email
+                <a href="#" onClick={(e) => {
+                    e.preventDefault();
+                }}>Resend</a>
+            </InfoMessage>}
             <Form onSubmit={handleSubmit}>
                 <label className=" self-start" htmlFor="">Email</label>
                 <Input placeholder="name@example.com" type='email' />
@@ -87,9 +105,9 @@ const Signin: FC<SigninProps> = ({ windowChange }) => {
                     <p>Don't have account? </p>
                     <Button className=" hover:bg-transparent text-white " disabled={isLoading} onClick={() => windowChange('signup')}>Register</Button>
                 </div>
-                <Button size={'medium'} onClick={handleGuestMode} className=" w-full flex items-center justify-center my-2 " intent={'secondary'}>
+                {/* <Button size={'medium'} onClick={handleGuestMode} className=" w-full flex items-center justify-center my-2 " intent={'secondary'}>
                     Continue as Guest
-                </Button>
+                </Button> */}
             </Form>
         </AuthCard>
     )

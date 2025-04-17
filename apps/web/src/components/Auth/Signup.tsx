@@ -1,4 +1,4 @@
-import { useRegisterMutation } from "@/redux/APISlice"
+import { useRegisterMutation } from "@/redux/apis/userAuthApi"
 import { Button } from "@/ui/button"
 import { AuthCard } from "@/ui/Cards/AuthFlow/AuthCard"
 import { Form } from "@/ui/Cards/AuthFlow/Form"

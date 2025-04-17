@@ -1,7 +1,6 @@
-import { useUpdateItemMutation } from '@/redux/APISlice';
+import { useUpdateItemMutation } from '@/redux/apis/filesAndFolderApi';
 import { closeContextMenu } from '@/redux/features/contextMenu/contextMenuSlice';
 import { copyToClipboard, renameItem } from '@/redux/features/explorer/explorerSlice';
-// import { pasteItems } from '@/redux/features/explorer/explorerThunks';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Button } from '@/ui/button';
 import { ContextMenuSeparator } from '@/ui/ContextMenu';

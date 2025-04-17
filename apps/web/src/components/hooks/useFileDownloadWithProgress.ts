@@ -1,4 +1,4 @@
-import { useGetFileUrlMutation } from "@/redux/APISlice";
+import { useGetFileUrlMutation } from "@/redux/apis/filesAndFolderApi";
 import { FileT } from "@skydock/types";
 // import { FileT } from "@/redux/features/explorer/explorerSlice";
 

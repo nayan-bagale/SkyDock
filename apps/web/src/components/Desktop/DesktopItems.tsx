@@ -1,4 +1,4 @@
-import { useUpdateItemMutation } from "@/redux/APISlice";
+import { useUpdateItemMutation } from "@/redux/apis/filesAndFolderApi";
 import { moveFileIntoFolder, setItemDragged } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { handleDragStartT, handleDropT } from "@skydock/types";

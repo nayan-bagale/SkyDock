@@ -1,4 +1,4 @@
-import { useUpdateItemMutation } from '@/redux/APISlice';
+import { useUpdateItemMutation } from '@/redux/apis/filesAndFolderApi';
 import { closeContextMenu } from '@/redux/features/contextMenu/contextMenuSlice';
 import { renameItem } from '@/redux/features/explorer/explorerSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
