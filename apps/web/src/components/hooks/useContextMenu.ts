@@ -3,7 +3,7 @@ import {
   useDeleteFileMutation,
   useDeleteFolderMutation,
   useUpdateItemMutation,
-} from "@/redux/apis/userAuthApi";
+} from "@/redux/apis/filesAndFolderApi";
 import { closeContextMenu } from "@/redux/features/contextMenu/contextMenuSlice";
 import {
   addItem,

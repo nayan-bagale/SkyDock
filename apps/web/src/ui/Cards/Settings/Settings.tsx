@@ -10,7 +10,7 @@ interface SettingsCardProps extends HTMLMotionProps<'div'> {
     action: {
         close: () => void;
     };
-    theme: ThemeT;
+    theme: ThemeT | null;
     onMouseDownCard: () => void;
     children?: React.ReactNode;
     options: {
@@ -30,7 +30,7 @@ export const SettingsCard = forwardRef<HTMLDivElement, SettingsCardProps>(({ opt
             ref={ref}
             className={cn(
                 "text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[25rem] max-h-[40rem] backdrop-blur rounded-xl overflow-hidden",
-                theme.color,
+                theme?.color,
                 className
             )}
             style={{ left: style.x, top: style.y }}
