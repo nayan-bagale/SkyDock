@@ -272,7 +272,7 @@ const Account = () => {
         // }
     ]
 
-    const Component = options.find(option => option.id === openModal)?.Component
+    const Component = options.find(option => option.id === openModal)?.Component as typeof ChangeName | typeof ChangePassword | typeof ChangeEmail | typeof DeleteAccount
 
     return (
         <>

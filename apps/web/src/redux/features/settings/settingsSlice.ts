@@ -1,10 +1,11 @@
+import { background, theme } from "@/constants/settings";
 import { createSlice } from "@reduxjs/toolkit";
 import { SettingsT } from "@skydock/types";
 
 const intialState = {
   apperance: {
-    theme: null,
-    background: null,
+    theme: theme[2],
+    background: background[0],
   },
   actions: {
     isMaximized: false,

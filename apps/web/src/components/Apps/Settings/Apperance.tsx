@@ -14,8 +14,13 @@ const Apperance = () => {
     useEffect(() => {
         document.body.style.backgroundImage = `url(${background?.src})`;
         document.body.style.backgroundRepeat = "no-repeat";
-        // document.body.style.setProperty("--blur", `${blurValue}px`);
+        localStorage.setItem("settings", JSON.stringify({ theme, background }));
     }, [background]);
+
+    useEffect(() => {
+        localStorage.setItem("settings", JSON.stringify({ theme, background }));
+
+    }, [theme])
 
     return (
         <div className='flex flex-col gap-4'>

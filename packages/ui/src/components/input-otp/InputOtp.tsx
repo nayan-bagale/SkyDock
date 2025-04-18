@@ -59,7 +59,7 @@ const InputOTPSeparator = React.forwardRef<
   React.ComponentPropsWithoutRef<"div">
 >(({ ...props }, ref) => (
   <div ref={ref} role="separator" {...props}>
-    // <Minus />
+    {/* // <Minus /> */}
   </div>
 ))
 InputOTPSeparator.displayName = "InputOTPSeparator"

@@ -3,9 +3,14 @@
 @tailwind utilities;
 
 body {
-  /* background: linear-gradient(250deg, #7b2ff7, #f107a3); */
-  background-repeat: no-repeat;
+  background: linear-gradient(250deg, #7b2ff7, #f107a3);
+
+  /* background-repeat: no-repeat; */
+  /* background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); */
   /* background-image: url('/background-1.jpg'); */
+  /* background-size: 400% 400%; */
+  /* animation: gradient 15s ease infinite; */
+  /* height: 100vh; */
 }
 
 body::before {
