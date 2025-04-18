@@ -13,9 +13,18 @@ router.get("/logout", authController.logout);
 
 router.get("/refresh", authController.refresh);
 
+// ------------------ Verify Email ------------------
 router.get("/verify-email", authController.verifyEmail);
 
 router.get("/send-verification-email", authController.sendVerificationEmail);
+
+// ------------------ Forgot Password ------------------
+
+router.get("/send-otp", authController.sendOtpToEmail);
+
+router.post("/verify-otp", authController.verifyOtpForPasswordReset);
+
+router.post("/reset-password", authController.forgotPasswordReset);
 
 // ------------------ Update User ------------------
 

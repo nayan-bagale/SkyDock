@@ -7,3 +7,4 @@ export const RATELIMIT = 429;
 export const INTERNALERROR = 500;
 export const BADREQUEST = 400;
 export const OK = 200;
+export const UNPROCESSABLE_ENTITY = 422; //422

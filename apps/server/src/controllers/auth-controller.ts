@@ -1,3 +1,4 @@
+import { User } from "@skydock/db";
 import { LoginBody, RegisterBody } from "@skydock/types/Auth";
 import { emailValidation, passwordValidation } from "@skydock/validation";
 import bcrypt from "bcrypt";
@@ -10,8 +11,10 @@ import messages from "../constants/messages";
 import {
   BADREQUEST,
   INTERNALERROR,
+  NOTFOUND,
   OK,
   UNAUTHORIED,
+  UNPROCESSABLE_ENTITY,
 } from "../constants/status";
 import Email from "../services/email";
 import { emailVerifyUrlGenerator } from "../services/emailVerifyTokenGenerator";
@@ -21,6 +24,9 @@ import {
   decodeToken,
   verifyToken,
 } from "../utils/token";
+
+import cache from "../utils/inMemoryStore";
+import otpGenerate from "../utils/otp-generator";
 
 class AuthController {
   private static instance: AuthController;
@@ -334,6 +340,135 @@ class AuthController {
     //   })
     // );
     res.status(OK).json({ message: "Verification email sent" });
+  }
+
+  async sendOtpToEmail(req: Request, res: Response) {
+    const email = req.query.email as string;
+    if (!email) {
+      return res
+        .status(UNPROCESSABLE_ENTITY)
+        .json({ message: "Invalid email" });
+    }
+
+    let user: User | null;
+    try {
+      user = await prisma.user.findUnique({
+        where: {
+          email: email,
+        },
+      });
+    } catch (e: any) {
+      console.log(e);
+      return res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+
+    if (!user) {
+      return res
+        .status(UNPROCESSABLE_ENTITY)
+        .json({ message: "Email does not exist" });
+    }
+
+    let message = "OTP sent to your email";
+
+    if (cache.has(email)) {
+      message = "OTP resent to your email";
+    }
+
+    const otp = otpGenerate();
+    cache.set(email, otp);
+    // Email.sendThankYouForRegisteringEmail(
+    //   email,
+    //   emailVerifyUrlGenerator({
+    //     id: user.id,
+    //     email: user.email,
+    //     name: user.name,
+    //   })
+    // );
+    res.status(OK).json({ message });
+  }
+
+  async verifyOtpForPasswordReset(req: Request, res: Response) {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(NOTFOUND).json({ message: "Invalid email or otp" });
+    }
+
+    const CachedOTP = cache.get<string>(email);
+
+    if (!CachedOTP) {
+      return res.status(UNPROCESSABLE_ENTITY).json({ message: "OTP expired" });
+    }
+    if (CachedOTP !== otp) {
+      return res.status(NOTFOUND).json({ message: "Invalid otp" });
+    }
+
+    cache.del(email);
+
+    cache.set(email, true);
+
+    res.status(OK).json({ message: "Otp verified" });
+  }
+
+  async forgotPasswordReset(req: Request, res: Response) {
+    const { email, password } = req.body;
+    if (!email || !password)
+      return res
+        .status(UNPROCESSABLE_ENTITY)
+        .json({ message: "All fields are required" });
+
+    if (!emailValidation(email).valid) {
+      return res
+        .status(UNPROCESSABLE_ENTITY)
+        .json({ message: emailValidation(email).message });
+    }
+
+    if (!cache.get(email)) {
+      return res.status(BADREQUEST).json({ message: "Bad Request" });
+    }
+
+    cache.del(email);
+
+    if (!passwordValidation(password).valid) {
+      return res
+        .status(UNPROCESSABLE_ENTITY)
+        .json({ message: passwordValidation(password).message });
+    }
+
+    let user;
+    try {
+      user = await prisma.user.findUnique({
+        where: {
+          email: email,
+        },
+      });
+    } catch (e: any) {
+      console.log(e);
+      return res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+
+    if (!user) {
+      return res.status(NOTFOUND).json({ message: "User does not exist" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, SALT);
+
+    try {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { password: hashedPassword },
+      });
+      res.status(OK).json({ message: "Password reset successfully" });
+    } catch (e: any) {
+      console.log(e);
+      return res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
   }
 }
 
