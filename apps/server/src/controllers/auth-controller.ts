@@ -331,14 +331,14 @@ class AuthController {
         .status(UNAUTHORIED)
         .json({ message: "Email already verified" });
     }
-    // Email.sendThankYouForRegisteringEmail(
-    //   email,
-    //   emailVerifyUrlGenerator({
-    //     id: user.id,
-    //     email: user.email,
-    //     name: user.name,
-    //   })
-    // );
+    Email.sendThankYouForRegisteringEmail(
+      email,
+      emailVerifyUrlGenerator({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      })
+    );
     res.status(OK).json({ message: "Verification email sent" });
   }
 
@@ -378,14 +378,8 @@ class AuthController {
 
     const otp = otpGenerate();
     cache.set(email, otp);
-    // Email.sendThankYouForRegisteringEmail(
-    //   email,
-    //   emailVerifyUrlGenerator({
-    //     id: user.id,
-    //     email: user.email,
-    //     name: user.name,
-    //   })
-    // );
+
+    Email.sendPasswordResetOTP(email, otp);
     res.status(OK).json({ message });
   }
 

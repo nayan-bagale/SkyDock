@@ -49,6 +49,22 @@ class Email {
         console.error("Error sending email:", error);
       });
   }
+
+  sendPasswordResetOTP(toEmail: string, otp: string) {
+    const msg: MailDataRequired = {
+      to: toEmail,
+      from: {
+        name: "SkyDock",
+        email: "skydockos@gmail.com",
+      },
+      subject: "Thank you for registering to SkyDock",
+      text: `<strong>Here is otp ${otp} . Thank you for registering to SkyDock</strong>`,
+      html: `<strong>Here is otp ${otp} . Thank you for registering to SkyDock</strong>`,
+    };
+    sgMail.send(msg).catch((error) => {
+      console.error("Error sending email:", error);
+    });
+  }
 }
 
 export default Email.getInstance();
