@@ -1,4 +1,4 @@
-import { TimeInMs } from "../constants";
+import { OTP_EXPIRATION_TIME } from "../constants";
 
 type CacheValue = {
   value: any;
@@ -13,11 +13,7 @@ const store = new Map<string, CacheValue>();
  * @param value The value to store.
  * @param ttl Time-to-live in milliseconds.
  */
-function set(
-  key: string,
-  value: any,
-  ttl: number = TimeInMs.FIVE_MINUTES
-): void {
+function set(key: string, value: any, ttl: number = OTP_EXPIRATION_TIME): void {
   const expiresAt = Date.now() + ttl;
   store.set(key, { value, expiresAt });
 }

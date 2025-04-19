@@ -15,7 +15,8 @@ class Logger {
   private static instance: Logger;
   private logger: winston.Logger; // ← Cache the logger instance here
   private lineCount = 1;
-  private logFilePath = process.env.LOG_FILE_PATH || "/tmp/logs/server.log";
+  private logFilePath =
+    process.env.LOG_FILE_PATH! ?? "/tmp/skydock-logs/server.log";
 
   private constructor() {
     this.logger = winston.createLogger({
@@ -32,9 +33,9 @@ class Logger {
           zippedArchive: true,
           format: this.fileLogFormat(),
         }),
-        new winston.transports.Console({
-          format: this.fileLogFormat(),
-        }),
+        // new winston.transports.Console({
+        //   format: this.fileLogFormat(),
+        // }),
       ],
       exitOnError: false,
     });
