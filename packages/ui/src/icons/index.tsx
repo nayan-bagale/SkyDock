@@ -54,6 +54,7 @@ import trash_svg2 from './assests/trash-bin-trash-svgrepo-com.svg';
 import upload_svg from './assests/upload-svgrepo-com.svg';
 import user_svg from './assests/user-circle-svgrepo-com.svg';
 import vite_svg from './assests/vite-svgrepo-com.svg';
+import zap_svg from './assests/zap-svgrepo-com.svg';
 
 const $ = ({ svg, name, className }: { svg: any, name: string, className?: string }) => (<img src={svg} className={cn(className)} alt={name} />)
 
@@ -112,6 +113,7 @@ export const Icons = {
   Zoom_Out: ({ className }: { className: string }) => $({ svg: zoom_out_svg, name: 'zoom_out', className }),
   Reset: ({ className }: { className: string }) => $({ svg: reset_svg, name: 'reset', className }),
   Rotate: ({ className }: { className: string }) => $({ svg: rotate_svg, name: 'rotate', className }),
+  Zap: ({ className }: { className: string }) => $({ svg: zap_svg, name: 'zap', className }),
 
 }
 

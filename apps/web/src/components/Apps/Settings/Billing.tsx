@@ -1,6 +1,14 @@
+import { openSubscriptionPlanCard } from "@/redux/features/apps/appsSlice";
+import { useAppDispatch } from "@/redux/hooks";
 import { Button } from "@/ui/button";
 import { motion } from "framer-motion";
 const Billing = () => {
+    const dispatch = useAppDispatch();
+    const handleUpgrade = () => {
+        dispatch(openSubscriptionPlanCard())
+
+    }
+
     return (
         <div className='flex flex-col gap-4'>
             <motion.div
@@ -15,7 +23,7 @@ const Billing = () => {
                         <h4 className=" font-medium">Free</h4>
                         <div>You are currently on the free plan.</div>
                     </div>
-                    <Button size='medium' intent={'cta'} className="bg-gradient-to-r from-lime-400 to-lime-500 text-white">Upgrade</Button>
+                    <Button onClick={handleUpgrade} size='medium' intent={'cta'} className="bg-gradient-to-r from-lime-400 to-lime-500 text-white">Upgrade</Button>
                 </div>
             </motion.div>
         </div>
