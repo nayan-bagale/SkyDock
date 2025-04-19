@@ -1,4 +1,4 @@
-import { FIVE_MINUTES } from "../constants";
+import { TimeInMs } from "../constants";
 
 type CacheValue = {
   value: any;
@@ -13,7 +13,11 @@ const store = new Map<string, CacheValue>();
  * @param value The value to store.
  * @param ttl Time-to-live in milliseconds.
  */
-function set(key: string, value: any, ttl: number = FIVE_MINUTES): void {
+function set(
+  key: string,
+  value: any,
+  ttl: number = TimeInMs.FIVE_MINUTES
+): void {
   const expiresAt = Date.now() + ttl;
   store.set(key, { value, expiresAt });
 }
