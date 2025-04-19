@@ -1,5 +1,7 @@
+import { initialFilesAndFoldersModifer } from "@/utils";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { AllFilesResponse, PatchItemRequest } from "@skydock/types";
+import { initializeItems } from "../features/explorer/explorerSlice";
 import baseQueryWithReAuth from "./baseQueryWithReAuth";
 
 // Define a service using a base URL and expected endpoints
@@ -26,6 +28,12 @@ const filesAndFolderApi = createApi({
 
     getAllFiles: builder.query<AllFilesResponse[], any>({
       query: () => "/files",
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        const { data } = await queryFulfilled;
+        initialFilesAndFoldersModifer(data, (item) => {
+          dispatch(initializeItems(item));
+        });
+      },
     }),
 
     getFileUrl: builder.mutation<{ url: string }, any>({

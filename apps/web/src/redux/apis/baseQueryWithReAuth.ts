@@ -4,7 +4,7 @@ import {
   fetchBaseQuery,
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query/react";
-import { logOut, setCredentials } from "../features/auth";
+import { logOut, setAccessToken } from "../features/auth";
 import { RootState } from "../store";
 
 const baseQuery = fetchBaseQuery({
@@ -36,7 +36,8 @@ const baseQueryWithReAuth: BaseQueryFn<
     );
 
     if (response.data) {
-      store.dispatch(setCredentials(response.data));
+      const { accessToken } = response.data as { accessToken: string };
+      store.dispatch(setAccessToken(accessToken));
       return await baseQuery(args, store, extraOptions);
     } else if (
       response.error?.status === 401 ||

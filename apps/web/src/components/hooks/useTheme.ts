@@ -14,7 +14,7 @@ const useTheme = () => {
 
   useEffect(() => {
     const savedSettings = localStorage.getItem("settings");
-    console.log("savedSettings", savedSettings);
+    // console.log("savedSettings", savedSettings);
     if (savedSettings) {
       const { theme, background } = JSON.parse(savedSettings);
       dispatch(changeTheme(theme));

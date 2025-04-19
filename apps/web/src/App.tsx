@@ -1,5 +1,4 @@
 import GlobalContextMenu from "@/components/GlobalContextMenu/GlobalContextMenu";
-import useAutoLock from "@/components/hooks/useAutoLock";
 import { AnimatePresence } from "framer-motion";
 import { useMemo } from "react";
 import Apps_ from "./components/Apps/Apps_";
@@ -8,20 +7,15 @@ import MenuBar from "./components/Bar/MenuBar";
 import Desktop from "./components/Desktop/Desktop";
 import Dock from "./components/Dock/Dock";
 import DraggingItem from "./components/DraggingItem";
-import useIntializeFilesAndFolders from "./components/hooks/useIntializeFilesAndFolders";
-import useTheme from "./components/hooks/useTheme";
+import useSkydockInitialLoad from "./components/hooks/useSkydockInitialLoad";
 import SubscriptionPlans from "./components/SubscriptionPlan/SubscriptionPlan";
 import "./index.css";
-import { useGetSessionQuery } from "./redux/apis/userAuthApi";
 import { useAppSelector } from "./redux/hooks";
 import cn from "./utils";
 
 function App() {
-  const isGuestMode = useAppSelector((state) => state.auth.guestMode);
-  const { data, error, isLoading } = useGetSessionQuery("", {
-    skip: isGuestMode,
-  });
-  const { isLocked } = useAppSelector((state) => state.lockScreen);
+  // const { isLocked } = useAppSelector((state) => state.lockScreen);
+  const { isLoading } = useSkydockInitialLoad();
   const isSubscriptionPlanCardOpen = useAppSelector(
     (state) => state.apps.subscriptionPlanCard
   );
@@ -29,12 +23,6 @@ function App() {
     // e.preventDefault()
     // console.log(e.target)
   };
-
-  useTheme();
-  useIntializeFilesAndFolders({ skip: isLoading || isGuestMode });
-
-  // Use the auto-lock hook with a custom timeout (e.g., 10 minutes)
-  useAutoLock(10 * 60 * 1000);
 
   const token = useAppSelector((state) => state.auth.accessToken);
 
@@ -67,10 +55,10 @@ function App() {
       <div
         className={cn(
           "flex flex-col items-center h-full",
-          !token && !isGuestMode ? "justify-center" : "justify-between"
+          !token ? "justify-center" : "justify-between"
         )}
       >
-        {token || isGuestMode ? (
+        {token ? (
           <>
             {/* <AnimatePresence>
               {isLocked && (

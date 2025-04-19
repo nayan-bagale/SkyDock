@@ -1,5 +1,5 @@
 import { useLoginMutation, useSendEmailVerificationMutation } from "@/redux/apis/userAuthApi"
-import { setCredentials, setGuestMode } from "@/redux/features/auth"
+import { setAccessToken } from "@/redux/features/auth"
 import { useAppDispatch } from "@/redux/hooks"
 import { Button } from "@/ui/button"
 import { AuthCard } from "@/ui/Cards/AuthFlow/AuthCard"
@@ -74,7 +74,7 @@ const Signin: FC<SigninProps> = ({ windowChange }) => {
 
         try {
             const data = await login({ email: e.target[0].value, password: e.target[1].value }).unwrap()
-            dispatch(setCredentials(data))
+            dispatch(setAccessToken(data.accessToken))
             e.target.reset()
         } catch (e: any) {
 
@@ -89,10 +89,6 @@ const Signin: FC<SigninProps> = ({ windowChange }) => {
                 setEmailVerification(false)
             }
         }
-    }
-
-    const handleGuestMode = () => {
-        dispatch(setGuestMode(true));
     }
 
     return (

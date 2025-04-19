@@ -1,17 +1,21 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
+import { LoginResponse } from "@skydock/types/Auth";
+import { setUserInfo } from "../features/auth";
 import baseQueryWithReAuth from "./baseQueryWithReAuth";
 
 // Define a service using a base URL and expected endpoints
 const userAuthApi = createApi({
   reducerPath: "backendApi",
   baseQuery: baseQueryWithReAuth,
+  tagTypes: ["UserInfo"],
   endpoints: (builder) => ({
-    login: builder.mutation({
+    login: builder.mutation<{ accessToken: string; user: LoginResponse }, any>({
       query: (body) => ({
         url: `/auth/login`,
         method: "POST",
         body: { ...body },
       }),
+      invalidatesTags: ["UserInfo"],
     }),
     register: builder.mutation({
       query: (body) => ({
@@ -46,6 +50,7 @@ const userAuthApi = createApi({
         method: "PATCH",
         body: name,
       }),
+      invalidatesTags: ["UserInfo"],
     }),
 
     changePassword: builder.mutation({
@@ -79,6 +84,18 @@ const userAuthApi = createApi({
         body,
       }),
     }),
+    getUserInfo: builder.query({
+      query: () => ({
+        url: `/auth/user-info`,
+        method: "GET",
+      }),
+      onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
+        const { data } = await queryFulfilled;
+        console.log(data);
+        dispatch(setUserInfo(data));
+      },
+      providesTags: ["UserInfo"],
+    }),
   }),
 });
 
@@ -96,5 +113,6 @@ export const {
   useSendOtpMutation,
   useVerifyOtpMutation,
   useResetPasswordMutation,
+  useGetUserInfoQuery,
 } = userAuthApi;
 export default userAuthApi;

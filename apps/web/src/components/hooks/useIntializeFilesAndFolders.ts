@@ -1,5 +1,4 @@
 import { useGetAllFilesQuery } from "@/redux/apis/filesAndFolderApi";
-import { initializeItems } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { useEffect } from "react";
 
@@ -11,7 +10,6 @@ const useIntializeFilesAndFolders = ({ skip }: { skip: boolean }) => {
       // console.log("Error in fetching files and folders");
       return;
     }
-    // TODO: Handle items on desktop
     const itemsObj = data.map((item) => {
       if (item.is_folder) {
         return {

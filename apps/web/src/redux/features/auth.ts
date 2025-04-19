@@ -18,12 +18,24 @@ export const authSlice = createSlice({
       state.user = null;
       state.guestMode = false;
     },
+    setAccessToken: (state, action) => {
+      state.accessToken = action.payload;
+    },
+    setUserInfo: (state, action) => {
+      state.user = action.payload;
+    },
     setGuestMode: (state, action) => {
       state.guestMode = action.payload;
     },
   },
 });
 
-export const { setCredentials, logOut, setGuestMode } = authSlice.actions;
+export const {
+  setCredentials,
+  setAccessToken,
+  setUserInfo,
+  logOut,
+  setGuestMode,
+} = authSlice.actions;
 
 export default authSlice.reducer;
