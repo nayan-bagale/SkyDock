@@ -217,6 +217,7 @@ class AuthController {
           name: `${fname} ${lname}`,
         },
       });
+      // TODO: Update JWT token with new name
       res.status(OK).json({ message: "Successfully updated name" });
     } catch (e: any) {
       logger.error("Error while updating name", e);

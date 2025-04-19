@@ -3,6 +3,7 @@ import cors from "cors";
 import express from "express";
 import { JwtPayload } from "jsonwebtoken";
 import { corsOptions } from "./config/corsOptions";
+import "./config/dotenv";
 import { OK } from "./constants/status";
 import { middleware } from "./middleware";
 import auth from "./routes/auth";

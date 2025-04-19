@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { JwtPayload } from "jsonwebtoken";
-import "./config/dotenv";
 import messages from "./constants/messages";
 import { TOKENEXPIRED, UNAUTHORIED } from "./constants/status";
 import { decodeToken, verifyToken } from "./utils/token";

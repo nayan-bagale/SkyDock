@@ -1,7 +1,6 @@
 import { LoginResponse } from "@skydock/types/Auth";
 import jwt from "jsonwebtoken";
 import { jwtOptions } from "../config/cookiesAndJwt";
-import "../config/dotenv";
 
 export const createRefreshToken = (user: LoginResponse) => {
   return jwt.sign(
