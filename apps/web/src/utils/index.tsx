@@ -8,7 +8,7 @@ export default cn;
 
 export const initialFilesAndFoldersModifer = (
     items: AllFilesResponse[],
-    callback: (item: AllFilesResponse) => void,
+    callback: (item: any) => void, //item type ---> FileT | FolderT
 ) => {
     const itemsObj = items.map((item) => {
         if (item.is_folder) {
