@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { prisma } from "../config/db";
 import messages from "../constants/messages";
 import { INTERNALERROR } from "../constants/status";
+import logger from "../logger";
 import Store from "../services/object-storage";
 import { RequestFileForUploaded, RequestFilesForSignedUrl } from "../types";
 
@@ -55,7 +56,7 @@ class FilesController {
       });
       res.json({ message: "Upload successful" });
     } catch (err) {
-      console.log(err);
+      logger.error("Error saving files metadata to DB", err);
       res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
@@ -70,7 +71,7 @@ class FilesController {
       });
       res.json(files);
     } catch (err) {
-      console.log(err);
+      logger.error("Error fetching files", err);
       res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
@@ -85,7 +86,7 @@ class FilesController {
       const fileUrl = await Store.getObjectUrl(`${userId}/${fileName}`);
       res.json({ url: fileUrl });
     } catch (err) {
-      console.log(err);
+      logger.error("Error fetching signed file URL", err);
       res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
@@ -112,7 +113,7 @@ class FilesController {
 
       return res.json({ message: "File deleted" });
     } catch (err) {
-      // console.log(err);
+      logger.error("Error deleting file", err);
       return res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
@@ -129,7 +130,7 @@ class FilesController {
       });
       res.json({ message: "File updated" });
     } catch (err) {
-      console.log(err);
+      logger.error("Error updating file", err);
       res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
@@ -154,7 +155,7 @@ class FilesController {
       });
       res.json({ message: "Folder created" });
     } catch (err) {
-      console.log(err);
+      logger.error("Error creating folder", err);
       res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
@@ -184,7 +185,7 @@ class FilesController {
       });
       res.json({ message: "Folder deleted" });
     } catch (err) {
-      console.log(err);
+      logger.error("Error deleting folder", err);
       res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });

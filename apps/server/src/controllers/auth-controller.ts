@@ -16,6 +16,7 @@ import {
   UNAUTHORIED,
   UNPROCESSABLE_ENTITY,
 } from "../constants/status";
+import logger from "../logger";
 import Email from "../services/email";
 import { emailVerifyUrlGenerator } from "../services/emailVerifyTokenGenerator";
 import {
@@ -53,14 +54,21 @@ class AuthController {
         .json({ message: emailValidation(email).message });
     }
 
-    const isEmailExist = await prisma.user.findUnique({
-      where: {
-        email: email,
-      },
-    });
+    try {
+      const isEmailExist = await prisma.user.findUnique({
+        where: {
+          email: email,
+        },
+      });
 
-    if (isEmailExist) {
-      return res.status(UNAUTHORIED).json({ message: "Email already exist" });
+      if (isEmailExist) {
+        return res.status(UNAUTHORIED).json({ message: "Email already exist" });
+      }
+    } catch (e: any) {
+      logger.error("Error while checking email existence", e);
+      return res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
     }
 
     if (!passwordValidation(password).valid) {
@@ -89,7 +97,7 @@ class AuthController {
       );
       return res.status(OK).json({ message: messages.USER_CREATED });
     } catch (e: any) {
-      console.log(e);
+      logger.error("Error while creating user", e);
       return res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
@@ -117,8 +125,8 @@ class AuthController {
           email: email,
         },
       });
-    } catch (error) {
-      console.error(error);
+    } catch (e) {
+      logger.error("Error while checking email existence", e);
       return res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
@@ -196,7 +204,6 @@ class AuthController {
   async updateName(req: Request, res: Response) {
     const { fname, lname } = req.body;
     const userId = req.user?.id as string;
-    console.log(req.body);
     if (!fname || !lname) {
       return res
         .status(BADREQUEST)
@@ -212,7 +219,7 @@ class AuthController {
       });
       res.status(OK).json({ message: "Successfully updated name" });
     } catch (e: any) {
-      console.log(e);
+      logger.error("Error while updating name", e);
       return res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
@@ -232,11 +239,21 @@ class AuthController {
         .status(BADREQUEST)
         .json({ message: passwordValidation(newPassword).message });
     }
-    const user = await prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    });
+    let user;
+
+    try {
+      user = await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+    } catch (error) {
+      logger.error("Error while checking email existence", error);
+      return res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+
     if (!user) {
       return res.status(BADREQUEST).json({ message: "User does not exist" });
     }
@@ -254,7 +271,7 @@ class AuthController {
       });
       res.status(OK).json({ message: "Successfully updated password" });
     } catch (e: any) {
-      console.log(e);
+      logger.error("Error while updating password", e);
       return res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
@@ -297,7 +314,7 @@ class AuthController {
       });
       res.status(OK).json({ message: "Email verified successfully" });
     } catch (e: any) {
-      console.log(e);
+      logger.error("Error while verifying email", e);
       return res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
@@ -317,7 +334,7 @@ class AuthController {
         },
       });
     } catch (e: any) {
-      console.log(e);
+      logger.error("Error while checking email existence", e);
       return res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
@@ -331,14 +348,23 @@ class AuthController {
         .status(UNAUTHORIED)
         .json({ message: "Email already verified" });
     }
-    Email.sendThankYouForRegisteringEmail(
-      email,
-      emailVerifyUrlGenerator({
-        id: user.id,
-        email: user.email,
-        name: user.name,
-      })
-    );
+
+    try {
+      Email.sendThankYouForRegisteringEmail(
+        email,
+        emailVerifyUrlGenerator({
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        })
+      );
+    } catch (e: any) {
+      logger.error("Error while sending verification email", e);
+      return res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+
     res.status(OK).json({ message: "Verification email sent" });
   }
 
@@ -358,7 +384,7 @@ class AuthController {
         },
       });
     } catch (e: any) {
-      console.log(e);
+      logger.error("Error while checking email existence", e);
       return res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
@@ -378,8 +404,14 @@ class AuthController {
 
     const otp = otpGenerate();
     cache.set(email, otp);
-
-    Email.sendPasswordResetOTP(email, otp);
+    try {
+      Email.sendPasswordResetOTP(email, otp);
+    } catch (e: any) {
+      logger.error("Error while sending OTP", e);
+      return res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
     res.status(OK).json({ message });
   }
 
@@ -439,7 +471,7 @@ class AuthController {
         },
       });
     } catch (e: any) {
-      console.log(e);
+      logger.error("Error while checking email existence", e);
       return res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
@@ -458,7 +490,7 @@ class AuthController {
       });
       res.status(OK).json({ message: "Password reset successfully" });
     } catch (e: any) {
-      console.log(e);
+      logger.error("Error while updating password", e);
       return res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });

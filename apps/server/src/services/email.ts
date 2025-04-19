@@ -1,5 +1,6 @@
 import { MailDataRequired } from "@sendgrid/mail";
 import sgMail from "../config/sendgrid";
+import logger from "../logger";
 
 class Email {
   private static instance: Email;
@@ -13,7 +14,7 @@ class Email {
     return Email.instance;
   }
 
-  sendThankYouForRegisteringEmail(toEmail: string, url: string) {
+  async sendThankYouForRegisteringEmail(toEmail: string, url: string) {
     const msg: MailDataRequired = {
       to: toEmail,
       from: {
@@ -38,19 +39,16 @@ class Email {
       html: `<strong>New user registered with email: ${toEmail}</strong>`,
     };
 
-    sgMail
-      .send(msg)
-      .then(() => {
-        console.log("Email sent");
-        sgMail.send(msgToDev);
-        console.log("Email sent to dev");
-      })
-      .catch((error) => {
-        console.error("Error sending email:", error);
-      });
+    try {
+      await sgMail.send(msg);
+      await sgMail.send(msgToDev);
+    } catch (e) {
+      logger.error("Error sending email", e);
+      throw e;
+    }
   }
 
-  sendPasswordResetOTP(toEmail: string, otp: string) {
+  async sendPasswordResetOTP(toEmail: string, otp: string) {
     const msg: MailDataRequired = {
       to: toEmail,
       from: {
@@ -61,9 +59,12 @@ class Email {
       text: `<strong>Here is otp ${otp} . Thank you for registering to SkyDock</strong>`,
       html: `<strong>Here is otp ${otp} . Thank you for registering to SkyDock</strong>`,
     };
-    sgMail.send(msg).catch((error) => {
-      console.error("Error sending email:", error);
-    });
+    try {
+      await sgMail.send(msg);
+    } catch (e) {
+      logger.error("Error sending email", e);
+      throw e;
+    }
   }
 }
 
