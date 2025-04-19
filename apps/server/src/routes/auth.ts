@@ -1,7 +1,7 @@
 import express from "express";
 
 import authController from "../controllers/auth-controller";
-import { middleware } from "../middleware";
+import authMiddleware from "../middleware/auth-middleware";
 
 const router = express.Router();
 
@@ -28,8 +28,8 @@ router.post("/reset-password", authController.forgotPasswordReset);
 
 // ------------------ Update User ------------------
 
-router.patch("/update/name", middleware, authController.updateName);
+router.patch("/update/name", authMiddleware, authController.updateName);
 
-router.put("/update/password", middleware, authController.changePassword);
+router.put("/update/password", authMiddleware, authController.changePassword);
 
 export default router;

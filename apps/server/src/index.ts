@@ -5,7 +5,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { corsOptions } from "./config/corsOptions";
 import "./config/dotenv";
 import { OK } from "./constants/status";
-import { middleware } from "./middleware";
+import authMiddleware from "./middleware/auth-middleware";
 import auth from "./routes/auth";
 import files from "./routes/files-and-folders";
 import { decodeToken } from "./utils/token";
@@ -23,7 +23,7 @@ app.use(express.json());
 // middleware for cookies
 app.use(cookieParser());
 
-app.get("/api/v1/session", middleware, (req, res) => {
+app.get("/api/v1/session", authMiddleware, (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   const decoded = decodeToken(refreshToken) as JwtPayload;
   res.status(OK).json({ user: decoded.user });
@@ -31,7 +31,7 @@ app.get("/api/v1/session", middleware, (req, res) => {
 
 app.use("/api/v1/auth", auth);
 
-app.get("/api/v1/protected", middleware, (req, res) => {
+app.get("/api/v1/protected", authMiddleware, (req, res) => {
   res.status(OK).json({ message: "Access Granted." });
 });
 

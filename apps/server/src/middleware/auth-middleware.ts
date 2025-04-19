@@ -1,10 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import { JwtPayload } from "jsonwebtoken";
-import messages from "./constants/messages";
-import { TOKENEXPIRED, UNAUTHORIED } from "./constants/status";
-import { decodeToken, verifyToken } from "./utils/token";
+import messages from "../constants/messages";
+import { TOKENEXPIRED, UNAUTHORIED } from "../constants/status";
+import { decodeToken, verifyToken } from "../utils/token";
 
-export function middleware(req: Request, res: Response, next: NextFunction) {
+export function authMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   // ----------------- Refresh Token ----------------
   const refreshToken = req.cookies.refreshToken;
 
@@ -49,3 +53,5 @@ export function middleware(req: Request, res: Response, next: NextFunction) {
 
   next();
 }
+
+export default authMiddleware;
