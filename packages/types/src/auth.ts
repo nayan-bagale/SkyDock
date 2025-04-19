@@ -15,7 +15,7 @@ export interface LoginBody {
 }
 
 export interface LoginResponse {
-  email: string;
-  name: string;
+  email?: string;
+  name?: string;
   id: string;
 }

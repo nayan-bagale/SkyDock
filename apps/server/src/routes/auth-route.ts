@@ -65,4 +65,7 @@ router.patch("/update/name", authMiddleware, authController.updateName);
 
 router.put("/update/password", authMiddleware, authController.changePassword);
 
+// ------------------ Get User ------------------
+router.get("/user-info", authMiddleware, authController.getUser);
+
 export default router;

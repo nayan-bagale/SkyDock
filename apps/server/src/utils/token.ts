@@ -2,7 +2,7 @@ import { LoginResponse } from "@skydock/types/Auth";
 import jwt from "jsonwebtoken";
 import { jwtOptions } from "../config/cookiesAndJwt";
 
-export const createRefreshToken = (user: LoginResponse) => {
+export const createRefreshToken = (user: Partial<LoginResponse>) => {
   return jwt.sign(
     { user },
     process.env.REFRESH_TOKEN_SECRET!,
@@ -10,7 +10,7 @@ export const createRefreshToken = (user: LoginResponse) => {
   );
 };
 export const createAccessToken = (
-  user: LoginResponse,
+  user: Partial<LoginResponse>,
   refreshToken: string
 ) => {
   return jwt.sign(

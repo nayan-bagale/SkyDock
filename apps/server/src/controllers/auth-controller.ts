@@ -1,5 +1,5 @@
 import { User } from "@skydock/db";
-import { LoginBody, RegisterBody } from "@skydock/types/Auth";
+import { LoginBody, LoginResponse, RegisterBody } from "@skydock/types/Auth";
 import { emailValidation, passwordValidation } from "@skydock/validation";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
@@ -148,9 +148,9 @@ class AuthController {
       return res.status(UNAUTHORIED).json({ message: "Invalid password" });
     }
 
-    const UserResObj = {
-      email: user.email,
-      name: user.name,
+    const UserResObj: LoginResponse = {
+      // email: user.email,
+      // name: user.name,
       id: user.id,
     };
 
@@ -492,6 +492,38 @@ class AuthController {
       res.status(OK).json({ message: "Password reset successfully" });
     } catch (e: any) {
       logger.error("Error while updating password", e);
+      return res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+  }
+
+  async getUser(req: Request, res: Response) {
+    const userId = req.user?.id as string;
+
+    if (!userId) {
+      return res.status(UNAUTHORIED).json({ message: "User not found" });
+    }
+
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+
+      if (!user) {
+        return res.status(NOTFOUND).json({ message: "User not found" });
+      }
+
+      return res.status(OK).json({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        verified: user.verified,
+      });
+    } catch (e: any) {
+      logger.error("Error while getting user", e);
       return res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });

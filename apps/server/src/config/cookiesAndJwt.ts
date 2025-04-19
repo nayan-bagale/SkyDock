@@ -1,5 +1,6 @@
 import { CookieOptions } from "express";
 import { SignOptions } from "jsonwebtoken";
+import { TimeInMs } from "../constants";
 
 export const jwtOptions: {
   accessToken: SignOptions;
@@ -7,10 +8,10 @@ export const jwtOptions: {
   emailVerification: SignOptions;
 } = {
   accessToken: {
-    expiresIn: "15m",
+    expiresIn: "5m",
   },
   refreshToken: {
-    expiresIn: "7d",
+    expiresIn: "1d",
   },
   emailVerification: {
     expiresIn: "1d",
@@ -19,7 +20,7 @@ export const jwtOptions: {
 
 export const cookieOptions: CookieOptions = {
   httpOnly: true,
-  maxAge: 1000 * 60 * 60 * 24 * 7,
+  maxAge: TimeInMs.ONE_DAY,
   secure: true,
   sameSite: "none",
 };
