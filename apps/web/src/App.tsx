@@ -10,6 +10,7 @@ import Dock from "./components/Dock/Dock";
 import DraggingItem from "./components/DraggingItem";
 import useIntializeFilesAndFolders from "./components/hooks/useIntializeFilesAndFolders";
 import useTheme from "./components/hooks/useTheme";
+import SubscriptionPlans from "./components/SubscriptionPlan/SubscriptionPlan";
 import "./index.css";
 import { useGetSessionQuery } from "./redux/apis/userAuthApi";
 import { useAppSelector } from "./redux/hooks";
@@ -21,6 +22,9 @@ function App() {
     skip: isGuestMode,
   });
   const { isLocked } = useAppSelector((state) => state.lockScreen);
+  const isSubscriptionPlanCardOpen = useAppSelector(
+    (state) => state.apps.subscriptionPlanCard
+  );
   const handleContext = (e: any) => {
     // e.preventDefault()
     // console.log(e.target)
@@ -47,10 +51,13 @@ function App() {
         <div className="justify-self-end">
           <Dock />
         </div>
+        <AnimatePresence>
+          {isSubscriptionPlanCardOpen && <SubscriptionPlans />}
+        </AnimatePresence>
         {<DraggingItem />}
       </>
     );
-  }, []);
+  }, [isSubscriptionPlanCardOpen]);
 
   if (isLoading) return <div>Loading...</div>;
 
