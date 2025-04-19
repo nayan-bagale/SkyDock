@@ -1,3 +1,4 @@
+import { TimeInMs } from "@skydock/types/enums";
 import { useEffect, useRef, useState } from "react";
 
 function formatTime(seconds: number): string {
@@ -6,15 +7,19 @@ function formatTime(seconds: number): string {
   return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
 }
 
-export function useCountdownTimer(defaultDuration: number = 15) {
+export function useCountdownTimer(
+  defaultDuration: number = TimeInMs.FIVE_MINUTES
+) {
   const [remainingTime, setRemainingTime] = useState(defaultDuration);
   const [isExpired, setIsExpired] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const startTimer = (durationInSeconds: number = defaultDuration) => {
+  const startTimer = (durationMs: number = defaultDuration) => {
     if (intervalRef.current) clearInterval(intervalRef.current);
 
-    setRemainingTime(durationInSeconds);
+    const durationInSec = Math.floor(durationMs / 1000);
+
+    setRemainingTime(durationInSec);
     setIsExpired(false);
 
     intervalRef.current = setInterval(() => {

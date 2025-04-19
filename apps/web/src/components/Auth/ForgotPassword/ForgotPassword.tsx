@@ -5,6 +5,7 @@ import { Button } from "@/ui/button"
 import { AuthCard } from "@/ui/Cards/AuthFlow/AuthCard"
 import { Form } from "@/ui/Cards/AuthFlow/Form"
 import { Input } from "@/ui/input"
+import { Icons } from "@skydock/ui/icons"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@skydock/ui/input-otp"
 import { showToast } from "@skydock/ui/toast"
 import { emailValidation, passwordValidation } from "@skydock/validation"
@@ -16,7 +17,6 @@ import { ActionTypes, forgotPasswordReducer, initialState } from "./reducer"
 interface SigninProps {
     windowChange: (window: 'signin' | 'signup' | 'forgot') => void;
 }
-
 
 
 const ForgotPassword: FC<SigninProps> = ({ windowChange }) => {
@@ -141,13 +141,13 @@ const ForgotPassword: FC<SigninProps> = ({ windowChange }) => {
             <h1 className=" text-2xl font-bold text-white ">Forgot Password</h1>
             <Form className="mt-4" onSubmit={handleSubmit}>
                 {
-                    step === 0 && <Email_Component errorMessage={state.email.error} />
+                    step === 0 && <Email_Component isLoading={isSendOtpLoading} errorMessage={state.email.error} />
                 }
                 {
-                    step === 1 && <OTP_Component errorMessage={state.otp.error} resendOtp={resendOtp} />
+                    step === 1 && <OTP_Component isLoading={isVerifyOtpLoading} errorMessage={state.otp.error} resendOtp={resendOtp} />
                 }
                 {
-                    step === 2 && <NewPassword_Component passwordError={state.password.error} confirmPasswordError={state.confirmPassword.error} />
+                    step === 2 && <NewPassword_Component isLoading={isResetPasswordLoading} passwordError={state.password.error} confirmPasswordError={state.confirmPassword.error} />
                 }
                 <div className=" flex items-center gap-2 w-full justify-center">
                     <p>Want to login? </p>
@@ -159,17 +159,19 @@ const ForgotPassword: FC<SigninProps> = ({ windowChange }) => {
     )
 }
 
-const Email_Component = memo(({ errorMessage }: { errorMessage: string }) => {
+const Email_Component = memo(({ errorMessage, isLoading }: { errorMessage: string, isLoading: boolean }) => {
     return (
         <>
             <label className=" self-start" htmlFor="">Enter Email</label>
             <Input placeholder="name@company.com" type='email' />
             {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
-            <Button size={'medium'} className=" w-full flex items-center justify-center my-2 " intent={'secondary'} type="submit">Send OTP</Button>
+            <Button size={'medium'} className=" w-full flex items-center justify-center my-2 " disabled={isLoading} intent={'secondary'} type="submit">
+                {isLoading ? <span className=" animate-spin"><Icons.Loader className=" h-6 w-6" /> </span> : "Send OTP"}
+            </Button>
         </>
     )
 })
-const OTP_Component = memo(({ errorMessage, resendOtp }: { errorMessage: string, resendOtp: any }) => {
+const OTP_Component = memo(({ errorMessage, resendOtp, isLoading }: { errorMessage: string, resendOtp: any, isLoading: boolean }) => {
     const { isExpired, startTimer, timer } = useCountdownTimer();
 
     const handleResendOtp = () => {
@@ -202,12 +204,14 @@ const OTP_Component = memo(({ errorMessage, resendOtp }: { errorMessage: string,
                     <Button className=" hover:bg-transparent text-white " onClick={handleResendOtp}>Resend OTP</Button>
                 </> : <p>Resend OTP in {timer}</p>}
             </div>
-            <Button size={'medium'} className=" w-full flex items-center justify-center my-2 " intent={'secondary'} type="submit">Verify OTP</Button>
+            <Button size={'medium'} className=" w-full flex items-center justify-center my-2 " disabled={isLoading} intent={'secondary'} type="submit">
+                {isLoading ? <span className=" animate-spin"><Icons.Loader className=" h-6 w-6" /> </span> : "Verify OTP"}
+            </Button>
         </div>
     )
 })
 
-const NewPassword_Component = memo(({ confirmPasswordError, passwordError }: { confirmPasswordError: string, passwordError: string }) => {
+const NewPassword_Component = memo(({ confirmPasswordError, passwordError, isLoading }: { confirmPasswordError: string, passwordError: string, isLoading: boolean }) => {
     return (
         <>
             <label htmlFor="password" className=" self-start">Password </label>
@@ -217,7 +221,9 @@ const NewPassword_Component = memo(({ confirmPasswordError, passwordError }: { c
             <label htmlFor="confirm-password" className=" self-start">Confirm Password </label>
             <Input className="" id="confirm-password" placeholder="Confirm Password" type="password" />
             {confirmPasswordError && <ErrorMessage>{confirmPasswordError}</ErrorMessage>}
-            <Button size={'medium'} className=" w-full flex items-center justify-center my-2 " intent={'secondary'} type="submit">Save password</Button>
+            <Button size={'medium'} className=" w-full flex items-center justify-center my-2 " disabled={isLoading} intent={'secondary'} type="submit">
+                {isLoading ? <span className=" animate-spin"><Icons.Loader className=" h-6 w-6" /> </span> : "Save password"}
+            </Button>
 
         </>
     )
