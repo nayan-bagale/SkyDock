@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { LoginResponse } from "@skydock/types/Auth";
+import { UserInfo } from "@skydock/types/Auth";
 
 export const authSlice = createSlice({
   name: "auth",
   initialState: {
     accessToken: "",
-    user: null as LoginResponse | null,
+    user: null as UserInfo | null,
     guestMode: false,
   },
   reducers: {

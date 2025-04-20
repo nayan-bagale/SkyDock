@@ -2,6 +2,7 @@ import authReducer from "@/redux/features/auth";
 import explorerReducer from "@/redux/features/explorer/explorerSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import filesAndFolderApi from "./apis/filesAndFolderApi";
+import planApi from "./apis/planApis";
 import userAuthApi from "./apis/userAuthApi";
 import { appsSlice } from "./features/apps/appsSlice";
 import contextMenuReducer from "./features/contextMenu/contextMenuSlice";
@@ -25,11 +26,14 @@ export const store = configureStore({
 
     [userAuthApi.reducerPath]: userAuthApi.reducer,
     [filesAndFolderApi.reducerPath]: filesAndFolderApi.reducer,
+    [planApi.reducerPath]: planApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(userAuthApi.middleware)
-      .concat(filesAndFolderApi.middleware),
+      .concat(filesAndFolderApi.middleware)
+      .concat(planApi.middleware),
+  devTools: process.env.NODE_ENV !== "prod",
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -20,6 +20,7 @@ import { nanoid } from "@reduxjs/toolkit";
 import { FileT, FolderT } from "@skydock/types";
 import useDeleteFolderRecursively from "./useDeleteFolderRecursively";
 import useFileDownloadWithProgress from "./useFileDownloadWithProgress";
+import { useInvalidApi } from "./useInvalidApis";
 
 const useContextMenu = (targetItem: FileT | FolderT | null) => {
   const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
@@ -32,6 +33,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
   const [deleteFile] = useDeleteFileMutation();
   const [deleteFolder] = useDeleteFolderMutation();
   const [updateFileApi] = useUpdateItemMutation();
+  const { invalidUserInfo } = useInvalidApi();
 
   const dispatch = useAppDispatch();
   const [getNestedFolderItemsId] = useDeleteFolderRecursively();
@@ -106,6 +108,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
       } else {
         await deleteFile(targetItem.id);
       }
+      invalidUserInfo();
       dispatch(deleteItem(targetItem));
     } catch (error) {
       console.log(error);

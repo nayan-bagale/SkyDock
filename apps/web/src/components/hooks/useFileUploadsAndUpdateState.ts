@@ -14,8 +14,10 @@ import {
 } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { FileT } from "@skydock/types";
+import { showToast } from "@skydock/ui/toast";
 import axios from "axios";
 import { useState } from "react";
+import { useInvalidApi } from "./useInvalidApis";
 
 interface UploadUrlsResponse {
   [key: string]: string;
@@ -30,6 +32,7 @@ type FileTWithFile = FileT & {
 
 const useFileUploadsAndUpdateState = () => {
   const dispatch = useAppDispatch();
+  const { invalidUserInfo } = useInvalidApi();
 
   const [getUploadUrls, { isError: isGetUploadUrlsError }] =
     useGetUploadUrlsMutation();
@@ -39,7 +42,7 @@ const useFileUploadsAndUpdateState = () => {
   const [error, setError] = useState<{ id: string; error: string }[] | []>([]);
 
   const getUploadUrlsSafely = async (
-    requestFiles: { name: string; type: string; id: string }[]
+    requestFiles: { name: string; type: string; id: string; size: string }[]
   ) => {
     try {
       const uploadUrls: UploadUrlsResponse[] =
@@ -47,6 +50,8 @@ const useFileUploadsAndUpdateState = () => {
       return uploadUrls;
     } catch (error: any) {
       setError((prev) => [...prev, { id: "unknown", error: error.data }]);
+      showToast(error.data.message, "error");
+      console.log(error);
       return null;
     }
   };
@@ -57,6 +62,7 @@ const useFileUploadsAndUpdateState = () => {
       return true;
     } catch (error: any) {
       setError((prev) => [...prev, { id: "unknown", error: error.data }]);
+      showToast(error.data.message, "error");
       return null;
     }
   };
@@ -66,6 +72,7 @@ const useFileUploadsAndUpdateState = () => {
       name: file.name,
       type: file.details.type,
       id: file.id,
+      size: file.details.size,
     }));
 
     requestFiles.forEach((file) =>
@@ -157,6 +164,8 @@ const useFileUploadsAndUpdateState = () => {
       })
     );
     if (!uploadFilesPromise) return null;
+
+    invalidUserInfo();
 
     // Filter out the rejected promises and get the details of the files
     // const requestArray = uploadFilesPromise

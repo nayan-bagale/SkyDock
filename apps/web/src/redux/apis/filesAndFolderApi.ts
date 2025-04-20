@@ -8,6 +8,7 @@ import baseQueryWithReAuth from "./baseQueryWithReAuth";
 const filesAndFolderApi = createApi({
   reducerPath: "filesAndFolderApi",
   baseQuery: baseQueryWithReAuth,
+  tagTypes: ["UserInfo"],
   endpoints: (builder) => ({
     // File Handling Apis (Upload and Download)
     getUploadUrls: builder.mutation({
@@ -24,6 +25,7 @@ const filesAndFolderApi = createApi({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["UserInfo"],
     }),
 
     getAllFiles: builder.query<AllFilesResponse[], any>({
@@ -48,6 +50,7 @@ const filesAndFolderApi = createApi({
         url: `/file/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["UserInfo"],
     }),
 
     updateItem: builder.mutation({
@@ -72,6 +75,7 @@ const filesAndFolderApi = createApi({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["UserInfo"],
     }),
   }),
 });

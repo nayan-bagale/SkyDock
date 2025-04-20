@@ -1,16 +1,19 @@
 
+import { useGetAllPlansQuery } from "@/redux/apis/planApis"
 import { closeSubscriptionPlanCard } from "@/redux/features/apps/appsSlice"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import SubscriptionPlanCard from "@/ui/Cards/SubscriptionPlan/SubcriptionPlanCard"
 import SubscriptionPlanWrapper from "@/ui/Cards/SubscriptionPlan/SubscriptionPlanWrapper"
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import { useDrag } from "../hooks/useDrag"
 
 export default function SubscriptionPlans() {
-    const [currentPlan, setCurrentPlan] = useState("Hobby")
+    const currentPlan = useAppSelector((state) => state.auth.user?.plan.name)
     const draggableRef = useRef<HTMLDivElement>(null);
     const theme = useAppSelector((state) => state.settings.apperance.theme);
     const dispatch = useAppDispatch();
+
+    const { data: allPlans, isLoading } = useGetAllPlansQuery();
 
     const handleUpgrade = async (plan: string): Promise<boolean> => {
         console.log(`Upgrading to ${plan} plan`)
@@ -20,14 +23,14 @@ export default function SubscriptionPlans() {
             setTimeout(() => {
                 // For demo: Pro plan always succeeds, Enterprise always fails
                 if (plan === "Pro") {
-                    setCurrentPlan(plan)
+                    // setCurrentPlan(plan)
                     resolve(true)
                 } else if (plan === "Enterprise") {
                     resolve(false)
                 } else {
                     // Random success/failure for other plans
                     const success = Math.random() > 0.5
-                    if (success) setCurrentPlan(plan)
+                    // if (success) setCurrentPlan(plan)
                     resolve(success)
                 }
             }, 1500)
@@ -71,7 +74,23 @@ export default function SubscriptionPlans() {
             </div>
 
             <div className="flex items-center justify-center gap-6 px-6 mb-6">
-                <SubscriptionPlanCard
+                {allPlans?.map((plan) => (
+                    <SubscriptionPlanCard
+                        key={plan.id}
+                        name={plan.name}
+                        description={plan.description ?? ""}
+                        price={`$${plan.price}`}
+                        period={plan.interval === "monthly" ? "month" : "year"}
+                        features={plan.features.map((feature) => ({
+                            name: feature,
+                            included: true,
+                        }))}
+                        popular={plan.popular}
+                        current={currentPlan === plan.name}
+                        onUpgrade={() => handleUpgrade(plan.name)}
+                    />
+                ))}
+                {/* <SubscriptionPlanCard
                     name="Hobby"
                     description=""
                     price="$0"
@@ -98,7 +117,7 @@ export default function SubscriptionPlans() {
                     popular={true}
                     current={currentPlan === "Pro"}
                     onUpgrade={() => handleUpgrade("Pro")}
-                />
+                /> */}
             </div>
         </SubscriptionPlanWrapper>
     )
