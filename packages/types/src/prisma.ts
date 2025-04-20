@@ -1,3 +1,5 @@
+import type { Plan } from "@skydock/db";
+
 export interface ExplorerItemsPrismaT {
   id: string;
   name: string;
@@ -12,3 +14,15 @@ export interface ExplorerItemsPrismaT {
   updatedAt: Date;
   last_modified: Date;
 }
+
+export type PlansT = Pick<
+  Plan,
+  | "id"
+  | "name"
+  | "price"
+  | "storageLimit"
+  | "description"
+  | "interval"
+  | "popular"
+  | "features"
+>[];

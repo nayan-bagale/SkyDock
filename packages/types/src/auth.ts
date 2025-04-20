@@ -19,3 +19,17 @@ export interface LoginResponse {
   name?: string;
   id: string;
 }
+
+export interface UserInfo {
+  email: string;
+  name: string;
+  id: string;
+  usedStorage: number;
+  verified: boolean;
+  plan: {
+    name: string;
+    storageLimit: number;
+    startDate: string;
+    endDate: string;
+  };
+}
