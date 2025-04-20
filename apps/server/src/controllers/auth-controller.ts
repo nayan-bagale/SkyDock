@@ -10,6 +10,7 @@ import { SALT } from "../constants/constants";
 import messages from "../constants/messages";
 import {
   BADREQUEST,
+  FORBIDDEN,
   INTERNALERROR,
   NOTFOUND,
   OK,
@@ -26,6 +27,7 @@ import {
   verifyToken,
 } from "../utils/token";
 
+import { addMonths } from "../utils/date";
 import cache from "../utils/inMemoryStore";
 import otpGenerate from "../utils/otp-generator";
 
@@ -217,7 +219,6 @@ class AuthController {
           name: `${fname} ${lname}`,
         },
       });
-      // TODO: Update JWT token with new name
       res.status(OK).json({ message: "Successfully updated name" });
     } catch (e: any) {
       logger.error("Error while updating name", e);
@@ -289,9 +290,7 @@ class AuthController {
     try {
       verifyToken(token, "EmailVerification");
     } catch (e: any) {
-      return res
-        .status(UNAUTHORIED)
-        .json({ message: messages.INVALID_ACCESS_TOKEN });
+      return res.status(UNAUTHORIED).json({ message: messages.UNAUTHORIED });
     }
 
     const decoded = decodeToken(token) as JwtPayload;
@@ -305,14 +304,48 @@ class AuthController {
 
       if (isEmailVerified?.verified) {
         return res
-          .status(UNAUTHORIED)
+          .status(FORBIDDEN)
           .json({ message: "Email already verified" });
       }
 
-      await prisma.user.update({
-        where: { id: decoded.user.id },
-        data: { verified: true },
+      const startDate = new Date();
+      const endDate = addMonths(startDate, 1);
+
+      await prisma.$transaction(async (ctx) => {
+        const user = await ctx.user.update({
+          where: { id: decoded.user.id },
+          data: { verified: true },
+        });
+
+        const userExist = await ctx.userPlan.findMany({
+          where: {
+            userId: user.id,
+          },
+        });
+
+        if (!userExist.length) {
+          const user_plan = await ctx.userPlan.create({
+            data: {
+              userId: user.id,
+              planId: 1,
+              startDate: startDate,
+              endDate: endDate,
+              status: "active",
+            },
+          });
+          console.log(user_plan);
+          await ctx.payment.create({
+            data: {
+              userId: user.id,
+              planId: 1,
+              amount: 0,
+              currency: "INR",
+              paymentStatus: "success",
+            },
+          });
+        }
       });
+
       res.status(OK).json({ message: "Email verified successfully" });
     } catch (e: any) {
       logger.error("Error while verifying email", e);
@@ -510,6 +543,20 @@ class AuthController {
         where: {
           id: userId,
         },
+        include: {
+          UserPlan: {
+            where: {
+              status: "active",
+            },
+            orderBy: {
+              createdAt: "desc", // in case multiple active plans exist
+            },
+            take: 1,
+            include: {
+              plan: true, // includes full plan details
+            },
+          },
+        },
       });
 
       if (!user) {
@@ -521,6 +568,13 @@ class AuthController {
         name: user.name,
         email: user.email,
         verified: user.verified,
+        usedStorage: Number(user.usedStorage),
+        plan: {
+          name: user.UserPlan[0]?.plan.name,
+          storageLimit: Number(user.UserPlan[0]?.plan.storageLimit),
+          endDate: user.UserPlan[0]?.endDate,
+          startDate: user.UserPlan[0]?.startDate,
+        },
       });
     } catch (e: any) {
       logger.error("Error while getting user", e);

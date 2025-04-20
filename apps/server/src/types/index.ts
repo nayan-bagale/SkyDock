@@ -8,6 +8,7 @@ export interface RequestFilesForSignedUrl {
   name: string;
   type: string;
   id: string;
+  size: string;
 }
 
 export interface RequestFileForUploaded {

@@ -29,12 +29,14 @@ class Store {
   async putObjectUrl(
     userId: string,
     filename: string,
-    contentType: string
+    contentType: string,
+    contentLength: number
   ): Promise<string> {
     const command = new PutObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME!,
       Key: `${userId}/${filename}`,
       ContentType: contentType,
+      ContentLength: contentLength,
     });
     return await getSignedUrl(s3, command);
   }

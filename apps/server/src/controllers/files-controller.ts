@@ -2,7 +2,7 @@ import { CreateFolderRequest } from "@skydock/types";
 import { Request, Response } from "express";
 import { prisma } from "../config/db";
 import messages from "../constants/messages";
-import { INTERNALERROR } from "../constants/status";
+import { INTERNALERROR, PAYLOADTOOLARGE } from "../constants/status";
 import logger from "../logger";
 import Store from "../services/object-storage";
 import { RequestFileForUploaded, RequestFilesForSignedUrl } from "../types";
@@ -22,6 +22,46 @@ class FilesController {
   async generateUploadUrls(req: Request, res: Response) {
     const files = req.body.files as RequestFilesForSignedUrl[];
     const userId = req.user?.id as string;
+
+    try {
+      const sizeRequired = files.reduce(
+        (acc, file) => acc + parseInt(file.size),
+        0
+      );
+      const userWithPlan = await prisma.user.findUnique({
+        where: { id: req.user?.id as string },
+        select: {
+          usedStorage: true,
+          UserPlan: {
+            where: { status: "active" },
+            orderBy: { createdAt: "desc" },
+            take: 1,
+            select: {
+              plan: {
+                select: {
+                  storageLimit: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      const usedStorage = userWithPlan?.usedStorage ?? 0;
+      const storageLimit = userWithPlan?.UserPlan[0]?.plan?.storageLimit ?? 0;
+      const canUpload = Number(usedStorage) + sizeRequired <= storageLimit;
+
+      if (!canUpload) {
+        return res.status(PAYLOADTOOLARGE).json({
+          message: "Storage limit exceeded for your current plan.",
+        });
+      }
+    } catch (e) {
+      logger.error("Error in file upload", e);
+      return res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+
     const signed_urls = await Promise.all(
       files.map(async (file) => {
         const extension = file.name.split(".").pop();
@@ -29,7 +69,8 @@ class FilesController {
           userId,
           // `${filename?.split(" ").join("-")}-${file.id}.${extension}`,
           `${file.id}.${extension}`,
-          file.type
+          file.type,
+          Number(file.size)
         );
         return { [file.id]: url };
       })
@@ -39,20 +80,75 @@ class FilesController {
 
   async saveUploadedFilesToDB(req: Request, res: Response) {
     const files = req.body as RequestFileForUploaded[];
+
+    const sizeRequired = files.reduce(
+      (acc, file) => acc + parseInt(file.details.size),
+      0
+    );
+
+    try {
+      const userWithPlan = await prisma.user.findUnique({
+        where: { id: req.user?.id as string },
+        select: {
+          usedStorage: true,
+          UserPlan: {
+            where: { status: "active" },
+            orderBy: { createdAt: "desc" },
+            take: 1,
+            select: {
+              plan: {
+                select: {
+                  storageLimit: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      const usedStorage = userWithPlan?.usedStorage ?? 0;
+      const storageLimit = userWithPlan?.UserPlan[0]?.plan?.storageLimit ?? 0;
+
+      const canUpload = Number(usedStorage) + sizeRequired <= storageLimit;
+
+      if (!canUpload) {
+        return res.status(PAYLOADTOOLARGE).json({
+          message: "Storage limit exceeded for your current plan.",
+        });
+      }
+    } catch (e) {
+      logger.error("Error in file upload", e);
+      return res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+
     try {
       // Save files to database
       const userId = req.user?.id as string;
-      const savedFiles = await prisma.explorerItems.createMany({
-        data: files.map((file) => ({
-          id: file.id,
-          name: file.name,
-          is_folder: file.isFolder,
-          parent_id: file.parent,
-          user_id: userId,
-          size: file.details.size,
-          mime_type: file.details.type,
-          last_modified: new Date(parseInt(file.details.lastModified)),
-        })),
+
+      await prisma.$transaction(async (tx) => {
+        await tx.user.update({
+          where: { id: userId },
+          data: {
+            usedStorage: {
+              increment: sizeRequired,
+            },
+          },
+        });
+
+        await tx.explorerItems.createMany({
+          data: files.map((file) => ({
+            id: file.id,
+            name: file.name,
+            is_folder: file.isFolder,
+            parent_id: file.parent,
+            user_id: userId,
+            size: parseInt(file.details.size),
+            mime_type: file.details.type,
+            last_modified: new Date(parseInt(file.details.lastModified)),
+          })),
+        });
       });
       res.json({ message: "Upload successful" });
     } catch (err) {
@@ -108,6 +204,15 @@ class FilesController {
       await prisma.$transaction(async (tx) => {
         await Store.deleteObject(`${userId}/${fileId}.${extension}`);
 
+        await tx.user.update({
+          where: { id: userId },
+          data: {
+            usedStorage: {
+              decrement: file.size,
+            },
+          },
+        });
+
         await tx.explorerItems.delete({ where: { id: fileId } });
       });
 
@@ -148,7 +253,7 @@ class FilesController {
           is_folder: true,
           parent_id: data.parent,
           user_id: userId,
-          size: "0",
+          size: 0,
           mime_type: "folder",
           last_modified: new Date(),
         },
@@ -178,6 +283,16 @@ class FilesController {
         await Promise.allSettled(
           files.map(async (file) => await Store.deleteObject(file))
         );
+
+        const totalSize = items.reduce((acc, item) => acc + item.size, 0);
+        await tx.user.update({
+          where: { id: userId },
+          data: {
+            usedStorage: {
+              decrement: totalSize,
+            },
+          },
+        });
 
         await tx.explorerItems.deleteMany({
           where: { id: { in: folderItems }, user_id: userId },

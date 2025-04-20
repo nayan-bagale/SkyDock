@@ -8,6 +8,7 @@ import { OK } from "./constants/status";
 import authMiddleware from "./middleware/auth-middleware";
 import authRoute from "./routes/auth-route";
 import filesRoute from "./routes/files-route";
+import planRoute from "./routes/plan-route";
 import { decodeToken } from "./utils/token";
 
 const app = express();
@@ -33,12 +34,12 @@ app.get("/api/v1/session", authMiddleware, (req, res) => {
 //   res.status(OK).json({ message: "Welcome to the API!" });
 // });
 
-app.use("/api/v1/auth", authRoute);
-
 app.get("/api/v1/protected", authMiddleware, (req, res) => {
   res.status(OK).json({ message: "Access Granted." });
 });
 
+app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/plan", planRoute);
 app.use("/api/v1", filesRoute);
 
 app.listen(3000, () => {
