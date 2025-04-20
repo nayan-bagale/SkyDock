@@ -1,6 +1,3 @@
-"use client"
-
-// import { Check, Zap } from "lucide-react"
 import { Button } from "@/ui/button"
 import { Badge } from "@skydock/ui/badge"
 import { Icons } from "@skydock/ui/icons"

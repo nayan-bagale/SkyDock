@@ -6,6 +6,7 @@ import { corsOptions } from "./config/corsOptions";
 import "./config/dotenv";
 import { OK } from "./constants/status";
 import authMiddleware from "./middleware/auth-middleware";
+import rateLimitMiddleware from "./middleware/rate-limit-middleware";
 import authRoute from "./routes/auth-route";
 import filesRoute from "./routes/files-route";
 import planRoute from "./routes/plan-route";
@@ -30,9 +31,9 @@ app.get("/api/v1/session", authMiddleware, (req, res) => {
   res.status(OK).json({ user: decoded.user });
 });
 
-// app.get("/api/v1", rateLimitMiddleware.loginLimiter, (req, res) => {
-//   res.status(OK).json({ message: "Welcome to the API!" });
-// });
+app.get("/api/v1", rateLimitMiddleware.defaultLimiter, (req, res) => {
+  res.status(OK).json({ message: "Welcome to the API!" });
+});
 
 app.get("/api/v1/protected", authMiddleware, (req, res) => {
   res.status(OK).json({ message: "Access Granted." });

@@ -2,8 +2,8 @@ import { rateLimit } from "express-rate-limit";
 import {
   DEFAULT_RATE_LIMIT_MAX,
   DEFAULT_RATE_LIMIT_WINDOW,
-  TimeInMs,
 } from "../constants";
+import { TimeInMs } from "../constants/index";
 
 class RateLimitMiddleware {
   private static instance: RateLimitMiddleware;

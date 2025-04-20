@@ -1,8 +1,8 @@
-import { TerminalSkeleton } from "@/components/Apps/terminal/Terminal";
 import { useAppSelector } from "@/redux/hooks";
 import { AnimatePresence } from "framer-motion";
 import { Suspense } from "react";
 import { Explorer, ImageViewer, Settings, Terminal } from "./Apps.Lazy";
+import { TerminalSkeleton } from "./terminal/TerminalSkeleton";
 
 const Apps_ = () => {
     const terminal = useAppSelector((state) => state.terminal.actions.isProcessOn);

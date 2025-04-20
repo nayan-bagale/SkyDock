@@ -8,7 +8,7 @@ export enum TimeInMs {
   FIFTEEN_MINUTES = 15 * 60 * 1000, // 15 minutes
 }
 
-export const DEFAULT_RATE_LIMIT_WINDOW = TimeInMs.FIVE_MINUTES;
-export const DEFAULT_RATE_LIMIT_MAX = 100;
+// export const DEFAULT_RATE_LIMIT_WINDOW = TimeInMs.FIVE_MINUTES;
+// export const DEFAULT_RATE_LIMIT_MAX = 100;
 
-export const OTP_EXPIRATION_TIME = TimeInMs.FIFTEEN_MINUTES;
+// export const OTP_EXPIRATION_TIME = TimeInMs.FIFTEEN_MINUTES;

@@ -1,6 +1,6 @@
 import { CookieOptions } from "express";
 import { SignOptions } from "jsonwebtoken";
-import { TimeInMs } from "../constants";
+import { TimeInMs } from "../constants/index";
 
 export const jwtOptions: {
   accessToken: SignOptions;
