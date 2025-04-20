@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Plan" ALTER COLUMN "storageLimit" SET DATA TYPE BIGINT;
+
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "usedStorage" SET DATA TYPE BIGINT;

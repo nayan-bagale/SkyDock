@@ -39,6 +39,7 @@ model User {
   verified      Boolean         @default(false)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+  usedStorage   BigInt          @default(0)
   explorerItems ExplorerItems[]
   UserPlan      UserPlan[]
   Payment       Payment[]
@@ -51,6 +52,7 @@ model Plan {
   features       String[]
   price          Int // Stored in paise
   interval       PlanInterval // 'monthly' or 'yearly'
+  storageLimit   BigInt // in bytes
   popular        Boolean      @default(false)
   razorpayPlanId String?
   createdAt      DateTime     @default(now())
@@ -60,7 +62,7 @@ model Plan {
 }
 
 model UserPlan {
-  id                     Int                @id @default(autoincrement())
+  id                     String             @id @default(cuid())
   userId                 String
   planId                 Int
   startDate              DateTime
@@ -75,7 +77,7 @@ model UserPlan {
 }
 
 model Payment {
-  id                Int           @id @default(autoincrement())
+  id                String        @id @default(cuid())
   userId            String
   planId            Int
   amount            Int // in paise
@@ -97,7 +99,7 @@ model ExplorerItems {
   is_folder     Boolean
   parent_id     String?
   user_id       String
-  size          String
+  size          Int
   mime_type     String?
   s3_key        String?
   is_deleted    Boolean   @default(false)
