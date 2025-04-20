@@ -8,13 +8,17 @@
     "db:generate": "prisma generate && tsc",
     "db:migrate": "prisma migrate dev --skip-generate",
     "db:deploy": "prisma migrate deploy",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "db:seed": "prisma db seed"
   },
   "exports": {
     ".": {
       "import": "./src/index.ts",
       "require": "./dist/index.js"
     }
+  },
+  "prisma": {
+    "seed": "ts-node ./src/seed.ts"
   },
   "devDependencies": {
     "prisma": "^6.3.0"

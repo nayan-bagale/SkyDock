@@ -4,9 +4,26 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+enum PlanInterval {
+  monthly
+  yearly
+}
+
+enum SubscriptionStatus {
+  active
+  expired
+  cancelled
+}
+
+enum PaymentStatus {
+  success
+  failed
+  pending
+}
+
 generator client {
   provider = "prisma-client-js"
-  output = "../generated/client"
+  output   = "../generated/client"
 }
 
 datasource db {
@@ -15,30 +32,78 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  password  String
-  verified  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String          @id @default(cuid())
+  email         String          @unique
+  name          String
+  password      String
+  verified      Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
   explorerItems ExplorerItems[]
+  UserPlan      UserPlan[]
+  Payment       Payment[]
 }
 
+model Plan {
+  id             Int          @id @default(autoincrement())
+  name           String
+  description    String?
+  features       String[]
+  price          Int // Stored in paise
+  interval       PlanInterval // 'monthly' or 'yearly'
+  popular        Boolean      @default(false)
+  razorpayPlanId String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  userPlans      UserPlan[]
+  payments       Payment[]
+}
+
+model UserPlan {
+  id                     Int                @id @default(autoincrement())
+  userId                 String
+  planId                 Int
+  startDate              DateTime
+  endDate                DateTime?
+  status                 SubscriptionStatus
+  razorpaySubscriptionId String?
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  plan Plan @relation(fields: [planId], references: [id])
+}
+
+model Payment {
+  id                Int           @id @default(autoincrement())
+  userId            String
+  planId            Int
+  amount            Int // in paise
+  currency          String        @default("INR")
+  paymentStatus     PaymentStatus
+  razorpayPaymentId String?
+  razorpayOrderId   String?
+  method            String?
+  paidAt            DateTime?
+  createdAt         DateTime      @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  plan Plan @relation(fields: [planId], references: [id])
+}
 
 model ExplorerItems {
-  id        String   @unique
-  name      String
-  is_folder Boolean
-  parent_id String?
-  user_id   String
-  size      String
-  mime_type String?
-  s3_key    String?
-  is_deleted Boolean @default(false)
-  deletedAt DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String    @unique
+  name          String
+  is_folder     Boolean
+  parent_id     String?
+  user_id       String
+  size          String
+  mime_type     String?
+  s3_key        String?
+  is_deleted    Boolean   @default(false)
+  deletedAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   last_modified DateTime
-  user     User     @relation(fields: [user_id], references: [id])
+  user          User      @relation(fields: [user_id], references: [id])
 }

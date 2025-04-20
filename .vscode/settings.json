@@ -13,5 +13,8 @@
   "spellright.documentTypes": ["markdown", "latex", "plaintext", "typescript"],
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
   }
 }
