@@ -4,16 +4,16 @@ import messages from "../constants/messages";
 import { INTERNALERROR } from "../constants/status";
 import logger from "../logger";
 
-class PlanController {
-  private static instance: PlanController;
+class SubscriptionPlanController {
+  private static instance: SubscriptionPlanController;
 
   private constructor() {}
 
-  public static getInstance(): PlanController {
-    if (!PlanController.instance) {
-      PlanController.instance = new PlanController();
+  public static getInstance(): SubscriptionPlanController {
+    if (!SubscriptionPlanController.instance) {
+      SubscriptionPlanController.instance = new SubscriptionPlanController();
     }
-    return PlanController.instance;
+    return SubscriptionPlanController.instance;
   }
 
   async getAllPlans(req: Request, res: Response) {
@@ -41,4 +41,4 @@ class PlanController {
   }
 }
 
-export default PlanController.getInstance();
+export default SubscriptionPlanController.getInstance();

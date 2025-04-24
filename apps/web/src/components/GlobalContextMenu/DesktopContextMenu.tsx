@@ -7,6 +7,7 @@ import { ContextMenuSeparator } from '@/ui/ContextMenu';
 import { FolderT } from '@skydock/types';
 import { Icons } from '@skydock/ui/icons';
 import { useState } from 'react';
+import useAppProcess from '../hooks/useAppProcess';
 import useContextMenu from '../hooks/useContextMenu';
 import RenameInputBox from '../RenameInputBox';
 
@@ -20,6 +21,10 @@ const DesktopContextMenu = ({ targetId, additionalData }: DesktopContextMenuProp
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
     const currentFolder = explorerItems["desktop"] as FolderT;
     const [updateItem] = useUpdateItemMutation();
+    const clipboardItems = useAppSelector((state) => state.explorer.clipboard);
+
+    const { settingsApp } = useAppProcess();
+
 
     const [isRenaming, setIsRenaming] = useState(false);
     // const [newName, setNewName] = useState('');
@@ -52,19 +57,26 @@ const DesktopContextMenu = ({ targetId, additionalData }: DesktopContextMenuProp
     const handleDisplaySettings = () => {
         // Implement display settings logic
         dispatch(closeContextMenu());
+        settingsApp.open();
     };
 
     // If we're right-clicking on an empty area (no targetId)
     if (!targetItem) {
+        const hasClipboardItems = clipboardItems.items.length > 0 && clipboardItems.operation !== null;
         return (
             <>
                 <Button size={'menu'} onClick={() => handleAddFolder(currentFolder)}>
                     <div>New Folder</div>
                     <Icons.Folder_Add className="h-4" />
                 </Button>
-                <Button size={'menu'} onClick={() => handlePaste(currentFolder)}>
+                <Button
+                    size={'menu'}
+                    onClick={() => handlePaste(currentFolder)}
+                    disabled={!hasClipboardItems}
+                    className={!hasClipboardItems ? "opacity-50 cursor-not-allowed" : ""}
+                >
                     <div>Paste</div>
-                    <Icons.Copy className="h-4" />
+                    <Icons.Paste className="h-4" />
                 </Button>
                 <ContextMenuSeparator />
                 <Button size={'menu'} onClick={handleDisplaySettings}>

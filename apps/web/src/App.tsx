@@ -41,6 +41,12 @@ function App() {
         </div>
         <AnimatePresence>
           {isSubscriptionPlanCardOpen && <SubscriptionPlans />}
+          {/* {<ConfirmationCard
+            message="Are you sure you want to delete this item?"
+            title="Delete Item"
+            onCancel={() => { }}
+            onConfirm={() => { }}
+          />} */}
         </AnimatePresence>
         {<DraggingItem />}
       </>
@@ -74,6 +80,7 @@ function App() {
         )}
       </div>
       <GlobalContextMenu />
+
     </main>
   );
 }

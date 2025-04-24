@@ -36,4 +36,10 @@ router.post("/folder/delete", authMiddleware, async (req, res) => {
   await filesController.deleteFolder(req, res);
 });
 
+router.put(
+  "/folderAndFile/softDelete",
+  authMiddleware,
+  filesController.softDeleteFileAndFolder
+);
+
 export default router;

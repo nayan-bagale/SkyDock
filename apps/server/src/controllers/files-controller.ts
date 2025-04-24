@@ -189,42 +189,6 @@ class FilesController {
     }
   }
 
-  async deleteFile(req: Request, res: Response) {
-    const fileId = req.params.id as string;
-    const userId = req.user?.id as string;
-    try {
-      const file = await prisma.explorerItems.findUnique({
-        where: { id: fileId },
-      });
-      if (!file) {
-        return res.status(INTERNALERROR).json({ message: "File not found" });
-      }
-      const extension = file.name.split(".").pop() as string;
-
-      await prisma.$transaction(async (tx) => {
-        await Store.deleteObject(`${userId}/${fileId}.${extension}`);
-
-        await tx.user.update({
-          where: { id: userId },
-          data: {
-            usedStorage: {
-              decrement: file.size,
-            },
-          },
-        });
-
-        await tx.explorerItems.delete({ where: { id: fileId } });
-      });
-
-      return res.json({ message: "File deleted" });
-    } catch (err) {
-      logger.error("Error deleting file", err);
-      return res
-        .status(INTERNALERROR)
-        .json({ message: messages.INTERNAL_SERVER_ERROR });
-    }
-  }
-
   async patchFileAndFolder(req: Request, res: Response) {
     const fileId = req.params.id as string;
     const user_id = req.user?.id as string;
@@ -267,6 +231,42 @@ class FilesController {
     }
   }
 
+  async deleteFile(req: Request, res: Response) {
+    const fileId = req.params.id as string;
+    const userId = req.user?.id as string;
+    try {
+      const file = await prisma.explorerItems.findUnique({
+        where: { id: fileId },
+      });
+      if (!file) {
+        return res.status(INTERNALERROR).json({ message: "File not found" });
+      }
+      const extension = file.name.split(".").pop() as string;
+
+      await prisma.$transaction(async (tx) => {
+        await Store.deleteObject(`${userId}/${fileId}.${extension}`);
+
+        await tx.user.update({
+          where: { id: userId },
+          data: {
+            usedStorage: {
+              decrement: file.size,
+            },
+          },
+        });
+
+        await tx.explorerItems.delete({ where: { id: fileId } });
+      });
+
+      return res.json({ message: "File deleted" });
+    } catch (err) {
+      logger.error("Error deleting file", err);
+      return res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+  }
+
   async deleteFolder(req: Request, res: Response) {
     const folderItems = req.body as string[];
     const userId = req.user?.id as string;
@@ -301,6 +301,23 @@ class FilesController {
       res.json({ message: "Folder deleted" });
     } catch (err) {
       logger.error("Error deleting folder", err);
+      res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+  }
+
+  async softDeleteFileAndFolder(req: Request, res: Response) {
+    const folderItems = req.body as string[];
+    const userId = req.user?.id as string;
+    try {
+      await prisma.explorerItems.updateMany({
+        where: { id: { in: folderItems }, user_id: userId },
+        data: { is_deleted: true, deletedAt: new Date() },
+      });
+      res.json({ message: "Files and folders deleted" });
+    } catch (err) {
+      logger.error("Error deleting files and folders", err);
       res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });

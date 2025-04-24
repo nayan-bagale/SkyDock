@@ -9,7 +9,7 @@ import authMiddleware from "./middleware/auth-middleware";
 import rateLimitMiddleware from "./middleware/rate-limit-middleware";
 import authRoute from "./routes/auth-route";
 import filesRoute from "./routes/files-route";
-import planRoute from "./routes/plan-route";
+import planRoute from "./routes/subscription-plan-route";
 import { decodeToken } from "./utils/token";
 
 const app = express();
