@@ -1,4 +1,3 @@
-import useOutsideAlerter from "@/components/hooks/useOnclickOutside"
 // import { process } from "@/redux/features/apps/app/terminalSlice"
 // import { useAppDispatch } from "@/redux/hooks"
 import { Button } from "@/ui/button"
@@ -12,7 +11,7 @@ const Logo = () => {
     const ref = useRef<HTMLDivElement>(null)
     // const dispatch = useAppDispatch();
 
-    useOutsideAlerter(ref, () => setShow(false));
+    // useOutsideAlerter(ref, () => setShow(false));
 
     const apps = {
         // terminal: () => (dispatch(process('on')), setShow(false)),
@@ -23,7 +22,7 @@ const Logo = () => {
     return (
         <>
             <Button className="hover:bg-transparent hover:drop-shadow-[0px_0px_5px_#ffffff] p-0"
-                onClick={() => setShow(true)}
+            // onClick={() => setShow(true)}
             >
                 <Icons.Logo className="h-7" />
             </Button>

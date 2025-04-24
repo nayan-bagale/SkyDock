@@ -18,16 +18,16 @@ interface MainDropDownMenuT {
 export const MainDropDownMenu = forwardRef<HTMLDivElement, MainDropDownMenuT>(
     ({ children, className }, ref) => {
         return (
-            <AnimatePresence>
-                <motion.div className={cn(" z-10 top-7 absolute bg-gray-50  py-1 px-0.5 text-xs min-w-[14rem] gap-1 shadow-md flex flex-col rounded", className)}
-                    ref={ref}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                >
-                    {children}
-                </motion.div>
-            </AnimatePresence>
+            // <AnimatePresence>
+            <motion.div className={cn(" z-10 top-7 absolute bg-gray-50  py-1 px-0.5 text-xs min-w-[14rem] gap-1 shadow-md flex flex-col rounded", className)}
+                ref={ref}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+            >
+                {children}
+            </motion.div>
+            // {/* </AnimatePresence> */}
         )
     })
 
