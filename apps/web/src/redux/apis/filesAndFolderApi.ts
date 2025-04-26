@@ -77,6 +77,14 @@ const filesAndFolderApi = createApi({
       }),
       invalidatesTags: ["UserInfo"],
     }),
+    softDeleteFileAndFolder: builder.mutation({
+      query: (body: any) => ({
+        url: `/folderAndFile/softDelete`,
+        method: "PUT",
+        body,
+      }),
+      // invalidatesTags: ["UserInfo"],
+    }),
   }),
 });
 
@@ -91,5 +99,6 @@ export const {
   useUpdateItemMutation,
   useCreateFolderMutation,
   useDeleteFolderMutation,
+  useSoftDeleteFileAndFolderMutation,
 } = filesAndFolderApi;
 export default filesAndFolderApi;

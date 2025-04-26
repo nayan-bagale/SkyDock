@@ -10,4 +10,4 @@ export const StorageLimitLabel = {
   [StorageLimit.GB_1]: "1GB",
   [StorageLimit.GB_10]: "10GB",
   [StorageLimit.GB_100]: "100GB",
-};
+} as const;

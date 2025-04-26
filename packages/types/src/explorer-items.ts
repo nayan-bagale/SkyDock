@@ -1,6 +1,7 @@
 import React from "react";
 import { ActionsT } from "./common";
 import { OptionalExceptForId } from "./custom-types";
+import { ExplorerTabs } from "./enums/explorer";
 import { ExplorerItemsPrismaT } from "./prisma";
 
 export interface AllFilesResponse {
@@ -70,8 +71,7 @@ export interface FileT {
     // File: File;
   };
 }
-
-export type ExplorerItemsActiveTabs = "skydrive" | "trash" | "desktop";
+export type ExplorerItemsActiveTabs = (typeof ExplorerTabs)[number];
 
 export interface ExplorerT {
   explorerItems: {

@@ -2,6 +2,7 @@ import {
   useCreateFolderMutation,
   useDeleteFileMutation,
   useDeleteFolderMutation,
+  useSoftDeleteFileAndFolderMutation,
   useUpdateItemMutation,
 } from "@/redux/apis/filesAndFolderApi";
 import { closeContextMenu } from "@/redux/features/contextMenu/contextMenuSlice";
@@ -34,10 +35,12 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
   const [deleteFile] = useDeleteFileMutation();
   const [deleteFolder] = useDeleteFolderMutation();
   const [updateFileApi] = useUpdateItemMutation();
+  const [softDeleteFileAndFolder] = useSoftDeleteFileAndFolderMutation();
   const { invalidUserInfo } = useInvalidApi();
 
   const dispatch = useAppDispatch();
-  const [getNestedFolderItemsId] = useDeleteFolderRecursively();
+  const { getNestedFolderItems, getNestedFolderItemsId } =
+    useDeleteFolderRecursively();
   const { downloadFile } = useFileDownloadWithProgress();
 
   const handleAddFolder = async (currentFolder: FolderT) => {
@@ -103,9 +106,24 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
     console.log(activeTab);
 
     if (activeTab !== "trash") {
-      dispatch(
-        moveFileIntoFolder({ fileId: targetItem.id, folderId: "trash" })
-      );
+      const arrayItems = getNestedFolderItems(targetItem.id, []).map((item) => {
+        if (targetItem.id === item.id) {
+          return {
+            ...item,
+            parent: "trash",
+          };
+        }
+        return item;
+      });
+      try {
+        console.log(arrayItems);
+        await softDeleteFileAndFolder(arrayItems);
+        dispatch(
+          moveFileIntoFolder({ fileId: targetItem.id, folderId: "trash" })
+        );
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       try {
         if (targetItem.isFolder) {

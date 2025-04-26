@@ -1,4 +1,4 @@
-import { CreateFolderRequest } from "@skydock/types";
+import { CreateFolderRequest, FileT, FolderT } from "@skydock/types";
 import { Request, Response } from "express";
 import { prisma } from "../config/db";
 import messages from "../constants/messages";
@@ -308,13 +308,24 @@ class FilesController {
   }
 
   async softDeleteFileAndFolder(req: Request, res: Response) {
-    const folderItems = req.body as string[];
+    const items = req.body as (FileT | FolderT)[];
     const userId = req.user?.id as string;
     try {
-      await prisma.explorerItems.updateMany({
-        where: { id: { in: folderItems }, user_id: userId },
-        data: { is_deleted: true, deletedAt: new Date() },
+      await prisma.$transaction(async (tx) => {
+        await Promise.all(
+          items.map(async (item) => {
+            await tx.explorerItems.update({
+              where: { id: item.id, user_id: userId },
+              data: {
+                is_deleted: true,
+                deletedAt: new Date(),
+                parent_id: item.parent,
+              },
+            });
+          })
+        );
       });
+
       res.json({ message: "Files and folders deleted" });
     } catch (err) {
       logger.error("Error deleting files and folders", err);
