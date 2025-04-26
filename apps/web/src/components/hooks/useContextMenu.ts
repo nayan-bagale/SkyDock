@@ -28,6 +28,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
     (state) => state.explorer.actions.isProcessOn
   );
   const clipboardItems = useAppSelector((state) => state.explorer.clipboard);
+  const activeTab = useAppSelector((state) => state.explorer.activeTab);
 
   const [createFolder] = useCreateFolderMutation();
   const [deleteFile] = useDeleteFileMutation();
@@ -99,19 +100,25 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
 
   const handleDelete = async () => {
     if (!targetItem) return;
+    console.log(activeTab);
 
-    try {
-      if (targetItem.isFolder) {
-        const arrayItems = getNestedFolderItemsId(targetItem.id, []);
-        console.log(arrayItems);
-        await deleteFolder(arrayItems);
-      } else {
-        await deleteFile(targetItem.id);
+    if (activeTab !== "trash") {
+      dispatch(
+        moveFileIntoFolder({ fileId: targetItem.id, folderId: "trash" })
+      );
+    } else {
+      try {
+        if (targetItem.isFolder) {
+          const arrayItems = getNestedFolderItemsId(targetItem.id, []);
+          await deleteFolder(arrayItems);
+        } else {
+          await deleteFile(targetItem.id);
+        }
+        invalidUserInfo();
+        dispatch(deleteItem(targetItem));
+      } catch (error) {
+        console.log(error);
       }
-      invalidUserInfo();
-      dispatch(deleteItem(targetItem));
-    } catch (error) {
-      console.log(error);
     }
 
     dispatch(closeContextMenu());

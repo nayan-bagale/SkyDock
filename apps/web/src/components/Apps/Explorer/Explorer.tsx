@@ -18,7 +18,6 @@ const Explorer = () => {
     const dispatch = useAppDispatch();
     const [createFolder] = useCreateFolderMutation()
 
-
     const { handleAppFocus } = useChangeAppFocus('Explorer');
 
     const draggableRef = useRef<HTMLDivElement>(null);
@@ -31,11 +30,9 @@ const Explorer = () => {
     const focusedApp = useAppSelector((state) => state.apps.focusedApp)
     const activeTab = useAppSelector((state) => state.explorer.activeTab)
 
-
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef
     });
-
 
     const tabsOptions = useMemo<{
         name: string;
