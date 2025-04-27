@@ -57,6 +57,7 @@ interface ExplorerCardProps {
     className?: string;
     theme: ThemeT | null;
     onContextMenu: (e: React.MouseEvent) => void;
+    onEmptyTrash: () => void;
 }
 
 export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
@@ -75,6 +76,7 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
             handleFolderTree: { forward, backward },
             handleActiveTabs,
             onContextMenu,
+            onEmptyTrash,
         },
         ref
     ) => {
@@ -143,7 +145,7 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
                     <div className="flex justify-end gap-1 w-full">
                         {handleActiveTabs.activeTab === "trash" ? (
                             <Button
-                                // onClick={addFolder}
+                                onClick={onEmptyTrash}
                                 size={'small'}
                                 className="gap-1"
                             >

@@ -145,6 +145,24 @@ export const explorerSlice = createSlice({
       }
     },
 
+    emptyTrash: (state) => {
+      const deleteRecursively = (itemId: FolderT["id"]) => {
+        const item = state.explorerItems[itemId];
+        if (item.isFolder) {
+          item.children.forEach((childId) => {
+            deleteRecursively(childId);
+          });
+        }
+        delete state.explorerItems[itemId];
+      };
+      const trashFolder = state.explorerItems["trash"];
+      if (trashFolder.isFolder) {
+        trashFolder.children.forEach((childId) => {
+          deleteRecursively(childId);
+        });
+        trashFolder.children = [];
+      }
+    },
     renameItem: (state, action) => {
       const item = state.explorerItems[action.payload.id];
       state.explorerItems = {
@@ -302,6 +320,7 @@ export const {
   setBackStack,
   setBreadCrumb,
   deleteItem,
+  emptyTrash,
   renameItem,
   updateItemState,
   moveFileIntoFolder,

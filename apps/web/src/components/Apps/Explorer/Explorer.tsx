@@ -1,15 +1,19 @@
 import HandleDragnDrop from "@/components/HandleDragnDrop";
 import useChangeAppFocus from "@/components/hooks/useChangeAppFocus";
+import useDeleteFolderRecursively from "@/components/hooks/useDeleteFolderRecursively";
 import { useDrag } from "@/components/hooks/useDrag";
-import { useCreateFolderMutation } from "@/redux/apis/filesAndFolderApi";
+import { useInvalidApi } from "@/components/hooks/useInvalidApis";
+import { useCreateFolderMutation, useDeleteFolderMutation } from "@/redux/apis/filesAndFolderApi";
 import { openContextMenu } from '@/redux/features/contextMenu/contextMenuSlice';
-import { addItem, changeExplorerLastSize, changeExplorerMinimized, changeExplorerSize, changeView, explorerProcess, setActiveTab, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
+import { addItem, changeExplorerLastSize, changeExplorerMinimized, changeExplorerSize, changeView, emptyTrash, explorerProcess, setActiveTab, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { ExplorerCard } from "@/ui/Cards/Explorer/Explorer";
 import remToPx from "@/utils/rem-to-px";
 import { nanoid } from "@reduxjs/toolkit";
 import { ExplorerItemsActiveTabs, ExplorerT, FolderT } from "@skydock/types";
+import { ExplorerTabs } from "@skydock/types/enums";
 import { Icons } from "@skydock/ui/icons";
+import { showToast } from "@skydock/ui/toast";
 import { useMemo, useRef } from "react";
 import ExplorerItems from "./ExplorerItems";
 
@@ -17,6 +21,8 @@ const Explorer = () => {
 
     const dispatch = useAppDispatch();
     const [createFolder] = useCreateFolderMutation()
+    const [emptyTrashApi] = useDeleteFolderMutation();
+    const { invalidUserInfo } = useInvalidApi();
 
     const { handleAppFocus } = useChangeAppFocus('Explorer');
 
@@ -29,6 +35,8 @@ const Explorer = () => {
     const forwardStack = useAppSelector((state) => state.explorer.forwardStack)
     const focusedApp = useAppSelector((state) => state.apps.focusedApp)
     const activeTab = useAppSelector((state) => state.explorer.activeTab)
+    const { getNestedFolderItemsId } =
+        useDeleteFolderRecursively();
 
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef
@@ -46,9 +54,17 @@ const Explorer = () => {
         ]
     }, [])
 
-    const handleEmptyTrash = () => {
-
-    }
+    const handleEmptyTrash = async () => {
+        const arrayItems = getNestedFolderItemsId('trash', []).filter((item: any) => !ExplorerTabs.includes(item));
+        console.log(arrayItems)
+        try {
+            await emptyTrashApi(arrayItems);
+            invalidUserInfo();
+            dispatch(emptyTrash());
+        } catch (e) {
+            showToast('Internal Server Error', 'error')
+        }
+    };
 
     const addFolder = async () => {
         // Get all folders in current directory
@@ -152,6 +168,7 @@ const Explorer = () => {
             className={focusedApp === 'Explorer' ? 'z-20' : ''}
             theme={theme}
             onContextMenu={handleContextMenu}
+            onEmptyTrash={handleEmptyTrash}
         >
             <HandleDragnDrop>
                 <ExplorerItems />
