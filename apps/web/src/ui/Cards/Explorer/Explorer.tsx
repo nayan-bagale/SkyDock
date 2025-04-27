@@ -1,9 +1,10 @@
+import { ConfirmModalContext } from "@/components/ContextApi/ConfirmModal";
 import { FolderT } from "@/types/explorer";
 import cn from "@/utils";
 import { ExplorerItemsActiveTabs, ThemeT } from "@skydock/types";
 import { Icons } from "@skydock/ui/icons";
 import { motion } from "framer-motion";
-import { forwardRef, Fragment, ReactNode } from "react";
+import { forwardRef, Fragment, ReactNode, useContext } from "react";
 import { Button } from "../../button";
 
 interface ExplorerCardProps {
@@ -80,6 +81,7 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
         },
         ref
     ) => {
+        const { open, close } = useContext(ConfirmModalContext);
         return (
             // <AnimatePresence>
             <motion.div
@@ -145,7 +147,19 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
                     <div className="flex justify-end gap-1 w-full">
                         {handleActiveTabs.activeTab === "trash" ? (
                             <Button
-                                onClick={onEmptyTrash}
+                                // onClick={onEmptyTrash}
+                                onClick={() =>
+                                    open(
+                                        "Empty Trash",
+                                        "Are you sure you want to empty the trash?",
+                                        "destructive",
+                                        () => {
+                                            onEmptyTrash();
+                                            close();
+                                        },
+                                        () => close()
+                                    )
+                                }
                                 size={'small'}
                                 className="gap-1"
                             >

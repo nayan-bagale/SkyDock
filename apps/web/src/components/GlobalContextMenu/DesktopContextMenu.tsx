@@ -149,7 +149,7 @@ const DesktopContextMenu = ({ targetId, additionalData }: DesktopContextMenuProp
             </Button>
             <ContextMenuSeparator />
             <Button size={'menu'} className="hover:bg-red-600" onClick={handleDelete}>
-                <div>Delete</div>
+                <div>Move to trash</div>
                 <Icons.Trash3 className="h-4" />
             </Button>
         </>

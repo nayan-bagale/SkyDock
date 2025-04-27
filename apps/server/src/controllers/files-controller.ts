@@ -236,7 +236,7 @@ class FilesController {
     const userId = req.user?.id as string;
     try {
       const file = await prisma.explorerItems.findUnique({
-        where: { id: fileId },
+        where: { id: fileId, is_deleted: true },
       });
       if (!file) {
         return res.status(INTERNALERROR).json({ message: "File not found" });
@@ -273,7 +273,7 @@ class FilesController {
     try {
       await prisma.$transaction(async (tx) => {
         const items = await tx.explorerItems.findMany({
-          where: { id: { in: folderItems }, user_id: userId },
+          where: { id: { in: folderItems }, user_id: userId, is_deleted: true },
         });
 
         const files = items

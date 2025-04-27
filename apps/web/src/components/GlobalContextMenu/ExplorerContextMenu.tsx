@@ -19,12 +19,11 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
     const currentFolder = useAppSelector((state) => state.explorer.explorerItems[state.explorer.currentFolder]) as FolderT;
     const clipboardItems = useAppSelector((state) => state.explorer.clipboard);
-    const isCurrentTab = useAppSelector((state) => state.explorer.activeTab === 'trash');
+    const isTrashTab = useAppSelector((state) => state.explorer.activeTab === 'trash');
     const [updateItem] = useUpdateItemMutation();
     const [isRenaming, setIsRenaming] = useState(false);
     const [newName, setNewName] = useState('');
 
-    console.log(isCurrentTab)
 
     // If targetId exists, we're right-clicking on an item
     const targetItem = targetId ? explorerItems[targetId] : null;
@@ -71,7 +70,7 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
     //     dispatch(closeContextMenu());
     // };
 
-    if (isCurrentTab) {
+    if (isTrashTab) {
 
         return (
             <>
@@ -164,7 +163,7 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
             </Button>
             <ContextMenuSeparator />
             <Button size={'menu'} className="hover:bg-red-600" onClick={handleDelete}>
-                <div>Delete</div>
+                <div>Move to trash</div>
                 <Icons.Trash3 className="h-4" />
             </Button>
         </>

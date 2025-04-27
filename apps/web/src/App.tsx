@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import Apps_ from "./components/Apps/Apps_";
 import Auth from "./components/Auth/Auth";
 import MenuBar from "./components/Bar/MenuBar";
+import { ConfirmModalProvider } from "./components/ContextApi/ConfirmModal";
 import Desktop from "./components/Desktop/Desktop";
 import Dock from "./components/Dock/Dock";
 import DraggingItem from "./components/DraggingItem";
@@ -28,7 +29,7 @@ function App() {
 
   const MainScreen = useMemo(() => {
     return (
-      <>
+      <ConfirmModalProvider>
         <div className="w-full">
           <MenuBar />
         </div>
@@ -41,15 +42,9 @@ function App() {
         </div>
         <AnimatePresence>
           {isSubscriptionPlanCardOpen && <SubscriptionPlans />}
-          {/* {<ConfirmationCard
-            message="Are you sure you want to delete this item?"
-            title="Delete Item"
-            onCancel={() => { }}
-            onConfirm={() => { }}
-          />} */}
         </AnimatePresence>
         {<DraggingItem />}
-      </>
+      </ConfirmModalProvider>
     );
   }, [isSubscriptionPlanCardOpen]);
 
