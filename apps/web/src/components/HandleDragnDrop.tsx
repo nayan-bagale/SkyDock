@@ -3,13 +3,12 @@ import { moveFileIntoFolder } from '@/redux/features/explorer/explorerSlice'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { DragDropWrapper, DraggedFilesT } from '@/ui/DragDropWrapper'
 import { nanoid } from '@reduxjs/toolkit'
-import { FolderT } from '@skydock/types'
+import { FolderT, PatchItemRequest } from '@skydock/types'
 import { FC, ReactNode } from 'react'
 import useFileUploadsAndUpdateState from './hooks/useFileUploadsAndUpdateState'
 
 
 const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
-    const isGuestMode = useAppSelector((state) => state.auth.guestMode);
 
     const currentFolder = useAppSelector((state) => state.explorer.currentFolder)
     const [getUploadUrls, uploadGuestModeFiles] = useFileUploadsAndUpdateState();
@@ -35,11 +34,10 @@ const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
                 File: file
             }
         }))
-        if (isGuestMode) {
-            uploadGuestModeFiles(filesObj)
-        } else {
-            await getUploadUrls(filesObj)
-        }
+        uploadGuestModeFiles(filesObj)
+
+        await getUploadUrls(filesObj)
+
     }
 
     const handleInternalFiles = async (e: any) => {
@@ -49,9 +47,19 @@ const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
         const droppedItem = explorerItems[currentFolder] as FolderT
 
         if (droppedItem.children.includes(itemDragged.id)) return
-        if (!isGuestMode) {
-            await updateFileApi({ id: itemDragged.id, parent_id: droppedItem.id });
+
+        const requestBody: PatchItemRequest = {
+            id: itemDragged.id,
+            parent_id: droppedItem.id,
+            is_deleted: false,
+            deletedAt: null
         }
+        if (droppedItem.id === 'trash') {
+            requestBody.is_deleted = true
+            requestBody.deletedAt = new Date()
+        }
+        await updateFileApi(requestBody);
+
         dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id }));
 
     }

@@ -46,6 +46,10 @@ const Explorer = () => {
         ]
     }, [])
 
+    const handleEmptyTrash = () => {
+
+    }
+
     const addFolder = async () => {
         // Get all folders in current directory
         const currentFolderChildren = currentFolder.children;

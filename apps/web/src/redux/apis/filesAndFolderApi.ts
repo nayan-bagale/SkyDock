@@ -1,6 +1,6 @@
 import { initialFilesAndFoldersModifer } from "@/utils";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { AllFilesResponse, PatchItemRequest } from "@skydock/types";
+import { ExplorerItemsPrismaT, PatchItemRequest } from "@skydock/types";
 import { initializeItems } from "../features/explorer/explorerSlice";
 import baseQueryWithReAuth from "./baseQueryWithReAuth";
 
@@ -28,7 +28,7 @@ const filesAndFolderApi = createApi({
       invalidatesTags: ["UserInfo"],
     }),
 
-    getAllFiles: builder.query<AllFilesResponse[], any>({
+    getAllFiles: builder.query<ExplorerItemsPrismaT[], any>({
       query: () => "/files",
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         const { data } = await queryFulfilled;

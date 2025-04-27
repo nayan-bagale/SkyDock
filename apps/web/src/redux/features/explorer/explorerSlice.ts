@@ -190,6 +190,8 @@ export const explorerSlice = createSlice({
         [fileId]: {
           ...fileItem,
           parent: folderId,
+          isDeleted: folderItem.id === "trash" ? true : false,
+          deletedAt: folderItem.id === "trash" ? new Date() : null,
         },
       };
     },

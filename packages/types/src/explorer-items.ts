@@ -45,6 +45,8 @@ export interface FolderT {
     size: number;
     lastModified: string;
   };
+  isDeleted?: boolean;
+  deletedAt?: Date | null;
   children: string[];
 }
 
@@ -63,6 +65,8 @@ export interface FileT {
   };
   name: string;
   parent: string;
+  isDeleted?: boolean;
+  deletedAt?: Date | null;
   details: {
     name: string;
     size: string;

@@ -103,9 +103,8 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
 
   const handleDelete = async () => {
     if (!targetItem) return;
-    console.log(activeTab);
 
-    if (activeTab !== "trash") {
+    if (targetItem.parent !== "trash") {
       const arrayItems = getNestedFolderItems(targetItem.id, []).map((item) => {
         if (targetItem.id === item.id) {
           return {

@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { onDropTweak } from "@/tweaks/ElementEvent";
 import cn from "@/utils";
 import { nanoid } from "@reduxjs/toolkit";
-import { FolderT } from "@skydock/types";
+import { FolderT, PatchItemRequest } from "@skydock/types";
 import { useCallback, useState } from "react";
 import useFileUploadsAndUpdateState from "../hooks/useFileUploadsAndUpdateState";
 import DesktopItems from "./DesktopItems";
@@ -71,19 +71,26 @@ const Desktop = ({ children }: DesktopProps) => {
                 }
             }))
 
-            if (isGuestMode) {
-                uploadGuestModeFiles(filesObj);
-            } else {
-                await getUploadUrls(filesObj)
-            }
+
+            uploadGuestModeFiles(filesObj);
+
+            await getUploadUrls(filesObj)
+
         } else {
 
             if (!itemDragged) return;
             if (desktopItem.children.includes(itemDragged.id)) return;
 
-            if (!isGuestMode) {
-                await updateFileApi({ id: itemDragged.id, parent_id: desktopItem.id });
+            const requestBody: PatchItemRequest = {
+                id: itemDragged.id,
+                parent_id: desktopItem.id,
+                is_deleted: false,
+                deletedAt: null
             }
+
+
+            await updateFileApi(requestBody);
+
 
             dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: desktopItem.id }));
             dispatch(setItemDragged(null));
