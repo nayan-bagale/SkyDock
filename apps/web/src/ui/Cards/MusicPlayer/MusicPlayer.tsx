@@ -38,7 +38,7 @@ const MusicPlayerCard = forwardRef<HTMLDivElement, MusicPlayerCardProps>(
     ({ style, theme, onMouseDown, action, children, onMouseDownCard, className, title, onContextMenu }, ref) => {
         return (
             <motion.div
-                className={cn("text-black resize shadow absolute w-[40rem] h-[30rem] min-w-[30rem] max-w-[60rem] min-h-[20rem] max-h-[45rem] backdrop-blur rounded-xl overflow-hidden",
+                className={cn("text-black resize shadow absolute min-w-[20rem] max-w-[45rem] min-h-[32rem] max-h-[32rem] backdrop-blur rounded-xl overflow-hidden",
                     // theme?.color,
                     className
                 )}
@@ -50,7 +50,7 @@ const MusicPlayerCard = forwardRef<HTMLDivElement, MusicPlayerCardProps>(
                 onMouseDown={onMouseDownCard}
                 onContextMenu={onContextMenu}
             >
-                <div className="relative flex justify-between items-center bg-white/40 backdrop-blur shadow px-2 py-3 rounded w-full"
+                <div className={cn("relative flex justify-between items-center bg-white/60 backdrop-blur shadow px-2 py-3 rounded w-full", theme?.color,)}
                     onMouseDown={onMouseDown}
                 >
                     <div className="absolute flex gap-1">
@@ -62,7 +62,7 @@ const MusicPlayerCard = forwardRef<HTMLDivElement, MusicPlayerCardProps>(
                         <span className="font-medium text-sm">{ }</span>
                     </div>
                 </div>
-                <div className="w-full h-[calc(100%-1.7rem)]">
+                <div className="w-full h-full">
                     {children}
                 </div>
             </motion.div>

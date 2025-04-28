@@ -10,7 +10,8 @@
     "./toast": "./src/components/toast/index.ts",
     "./input-otp": "./src/components/input-otp/InputOtp.tsx",
     "./badge": "./src/components/badge/index.tsx",
-    "./confetti": "./src/components/confetti/index.tsx"
+    "./confetti": "./src/components/confetti/index.tsx",
+    "./drawer": "./src/components/drawer/index.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
@@ -36,6 +37,7 @@
     "input-otp": "^1.4.2",
     "react-confetti": "^6.4.0",
     "sonner": "^2.0.3",
-    "tailwind-merge": "^2.3.0"
+    "tailwind-merge": "^2.3.0",
+    "vaul": "^1.1.2"
   }
 }

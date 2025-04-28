@@ -3,9 +3,19 @@ import { useDrag } from "@/components/hooks/useDrag";
 import { useAppSelector } from "@/redux/hooks";
 import MusicPlayerCard from "@/ui/Cards/MusicPlayer/MusicPlayer";
 import { Slider } from "@/ui/slider";
-import { Pause, Play, SkipBack, SkipForward, Volume2 } from 'lucide-react';
+import { List, Pause, Play, SkipBack, SkipForward, Volume2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 // import { tracks, Track } from '@/data/tracks';
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from "@skydock/ui/drawer";
 
 export interface Track {
     id: number;
@@ -151,17 +161,20 @@ const MusicPlayer = () => {
             title={"Music Player"}
             onContextMenu={handleContextMenu}
         >
-            <div className="w-full mx-auto p-6  bg-gradient-to-br from-[#9b87f5] to-[#7E69AB] shadow-xl">
-                <div className="aspect-square mb-4 rounded-lg overflow-hidden shadow-lg">
+            <div className="w-full mx-auto p-6 h-full bg-gradient-to-br from-[#9b87f5] to-[#7E69AB] shadow-xl">
+                <div className=" w-fit mx-auto mb-4 rounded-lg overflow-hidden shadow-lg">
                     <img
                         src={currentTrack.artwork}
                         alt={`${currentTrack.title} artwork`}
-                        className="w-full h-full object-cover"
+                        className="  w-52 h-52 object-cover"
                     />
+                    {/* <div className="w-52 h-52 flex items-center text-white justify-center bg-gray-600 rounded-lg overflow-hidden">
+                        <Music size={160} />
+                    </div> */}
                 </div>
 
-                <div className="text-white mb-6">
-                    <h2 className="text-2xl font-bold truncate">{currentTrack.title}</h2>
+                <div className="text-white items-center flex-col justify-center flex  w-full mb-6">
+                    <h3 className=" text-base font-bold truncate">{currentTrack.title}</h3>
                     <p className="text-sm opacity-80">{currentTrack.artist}</p>
                 </div>
 
@@ -205,16 +218,41 @@ const MusicPlayer = () => {
                     </button>
                 </div>
 
-                <div className="flex items-center gap-2">
-                    <Volume2 size={20} className="text-white/80" />
-                    <Slider
-                        value={volume}
-                        min={0}
-                        max={1}
-                        step={0.01}
-                        onValueChange={handleVolumeChange}
-                        className="w-24"
-                    />
+                <div className="flex items-center justify-between px-1">
+                    <div className="flex items-center gap-2">
+
+                        <Volume2 size={20} className="text-white/80" />
+                        <Slider
+                            value={volume}
+                            min={0}
+                            max={1}
+                            step={0.01}
+                            onValueChange={handleVolumeChange}
+                            className="w-24"
+                        />
+                    </div>
+                    <Drawer>
+                        <DrawerTrigger><List size={24} className="text-white/80" /></DrawerTrigger>
+                        <DrawerContent>
+                            <DrawerHeader>
+                                <DrawerTitle>Are you absolutely sure?</DrawerTitle>
+                                <DrawerDescription>This action cannot be undone.</DrawerDescription>
+                            </DrawerHeader>
+                            <DrawerFooter>
+                                <button>Submit</button>
+                                <DrawerClose>
+                                    <button>Cancel</button>
+                                </DrawerClose>
+                            </DrawerFooter>
+                        </DrawerContent>
+                    </Drawer>
+                    {/* <button
+                        onClick={handleNext}
+                        className="text-white/80 hover:text-white transition-colors"
+                    >
+                        <List size={24} className="text-white/80" />
+
+                    </button> */}
                 </div>
 
                 <audio
