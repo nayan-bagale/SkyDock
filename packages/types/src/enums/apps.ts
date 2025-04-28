@@ -3,4 +3,5 @@ export enum AppsT {
   Explorer = "Explorer",
   Settings = "Settings",
   ImageViewer = "ImageViewer",
+  MusicPlayer = "MusicPlayer",
 }

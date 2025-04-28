@@ -1,7 +1,7 @@
 import { useAppSelector } from "@/redux/hooks";
 import { AnimatePresence } from "framer-motion";
 import { Suspense } from "react";
-import { Explorer, ImageViewer, Settings, Terminal } from "./Apps.Lazy";
+import { Explorer, ImageViewer, MusicPlayer, Settings, Terminal } from "./Apps.Lazy";
 import { TerminalSkeleton } from "./terminal/TerminalSkeleton";
 
 const Apps_ = () => {
@@ -12,6 +12,11 @@ const Apps_ = () => {
 
     return (
         <>
+            <Suspense fallback={<div>Loding.....</div>}>
+
+                <MusicPlayer />
+            </Suspense>
+
             <AnimatePresence>
                 {terminal && (
                     <Suspense fallback={<TerminalSkeleton />}>
