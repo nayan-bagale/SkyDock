@@ -4,3 +4,5 @@ export type * from "./image-viewer";
 export type * from "./prisma";
 export type * from "./settings";
 export type * from "./terminal";
+
+export type * from "./music-player";

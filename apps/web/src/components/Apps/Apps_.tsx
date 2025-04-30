@@ -1,22 +1,34 @@
 import { useAppSelector } from "@/redux/hooks";
 import { AnimatePresence } from "framer-motion";
 import { Suspense } from "react";
-import { Explorer, ImageViewer, MusicPlayer, Settings, Terminal } from "./Apps.Lazy";
+import {
+    Explorer,
+    ImageViewer,
+    MusicPlayer,
+    Settings,
+    Terminal,
+} from "./Apps.Lazy";
 import { TerminalSkeleton } from "./terminal/TerminalSkeleton";
 
 const Apps_ = () => {
-    const terminal = useAppSelector((state) => state.terminal.actions.isProcessOn);
-    const isExplorerOn = useAppSelector((state) => state.explorer.actions.isProcessOn);
-    const isSettingsOn = useAppSelector((state) => state.settings.actions.isProcessOn);
-    const isImageViewerOpen = useAppSelector((state) => state.imageViewer.actions.isProcessOn);
+    const terminal = useAppSelector(
+        (state) => state.terminal.actions.isProcessOn
+    );
+    const isExplorerOn = useAppSelector(
+        (state) => state.explorer.actions.isProcessOn
+    );
+    const isSettingsOn = useAppSelector(
+        (state) => state.settings.actions.isProcessOn
+    );
+    const isImageViewerOpen = useAppSelector(
+        (state) => state.imageViewer.actions.isProcessOn
+    );
+    const isMusicPlayerOn = useAppSelector(
+        (state) => state.musicPlayer.actions.isProcessOn
+    );
 
     return (
         <>
-            <Suspense fallback={<div>Loding.....</div>}>
-
-                <MusicPlayer />
-            </Suspense>
-
             <AnimatePresence>
                 {terminal && (
                     <Suspense fallback={<TerminalSkeleton />}>
@@ -30,7 +42,7 @@ const Apps_ = () => {
                         <Explorer />
                     </Suspense>
                 )}
-            </AnimatePresence >
+            </AnimatePresence>
             <AnimatePresence>
                 {isSettingsOn && (
                     <Suspense fallback={<div>Loding.....</div>}>
@@ -39,14 +51,21 @@ const Apps_ = () => {
                 )}
             </AnimatePresence>
             <AnimatePresence>
-                {isImageViewerOpen &&
+                {isImageViewerOpen && (
                     <Suspense fallback={<div>Loding.....</div>}>
                         <ImageViewer />
                     </Suspense>
-                }
+                )}
+            </AnimatePresence>
+            <AnimatePresence>
+                {isMusicPlayerOn && (
+                    <Suspense fallback={<div>Loding.....</div>}>
+                        <MusicPlayer />
+                    </Suspense>
+                )}
             </AnimatePresence>
         </>
-    )
-}
+    );
+};
 
-export default Apps_
+export default Apps_;

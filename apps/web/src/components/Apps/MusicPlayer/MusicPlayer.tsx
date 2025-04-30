@@ -1,11 +1,12 @@
 import useChangeAppFocus from "@/components/hooks/useChangeAppFocus";
 import { useDrag } from "@/components/hooks/useDrag";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import MusicPlayerCard from "@/ui/Cards/MusicPlayer/MusicPlayer";
 import { Slider } from "@/ui/slider";
 import { List, Pause, Play, SkipBack, SkipForward, Volume2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 // import { tracks, Track } from '@/data/tracks';
+import { closeMusicPlayer } from "@/redux/features/music-player/musicPlayerSlice";
 import {
     Drawer,
     DrawerClose,
@@ -67,6 +68,7 @@ const MusicPlayer = () => {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const currentTrack: Track = tracks[currentTrackIndex];
     const draggableRef = useRef<HTMLDivElement>(null);
+    const dispatch = useAppDispatch();
 
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef
@@ -136,6 +138,8 @@ const MusicPlayer = () => {
             // Close the image viewer
             // You'll need to add this action to your apps slice
             // dispatch(closeImageViewer())
+            dispatch(closeMusicPlayer());
+
         },
         size: {
             isMaximized: false,

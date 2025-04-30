@@ -1,4 +1,8 @@
 import { explorerProcess } from "@/redux/features/explorer/explorerSlice";
+import {
+  closeMusicPlayer,
+  openMusicPlayer,
+} from "@/redux/features/music-player/musicPlayerSlice";
 import { settingsProcess } from "@/redux/features/settings/settingsSlice";
 import { terminalProcess } from "@/redux/features/terminal/terminalSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -13,6 +17,10 @@ const useAppProcess = () => {
   );
   const isExplorerOpen = useAppSelector(
     (state) => state.explorer.actions.isProcessOn
+  );
+
+  const isMusicPlayerOpen = useAppSelector(
+    (state) => state.musicPlayer.actions.isProcessOn
   );
 
   const dispatch = useAppDispatch();
@@ -49,10 +57,21 @@ const useAppProcess = () => {
     isProcessOn: isExplorerOpen,
   };
 
+  const musicPlayerApp = {
+    open: useCallback(() => {
+      dispatch(openMusicPlayer(""));
+    }, []),
+    close: useCallback(() => {
+      dispatch(closeMusicPlayer(""));
+    }, []),
+    isProcessOn: isMusicPlayerOpen,
+  };
+
   return {
     settingsApp,
     terminalApp,
     explorerApp,
+    musicPlayerApp,
   };
 };
 
