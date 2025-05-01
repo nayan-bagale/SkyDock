@@ -9,14 +9,17 @@ const IconByMimeType = (mimeType: string | null) => {
 
     if (imageTypes.includes(mimeType)) {
         return Icons.Image
+    } else if (mimeType.startsWith('audio/')) {
+        return Icons.Music
+    } else if (mimeType === 'application/pdf') {
+        return Icons.PDF
+    } else if (mimeType.startsWith('video/')) {
+        return Icons.Video
     }
 
-    switch (mimeType) {
-        case 'application/pdf':
-            return Icons.PDF
-        default:
-            return Icons.File
-    }
+
+    return Icons.File
+
 
 }
 

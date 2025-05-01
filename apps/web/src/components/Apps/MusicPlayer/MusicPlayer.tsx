@@ -3,20 +3,13 @@ import { useDrag } from "@/components/hooks/useDrag";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import MusicPlayerCard from "@/ui/Cards/MusicPlayer/MusicPlayer";
 import { Slider } from "@/ui/slider";
-import { List, Pause, Play, SkipBack, SkipForward, Volume2 } from 'lucide-react';
+import { List, Loader, Music, Pause, Play, SkipBack, SkipForward, Volume2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 // import { tracks, Track } from '@/data/tracks';
+import useGetFileURl from "@/components/hooks/useGetFileURl";
 import { closeMusicPlayer } from "@/redux/features/music-player/musicPlayerSlice";
-import {
-    Drawer,
-    DrawerClose,
-    DrawerContent,
-    DrawerDescription,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
-} from "@skydock/ui/drawer";
+import { FileT } from "@skydock/types";
+import { motion } from "framer-motion";
 
 export interface Track {
     id: number;
@@ -57,22 +50,54 @@ const formatTime = (seconds: number) => {
 };
 
 const MusicPlayer = () => {
-    const focusedApp = useAppSelector((state) => state.apps.focusedApp);
-    const theme = useAppSelector((state) => state.settings.apperance.theme);
-    const { handleAppFocus } = useChangeAppFocus('MusicPlayer');
-    const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+
+    // const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [volume, setVolume] = useState([0.7]);
-
     const audioRef = useRef<HTMLAudioElement | null>(null);
-    const currentTrack: Track = tracks[currentTrackIndex];
+    const [isAudioBuffering, setIsAudioBuffering] = useState(false);
+
+
+    const [musicTitle, setMusicTitle] = useState('Music Player');
+    const [musicUrl, setMusicUrl] = useState<string | null>(null);
+    const [duration, setDuration] = useState(0);
+    const musicPlayerState = useAppSelector((state) => state.musicPlayer.musicPlayer);
+    const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
+    const musicInfo = musicPlayerState?.currentMusicId ? explorerItems[musicPlayerState?.currentMusicId] as FileT : null;
+
     const draggableRef = useRef<HTMLDivElement>(null);
     const dispatch = useAppDispatch();
-
+    const focusedApp = useAppSelector((state) => state.apps.focusedApp);
+    const theme = useAppSelector((state) => state.settings.apperance.theme);
+    const { handleAppFocus } = useChangeAppFocus('MusicPlayer');
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef
     });
+    const { getFileUrl } = useGetFileURl()
+
+    useEffect(() => {
+        const setUrl = async () => {
+            if (musicPlayerState?.currentMusicId) {
+                const imageItem = explorerItems[musicPlayerState?.currentMusicId] as FileT;
+                if (imageItem && !imageItem.isFolder && imageItem.details.type.startsWith('audio/')) {
+                    setMusicTitle(imageItem.name);
+                    // In a real app, you would get the image URL from your backend
+                    const { url } = await getFileUrl(`${imageItem.id}.${imageItem.name.split(".").pop()}`)
+                    setMusicUrl(url);
+                    // console.log(url)
+
+                    // const audio = new Audio(url);
+                    // audio.addEventListener('loadedmetadata', () => {
+                    //     console.log(audio)
+                    // });
+                    // audioRef.current = audio;
+                }
+            }
+
+        }
+        setUrl()
+    }, [explorerItems, musicPlayerState?.currentMusicId]);
 
     const togglePlayPause = () => {
         if (audioRef.current) {
@@ -85,17 +110,17 @@ const MusicPlayer = () => {
         }
     };
 
-    const handlePrevious = () => {
-        setCurrentTrackIndex((prevIndex) =>
-            prevIndex === 0 ? tracks.length - 1 : prevIndex - 1
-        );
-    };
+    // const handlePrevious = () => {
+    //     setCurrentTrackIndex((prevIndex) =>
+    //         prevIndex === 0 ? tracks.length - 1 : prevIndex - 1
+    //     );
+    // };
 
-    const handleNext = () => {
-        setCurrentTrackIndex((prevIndex) =>
-            prevIndex === tracks.length - 1 ? 0 : prevIndex + 1
-        );
-    };
+    // const handleNext = () => {
+    //     setCurrentTrackIndex((prevIndex) =>
+    //         prevIndex === tracks.length - 1 ? 0 : prevIndex + 1
+    //     );
+    // };
 
     const handleTimeUpdate = () => {
         if (audioRef.current) {
@@ -117,11 +142,11 @@ const MusicPlayer = () => {
         }
     };
 
-    useEffect(() => {
-        if (audioRef.current) {
-            audioRef.current.volume = volume[0];
-        }
-    }, [currentTrackIndex]);
+    // useEffect(() => {
+    //     if (audioRef.current) {
+    //         audioRef.current.volume = volume[0];
+    //     }
+    // }, [currentTrackIndex, volume]);
 
     const handleContextMenu = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -153,6 +178,8 @@ const MusicPlayer = () => {
         }
     };
 
+    const musicTitleLength = musicInfo?.name.split('.').slice(0, -1).join('').length ?? 0
+
     return (
         <MusicPlayerCard
             ref={draggableRef}
@@ -167,39 +194,60 @@ const MusicPlayer = () => {
         >
             <div className="w-full mx-auto p-6 h-full bg-gradient-to-br from-[#9b87f5] to-[#7E69AB] shadow-xl">
                 <div className=" w-fit mx-auto mb-4 rounded-lg overflow-hidden shadow-lg">
-                    <img
+                    {/* <img
                         src={currentTrack.artwork}
                         alt={`${currentTrack.title} artwork`}
                         className="  w-52 h-52 object-cover"
-                    />
-                    {/* <div className="w-52 h-52 flex items-center text-white justify-center bg-gray-600 rounded-lg overflow-hidden">
+                    /> */}
+                    <div className="w-52 h-52 relative flex items-center text-white justify-center bg-gray-600 rounded-lg overflow-hidden">
                         <Music size={160} />
-                    </div> */}
+                        {isAudioBuffering && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                                <Loader className="animate-spin" size={32} />
+                                {/* <p className="text-white">Buffering</p> */}
+                            </div>
+                        )}
+                    </div>
                 </div>
 
-                <div className="text-white items-center flex-col justify-center flex  w-full mb-6">
-                    <h3 className=" text-base font-bold truncate">{currentTrack.title}</h3>
-                    <p className="text-sm opacity-80">{currentTrack.artist}</p>
+                <div className="text-white relative py-2 overflow-hidden max-w-60 mx-auto items-center flex-col justify-center flex mb-6">
+                    <motion.div
+                        className="absolute whitespace-nowrap"
+                    // animate={{
+                    //     x: [6 * musicTitleLength, -6 * musicTitleLength],
+                    //     transition: {
+                    //         x: {
+                    //             repeat: Infinity,
+                    //             repeatType: "loop",
+                    //             duration: musicTitleLength * 0.2,
+                    //             ease: "linear",
+                    //         },
+                    //     },
+                    // }}
+                    >
+                        <h3 className=" text-base py-1 font-bold">{musicInfo?.name.split('.').slice(0, -1).join('')}</h3>
+                    </motion.div>
+                    <p className="text-sm py-2 opacity-80"></p>
                 </div>
 
                 <div className="mb-4">
                     <Slider
                         value={[currentTime]}
                         min={0}
-                        max={currentTrack.duration}
+                        max={duration}
                         step={1}
                         onValueChange={handleProgressChange}
                         className="mb-2"
                     />
                     <div className="flex justify-between text-sm text-white/80">
                         <span>{formatTime(currentTime)}</span>
-                        <span>{formatTime(currentTrack.duration)}</span>
+                        <span>{formatTime(duration)}</span>
                     </div>
                 </div>
 
                 <div className="flex items-center justify-center gap-6 mb-6">
                     <button
-                        onClick={handlePrevious}
+                        // onClick={handlePrevious}
                         className="text-white/80 hover:text-white transition-colors"
                     >
                         <SkipBack size={24} />
@@ -215,7 +263,7 @@ const MusicPlayer = () => {
                         )}
                     </button>
                     <button
-                        onClick={handleNext}
+                        // onClick={handleNext}
                         className="text-white/80 hover:text-white transition-colors"
                     >
                         <SkipForward size={24} />
@@ -235,7 +283,7 @@ const MusicPlayer = () => {
                             className="w-24"
                         />
                     </div>
-                    <Drawer>
+                    {/* <Drawer>
                         <DrawerTrigger><List size={24} className="text-white/80" /></DrawerTrigger>
                         <DrawerContent>
                             <DrawerHeader>
@@ -249,21 +297,29 @@ const MusicPlayer = () => {
                                 </DrawerClose>
                             </DrawerFooter>
                         </DrawerContent>
-                    </Drawer>
-                    {/* <button
-                        onClick={handleNext}
+                    </Drawer> */}
+                    <button
+                        // onClick={handleNext}
                         className="text-white/80 hover:text-white transition-colors"
                     >
                         <List size={24} className="text-white/80" />
 
-                    </button> */}
+                    </button>
                 </div>
 
                 <audio
                     ref={audioRef}
-                    src={`https://example.com/music/${currentTrack.id}.mp3`}
+                    src={musicUrl || ''}
+                    onLoadedMetadata={() => {
+                        if (audioRef.current) {
+                            setDuration(audioRef.current.duration);
+                        }
+                    }
+                    }
                     onTimeUpdate={handleTimeUpdate}
-                    onEnded={handleNext}
+                    onWaiting={() => setIsAudioBuffering(true)}
+                    onPlaying={() => setIsAudioBuffering(false)}
+                // onEnded={handleNext}
                 />
             </div>
         </MusicPlayerCard>

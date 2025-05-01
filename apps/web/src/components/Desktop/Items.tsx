@@ -1,11 +1,11 @@
 import IconByMimeType from "@/components/FileIconByMimeType";
 import { openContextMenu } from '@/redux/features/contextMenu/contextMenuSlice';
 import { openExplorer, setCurrentFolderAndCurrentTab } from "@/redux/features/explorer/explorerSlice";
-import { openImageViewer } from "@/redux/features/imageViewer/imageViewerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { DisplayItemsIcons } from "@/ui/DisplayItemsIcons";
 import { DragEventT, FileT, FolderT, MouseEventT } from "@skydock/types";
 import { FC } from "react";
+import useAppOpenBasedOnFileType from "../hooks/useAppOpenBasedOnFileType";
 
 interface ItemPropsT {
     item: FileT | FolderT,
@@ -18,7 +18,8 @@ const Item: FC<ItemPropsT> =
     ({ item, handleDragStart, handleDrop }) => {
         const isExplorerOn = useAppSelector((state) => state.explorer.actions.isProcessOn);
         const dispatch = useAppDispatch()
-        const Icon = IconByMimeType('type' in item.details ? item.details.type : null)
+        const Icon = IconByMimeType('type' in item.details ? item.details.type : null);
+        const { openApp } = useAppOpenBasedOnFileType(item);
 
         const handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
             e.preventDefault();
@@ -31,7 +32,6 @@ const Item: FC<ItemPropsT> =
         }
 
         const handleOpen = () => {
-            console.log('open')
             if (item.isFolder) {
                 if (!isExplorerOn) {
                     dispatch(openExplorer())
@@ -40,8 +40,8 @@ const Item: FC<ItemPropsT> =
                     currentFolder: item.id,
                     activeTab: 'desktop'
                 }))
-            } else if (item.details.type?.startsWith('image/')) {
-                dispatch(openImageViewer(item.id));
+            } else {
+                openApp();
             }
         }
 

@@ -1,7 +1,6 @@
 import IconByMimeType from "@/components/FileIconByMimeType";
+import useAppOpenBasedOnFileType from "@/components/hooks/useAppOpenBasedOnFileType";
 import { openContextMenu } from "@/redux/features/contextMenu/contextMenuSlice";
-import { setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
-import { openImageViewer } from "@/redux/features/imageViewer/imageViewerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { DisplayItemsIcons } from "@/ui/DisplayItemsIcons";
 import { DragEventT, FileT, FolderT, MouseEventT } from "@skydock/types";
@@ -17,6 +16,8 @@ interface ItemPropsT {
 const Item: FC<ItemPropsT> =
     ({ item, handleDragStart, handleDrop }) => {
         const dispatch = useAppDispatch()
+
+        const { openApp } = useAppOpenBasedOnFileType(item);
 
         const view = useAppSelector((state) => state.explorer.settings.view)
 
@@ -34,22 +35,22 @@ const Item: FC<ItemPropsT> =
         }
 
 
-        const handleOpen = () => {
-            if (item.isFolder) {
-                dispatch(setCurrentFolder(item.id));
-            } else if (item.details.type?.startsWith('image/')) {
-                dispatch(openImageViewer(item.id));
-            }
-        }
+        // const handleOpen = () => {
+        //     if (item.isFolder) {
+        //         dispatch(setCurrentFolder(item.id));
+        //     } else if (item.details.type?.startsWith('image/')) {
+        //         dispatch(openImageViewer(item.id));
+        //     }
+        // }
 
         const handleDoubleClick = () => {
-            handleOpen()
+            openApp()
         }
 
 
         const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
             if (e.key === 'Enter') {
-                handleOpen()
+                openApp()
             }
         }
 

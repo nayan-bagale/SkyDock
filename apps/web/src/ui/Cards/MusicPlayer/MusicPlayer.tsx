@@ -38,7 +38,7 @@ const MusicPlayerCard = forwardRef<HTMLDivElement, MusicPlayerCardProps>(
     ({ style, theme, onMouseDown, action, children, onMouseDownCard, className, title, onContextMenu }, ref) => {
         return (
             <motion.div
-                className={cn("text-black resize shadow absolute min-w-[20rem] max-w-[45rem] min-h-[32rem] max-h-[32rem] backdrop-blur rounded-xl overflow-hidden",
+                className={cn("text-black resize shadow absolute min-w-[20rem] max-w-[45rem] min-h-[30rem] max-h-[30rem] backdrop-blur rounded-xl overflow-hidden",
                     // theme?.color,
                     className
                 )}

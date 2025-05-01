@@ -31,6 +31,7 @@ import zoom_in_svg from './assests/magnifer-zoom-in-svgrepo-com.svg';
 import zoom_out_svg from './assests/magnifer-zoom-out-svgrepo-com.svg';
 import menu_svg from './assests/mjml-svgrepo-com.svg';
 import move_svg from './assests/move-to-folder-svgrepo-com.svg';
+import music_svg from './assests/music-svgrepo-com.svg';
 import paint_svg from './assests/paint-svgrepo-com.svg';
 import pdf_svg from './assests/pdf-svgrepo-com-1.svg';
 import image_svg from './assests/picture-photo-image-svgrepo-com.svg';
@@ -53,6 +54,7 @@ import trash_svg3 from './assests/trash-bin-minimalistic-svgrepo-com.svg';
 import trash_svg2 from './assests/trash-bin-trash-svgrepo-com.svg';
 import upload_svg from './assests/upload-svgrepo-com.svg';
 import user_svg from './assests/user-circle-svgrepo-com.svg';
+import video_svg from './assests/video-svgrepo-com.svg';
 import vite_svg from './assests/vite-svgrepo-com.svg';
 import zap_svg from './assests/zap-svgrepo-com.svg';
 
@@ -114,6 +116,8 @@ export const Icons = {
   Reset: ({ className }: { className: string }) => $({ svg: reset_svg, name: 'reset', className }),
   Rotate: ({ className }: { className: string }) => $({ svg: rotate_svg, name: 'rotate', className }),
   Zap: ({ className }: { className: string }) => $({ svg: zap_svg, name: 'zap', className }),
+  Music: ({ className }: { className: string }) => $({ svg: music_svg, name: 'music', className }),
+  Video: ({ className }: { className: string }) => $({ svg: video_svg, name: 'video', className }),
 
 }
 

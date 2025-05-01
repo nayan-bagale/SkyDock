@@ -7,7 +7,7 @@ const useGetFileURl = () => {
     return await getFileUrl(id).unwrap();
   };
 
-  return { getImageUrl };
+  return { getFileUrl: getImageUrl };
 };
 
 export default useGetFileURl;

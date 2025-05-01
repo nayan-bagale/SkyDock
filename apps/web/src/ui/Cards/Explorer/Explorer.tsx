@@ -151,7 +151,7 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
                                 onClick={() =>
                                     open(
                                         "Empty Trash",
-                                        "Are you sure you want to empty the trash?",
+                                        "All items in trash will be deleted forever. This can't be undone.",
                                         "destructive",
                                         () => {
                                             onEmptyTrash();

@@ -12,15 +12,18 @@ import { Icons } from '@skydock/ui/icons';
 import { useEffect, useRef, useState } from 'react';
 
 const ImageViewer = () => {
-    const dispatch = useAppDispatch();
-    const { handleAppFocus } = useChangeAppFocus('ImageViewer');
-    const draggableRef = useRef<HTMLDivElement>(null);
+
+
     const [currentImage, setCurrentImage] = useState<string | null>(null);
     const [imageTitle, setImageTitle] = useState('Image Viewer');
     const [zoom, setZoom] = useState(1);
     const [rotation, setRotation] = useState(0);
-    const { getImageUrl } = useGetFileURl()
+    const { getFileUrl } = useGetFileURl()
 
+    const draggableRef = useRef<HTMLDivElement>(null);
+
+    const dispatch = useAppDispatch();
+    const { handleAppFocus } = useChangeAppFocus('ImageViewer');
     const focusedApp = useAppSelector((state) => state.apps.focusedApp);
     const imageViewerState = useAppSelector((state) => state.imageViewer.imageViewer);
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
@@ -36,7 +39,7 @@ const ImageViewer = () => {
                 if (imageItem && !imageItem.isFolder && imageItem.details.type.startsWith('image/')) {
                     setImageTitle(imageItem.name);
                     // In a real app, you would get the image URL from your backend
-                    const { url } = await getImageUrl(`${imageItem.id}.${imageItem.name.split(".").pop()}`)
+                    const { url } = await getFileUrl(`${imageItem.id}.${imageItem.name.split(".").pop()}`)
                     // console.log(url)
                     setCurrentImage(url);
                 }
