@@ -19,6 +19,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { nanoid } from "@reduxjs/toolkit";
 import { FileT, FolderT } from "@skydock/types";
+import useAppOpenBasedOnFileType from "./useAppOpenBasedOnFileType";
 import useDeleteFolderRecursively from "./useDeleteFolderRecursively";
 import useFileDownloadWithProgress from "./useFileDownloadWithProgress";
 import { useInvalidApi } from "./useInvalidApis";
@@ -30,6 +31,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
   );
   const clipboardItems = useAppSelector((state) => state.explorer.clipboard);
   const activeTab = useAppSelector((state) => state.explorer.activeTab);
+  const { openApp } = useAppOpenBasedOnFileType(targetItem);
 
   const [createFolder] = useCreateFolderMutation();
   const [deleteFile] = useDeleteFileMutation();
@@ -82,21 +84,25 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
 
   const handleOpen = (
     targetItem: FileT | FolderT | null,
-    folder: "explorer" | "desktop"
+    folder?: "explorer" | "desktop"
   ) => {
-    if (!targetItem || !targetItem.isFolder) return;
-    if (folder === "desktop") {
-      if (!isExplorerOn) {
-        dispatch(openExplorer());
+    if (!targetItem) return;
+    if (targetItem.isFolder) {
+      if (folder === "desktop") {
+        if (!isExplorerOn) {
+          dispatch(openExplorer());
+        }
+        dispatch(
+          setCurrentFolderAndCurrentTab({
+            currentFolder: targetItem.id,
+            activeTab: folder,
+          })
+        );
+      } else {
+        dispatch(setCurrentFolder(targetItem.id));
       }
-      dispatch(
-        setCurrentFolderAndCurrentTab({
-          currentFolder: targetItem.id,
-          activeTab: folder,
-        })
-      );
     } else {
-      dispatch(setCurrentFolder(targetItem.id));
+      openApp();
     }
     dispatch(closeContextMenu());
   };

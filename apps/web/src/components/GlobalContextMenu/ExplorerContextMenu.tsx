@@ -4,6 +4,7 @@ import { copyToClipboard, renameItem } from '@/redux/features/explorer/explorerS
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Button } from '@/ui/button';
 import { ContextMenuSeparator } from '@/ui/ContextMenu';
+import SupportedMimeTypeCheck from '@/utils/supportedMimeTypeCheck';
 import { FolderT } from '@skydock/types';
 import { Icons } from '@skydock/ui/icons';
 import { useState } from 'react';
@@ -144,10 +145,15 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
                 </Button>
             )}
             {!targetItem.isFolder && (
-                <Button size={'menu'} onClick={handleDownload}>
-                    <div>Download</div>
-                    <Icons.Download className="h-4" />
-                </Button>
+                <>
+                    {SupportedMimeTypeCheck(targetItem.details.type) && (<Button size={'menu'} onClick={() => handleOpen(targetItem)}>
+                        <div>Open</div>
+                    </Button>)}
+                    <Button size={'menu'} onClick={handleDownload}>
+                        <div>Download</div>
+                        <Icons.Download className="h-4" />
+                    </Button>
+                </>
             )}
             <Button size={'menu'} onClick={handleRename}>
                 <div>Rename</div>
