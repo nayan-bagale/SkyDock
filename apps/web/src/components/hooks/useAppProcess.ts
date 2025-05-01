@@ -1,5 +1,9 @@
 import { explorerProcess } from "@/redux/features/explorer/explorerSlice";
 import {
+  closeImageViewer,
+  openImageViewer,
+} from "@/redux/features/imageViewer/imageViewerSlice";
+import {
   closeMusicPlayer,
   openMusicPlayer,
 } from "@/redux/features/music-player/musicPlayerSlice";
@@ -21,6 +25,10 @@ const useAppProcess = () => {
 
   const isMusicPlayerOpen = useAppSelector(
     (state) => state.musicPlayer.actions.isProcessOn
+  );
+
+  const isImageViewerOpen = useAppSelector(
+    (state) => state.imageViewer.actions.isProcessOn
   );
 
   const dispatch = useAppDispatch();
@@ -59,12 +67,22 @@ const useAppProcess = () => {
 
   const musicPlayerApp = {
     open: useCallback(() => {
-      dispatch(openMusicPlayer(""));
+      dispatch(openMusicPlayer(null));
     }, []),
     close: useCallback(() => {
-      dispatch(closeMusicPlayer(""));
+      dispatch(closeMusicPlayer());
     }, []),
     isProcessOn: isMusicPlayerOpen,
+  };
+
+  const imageViewerApp = {
+    open: useCallback(() => {
+      dispatch(openImageViewer(null));
+    }, []),
+    close: useCallback(() => {
+      dispatch(closeImageViewer());
+    }, []),
+    isProcessOn: isImageViewerOpen,
   };
 
   return {
@@ -72,6 +90,7 @@ const useAppProcess = () => {
     terminalApp,
     explorerApp,
     musicPlayerApp,
+    imageViewerApp,
   };
 };
 

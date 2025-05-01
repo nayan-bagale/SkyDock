@@ -15,7 +15,7 @@ export const musicPLayerSlice = createSlice({
   name: "musicPLayer",
   initialState: intialState,
   reducers: {
-    openMusicPlayer: (state, action: PayloadAction<string>) => {
+    openMusicPlayer: (state, action: PayloadAction<string | null>) => {
       state.actions.isProcessOn = true;
     },
     closeMusicPlayer: (state) => {

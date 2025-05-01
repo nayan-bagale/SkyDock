@@ -18,7 +18,7 @@ export const imageViewSlice = createSlice({
   name: "imageViewer",
   initialState: intialState,
   reducers: {
-    openImageViewer: (state, action: PayloadAction<string>) => {
+    openImageViewer: (state, action: PayloadAction<string | null>) => {
       state.actions.isProcessOn = true;
       state.imageViewer.currentImageId = action.payload;
     },

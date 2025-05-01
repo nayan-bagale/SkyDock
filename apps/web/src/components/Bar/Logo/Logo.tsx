@@ -3,7 +3,7 @@
 import useAppProcess from "@/components/hooks/useAppProcess"
 import useOutsideAlerter from "@/components/hooks/useOnclickOutside"
 import { Button } from "@/ui/button"
-import { MainDropDownMenu } from "@/ui/Cards/Menus/MainDropDownMenu/MainDropDownMenu"
+import { MainDropDownMenu, SubDropDownMenu } from "@/ui/Cards/Menus/MainDropDownMenu/MainDropDownMenu"
 import { Icons } from "@skydock/ui/icons"
 import { useRef, useState } from "react"
 
@@ -14,7 +14,7 @@ const Logo = () => {
 
     useOutsideAlerter(ref, () => setShow(false));
 
-    const { musicPlayerApp } = useAppProcess();
+    const { musicPlayerApp, imageViewerApp } = useAppProcess();
 
     const apps = {
         // terminal: () => (dispatch(process('on')), setShow(false)),
@@ -31,26 +31,27 @@ const Logo = () => {
             </Button>
             {show && (
                 <MainDropDownMenu ref={ref} className="left-3">
-                    <Button size={'menu'} onClick={musicPlayerApp.open}>
-                        Music Player
-                    </Button>
+
                     {/* <Button size={'menu'}>
                         About CatOs
                     </Button>
                     <MainMenuSeparator />
                     <Button size={'menu'}>
                         MainDropDownMenu
-                    </Button>
-                    <SubDropDownMenu name="Recent.." >
-                        <Button size={'menu'}>
-                            Terminal
+                    </Button> */}
+                    <SubDropDownMenu name="Apps" >
+                        <Button size={'menu'} onClick={imageViewerApp.open}>
+                            Image Viewer
                         </Button>
-                        <MainMenuSeparator />
+                        <Button size={'menu'} onClick={musicPlayerApp.open}>
+                            Music Player
+                        </Button>
+                        {/* <MainMenuSeparator />
                         <Button size={'menu'}>
                             System Preference..
-                        </Button>
+                        </Button> */}
                     </SubDropDownMenu>
-                    <MainMenuSeparator />
+                    {/* <MainMenuSeparator />
                     <Button size={'menu'}>
                         System Preference..
                     </Button> */}
