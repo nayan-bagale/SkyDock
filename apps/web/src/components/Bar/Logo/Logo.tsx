@@ -16,11 +16,6 @@ const Logo = () => {
 
     const { musicPlayerApp, imageViewerApp } = useAppProcess();
 
-    const apps = {
-        // terminal: () => (dispatch(process('on')), setShow(false)),
-    }
-
-
 
     return (
         <>

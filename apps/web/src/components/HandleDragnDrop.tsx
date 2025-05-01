@@ -11,7 +11,7 @@ import useFileUploadsAndUpdateState from './hooks/useFileUploadsAndUpdateState'
 const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
 
     const currentFolder = useAppSelector((state) => state.explorer.currentFolder)
-    const [getUploadUrls, uploadGuestModeFiles] = useFileUploadsAndUpdateState();
+    const [getUploadUrls] = useFileUploadsAndUpdateState();
     const itemDragged = useAppSelector((state) => state.explorer.itemDragged);
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
     const [updateFileApi] = useUpdateItemMutation();
@@ -34,7 +34,6 @@ const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
                 File: file
             }
         }))
-        uploadGuestModeFiles(filesObj)
 
         await getUploadUrls(filesObj)
 

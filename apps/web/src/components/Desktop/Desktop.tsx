@@ -17,12 +17,11 @@ interface DesktopProps extends React.HTMLAttributes<HTMLDivElement> {
 const Desktop = ({ children }: DesktopProps) => {
     const dispatch = useAppDispatch();
     const [isOver, setIsOver] = useState(false);
-    const isGuestMode = useAppSelector((state) => state.auth.guestMode);
 
     const itemDragged = useAppSelector((state) => state.explorer.itemDragged);
     const desktopItem = useAppSelector((state) => state.explorer.explorerItems["desktop"]) as FolderT;
     const [updateFileApi] = useUpdateItemMutation();
-    const [getUploadUrls, uploadGuestModeFiles] = useFileUploadsAndUpdateState();
+    const [getUploadUrls] = useFileUploadsAndUpdateState();
 
 
     const handleDragOverInner = (e: React.DragEvent<HTMLDivElement>) => {
@@ -71,8 +70,6 @@ const Desktop = ({ children }: DesktopProps) => {
                 }
             }))
 
-
-            uploadGuestModeFiles(filesObj);
 
             await getUploadUrls(filesObj)
 
