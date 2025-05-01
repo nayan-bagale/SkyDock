@@ -10,39 +10,41 @@ interface DragDropWrapperProps {
     children?: ReactNode
     handleExternalfiles: (files: DraggedFilesT) => void
     handleInternalFiles: (e: React.DragEvent<HTMLDivElement>) => void
+    disableDrag?: boolean
 }
 
 export const DragDropWrapper = forwardRef<HTMLDivElement, DragDropWrapperProps>(
-    ({ children, handleExternalfiles, handleInternalFiles }, ref) => {
+    ({ children, handleExternalfiles, handleInternalFiles, disableDrag }, ref) => {
         const [dragging, setDragging] = useState(false);
         const dragCounter = useRef(0);
 
         const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {
             e.preventDefault();
             e.stopPropagation();
+            if (disableDrag) return;
             // Only set dragging true if the drag is from outside the browser
             if (e.dataTransfer.types.includes("Files") && (e.dataTransfer.types.length === 1)) {
                 dragCounter.current += 1;  // Track nested drag enters
                 setDragging(true);
             }
-        }, [])
+        }, [disableDrag])
 
         const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
             e.preventDefault()
-
             // Only set dragging true if the drag is from outside the browser
             // This is to prevent the drop zone from being highlighted when dragging files within the browser
             // This will trigger when the file is dragged over the Upload logo and Drag and drop text
             if (e.dataTransfer.types.includes("Files") && (e.dataTransfer.types.length === 1)) {
                 e.stopPropagation() // Prevent the dragover event from bubbling up when file is dragged over the drop zone
+                if (disableDrag) return;
                 if (!dragging) setDragging(true)
             }
-        }, [dragging])
+        }, [disableDrag, dragging])
 
         const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
             e.preventDefault();
             e.stopPropagation();
-
+            if (disableDrag) return;
             dragCounter.current = 0; // Reset counter on drop
             // Only call handlefiles if the drag is from outside the browser
             if (e.dataTransfer.types.includes("Files") && (e.dataTransfer.types.length === 1)) {
@@ -53,12 +55,13 @@ export const DragDropWrapper = forwardRef<HTMLDivElement, DragDropWrapperProps>(
             }
 
             setDragging(false)
-        }, [handleExternalfiles, handleInternalFiles])
+        }, [disableDrag, handleExternalfiles, handleInternalFiles])
 
         const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
             const target = e.relatedTarget as HTMLElement | null;
             e.preventDefault();
             e.stopPropagation();
+            if (disableDrag) return;
             // Only set dragging false if the drag leaves the drop zone
 
             if (!target || !target.closest('.drop-zone')) {
@@ -68,7 +71,7 @@ export const DragDropWrapper = forwardRef<HTMLDivElement, DragDropWrapperProps>(
                     setDragging(false);
                 }
             }
-        }, []);
+        }, [disableDrag]);
 
         return (
             <div className='p-1 w-full h-full' ref={ref}>

@@ -1,40 +1,30 @@
 import { useUpdateItemMutation } from "@/redux/apis/filesAndFolderApi";
-import { openContextMenu } from "@/redux/features/contextMenu/contextMenuSlice";
-import {
-    moveFileIntoFolder,
-    setItemDragged,
-} from "@/redux/features/explorer/explorerSlice";
+import { moveFileIntoFolder } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { DraggedFilesT } from "@/ui/DragDropWrapper";
+import { DragDropWrapper, DraggedFilesT } from "@/ui/DragDropWrapper";
 import { nanoid } from "@reduxjs/toolkit";
 import { FolderT, PatchItemRequest } from "@skydock/types";
+import { FC, ReactNode } from "react";
 import useFileUploadsAndUpdateState from "../hooks/useFileUploadsAndUpdateState";
-import DragnDropWrapper_Desktop from "../Wrappers/DragnDropWrapper_Desktop";
-import DesktopItems from "./DesktopItems";
 
-interface DesktopProps extends React.HTMLAttributes<HTMLDivElement> {
-    children: React.ReactNode;
-}
-
-const Desktop = ({ children }: DesktopProps) => {
+const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
+    const currentFolder = useAppSelector((state) => state.explorer.currentFolder);
+    const isTrashTabActive =
+        useAppSelector((state) => state.explorer.activeTab) === "trash";
+    const [getUploadUrls] = useFileUploadsAndUpdateState();
+    const itemDragged = useAppSelector((state) => state.explorer.itemDragged);
+    const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
+    const [updateFileApi] = useUpdateItemMutation();
     const dispatch = useAppDispatch();
 
-    const itemDragged = useAppSelector((state) => state.explorer.itemDragged);
-    const desktopItem = useAppSelector(
-        (state) => state.explorer.explorerItems["desktop"]
-    ) as FolderT;
-    const [updateFileApi] = useUpdateItemMutation();
-    const [getUploadUrls] = useFileUploadsAndUpdateState();
-
-
     const handleExternalfiles = async (files: DraggedFilesT) => {
-        const Arrayfiles = Array.from(files)
+        const Arrayfiles = Array.from(files);
         const filesObj = Arrayfiles.filter((file) => file.type !== "").map(
             (file) => ({
                 id: nanoid(),
                 isFolder: false as const,
                 name: file.name,
-                parent: "desktop",
+                parent: currentFolder,
                 details: {
                     name: file.name,
                     size: file.size.toString(),
@@ -47,49 +37,41 @@ const Desktop = ({ children }: DesktopProps) => {
         );
 
         await getUploadUrls(filesObj);
-    }
+    };
 
     const handleInternalFiles = async (e: any) => {
         if (!itemDragged) return;
-        if (desktopItem.children.includes(itemDragged.id)) return;
+
+        const droppedItem = explorerItems[currentFolder] as FolderT;
+
+        if (droppedItem.children.includes(itemDragged.id)) return;
 
         const requestBody: PatchItemRequest = {
             id: itemDragged.id,
-            parent_id: desktopItem.id,
+            parent_id: droppedItem.id,
             is_deleted: false,
             deletedAt: null,
         };
-
+        if (droppedItem.id === "trash") {
+            requestBody.is_deleted = true;
+            requestBody.deletedAt = new Date();
+        }
         await updateFileApi(requestBody);
 
         dispatch(
-            moveFileIntoFolder({ fileId: itemDragged.id, folderId: desktopItem.id })
-        );
-        dispatch(setItemDragged(null));
-    }
-
-
-    const handleContextMenu = (e: React.MouseEvent) => {
-        e.preventDefault();
-        dispatch(
-            openContextMenu({
-                position: { x: e.clientX, y: e.clientY },
-                location: "desktop",
-                additionalData: { desktopItem },
-            })
+            moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id })
         );
     };
 
     return (
-        <DragnDropWrapper_Desktop
-            DesktopItems={DesktopItems}
+        <DragDropWrapper
+            disableDrag={isTrashTabActive}
             handleExternalfiles={handleExternalfiles}
             handleInternalFiles={handleInternalFiles}
-            onContextMenu={handleContextMenu}
         >
             {children}
-        </DragnDropWrapper_Desktop>
+        </DragDropWrapper>
     );
 };
 
-export default Desktop;
+export default HandleDragnDrop;

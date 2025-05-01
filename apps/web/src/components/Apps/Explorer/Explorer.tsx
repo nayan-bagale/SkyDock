@@ -1,4 +1,4 @@
-import HandleDragnDrop from "@/components/HandleDragnDrop";
+import DragnDropWrapper_Explorer from "@/components/Wrappers/DragnDropWrapper_Explorer";
 import useChangeAppFocus from "@/components/hooks/useChangeAppFocus";
 import useDeleteFolderRecursively from "@/components/hooks/useDeleteFolderRecursively";
 import { useDrag } from "@/components/hooks/useDrag";
@@ -170,9 +170,9 @@ const Explorer = () => {
             onContextMenu={handleContextMenu}
             onEmptyTrash={handleEmptyTrash}
         >
-            <HandleDragnDrop>
+            <DragnDropWrapper_Explorer>
                 <ExplorerItems />
-            </HandleDragnDrop>
+            </DragnDropWrapper_Explorer>
         </ExplorerCard>
     )
 }
