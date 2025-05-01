@@ -9,7 +9,6 @@ import { useEffect, useRef, useState } from 'react';
 import useGetFileURl from "@/components/hooks/useGetFileURl";
 import { closeMusicPlayer } from "@/redux/features/music-player/musicPlayerSlice";
 import { FileT } from "@skydock/types";
-import { motion } from "framer-motion";
 
 export interface Track {
     id: number;
@@ -52,7 +51,7 @@ const formatTime = (seconds: number) => {
 const MusicPlayer = () => {
 
     // const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-    const [isPlaying, setIsPlaying] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(true);
     const [currentTime, setCurrentTime] = useState(0);
     const [volume, setVolume] = useState([0.7]);
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -210,24 +209,24 @@ const MusicPlayer = () => {
                     </div>
                 </div>
 
-                <div className="text-white relative py-2 overflow-hidden max-w-60 mx-auto items-center flex-col justify-center flex mb-6">
-                    <motion.div
-                        className="absolute whitespace-nowrap"
-                    // animate={{
-                    //     x: [6 * musicTitleLength, -6 * musicTitleLength],
-                    //     transition: {
-                    //         x: {
-                    //             repeat: Infinity,
-                    //             repeatType: "loop",
-                    //             duration: musicTitleLength * 0.2,
-                    //             ease: "linear",
-                    //         },
-                    //     },
-                    // }}
-                    >
-                        <h3 className=" text-base py-1 font-bold">{musicInfo?.name.split('.').slice(0, -1).join('')}</h3>
-                    </motion.div>
-                    <p className="text-sm py-2 opacity-80"></p>
+                <div className="text-white relative max-w-60 overflow-hidden mx-auto items-center flex-col justify-center flex mb-6">
+                    {/* <motion.div
+                    className="absolute whitespace-nowrap"
+                    animate={{
+                        x: [6 * musicTitleLength, -6 * musicTitleLength],
+                        transition: {
+                            x: {
+                                repeat: Infinity,
+                                repeatType: "loop",
+                                duration: musicTitleLength * 0.2,
+                                ease: "linear",
+                            },
+                        },
+                    }}
+                    > */}
+                    <h3 className=" text-center text-base truncate w-full font-bold">{musicInfo?.name.split('.').slice(0, -1).join('')}</h3>
+                    {/* </motion.div> */}
+                    <p className="text-sm opacity-80"></p>
                 </div>
 
                 <div className="mb-4">
@@ -319,6 +318,7 @@ const MusicPlayer = () => {
                     onTimeUpdate={handleTimeUpdate}
                     onWaiting={() => setIsAudioBuffering(true)}
                     onPlaying={() => setIsAudioBuffering(false)}
+                    autoPlay
                 // onEnded={handleNext}
                 />
             </div>
