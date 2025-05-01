@@ -91,7 +91,6 @@ const userAuthApi = createApi({
       }),
       onQueryStarted: async (arg, { dispatch, queryFulfilled }) => {
         const { data } = await queryFulfilled;
-        console.log(data);
         dispatch(setUserInfo(data));
       },
       providesTags: ["UserInfo"],
