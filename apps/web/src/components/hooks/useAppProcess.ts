@@ -9,6 +9,10 @@ import {
 } from "@/redux/features/music-player/musicPlayerSlice";
 import { settingsProcess } from "@/redux/features/settings/settingsSlice";
 import { terminalProcess } from "@/redux/features/terminal/terminalSlice";
+import {
+  closeVideoPlayer,
+  openVideoPlayer,
+} from "@/redux/features/video-player/videoPlayerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useCallback } from "react";
 
@@ -29,6 +33,10 @@ const useAppProcess = () => {
 
   const isImageViewerOpen = useAppSelector(
     (state) => state.imageViewer.actions.isProcessOn
+  );
+
+  const isVideoPlayerOpen = useAppSelector(
+    (state) => state.videoPLayer.actions.isProcessOn
   );
 
   const dispatch = useAppDispatch();
@@ -85,12 +93,23 @@ const useAppProcess = () => {
     isProcessOn: isImageViewerOpen,
   };
 
+  const videoPlayerApp = {
+    open: useCallback(() => {
+      dispatch(openVideoPlayer(null));
+    }, []),
+    close: useCallback(() => {
+      dispatch(closeVideoPlayer());
+    }, []),
+    isProcessOn: isVideoPlayerOpen,
+  };
+
   return {
     settingsApp,
     terminalApp,
     explorerApp,
     musicPlayerApp,
     imageViewerApp,
+    videoPlayerApp,
   };
 };
 

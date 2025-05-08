@@ -82,5 +82,6 @@ Learn more about the power of Turborepo:
 - Add new slice for the app in `apps/web/src/store/slices`
 - Add new slice to the `store` in `apps/web/src/store/index.ts`
 - Add reducer to useAppOpenBasedOnFileType in `apps/web/src/components/hooks/useAppOpenBasedOnFileType.ts`
+- Add reducer to useAppProcess in `apps/web/src/components/hooks/useAppProcess.ts`
 - Add new app to supportedMimeTypes enum in `packages/types/src/enums/supportedMimeTypes.ts`
 - If app requires api then create rtk query slice in `apps/web/src/redux/apis`
