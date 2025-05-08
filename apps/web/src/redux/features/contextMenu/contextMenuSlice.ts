@@ -16,13 +16,13 @@ interface ContextMenuState {
   additionalData?: any; // Any additional data needed for context menu actions
 }
 
-const initialState: ContextMenuState = {
+const initialState = {
   isOpen: false,
   position: { x: 0, y: 0 },
   location: null,
   targetId: null,
   additionalData: null,
-};
+} as ContextMenuState;
 
 export const contextMenuSlice = createSlice({
   name: "contextMenu",

@@ -1,8 +1,9 @@
+export type * from "./apps/image-viewer";
+export type * from "./apps/settings";
+export type * from "./apps/terminal";
 export type * from "./custom-types";
 export type * from "./explorer-items";
-export type * from "./image-viewer";
 export type * from "./prisma";
-export type * from "./settings";
-export type * from "./terminal";
 
-export type * from "./music-player";
+export type * from "./apps/music-player";
+export type * from "./apps/video-player";

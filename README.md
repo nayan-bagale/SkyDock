@@ -76,3 +76,11 @@ Learn more about the power of Turborepo:
 - [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
 - [Caching](https://turbo.build/repo/docs/core-concepts/caching)
 - [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
+
+## Adding new app
+
+- Add new slice for the app in `apps/web/src/store/slices`
+- Add new slice to the `store` in `apps/web/src/store/index.ts`
+- Add reducer to useAppOpenBasedOnFileType in `apps/web/src/components/hooks/useAppOpenBasedOnFileType.ts`
+- Add new app to supportedMimeTypes enum in `packages/types/src/enums/supportedMimeTypes.ts`
+- If app requires api then create rtk query slice in `apps/web/src/redux/apis`

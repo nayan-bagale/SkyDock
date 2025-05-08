@@ -7,11 +7,12 @@ import userAuthApi from "./apis/userAuthApi";
 import { appsSlice } from "./features/apps/appsSlice";
 import contextMenuReducer from "./features/contextMenu/contextMenuSlice";
 import { controlCenterSlice } from "./features/control-center/controlCenterSlice";
-import contextImageViewer from "./features/imageViewer/imageViewerSlice";
+import imageViewerReducer from "./features/imageViewer/imageViewerSlice";
 import lockScreenReducer from "./features/lockScreen/lockScreenSlice";
 import musicPlayerReducer from "./features/music-player/musicPlayerSlice";
 import { settingsSlice } from "./features/settings/settingsSlice";
 import { terminalSlice } from "./features/terminal/terminalSlice";
+import videoPlayerReducer from "./features/video-player/videoPlayerSlice";
 
 export const store = configureStore({
   reducer: {
@@ -22,9 +23,10 @@ export const store = configureStore({
     terminal: terminalSlice.reducer,
     settings: settingsSlice.reducer,
     contextMenu: contextMenuReducer,
-    imageViewer: contextImageViewer,
+    imageViewer: imageViewerReducer,
     lockScreen: lockScreenReducer,
     musicPlayer: musicPlayerReducer,
+    videoPLayer: videoPlayerReducer,
 
     [userAuthApi.reducerPath]: userAuthApi.reducer,
     [filesAndFolderApi.reducerPath]: filesAndFolderApi.reducer,
@@ -38,5 +40,4 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== "prod",
 });
 
-export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
