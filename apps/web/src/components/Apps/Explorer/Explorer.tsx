@@ -148,7 +148,7 @@ const Explorer = () => {
         e.preventDefault();
         dispatch(openContextMenu({
             position: { x: e.clientX, y: e.clientY },
-            location: 'explorer',
+            location: 'Explorer',
             additionalData: { currentFolder }
         }));
     };

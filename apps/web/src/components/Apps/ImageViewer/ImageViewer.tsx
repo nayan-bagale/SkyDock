@@ -71,7 +71,7 @@ const ImageViewer = () => {
         e.stopPropagation();
         dispatch(openContextMenu({
             position: { x: e.clientX, y: e.clientY },
-            location: 'imageViewer',
+            location: 'ImageViewer',
             additionalData: { currentImageId: imageViewerState?.currentImageId }
         }));
     };

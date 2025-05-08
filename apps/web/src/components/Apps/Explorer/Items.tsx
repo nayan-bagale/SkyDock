@@ -29,7 +29,7 @@ const Item: FC<ItemPropsT> =
             e.stopPropagation();
             dispatch(openContextMenu({
                 position: { x: e.clientX, y: e.clientY },
-                location: 'explorer',
+                location: 'Explorer',
                 targetId: item.id
             }));
         }

@@ -74,7 +74,7 @@ const Desktop = ({ children }: DesktopProps) => {
         dispatch(
             openContextMenu({
                 position: { x: e.clientX, y: e.clientY },
-                location: "desktop",
+                location: "Desktop",
                 additionalData: { desktopItem },
             })
         );

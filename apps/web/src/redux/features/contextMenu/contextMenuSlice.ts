@@ -1,12 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AppsT } from "@skydock/types/enums";
 
-export type ContextMenuLocation =
-  | "explorer"
-  | "desktop"
-  | "terminal"
-  | "settings"
-  | "imageViewer"
-  | null;
+type AppNames = `${AppsT}`;
+
+export type ContextMenuLocation = "Desktop" | AppNames | null;
 
 interface ContextMenuState {
   isOpen: boolean;
