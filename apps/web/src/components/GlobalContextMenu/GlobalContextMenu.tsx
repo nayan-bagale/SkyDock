@@ -15,7 +15,7 @@ const GlobalContextMenu = () => {
     const contextMenuRef = useRef<HTMLDivElement>(null);
 
     // Close context menu when clicking outside
-    useOnClickOutside(contextMenuRef, (currentRef) => {
+    useOnClickOutside(contextMenuRef, () => {
         dispatch(closeContextMenu());
     });
 
@@ -30,13 +30,13 @@ const GlobalContextMenu = () => {
                 y: position.y
             }}
         >
-            {location === 'explorer' && (
+            {location === 'Explorer' && (
                 <ExplorerContextMenu targetId={targetId} additionalData={additionalData} />
             )}
-            {location === 'desktop' && (
+            {location === 'Desktop' && (
                 <DesktopContextMenu targetId={targetId} additionalData={additionalData} />
             )}
-            {location === 'imageViewer' && (
+            {location === 'ImageViewer' && (
                 <ImageViewerContextMenu additionalData={additionalData} />
             )}
         </ContextMenu>
