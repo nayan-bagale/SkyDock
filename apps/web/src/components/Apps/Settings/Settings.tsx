@@ -6,6 +6,7 @@ import { SettingsCard } from "@/ui/Cards/Settings/Settings";
 import { Icons } from "@skydock/ui/icons";
 import { AnimatePresence } from "framer-motion";
 import { useRef, useState } from "react";
+import AboutUs from "./AboutUs";
 import Account from "./Account";
 import Apperance from "./Apperance";
 import Billing from "./Billing";
@@ -61,6 +62,7 @@ const Settings = () => {
             name: 'About',
             Icon: <Icons.Logo className="w-5 h-5" />,
             id: '5',
+            Component: <AboutUs />
         }
     ]
 
