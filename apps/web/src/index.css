@@ -65,3 +65,41 @@ body::before {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+/* Video Player Specific Styles */
+.video-progress-bar {
+  @apply h-1 bg-gray-700 rounded-full overflow-hidden transition-all;
+}
+
+.video-progress-bar:hover {
+  @apply h-2;
+}
+
+.video-progress {
+  @apply h-full bg-gradient-to-r from-purple-500 to-violet-400 transition-all;
+}
+
+.video-controls {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
+  transition: opacity 0.3s ease;
+}
+
+.video-container:not(:hover) .video-controls-hide {
+  opacity: 0;
+}
+
+.video-container:hover .video-controls-hide {
+  opacity: 1;
+}
+
+.playback-speed-dropdown {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+.playback-speed-button:hover+.playback-speed-dropdown,
+.playback-speed-dropdown:hover {
+  opacity: 1;
+  visibility: visible;
+}

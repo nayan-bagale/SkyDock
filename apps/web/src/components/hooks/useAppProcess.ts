@@ -36,7 +36,7 @@ const useAppProcess = () => {
   );
 
   const isVideoPlayerOpen = useAppSelector(
-    (state) => state.videoPLayer.actions.isProcessOn
+    (state) => state.videoPlayer.actions.isProcessOn
   );
 
   const dispatch = useAppDispatch();

@@ -26,7 +26,7 @@ export const store = configureStore({
     imageViewer: imageViewerReducer,
     lockScreen: lockScreenReducer,
     musicPlayer: musicPlayerReducer,
-    videoPLayer: videoPlayerReducer,
+    videoPlayer: videoPlayerReducer,
 
     [userAuthApi.reducerPath]: userAuthApi.reducer,
     [filesAndFolderApi.reducerPath]: filesAndFolderApi.reducer,

@@ -7,6 +7,7 @@ import {
     MusicPlayer,
     Settings,
     Terminal,
+    VideoPlayer,
 } from "./Apps.Lazy";
 import { TerminalSkeleton } from "./terminal/TerminalSkeleton";
 
@@ -26,6 +27,10 @@ const Apps_ = () => {
     const isMusicPlayerOn = useAppSelector(
         (state) => state.musicPlayer.actions.isProcessOn
     );
+
+    const isVideoPlayerOn = useAppSelector(
+        (state) => state.videoPlayer.actions.isProcessOn
+    )
 
     return (
         <>
@@ -61,6 +66,13 @@ const Apps_ = () => {
                 {isMusicPlayerOn && (
                     <Suspense fallback={<div>Loding.....</div>}>
                         <MusicPlayer />
+                    </Suspense>
+                )}
+            </AnimatePresence>
+            <AnimatePresence>
+                {isVideoPlayerOn && (
+                    <Suspense fallback={<div>Loding.....</div>}>
+                        <VideoPlayer />
                     </Suspense>
                 )}
             </AnimatePresence>
