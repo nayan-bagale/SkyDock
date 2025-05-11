@@ -1,6 +1,6 @@
 import { useLoginMutation, useSendEmailVerificationMutation } from "@/redux/apis/userAuthApi"
 import { setAccessToken } from "@/redux/features/auth"
-import { useAppDispatch } from "@/redux/hooks"
+import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { Button } from "@/ui/button"
 import { AuthCard } from "@/ui/Cards/AuthFlow/AuthCard"
 import { Form } from "@/ui/Cards/AuthFlow/Form"
@@ -9,15 +9,18 @@ import { Icons } from "@skydock/ui/icons"
 import { showToast } from "@skydock/ui/toast"
 import { emailValidation, passwordValidation } from "@skydock/validation"
 import { FC, useState } from "react"
+import { Navigate, useNavigate } from "react-router"
 import useServerErrors from "../hooks/useServerErrors"
 import ErrorMessage from "./ErrorMessage"
 import InfoMessage from "./InfoMessage"
 
 interface SigninProps {
-    windowChange: (window: 'signin' | 'signup' | 'forgot') => void;
 }
 
-const Signin: FC<SigninProps> = ({ windowChange }) => {
+const Signin: FC<SigninProps> = () => {
+
+
+
     const [formError, setFormError] = useState({
         email: '',
         password: ''
@@ -27,12 +30,19 @@ const Signin: FC<SigninProps> = ({ windowChange }) => {
     const [emailVerification, setEmailVerification] = useState(false);
     const [email, setEmail] = useState('')
 
+    const navigate = useNavigate()
+
 
     const [login, { isLoading: isLoginLoading }] = useLoginMutation();
     const [sendEmailVerification, { isLoading: isSendEmailVerificationLoading }] = useSendEmailVerificationMutation();
 
     const isLoading = isLoginLoading || isSendEmailVerificationLoading;
     const dispatch = useAppDispatch()
+
+    const user = useAppSelector((state) => state.auth.user)
+    if (user) {
+        return <Navigate to="/skydock" replace />
+    }
 
     const handleEmailVerification = async () => {
         try {
@@ -114,14 +124,14 @@ const Signin: FC<SigninProps> = ({ windowChange }) => {
                         {/* <input id="remember-me" type="checkbox" />
                         <label htmlFor="remember-me"> Remember Me</label> */}
                     </div>
-                    <Button className="hover:bg-transparent text-white" disabled={isLoading} onClick={() => windowChange('forgot')} >Forgot Password</Button>
+                    <Button className="hover:bg-transparent text-white" disabled={isLoading} onClick={() => navigate('/forgot-password')} >Forgot Password</Button>
                 </div>
                 <Button size={'medium'} className=" w-full flex items-center justify-center my-2 " disabled={isLoading} intent={'secondary'} type="submit">
                     {isLoading ? <span className=" animate-spin"><Icons.Loader className=" h-6 w-6" /> </span> : "Login"}
                 </Button>
                 <div className=" flex items-center gap-2 w-full justify-center">
                     <p>Don't have account? </p>
-                    <Button className=" hover:bg-transparent text-white " disabled={isLoading} onClick={() => windowChange('signup')}>Register</Button>
+                    <Button className=" hover:bg-transparent text-white " disabled={isLoading} onClick={() => navigate('/register')}>Register</Button>
                 </div>
                 {/* <Button size={'medium'} onClick={handleGuestMode} className=" w-full flex items-center justify-center my-2 " intent={'secondary'}>
                     Continue as Guest

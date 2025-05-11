@@ -1,4 +1,5 @@
 import { useRegisterMutation } from "@/redux/apis/userAuthApi"
+import { useAppSelector } from "@/redux/hooks"
 import { Button } from "@/ui/button"
 import { AuthCard } from "@/ui/Cards/AuthFlow/AuthCard"
 import { Form } from "@/ui/Cards/AuthFlow/Form"
@@ -7,14 +8,14 @@ import cn from "@/utils"
 import { Icons } from "@skydock/ui/icons"
 import { emailValidation, passwordValidation } from "@skydock/validation"
 import { FC, useState } from "react"
+import { Navigate, useNavigate } from "react-router"
 import useServerErrors from "../hooks/useServerErrors"
 import ErrorMessage from "./ErrorMessage"
 
 interface SignupProps {
-    windowChange: (window: 'signin' | 'signup') => void;
 }
 
-const Signup: FC<SignupProps> = ({ windowChange }) => {
+const Signup: FC<SignupProps> = () => {
 
     const [formError, setFormError] = useState({
         email: '',
@@ -25,6 +26,13 @@ const Signup: FC<SignupProps> = ({ windowChange }) => {
     const [serverError, setServerError] = useServerErrors()
 
     const [registerUser, { isLoading }] = useRegisterMutation();
+
+    const navigate = useNavigate()
+
+    const user = useAppSelector((state) => state.auth.user)
+    if (user) {
+        return <Navigate to="/skydock" replace />
+    }
 
 
     const handleSubmit = async (e: any) => {
@@ -63,7 +71,7 @@ const Signup: FC<SignupProps> = ({ windowChange }) => {
             const response = await registerUser({ email, password, firstName: fname, lastName: lname }).unwrap();
             console.log(response)
             e.target.reset()
-            windowChange('signin')
+            navigate('/login')
         } catch (e: any) {
             setServerError(e.data.message)
         }
@@ -103,7 +111,7 @@ const Signup: FC<SignupProps> = ({ windowChange }) => {
             {/* <div className="w-[95%] border-b border-gray-200"></div> */}
             <div className=" flex items-center gap-2">
                 <p className=" text-white ">Already have an account? </p>
-                <Button className=" hover:bg-transparent text-white  " disabled={isLoading} onClick={() => windowChange('signin')}>
+                <Button className=" hover:bg-transparent text-white  " disabled={isLoading} onClick={() => navigate('/login')}>
                     Login
                 </Button>
             </div>

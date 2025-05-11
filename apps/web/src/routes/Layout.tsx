@@ -25,7 +25,9 @@ const Layout = () => {
                             !token ? "justify-center" : "justify-between"
                         )}
                     >
+                        {/* <AnimatePresence> */}
                         <Outlet />
+                        {/* </AnimatePresence> */}
                     </div>
                     <GlobalContextMenu />
                 </>}

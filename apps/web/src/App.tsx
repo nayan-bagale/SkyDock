@@ -80,7 +80,9 @@
 // }
 
 import { Navigate, Route, Routes } from "react-router";
-import Auth from "./components/Auth/Auth";
+import ForgotPassword from "./components/Auth/ForgotPassword/ForgotPassword";
+import Signin from "./components/Auth/Signin";
+import Signup from "./components/Auth/Signup";
 import Layout from "./routes/Layout";
 import MainApp from "./routes/MainApp";
 import Protected from "./routes/Protected";
@@ -90,10 +92,12 @@ const App = () => {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path="/login" element={<Auth />} />
+        <Route path="/login" element={<Signin />} />
+        <Route path="/register" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/" element={<Protected />}>
           <Route index element={<Navigate to="/skydock" />} />
-          <Route path="skydock" element={<MainApp />} />
+          <Route path="/skydock" element={<MainApp />} />
         </Route>
         {/* <Route path="*" element={<NotFound />} /> */}
       </Route>

@@ -430,6 +430,12 @@ class AuthController {
         .json({ message: "Email does not exist" });
     }
 
+    if (!user.verified) {
+      return res
+        .status(UNPROCESSABLE_ENTITY)
+        .json({ message: "Email is not verified" });
+    }
+
     let message = "OTP sent to your email";
 
     if (cache.has(email)) {

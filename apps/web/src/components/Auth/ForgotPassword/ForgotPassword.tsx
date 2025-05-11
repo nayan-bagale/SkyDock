@@ -1,6 +1,7 @@
 import { useCountdownTimer } from "@/components/hooks/useCountdownTimer"
 import { REGEXP_ONLY_DIGITS } from "@/constants"
 import { useResetPasswordMutation, useSendOtpMutation, useVerifyOtpMutation } from "@/redux/apis/userAuthApi"
+import { useAppSelector } from "@/redux/hooks"
 import { Button } from "@/ui/button"
 import { AuthCard } from "@/ui/Cards/AuthFlow/AuthCard"
 import { Form } from "@/ui/Cards/AuthFlow/Form"
@@ -10,16 +11,16 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@skydock/ui/input-otp"
 import { showToast } from "@skydock/ui/toast"
 import { emailValidation, passwordValidation } from "@skydock/validation"
 import { FC, memo, useReducer, useState } from "react"
+import { Navigate, useNavigate } from "react-router"
 import ErrorMessage from "../ErrorMessage"
 import { ActionTypes, forgotPasswordReducer, initialState } from "./reducer"
 
 
 interface SigninProps {
-    windowChange: (window: 'signin' | 'signup' | 'forgot') => void;
 }
 
 
-const ForgotPassword: FC<SigninProps> = ({ windowChange }) => {
+const ForgotPassword: FC<SigninProps> = () => {
 
     const [state, dispatch] = useReducer(forgotPasswordReducer, initialState);
     const [step, setStep] = useState(0);
@@ -27,6 +28,12 @@ const ForgotPassword: FC<SigninProps> = ({ windowChange }) => {
     const [sendOtp, { isLoading: isSendOtpLoading }] = useSendOtpMutation();
     const [verifyOtp, { isLoading: isVerifyOtpLoading }] = useVerifyOtpMutation();
     const [resetPassword, { isLoading: isResetPasswordLoading }] = useResetPasswordMutation();
+    const navigate = useNavigate()
+
+    const user = useAppSelector((state) => state.auth.user)
+    if (user) {
+        return <Navigate to="/skydock" replace />
+    }
 
     const resendOtp = async () => {
         try {
@@ -121,7 +128,7 @@ const ForgotPassword: FC<SigninProps> = ({ windowChange }) => {
                         'Password successfully changed',
                         'success'
                     )
-                    windowChange('signin');
+                    navigate('/login');
                 } catch (e: any) {
                     showToast(
                         e?.data?.message || 'Something went wrong',
@@ -151,7 +158,7 @@ const ForgotPassword: FC<SigninProps> = ({ windowChange }) => {
                 }
                 <div className=" flex items-center gap-2 w-full justify-center">
                     <p>Want to login? </p>
-                    <Button className=" hover:bg-transparent text-white " onClick={() => windowChange('signin')}>Login</Button>
+                    <Button className=" hover:bg-transparent text-white " onClick={() => navigate('/login')}>Login</Button>
                 </div>
             </Form>
 
