@@ -1,13 +1,12 @@
 import GlobalContextMenu from "@/components/GlobalContextMenu/GlobalContextMenu";
 import useSkydockInitialLoad from "@/components/hooks/useSkydockInitialLoad";
-import { useAppSelector } from "@/redux/hooks";
 import cn from "@/utils";
 import { Outlet } from "react-router";
 import { Toaster } from "sonner";
 
 const Layout = () => {
-    const token = useAppSelector((state) => state.auth.accessToken);
-    const { isLoading, data, isError } = useSkydockInitialLoad();
+    // const token = useAppSelector((state) => state.auth.accessToken);
+    const { isLoading } = useSkydockInitialLoad();
 
     const handleContext = (e: any) => {
         // e.preventDefault()
