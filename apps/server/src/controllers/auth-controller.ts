@@ -2,8 +2,10 @@ import { User } from "@skydock/db";
 import { LoginBody, LoginResponse, RegisterBody } from "@skydock/types/Auth";
 import { emailValidation, passwordValidation } from "@skydock/validation";
 import bcrypt from "bcrypt";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { JwtPayload } from "jsonwebtoken";
+import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { cookieOptions } from "../config/cookiesAndJwt";
 import { prisma } from "../config/db";
 import { SALT } from "../constants/constants";
@@ -34,7 +36,72 @@ import otpGenerate from "../utils/otp-generator";
 class AuthController {
   private static instance: AuthController;
 
-  private constructor() {}
+  private constructor() {
+    passport.use(
+      new GoogleStrategy(
+        {
+          clientID: process.env.GOOGLE_CLIENT_ID!,
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+          callbackURL: "/api/v1/auth/google/callback",
+        },
+        async (accessToken, refreshToken, profile, done) => {
+          try {
+            console.log(profile);
+            const email = profile?.emails?.[0]?.value;
+            if (!email) {
+              return done(new Error("Email not found"));
+            }
+            const user = await prisma.user.findUnique({
+              where: { email },
+            });
+            if (!user) {
+              const newUser = await prisma.$transaction(async (ctx) => {
+                const user = await ctx.user.create({
+                  data: {
+                    email: email,
+                    name: profile.displayName,
+                    verified: true,
+                  },
+                });
+                await ctx.oAuth.create({
+                  data: {
+                    provider: "google",
+                    providerId: profile.id,
+                    userId: user.id,
+                  },
+                });
+                const startDate = new Date();
+                const endDate = addMonths(startDate, 1);
+                await ctx.userPlan.create({
+                  data: {
+                    userId: user.id,
+                    planId: 1,
+                    startDate: startDate,
+                    endDate: endDate,
+                    status: "active",
+                  },
+                });
+                await ctx.payment.create({
+                  data: {
+                    userId: user.id,
+                    planId: 1,
+                    amount: 0,
+                    currency: "INR",
+                    paymentStatus: "success",
+                  },
+                });
+                return user;
+              });
+              return done(null, newUser);
+            }
+            return done(null, user);
+          } catch (error) {
+            return done(error);
+          }
+        }
+      )
+    );
+  }
 
   public static getInstance(): AuthController {
     if (!AuthController.instance) {
@@ -144,6 +211,12 @@ class AuthController {
         .json({ message: "Account is not activated", verifyEmail: true });
     }
 
+    if (!user.password) {
+      return res
+        .status(UNAUTHORIED)
+        .json({ message: "Password not set", verifyEmail: true });
+    }
+
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
@@ -205,7 +278,7 @@ class AuthController {
 
   async updateName(req: Request, res: Response) {
     const { fname, lname } = req.body;
-    const userId = req.user?.id as string;
+    const userId = req.userInfo?.id as string;
     if (!fname || !lname) {
       return res
         .status(BADREQUEST)
@@ -230,7 +303,7 @@ class AuthController {
 
   async changePassword(req: Request, res: Response) {
     const { oldPassword, newPassword } = req.body;
-    const userId = req.user?.id as string;
+    const userId = req.userInfo?.id as string;
     if (!oldPassword || !newPassword)
       return res
         .status(BADREQUEST)
@@ -259,6 +332,11 @@ class AuthController {
     if (!user) {
       return res.status(BADREQUEST).json({ message: "User does not exist" });
     }
+
+    if (!user.password) {
+      return res.status(BADREQUEST).json({ message: "Password not set" });
+    }
+
     const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
     if (!isPasswordValid) {
       return res.status(BADREQUEST).json({ message: "Invalid password" });
@@ -333,7 +411,6 @@ class AuthController {
               status: "active",
             },
           });
-          console.log(user_plan);
           await ctx.payment.create({
             data: {
               userId: user.id,
@@ -538,7 +615,7 @@ class AuthController {
   }
 
   async getUser(req: Request, res: Response) {
-    const userId = req.user?.id as string;
+    const userId = req.userInfo?.id as string;
 
     if (!userId) {
       return res.status(UNAUTHORIED).json({ message: "User not found" });
@@ -588,6 +665,35 @@ class AuthController {
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
     }
+  }
+
+  async OAuthGoogle(req: Request, res: Response, next: NextFunction) {
+    passport.authenticate("google", {
+      scope: ["profile", "email"],
+    })(req, res, next);
+  }
+
+  async OAuthGoogleCallback(req: Request, res: Response, next: NextFunction) {
+    passport.authenticate("google", { session: false }, (err, user, info) => {
+      console.log(user, info);
+      if (err || !user) {
+        console.error("OAuth Error:", err || info);
+        return res.redirect("/login");
+      }
+
+      const UserResObj: LoginResponse = {
+        id: user.id,
+      };
+
+      const refreshToken = createRefreshToken(UserResObj);
+      const accessToken = createAccessToken(UserResObj, refreshToken);
+
+      res.cookie("refreshToken", refreshToken, cookieOptions);
+
+      return res.redirect(
+        `${process.env.CLIENT_URL}/oauth?accessToken=${accessToken}`
+      );
+    })(req, res, next); // Don't forget to pass next
   }
 }
 

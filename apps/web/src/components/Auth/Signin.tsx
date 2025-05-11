@@ -1,4 +1,4 @@
-import { useLoginMutation, useSendEmailVerificationMutation } from "@/redux/apis/userAuthApi"
+import { useGoogleLoginMutation, useLoginMutation, useSendEmailVerificationMutation } from "@/redux/apis/userAuthApi"
 import { setAccessToken } from "@/redux/features/auth"
 import { useAppDispatch, useAppSelector } from "@/redux/hooks"
 import { Button } from "@/ui/button"
@@ -36,12 +36,27 @@ const Signin: FC<SigninProps> = () => {
     const [login, { isLoading: isLoginLoading }] = useLoginMutation();
     const [sendEmailVerification, { isLoading: isSendEmailVerificationLoading }] = useSendEmailVerificationMutation();
 
+    const [loginWithGoogle] = useGoogleLoginMutation()
+
     const isLoading = isLoginLoading || isSendEmailVerificationLoading;
     const dispatch = useAppDispatch()
 
     const user = useAppSelector((state) => state.auth.user)
     if (user) {
         return <Navigate to="/" replace />
+    }
+
+    const handleLoginWithGoogle = async () => {
+        try {
+            // const data = await loginWithGoogle('').unwrap()
+
+            window.location.href = `${import.meta.env.VITE_BACKEND_URL}/auth/google`;
+        } catch (e: any) {
+            showToast(
+                e.data.message,
+                'error'
+            )
+        }
     }
 
     const handleEmailVerification = async () => {
@@ -133,9 +148,9 @@ const Signin: FC<SigninProps> = () => {
                     <p>Don't have account? </p>
                     <Button className=" hover:bg-transparent text-white " disabled={isLoading} onClick={() => navigate('/register')}>Register</Button>
                 </div>
-                {/* <Button size={'medium'} onClick={handleGuestMode} className=" w-full flex items-center justify-center my-2 " intent={'secondary'}>
-                    Continue as Guest
-                </Button> */}
+                <Button size={'medium'} onClick={handleLoginWithGoogle} className=" w-full flex items-center justify-center my-2 " intent={'secondary'}>
+                    Sign in with Google
+                </Button>
             </Form>
         </AuthCard>
     )

@@ -21,7 +21,7 @@ class FilesController {
 
   async generateUploadUrls(req: Request, res: Response) {
     const files = req.body.files as RequestFilesForSignedUrl[];
-    const userId = req.user?.id as string;
+    const userId = req.userInfo?.id as string;
 
     try {
       const sizeRequired = files.reduce(
@@ -29,7 +29,7 @@ class FilesController {
         0
       );
       const userWithPlan = await prisma.user.findUnique({
-        where: { id: req.user?.id as string },
+        where: { id: req.userInfo?.id as string },
         select: {
           usedStorage: true,
           UserPlan: {
@@ -88,7 +88,7 @@ class FilesController {
 
     try {
       const userWithPlan = await prisma.user.findUnique({
-        where: { id: req.user?.id as string },
+        where: { id: req.userInfo?.id as string },
         select: {
           usedStorage: true,
           UserPlan: {
@@ -125,7 +125,7 @@ class FilesController {
 
     try {
       // Save files to database
-      const userId = req.user?.id as string;
+      const userId = req.userInfo?.id as string;
 
       await prisma.$transaction(async (tx) => {
         await tx.user.update({
@@ -160,7 +160,7 @@ class FilesController {
   }
 
   async getAllFiles(req: Request, res: Response) {
-    const userId = req.user?.id as string;
+    const userId = req.userInfo?.id as string;
     try {
       const files = await prisma.explorerItems.findMany({
         where: { user_id: userId },
@@ -176,7 +176,7 @@ class FilesController {
 
   async getFileUrl(req: Request, res: Response) {
     const fileName = req.params.id as string;
-    const userId = req.user?.id as string;
+    const userId = req.userInfo?.id as string;
 
     try {
       const fileUrl = await Store.getObjectUrl(`${userId}/${fileName}`);
@@ -191,7 +191,7 @@ class FilesController {
 
   async patchFileAndFolder(req: Request, res: Response) {
     const fileId = req.params.id as string;
-    const user_id = req.user?.id as string;
+    const user_id = req.userInfo?.id as string;
     try {
       await prisma.explorerItems.update({
         where: { id: fileId, user_id },
@@ -208,7 +208,7 @@ class FilesController {
 
   async createFolder(req: Request, res: Response) {
     const data = req.body as CreateFolderRequest;
-    const userId = req.user?.id as string;
+    const userId = req.userInfo?.id as string;
     try {
       await prisma.explorerItems.create({
         data: {
@@ -233,7 +233,7 @@ class FilesController {
 
   async deleteFile(req: Request, res: Response) {
     const fileId = req.params.id as string;
-    const userId = req.user?.id as string;
+    const userId = req.userInfo?.id as string;
     try {
       const file = await prisma.explorerItems.findUnique({
         where: { id: fileId, is_deleted: true },
@@ -269,7 +269,7 @@ class FilesController {
 
   async deleteFolder(req: Request, res: Response) {
     const folderItems = req.body as string[];
-    const userId = req.user?.id as string;
+    const userId = req.userInfo?.id as string;
     try {
       await prisma.$transaction(async (tx) => {
         const items = await tx.explorerItems.findMany({
@@ -309,7 +309,7 @@ class FilesController {
 
   async softDeleteFileAndFolder(req: Request, res: Response) {
     const items = req.body as (FileT | FolderT)[];
-    const userId = req.user?.id as string;
+    const userId = req.userInfo?.id as string;
     try {
       await prisma.$transaction(async (tx) => {
         await Promise.all(

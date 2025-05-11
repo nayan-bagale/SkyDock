@@ -81,6 +81,7 @@
 
 import { Route, Routes } from "react-router";
 import ForgotPassword from "./components/Auth/ForgotPassword/ForgotPassword";
+import OAuth from "./components/Auth/OAuth";
 import Signin from "./components/Auth/Signin";
 import Signup from "./components/Auth/Signup";
 import Layout from "./routes/Layout";
@@ -95,6 +96,7 @@ const App = () => {
         <Route path="/login" element={<Signin />} />
         <Route path="/register" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/oauth" element={<OAuth />} />
         <Route path="/" element={<Protected />}>
           {/* <Route index element={<Navigate to="/skydock" />} /> */}
           <Route index element={<MainApp />} />

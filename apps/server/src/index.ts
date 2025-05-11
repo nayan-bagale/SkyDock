@@ -2,6 +2,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 import { JwtPayload } from "jsonwebtoken";
+import passport from "passport";
 import { corsOptions } from "./config/corsOptions";
 import "./config/dotenv";
 import { OK } from "./constants/status";
@@ -24,6 +25,8 @@ app.use(express.json());
 
 // middleware for cookies
 app.use(cookieParser());
+
+app.use(passport.initialize());
 
 app.get("/api/v1/session", authMiddleware, (req, res) => {
   const refreshToken = req.cookies.refreshToken;

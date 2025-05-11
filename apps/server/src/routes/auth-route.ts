@@ -59,6 +59,19 @@ router.post(
   authController.forgotPasswordReset
 );
 
+// ------------------ OAuth ------------------
+router.get(
+  "/google",
+  rateLimitMiddleware.defaultLimiter,
+  authController.OAuthGoogle
+);
+
+router.get(
+  "/google/callback",
+  rateLimitMiddleware.defaultLimiter,
+  authController.OAuthGoogleCallback
+);
+
 // ------------------ Update User ------------------
 
 router.patch("/update/name", authMiddleware, authController.updateName);

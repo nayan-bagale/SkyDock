@@ -47,7 +47,7 @@ export function authMiddleware(
       .json({ message: messages.ACCESS_TOKEN_EXPIRED });
   }
 
-  req.user = (
+  req.userInfo = (
     decodeToken(accessToken.split(" ")[1] as string) as JwtPayload
   ).user;
 
