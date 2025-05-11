@@ -1,8 +1,7 @@
 import { ActionsT } from "../common";
+import { FileT } from "../explorer-items";
 
 export interface VideoPlayerStateT {
   actions: ActionsT;
-  videoPlayer: {
-    currentVideoId: string | null;
-  };
+  videoInfo: FileT | null;
 }

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { MusicPlayerStateT } from "@skydock/types";
+import { FileT, MusicPlayerStateT } from "@skydock/types";
 
 const intialState = {
   actions: {
@@ -9,22 +9,20 @@ const intialState = {
     lastPosition: { x: 0, y: 0 },
     lastSize: { width: 0, height: 0 },
   },
-  musicPlayer: {
-    currentMusicId: null,
-  },
+  musicInfo: null,
 } as MusicPlayerStateT;
 
 export const musicPLayerSlice = createSlice({
   name: "musicPLayer",
   initialState: intialState,
   reducers: {
-    openMusicPlayer: (state, action: PayloadAction<string | null>) => {
+    openMusicPlayer: (state, action: PayloadAction<FileT | null>) => {
       state.actions.isProcessOn = true;
-      state.musicPlayer.currentMusicId = action.payload;
+      state.musicInfo = action.payload;
     },
     closeMusicPlayer: (state) => {
       state.actions.isProcessOn = false;
-      state.musicPlayer.currentMusicId = null;
+      state.musicInfo = null;
     },
   },
 });

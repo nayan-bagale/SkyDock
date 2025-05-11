@@ -1,8 +1,7 @@
 import { ActionsT } from "../common";
+import { FileT } from "../explorer-items";
 
 export interface MusicPlayerStateT {
   actions: ActionsT;
-  musicPlayer: {
-    currentMusicId: string | null;
-  };
+  musicInfo: FileT | null;
 }

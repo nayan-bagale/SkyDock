@@ -8,7 +8,6 @@ import { useEffect, useRef, useState } from 'react';
 import useGetFileURl from '@/components/hooks/useGetFileURl';
 import { useVideoPlayer } from '@/components/hooks/useVideoPlayer';
 import { cn } from '@/utils';
-import { FileT } from '@skydock/types';
 import { Maximize, Pause, Play, Volume1, Volume2, VolumeX } from 'lucide-react';
 
 const VideoPlayer = () => {
@@ -21,9 +20,9 @@ const VideoPlayer = () => {
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef
     });
-    const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
+    // const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
 
-    const videoPlayerState = useAppSelector((state) => state.videoPlayer.videoPlayer);
+    const videoInfo = useAppSelector((state) => state.videoPlayer.videoInfo);
 
     const handleContextMenu = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -58,7 +57,6 @@ const VideoPlayer = () => {
 
     const playerRef = useRef<HTMLDivElement>(null);
     const [videoUrl, setVideoUrl] = useState<string | undefined>();
-
     const {
         videoRef,
         isPlaying,
@@ -84,12 +82,12 @@ const VideoPlayer = () => {
 
     useEffect(() => {
         const setUrl = async () => {
-            if (videoPlayerState?.currentVideoId) {
-                const videoItem = explorerItems[videoPlayerState?.currentVideoId] as FileT;
-                if (videoItem && !videoItem.isFolder && videoItem.details.type.startsWith('video/')) {
+            if (videoInfo?.id) {
+
+                if (videoInfo && !videoInfo.isFolder && videoInfo.details.type.startsWith('video/')) {
                     // setMusicTitle(imageItem.name);
                     // In a real app, you would get the image URL from your backend
-                    const { url } = await getFileUrl(`${videoItem.id}.${videoItem.name.split(".").pop()}`)
+                    const { url } = await getFileUrl(`${videoInfo.id}.${videoInfo.name.split(".").pop()}`)
                     setVideoUrl(url);
                     togglePlay()
                     // console.log(url)
@@ -105,7 +103,7 @@ const VideoPlayer = () => {
 
         }
         setUrl()
-    }, [explorerItems, videoPlayerState?.currentVideoId]);
+    }, [videoInfo]);
 
     // Handle mouse movements to show/hide controls
     const handleMouseMove = () => {

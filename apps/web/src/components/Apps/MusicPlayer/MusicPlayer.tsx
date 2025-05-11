@@ -8,7 +8,6 @@ import { useEffect, useRef, useState } from 'react';
 // import { tracks, Track } from '@/data/tracks';
 import useGetFileURl from "@/components/hooks/useGetFileURl";
 import { closeMusicPlayer } from "@/redux/features/music-player/musicPlayerSlice";
-import { FileT } from "@skydock/types";
 import { motion } from "framer-motion";
 
 export interface Track {
@@ -50,8 +49,6 @@ const formatTime = (seconds: number) => {
 };
 
 const MusicPlayer = () => {
-
-    // const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
     const [isPlaying, setIsPlaying] = useState(true);
     const [currentTime, setCurrentTime] = useState(0);
     const [volume, setVolume] = useState([0.7]);
@@ -63,10 +60,7 @@ const MusicPlayer = () => {
     const [musicTitle, setMusicTitle] = useState('Music Player');
     const [musicUrl, setMusicUrl] = useState<string | null>(null);
     const [duration, setDuration] = useState(0);
-    const musicPlayerState = useAppSelector((state) => state.musicPlayer.musicPlayer);
-    const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
-    const musicInfo = musicPlayerState?.currentMusicId ? explorerItems[musicPlayerState?.currentMusicId] as FileT : null;
-
+    const musicInfo = useAppSelector((state) => state.musicPlayer.musicInfo);
     const draggableRef = useRef<HTMLDivElement>(null);
     const dispatch = useAppDispatch();
     const focusedApp = useAppSelector((state) => state.apps.focusedApp);
@@ -79,12 +73,11 @@ const MusicPlayer = () => {
 
     useEffect(() => {
         const setUrl = async () => {
-            if (musicPlayerState?.currentMusicId) {
-                const imageItem = explorerItems[musicPlayerState?.currentMusicId] as FileT;
-                if (imageItem && !imageItem.isFolder && imageItem.details.type.startsWith('audio/')) {
-                    setMusicTitle(imageItem.name);
+            if (musicInfo?.id) {
+                if (musicInfo && !musicInfo.isFolder && musicInfo.details.type.startsWith('audio/')) {
+                    setMusicTitle(musicInfo.name);
                     // In a real app, you would get the image URL from your backend
-                    const { url } = await getFileUrl(`${imageItem.id}.${imageItem.name.split(".").pop()}`)
+                    const { url } = await getFileUrl(`${musicInfo.id}.${musicInfo.name.split(".").pop()}`)
                     setMusicUrl(url);
                     // console.log(url)
                     setIsPlaying(true);
@@ -99,7 +92,7 @@ const MusicPlayer = () => {
 
         }
         setUrl()
-    }, [explorerItems, musicPlayerState?.currentMusicId]);
+    }, [musicInfo]);
 
     const togglePlayPause = () => {
         if (audioRef.current) {

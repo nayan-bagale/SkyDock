@@ -21,9 +21,9 @@ const useAppOpenBasedOnFileType = (item: FileT | FolderT | null) => {
     } else if (isItemStartsWith("image/")) {
       dispatch(openImageViewer(item.id));
     } else if (isItemStartsWith("audio/")) {
-      dispatch(openMusicPlayer(item.id));
+      dispatch(openMusicPlayer(item));
     } else if (isItemStartsWith("video/")) {
-      dispatch(openVideoPlayer(item.id));
+      dispatch(openVideoPlayer(item));
     }
   };
 
