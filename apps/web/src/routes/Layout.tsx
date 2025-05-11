@@ -22,7 +22,7 @@ const Layout = () => {
                     <div
                         className={cn(
                             "flex flex-col items-center h-full",
-                            !token ? "justify-center" : "justify-between"
+                            // !token ? "justify-center" : "justify-between"
                         )}
                     >
                         {/* <AnimatePresence> */}

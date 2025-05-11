@@ -41,7 +41,7 @@ const Signin: FC<SigninProps> = () => {
 
     const user = useAppSelector((state) => state.auth.user)
     if (user) {
-        return <Navigate to="/skydock" replace />
+        return <Navigate to="/" replace />
     }
 
     const handleEmailVerification = async () => {

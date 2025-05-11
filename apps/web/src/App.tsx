@@ -79,7 +79,7 @@
 //   );
 // }
 
-import { Navigate, Route, Routes } from "react-router";
+import { Route, Routes } from "react-router";
 import ForgotPassword from "./components/Auth/ForgotPassword/ForgotPassword";
 import Signin from "./components/Auth/Signin";
 import Signup from "./components/Auth/Signup";
@@ -96,8 +96,8 @@ const App = () => {
         <Route path="/register" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/" element={<Protected />}>
-          <Route index element={<Navigate to="/skydock" />} />
-          <Route path="/skydock" element={<MainApp />} />
+          {/* <Route index element={<Navigate to="/skydock" />} /> */}
+          <Route index element={<MainApp />} />
         </Route>
         {/* <Route path="*" element={<NotFound />} /> */}
       </Route>
