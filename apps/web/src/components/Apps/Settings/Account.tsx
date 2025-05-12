@@ -1,5 +1,6 @@
 import ErrorMessage from '@/components/Auth/ErrorMessage'
-import { useChangeNameMutation, useChangePasswordMutation } from '@/redux/apis/userAuthApi'
+import { useChangeNameMutation, useChangePasswordMutation, useSetPasswordMutation } from '@/redux/apis/userAuthApi'
+import { useAppSelector } from '@/redux/hooks'
 import { Button } from '@/ui/button'
 import { Form } from '@/ui/Cards/AuthFlow/Form'
 import { Input, InputPassword } from '@/ui/input'
@@ -179,6 +180,87 @@ const ChangePassword = memo(({ closeModal }: CommonProps) => {
     )
 });
 
+const SetPassword = memo(({ closeModal }: CommonProps) => {
+    const [formError, setFormError] = useState({
+        password: '',
+        confirmPassword: ''
+    })
+
+    const [setPassword] = useSetPasswordMutation()
+
+    const handleSubmit = async (e: any) => {
+        e.preventDefault()
+        setFormError({
+            password: '',
+            confirmPassword: ''
+        })
+        const password = e.target[0].value
+        const confirmPassword = e.target[2].value
+
+        console.log(password, confirmPassword)
+
+        if (!password) {
+            setFormError((prev) => ({ ...prev, password: 'New password is required' }))
+            return
+        }
+        if (password !== confirmPassword) {
+            setFormError((prev) => ({ ...prev, confirmPassword: 'Passwords do not match' }))
+            return
+        }
+        if (password.length < 6) {
+            setFormError((prev) => ({ ...prev, password: 'Password must be at least 6 characters' }))
+            return
+        }
+
+        try {
+
+            const res = await setPassword({ password }).unwrap()
+            console.log(res)
+            showToast(
+                res.message ?? 'Password Set successfully',
+                'success'
+            )
+            closeModal()
+
+        } catch (e: any) {
+            console.log(e)
+            showToast(
+                e.data.message,
+                'error'
+            )
+        }
+
+    }
+    return (
+        <motion.div
+            className=" bg-white p-4 rounded-md shadow border w-full max-w-96"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+        >
+            <div className='flex justify-between items-center'>
+                <h3 className="font-medium">Set Password</h3>
+                <Button
+                    onClick={closeModal}
+                >
+                    <Icons.Cross className="w-5 h-5" />
+                </Button>
+            </div>
+            <div className="w-[95%] pb-2 border-b border-gray-200"></div>
+
+            <Form onSubmit={handleSubmit} className=" py-2 w-full">
+                <label className="text-sm self-start" htmlFor="password">Password</label>
+                <InputPassword id='password' className=' placeholder:text-sm placeholder:text-gray-400' />
+                {formError.password && <ErrorMessage>{formError.password}</ErrorMessage>}
+                <label className="text-sm self-start" htmlFor="confirm-new-password">Confirm Password</label>
+                <InputPassword id='confirm-new-password' className=' placeholder:text-sm placeholder:text-gray-400' />
+                {formError.confirmPassword && <ErrorMessage>{formError.confirmPassword}</ErrorMessage>}
+                <Button intent={'action'} type='submit' className='py-1 mt-2' size={'medium'}>Set Password</Button>
+            </Form>
+        </motion.div>
+    )
+});
+
 const ChangeEmail = ({ closeModal }: CommonProps) => {
     return (
         <motion.div
@@ -245,6 +327,8 @@ const DeleteAccount = ({ closeModal }: CommonProps) => {
 const Account = () => {
     const [openModal, setOpenModal] = useState<string | null>(null)
 
+    const userAuthMethod = useAppSelector((state) => state.auth.user?.authMethod)
+
     const closeModal = () => {
         setOpenModal(null)
     }
@@ -255,18 +339,24 @@ const Account = () => {
             name: 'Change Name',
             Component: ChangeName
         },
-        {
-            id: '01',
-            name: 'Change Password',
-            Component: ChangePassword
-        },
+        userAuthMethod === "credentials" ?
+            {
+                id: '01',
+                name: 'Change Password',
+                Component: ChangePassword
+            } :
+            {
+                id: '01',
+                name: 'Set Password',
+                Component: SetPassword
+            },
         // {
         //     id: '02',
         //     name: 'Change Email',
         //     Component: ChangeEmail
         // },
         // {
-        //     id: '03',
+        //     id: '02',
         //     name: 'Delete Account',
         //     Component: DeleteAccount
         // }

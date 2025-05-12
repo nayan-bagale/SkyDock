@@ -60,10 +60,10 @@ class AuthController {
               return done(null, newUser);
             }
 
-            if (!user.image) {
+            if (!user.picture) {
               await prisma.user.update({
                 where: { id: user.id },
-                data: { image: profile?.photos?.[0]?.value },
+                data: { picture: profile?.photos?.[0]?.value },
               });
             }
 
@@ -323,6 +323,59 @@ class AuthController {
         },
       });
       res.status(OK).json({ message: "Successfully updated password" });
+    } catch (e: any) {
+      logger.error("Error while updating password", e);
+      return res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+  }
+
+  async setPassword(req: Request, res: Response) {
+    const { password } = req.body;
+    const userId = req.userInfo?.id as string;
+    if (!password)
+      return res
+        .status(BADREQUEST)
+        .json({ message: "All fields are required" });
+
+    if (!passwordValidation(password).valid) {
+      return res
+        .status(BADREQUEST)
+        .json({ message: passwordValidation(password).message });
+    }
+
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+
+      if (!user) {
+        return res.status(BADREQUEST).json({ message: "User does not exist" });
+      }
+
+      if (user.password) {
+        return res.status(BADREQUEST).json({ message: "Password already set" });
+      }
+    } catch (e: any) {
+      logger.error("Error while checking email existence", e);
+      return res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, SALT);
+
+    try {
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          password: hashedPassword,
+        },
+      });
+      res.status(OK).json({ message: "Successfully set password" });
     } catch (e: any) {
       logger.error("Error while updating password", e);
       return res
@@ -625,6 +678,7 @@ class AuthController {
         id: user.id,
         name: user.name,
         email: user.email,
+        picture: user.picture,
         verified: user.verified,
         usedStorage: Number(user.usedStorage),
         authMethod: authMethod,

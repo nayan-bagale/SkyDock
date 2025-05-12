@@ -14,7 +14,7 @@ class OAuthHelper {
         data: {
           email: profile?.emails?.[0]?.value as string,
           name: profile.displayName,
-          image: profile?.photos?.[0]?.value,
+          picture: profile?.photos?.[0]?.value,
           verified: true,
         },
       });

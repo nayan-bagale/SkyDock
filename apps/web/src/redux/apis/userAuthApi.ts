@@ -61,6 +61,15 @@ const userAuthApi = createApi({
       }),
     }),
 
+    setPassword: builder.mutation({
+      query: (password) => ({
+        url: `/auth/set/password`,
+        method: "PUT",
+        body: password,
+      }),
+      invalidatesTags: ["UserInfo"],
+    }),
+
     sendOtp: builder.mutation({
       query: (email) => ({
         url: `/auth/send-otp`,
@@ -113,5 +122,6 @@ export const {
   useVerifyOtpMutation,
   useResetPasswordMutation,
   useGetUserInfoQuery,
+  useSetPasswordMutation,
 } = userAuthApi;
 export default userAuthApi;

@@ -78,6 +78,8 @@ router.patch("/update/name", authMiddleware, authController.updateName);
 
 router.put("/update/password", authMiddleware, authController.changePassword);
 
+router.put("/set/password", authMiddleware, authController.setPassword);
+
 // ------------------ Get User ------------------
 router.get("/user-info", authMiddleware, authController.getUser);
 

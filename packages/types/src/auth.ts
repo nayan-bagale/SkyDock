@@ -24,6 +24,8 @@ export interface UserInfo {
   email: string;
   name: string;
   id: string;
+  picture: string | null;
+  authMethod: string;
   usedStorage: number;
   verified: boolean;
   plan: {

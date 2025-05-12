@@ -51,8 +51,13 @@ const ProfileDropdown = () => {
                     <MainDropDownMenu ref={ref} className="right-0 z-30 rounded-xl">
                         {/* <div className="right-0 absolute bg-gradient-to-r from-pink-500/50 via-purple-500/50 to-indigo-500/50 shadow-xl backdrop-blur-lg mt-2 py-2 border border-gray-100 rounded-lg w-64"> */}
                         <div className="px-4 py-2">
-                            <Icons.User className="mx-auto h-12" />
-                            {/* <img src="https://picsum.photos/64/64" alt="Profile" className="mx-auto rounded-full" /> */}
+                            {user?.picture ? (
+                                <img src={user.picture} alt="Profile" className="mx-auto h-24 rounded-full" />
+
+                            ) : (
+
+                                <Icons.User className="mx-auto h-12" />
+                            )}
                             <div className="mt-2 text-center">
                                 <p className="font-semibold text-lg">{user?.name}</p>
                                 <p className="text-gray-600 text-sm">{user?.email}</p>
