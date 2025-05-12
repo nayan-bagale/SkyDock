@@ -20,6 +20,7 @@ import folder_svg from './assests/folder-archive-documents-open-svgrepo-com.svg'
 import folder2_svg from './assests/folder-svgrepo-com.svg';
 import full_screen_exit_svg from './assests/full-screen-exit-svgrepo-com.svg';
 import full_screen_svg from './assests/full-screen-svgrepo-com.svg';
+import google_logo_white_svg from './assests/google-178-svgrepo-com.svg';
 import grid2_svg from './assests/grid-2-horizontal-svgrepo-com.svg';
 import grid4_svg from './assests/grid-4-svgrepo-com.svg';
 import home_svg from './assests/home-svgrepo-com.svg';
@@ -118,6 +119,7 @@ export const Icons = {
   Zap: ({ className }: { className: string }) => $({ svg: zap_svg, name: 'zap', className }),
   Music: ({ className }: { className: string }) => $({ svg: music_svg, name: 'music', className }),
   Video: ({ className }: { className: string }) => $({ svg: video_svg, name: 'video', className }),
+  Google_Logo_White: ({ className }: { className: string }) => $({ svg: google_logo_white_svg, name: 'google_logo_white', className }),
 
 }
 

@@ -26,8 +26,6 @@ class Email {
       html: `<strong>Here is activation <a href="${url}">link</a> . Thank you for registering to SkyDock</strong>`,
     };
 
-    console.log(url);
-
     const msgToDev: MailDataRequired = {
       to: "skydockos@gmail.com",
       from: {
@@ -61,6 +59,38 @@ class Email {
     };
     try {
       await sgMail.send(msg);
+    } catch (e) {
+      logger.error("Error sending email", e);
+      throw e;
+    }
+  }
+
+  async sendThankYouForSignUpEmail(toEmail: string) {
+    const msg: MailDataRequired = {
+      to: toEmail,
+      from: {
+        name: "SkyDock",
+        email: "skydockos@gmail.com",
+      },
+      subject: "Thank you for registering to SkyDock",
+      text: `Thank you for registering to SkyDock`,
+      html: `Thank you for registering to SkyDock</strong>`,
+    };
+
+    const msgToDev: MailDataRequired = {
+      to: "skydockos@gmail.com",
+      from: {
+        name: "SkyDock Devs",
+        email: "skydockos@gmail.com",
+      },
+      subject: "New user registered",
+      text: `New user registered with email: ${toEmail}`,
+      html: `<strong>New user registered with email: ${toEmail}</strong>`,
+    };
+
+    try {
+      await sgMail.send(msg);
+      await sgMail.send(msgToDev);
     } catch (e) {
       logger.error("Error sending email", e);
       throw e;

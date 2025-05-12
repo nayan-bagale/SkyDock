@@ -29,12 +29,14 @@ import {
   verifyToken,
 } from "../utils/token";
 
+import OAuthHelper from "../helpers/createOAuthUser";
 import { addMonths } from "../utils/date";
 import cache from "../utils/inMemoryStore";
 import otpGenerate from "../utils/otp-generator";
 
 class AuthController {
   private static instance: AuthController;
+  private oauthHelper = new OAuthHelper();
 
   private constructor() {
     passport.use(
@@ -46,7 +48,6 @@ class AuthController {
         },
         async (accessToken, refreshToken, profile, done) => {
           try {
-            console.log(profile);
             const email = profile?.emails?.[0]?.value;
             if (!email) {
               return done(new Error("Email not found"));
@@ -55,45 +56,17 @@ class AuthController {
               where: { email },
             });
             if (!user) {
-              const newUser = await prisma.$transaction(async (ctx) => {
-                const user = await ctx.user.create({
-                  data: {
-                    email: email,
-                    name: profile.displayName,
-                    verified: true,
-                  },
-                });
-                await ctx.oAuth.create({
-                  data: {
-                    provider: "google",
-                    providerId: profile.id,
-                    userId: user.id,
-                  },
-                });
-                const startDate = new Date();
-                const endDate = addMonths(startDate, 1);
-                await ctx.userPlan.create({
-                  data: {
-                    userId: user.id,
-                    planId: 1,
-                    startDate: startDate,
-                    endDate: endDate,
-                    status: "active",
-                  },
-                });
-                await ctx.payment.create({
-                  data: {
-                    userId: user.id,
-                    planId: 1,
-                    amount: 0,
-                    currency: "INR",
-                    paymentStatus: "success",
-                  },
-                });
-                return user;
-              });
+              const newUser = await this.oauthHelper.createOAuthUser(profile);
               return done(null, newUser);
             }
+
+            if (!user.image) {
+              await prisma.user.update({
+                where: { id: user.id },
+                data: { image: profile?.photos?.[0]?.value },
+              });
+            }
+
             return done(null, user);
           } catch (error) {
             return done(error);
@@ -214,7 +187,7 @@ class AuthController {
     if (!user.password) {
       return res
         .status(UNAUTHORIED)
-        .json({ message: "Password not set", verifyEmail: true });
+        .json({ message: "Please sign in with google" });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -646,12 +619,15 @@ class AuthController {
         return res.status(NOTFOUND).json({ message: "User not found" });
       }
 
+      const authMethod = user.password ? "credentials" : "oauth";
+
       return res.status(OK).json({
         id: user.id,
         name: user.name,
         email: user.email,
         verified: user.verified,
         usedStorage: Number(user.usedStorage),
+        authMethod: authMethod,
         plan: {
           name: user.UserPlan[0]?.plan.name,
           storageLimit: Number(user.UserPlan[0]?.plan.storageLimit),
@@ -675,9 +651,8 @@ class AuthController {
 
   async OAuthGoogleCallback(req: Request, res: Response, next: NextFunction) {
     passport.authenticate("google", { session: false }, (err, user, info) => {
-      console.log(user, info);
       if (err || !user) {
-        console.error("OAuth Error:", err || info);
+        logger.error("OAuth Error:", err || info);
         return res.redirect("/login");
       }
 

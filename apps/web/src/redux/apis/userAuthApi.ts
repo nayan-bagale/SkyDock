@@ -95,14 +95,6 @@ const userAuthApi = createApi({
       },
       providesTags: ["UserInfo"],
     }),
-
-    googleLogin: builder.mutation({
-      query: () => ({
-        url: `/auth/google`,
-        method: "GET",
-      }),
-      invalidatesTags: ["UserInfo"],
-    }),
   }),
 });
 
@@ -121,6 +113,5 @@ export const {
   useVerifyOtpMutation,
   useResetPasswordMutation,
   useGetUserInfoQuery,
-  useGoogleLoginMutation,
 } = userAuthApi;
 export default userAuthApi;
