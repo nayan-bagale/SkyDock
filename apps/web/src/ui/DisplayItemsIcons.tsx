@@ -82,11 +82,11 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                         onDragLeave={handleDragLeaveInner}
                     >
                         <Icon className="w-16" />
-                        <p className={cn('text-[14px] cursor-default text-center select-none ', 'truncate h-7 w-[11ch] overflow-hidden')}>{item.name}</p>
-                        {!item.isFolder && item?.state && item?.state?.currentState === 'downloading' && (
+                        <p className={cn('text-[14px] relative cursor-default text-center select-none ', 'truncate h-7 w-[11ch] overflow-hidden')}>{item.name}</p>
+                        {!item.isFolder && item?.state && item?.state?.currentState === 'uploding' && (
                             <>
-                                <div className="top-0 right-0 absolute bg-black/10 rounded-md w-full h-full">
-                                    <motion.div className="bg-black/40 rounded-md" initial={{ height: 0 }} animate={{ height: `${item.state.progress}%` }} />
+                                <div className="bottom-0 right-0 overflow-hidden absolute bg-black/10 rounded-md w-full h-full">
+                                    <motion.div className="bg-black/40" initial={{ height: '100%' }} animate={{ height: `${100 - item.state.progress}%` }} />
                                 </div>
                                 <div className='absolute flex justify-center items-center bg-black/50 shadow-sm backdrop-blur p-2 rounded-full font-bold text-white'>{item.state.progress}%</div>
                             </>

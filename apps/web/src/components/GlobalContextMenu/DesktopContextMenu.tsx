@@ -7,6 +7,7 @@ import { ContextMenuSeparator } from '@/ui/ContextMenu';
 import SupportedMimeTypeCheck from '@/utils/supportedMimeTypeCheck';
 import { FolderT } from '@skydock/types';
 import { Icons } from '@skydock/ui/icons';
+import { X } from 'lucide-react';
 import { useState } from 'react';
 import useAppProcess from '../hooks/useAppProcess';
 import useContextMenu from '../hooks/useContextMenu';
@@ -87,6 +88,17 @@ const DesktopContextMenu = ({ targetId, additionalData }: DesktopContextMenuProp
             </>
         );
     }
+
+    if (!targetItem.isFolder && targetItem.state?.currentState === 'uploding') {
+        // TODO: Handle cancel upload
+        return (
+            <Button size={'menu'} className="hover:bg-red-600">
+                <div>Cancel Uploading</div>
+                <X className="h-4" />
+            </Button>
+        );
+    }
+
 
     // If we're renaming
     if (isRenaming) {

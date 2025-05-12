@@ -5,7 +5,20 @@ import useOutsideAlerter from "@/components/hooks/useOnclickOutside"
 import { Button } from "@/ui/button"
 import { MainDropDownMenu, SubDropDownMenu } from "@/ui/Cards/Menus/MainDropDownMenu/MainDropDownMenu"
 import { Icons } from "@skydock/ui/icons"
+import { showToast } from "@skydock/ui/toast"
 import { useRef, useState } from "react"
+
+function dummyPromise(delay: number, shouldReject = false) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            if (shouldReject) {
+                reject(`Promise rejected after ${delay}ms`);
+            } else {
+                resolve(`Promise resolved after ${delay}ms`);
+            }
+        }, delay);
+    });
+}
 
 const Logo = () => {
     const [show, setShow] = useState(false)
@@ -15,6 +28,11 @@ const Logo = () => {
     useOutsideAlerter(ref, () => setShow(false));
 
     const { musicPlayerApp, imageViewerApp } = useAppProcess();
+
+    const handleToast = () => {
+        // showToast('This is a toast message', 'success')
+        showToast('This is a toast message', 'success')
+    }
 
 
     return (
@@ -30,9 +48,9 @@ const Logo = () => {
                     {/* <Button size={'menu'}>
                         About CatOs
                     </Button>
-                    <MainMenuSeparator />
-                    <Button size={'menu'}>
-                        MainDropDownMenu
+                    <MainMenuSeparator /> */}
+                    {/* <Button onClick={handleToast} size={'menu'}>
+                        Show Toast
                     </Button> */}
                     <SubDropDownMenu name="Apps" >
                         <Button size={'menu'} onClick={imageViewerApp.open}>

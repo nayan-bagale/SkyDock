@@ -119,7 +119,7 @@ export const explorerSlice = createSlice({
       }
     },
 
-    deleteItem: (state, action) => {
+    deleteItem: (state, action: PayloadAction<FolderT | FileT>) => {
       const deleteRecursively = (itemId: FolderT["id"]) => {
         const item = state.explorerItems[itemId];
         if (item.isFolder) {

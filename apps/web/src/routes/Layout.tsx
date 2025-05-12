@@ -32,7 +32,7 @@ const Layout = () => {
                 </>}
 
             </main>
-            <Toaster position="top-center" />
+            <Toaster swipeDirections={['right', 'bottom']} />
         </>
 
     )

@@ -14,9 +14,10 @@ import {
 } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { FileT } from "@skydock/types";
-import { showToast } from "@skydock/ui/toast";
+import { showProgressToast, showToast } from "@skydock/ui/toast";
 import axios from "axios";
 import { useState } from "react";
+import { toast } from "sonner";
 import { useInvalidApi } from "./useInvalidApis";
 
 interface UploadUrlsResponse {
@@ -103,14 +104,21 @@ const useFileUploadsAndUpdateState = () => {
           return;
         }
         const controller = new AbortController();
+        const toastId = showProgressToast({
+          status: "loading",
+          fileName: file.name,
+          progress: 0,
+        });
+
         try {
           const fileData = file.details.File;
           const fileToBeAdded = {
             ...file,
-            state: { currentState: "downloding", progress: 0 },
+            state: { currentState: "uploding", progress: 0 },
           };
           delete fileToBeAdded.details.File;
           dispatch(addItem(fileToBeAdded));
+
           const response = await axios.put<void>(uploadUrl[file.id], fileData, {
             headers: {
               "Content-Type": file.details.type,
@@ -120,6 +128,18 @@ const useFileUploadsAndUpdateState = () => {
               const percentCompleted = Math.round(
                 (progressEvent.loaded * 100) / (progressEvent.total || 1)
               );
+              showProgressToast(
+                {
+                  status: "loading",
+                  fileName: file.name,
+                  progress: percentCompleted,
+                  abort: () => controller.abort(),
+                },
+                {
+                  id: toastId,
+                }
+              );
+
               dispatch(
                 updateNotification({
                   id: file.id,
@@ -131,7 +151,7 @@ const useFileUploadsAndUpdateState = () => {
                 updateItemState({
                   id: file.id,
                   state: {
-                    currentState: "downloading",
+                    currentState: "uploding",
                     progress: percentCompleted,
                   },
                 })
@@ -151,52 +171,45 @@ const useFileUploadsAndUpdateState = () => {
               },
             })
           );
+          showProgressToast(
+            {
+              status: "success",
+              progress: 100,
+              fileName: file.name,
+            },
+            {
+              id: toastId,
+            }
+          );
           return { ...response, details: file as FileT };
         } catch (error: any) {
+          showProgressToast(
+            {
+              status: "error",
+              progress: 0,
+              fileName: file.name,
+            },
+            {
+              id: toastId,
+            }
+          );
           setError((prev) => [
             ...prev,
             { id: file.id, error: error?.message || "Upload failed" },
           ]);
           dispatch(removeNotification(file.id));
-          dispatch(deleteItem(file.id));
+          dispatch(deleteItem(file));
           return null;
+        } finally {
+          setTimeout(() => {
+            toast.dismiss(toastId);
+          }, 2000);
         }
       })
     );
     if (!uploadFilesPromise) return null;
 
     invalidUserInfo();
-
-    // Filter out the rejected promises and get the details of the files
-    // const requestArray = uploadFilesPromise
-    //   .filter((promise) => {
-    //     if (!promise) return false;
-    //     if (promise.status === "rejected") {
-    //       setError((prev) => [
-    //         ...prev,
-    //         {
-    //           id: "unknown",
-    //           error: promise ? promise.reason?.message : "undefined",
-    //         },
-    //       ]);
-    //       return false;
-    //     }
-    //     return true;
-    //   })
-    //   .map((promise) => {
-    //     if (promise.status === "fulfilled") {
-    //       return promise.value?.details;
-    //     }
-    //   }) as FileT[];
-
-    // Upload the details of the files to the server
-    // const finalResponse = await uploadFilesDetailsSafely(requestArray);
-    // if (!finalResponse) return null;
-
-    // Update the state with the uploaded files
-    // requestArray.forEach((file) => dispatch(addItem(file)));
-
-    // requestArray.forEach((file) => dispatch(removeNotification(file.id)));
 
     return true;
   };
