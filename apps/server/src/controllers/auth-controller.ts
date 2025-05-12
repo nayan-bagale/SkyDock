@@ -29,6 +29,7 @@ import {
   verifyToken,
 } from "../utils/token";
 
+import { googleOAuthConfig } from "../config/oauth";
 import OAuthHelper from "../helpers/createOAuthUser";
 import { addMonths } from "../utils/date";
 import cache from "../utils/inMemoryStore";
@@ -41,11 +42,7 @@ class AuthController {
   private constructor() {
     passport.use(
       new GoogleStrategy(
-        {
-          clientID: process.env.GOOGLE_CLIENT_ID!,
-          clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-          callbackURL: "/api/v1/auth/google/callback",
-        },
+        googleOAuthConfig,
         async (accessToken, refreshToken, profile, done) => {
           try {
             const email = profile?.emails?.[0]?.value;
@@ -537,6 +534,12 @@ class AuthController {
       return res
         .status(UNPROCESSABLE_ENTITY)
         .json({ message: "Email is not verified" });
+    }
+
+    if (!user.password) {
+      return res
+        .status(UNPROCESSABLE_ENTITY)
+        .json({ message: "Please sign in with google" });
     }
 
     let message = "OTP sent to your email";
