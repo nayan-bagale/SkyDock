@@ -11,7 +11,8 @@
     "./input-otp": "./src/components/input-otp/InputOtp.tsx",
     "./badge": "./src/components/badge/index.tsx",
     "./confetti": "./src/components/confetti/index.tsx",
-    "./drawer": "./src/components/drawer/index.tsx"
+    "./drawer": "./src/components/drawer/index.tsx",
+    "./loading-screen": "./src/components/LoadingScreen/LoadingScreen.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

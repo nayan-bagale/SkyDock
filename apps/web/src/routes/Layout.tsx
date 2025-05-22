@@ -1,6 +1,7 @@
 import GlobalContextMenu from "@/components/GlobalContextMenu/GlobalContextMenu";
 import useSkydockInitialLoad from "@/components/hooks/useSkydockInitialLoad";
 import cn from "@/utils";
+import LoadingScreen from "@skydock/ui/loading-screen";
 import { Outlet } from "react-router";
 import { Toaster } from "sonner";
 
@@ -17,7 +18,8 @@ const Layout = () => {
     return (
         <>
             <main className="pb-4 h-screen" onContextMenu={handleContext}>
-                {isLoading ? <div>Loading...</div> : <>
+                {isLoading ? <LoadingScreen /> : <>
+
                     <div
                         className={cn(
                             "flex flex-col items-center h-full",

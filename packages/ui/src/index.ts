@@ -24,3 +24,7 @@ export {
   SuccessToast,
   WarningToast,
 } from "./components/toast/showToast";
+
+import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
+
+export { LoadingScreen };
