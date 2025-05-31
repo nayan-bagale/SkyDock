@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import cn from '../../utils';
 import CloudAnimation from './CloudAnimation';
 import Logo from './Logo';
 
@@ -6,38 +7,42 @@ interface LoadingScreenProps {
     onFinishLoading?: () => void;
     autoFinish?: boolean;
     finishAfter?: number; // in milliseconds
+    isResourcesLoaded: boolean; // This prop is not used in the current implementation but can be used for future enhancements
 }
 
 const LoadingScreen: React.FC<LoadingScreenProps> = ({
     onFinishLoading,
     autoFinish = true,
-    finishAfter = 3000
+    finishAfter = 3000,
+    isResourcesLoaded = false, // This prop is not used in the current implementation but can be used for future enhancements
 }) => {
     const [progress, setProgress] = useState(0);
     const [loadingText, setLoadingText] = useState('Loading');
+    const [startTime] = useState(Date.now());
+
 
     useEffect(() => {
-        const texts = ['Initializing', 'Loading resources', 'Preparing clouds', 'Almost ready'];
+        const texts = ['Initializing', 'Loading resources', 'Syncing cloud drive', 'Almost ready'];
         let textIndex = 0;
 
         // Update loading text
         const textInterval = setInterval(() => {
             textIndex = (textIndex + 1) % texts.length;
-            setLoadingText(texts[textIndex]);
+            setLoadingText(texts[textIndex] as string);
         }, 800);
 
         // Progress animation
-        const startTime = Date.now();
-        const endTime = startTime + finishAfter;
+        // const startTime = Date.now();
+        // const endTime = startTime + finishAfter;
 
         const progressInterval = setInterval(() => {
             const now = Date.now();
             const elapsed = now - startTime;
-            const newProgress = Math.min(100, (elapsed / finishAfter) * 100);
+            const newProgress = Math.min(140, (elapsed / finishAfter) * 100);
 
             setProgress(newProgress);
 
-            if (newProgress >= 100 && autoFinish) {
+            if (newProgress >= 150 && autoFinish && isResourcesLoaded) {
                 clearInterval(progressInterval);
                 clearInterval(textInterval);
                 onFinishLoading?.();
@@ -48,10 +53,10 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
             clearInterval(textInterval);
             clearInterval(progressInterval);
         };
-    }, [finishAfter, autoFinish, onFinishLoading]);
+    }, [finishAfter, autoFinish, onFinishLoading, isResourcesLoaded]);
 
     return (
-        <div className="fixed inset-0 flex flex-col items-center justify-center bg-[#1A1F2C] text-white overflow-hidden z-50">
+        <div className={cn("fixed inset-0 flex flex-col items-center justify-center bg-[#1A1F2C] text-white overflow-hidden z-50", "backdrop-blur-2xl bg-black/10")}>
             <CloudAnimation />
 
             <div className="relative z-10 flex flex-col items-center justify-center gap-8 px-6">
