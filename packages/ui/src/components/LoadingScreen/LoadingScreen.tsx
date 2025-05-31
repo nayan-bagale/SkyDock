@@ -42,7 +42,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
 
             setProgress(newProgress);
 
-            if (newProgress >= 150 && autoFinish && isResourcesLoaded) {
+            if (newProgress >= 140 && autoFinish && isResourcesLoaded) {
                 clearInterval(progressInterval);
                 clearInterval(textInterval);
                 onFinishLoading?.();
