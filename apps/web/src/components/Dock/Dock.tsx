@@ -14,25 +14,30 @@ const Dock = () => {
             name: 'Settings',
             Icon: Settings2,
             fun: settingsApp.open,
-            active: settingsApp.isProcessOn
+            active: settingsApp.isProcessOn,
+            isLoading: settingsApp.isLoading
         },
         {
             name: 'Terminal',
             Icon: Terminal,
             fun: terminalApp.open,
-            active: terminalApp.isProcessOn
+            active: terminalApp.isProcessOn,
+            isLoading: terminalApp.isLoading
+
         },
         {
             name: 'Folder',
             Icon: Folder,
             fun: explorerApp.open,
-            active: explorerApp.isProcessOn
+            active: explorerApp.isProcessOn,
+            isLoading: explorerApp.isLoading
+
         },
     ]
 
     return (
         <DockPanel className='' intent={'primary'} size={'medium'}>
-            {apps.map(({ name, Icon, fun, active }, index) =>
+            {apps.map(({ name, Icon, fun, active, isLoading }, index) =>
             (
                 <DockButton
                     key={index}
@@ -40,6 +45,7 @@ const Dock = () => {
                     title={name}
                     onClick={fun}
                     isActive={active}
+                    isLoading={isLoading}
                 >
                     <Icon className="h-10" />
                 </DockButton>

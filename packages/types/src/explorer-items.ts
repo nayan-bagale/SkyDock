@@ -95,6 +95,9 @@ export interface ExplorerT {
     operation: "copy" | "cut" | null;
     // sourceFolder: string | null;
   };
+  state: {
+    isLoading: boolean;
+  };
 }
 
 export type handleDragStartT = (e: any, item: FileT | FolderT) => void;

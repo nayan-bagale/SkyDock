@@ -16,4 +16,7 @@ export interface SettingsT {
     background: BackgroundT | null;
   };
   actions: ActionsT;
+  state: {
+    isLoading: boolean;
+  };
 }

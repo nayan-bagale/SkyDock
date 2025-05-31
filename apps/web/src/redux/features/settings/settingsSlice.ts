@@ -1,5 +1,5 @@
 import { background, theme } from "@/constants/settings";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { SettingsT } from "@skydock/types";
 
 const intialState = {
@@ -13,6 +13,9 @@ const intialState = {
     isProcessOn: false,
     lastPosition: { x: 0, y: 0 },
     lastSize: { width: 0, height: 0 },
+  },
+  state: {
+    isLoading: false,
   },
 } as SettingsT;
 
@@ -29,10 +32,17 @@ export const settingsSlice = createSlice({
     changeBackground: (state, action) => {
       state.apperance.background = action.payload;
     },
+    setSettingsLoading: (state, action: PayloadAction<boolean>) => {
+      state.state.isLoading = action.payload;
+    },
   },
 });
 
-export const { settingsProcess, changeTheme, changeBackground } =
-  settingsSlice.actions;
+export const {
+  settingsProcess,
+  changeTheme,
+  changeBackground,
+  setSettingsLoading,
+} = settingsSlice.actions;
 
 export default settingsSlice.reducer;

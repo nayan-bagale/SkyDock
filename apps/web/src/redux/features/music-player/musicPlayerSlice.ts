@@ -10,6 +10,9 @@ const intialState = {
     lastSize: { width: 0, height: 0 },
   },
   musicInfo: null,
+  state: {
+    isLoading: false,
+  },
 } as MusicPlayerStateT;
 
 export const musicPLayerSlice = createSlice({
@@ -24,9 +27,13 @@ export const musicPLayerSlice = createSlice({
       state.actions.isProcessOn = false;
       state.musicInfo = null;
     },
+    setMusicPlayerLoading: (state, action: PayloadAction<boolean>) => {
+      state.state.isLoading = action.payload;
+    },
   },
 });
 
-export const { openMusicPlayer, closeMusicPlayer } = musicPLayerSlice.actions;
+export const { openMusicPlayer, closeMusicPlayer, setMusicPlayerLoading } =
+  musicPLayerSlice.actions;
 
 export default musicPLayerSlice.reducer;

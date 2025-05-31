@@ -1,6 +1,7 @@
-import { useAppSelector } from "@/redux/hooks";
 import { AnimatePresence } from "framer-motion";
 import { Suspense } from "react";
+import useAppProcess from "../hooks/useAppProcess";
+import MountUnmountCallback from "../MountUnmountCallback";
 import {
     Explorer,
     ImageViewer,
@@ -9,69 +10,50 @@ import {
     Terminal,
     VideoPlayer,
 } from "./Apps.Lazy";
-import { TerminalSkeleton } from "./terminal/TerminalSkeleton";
 
 const Apps_ = () => {
-    const terminal = useAppSelector(
-        (state) => state.terminal.actions.isProcessOn
-    );
-    const isExplorerOn = useAppSelector(
-        (state) => state.explorer.actions.isProcessOn
-    );
-    const isSettingsOn = useAppSelector(
-        (state) => state.settings.actions.isProcessOn
-    );
-    const isImageViewerOpen = useAppSelector(
-        (state) => state.imageViewer.actions.isProcessOn
-    );
-    const isMusicPlayerOn = useAppSelector(
-        (state) => state.musicPlayer.actions.isProcessOn
-    );
-
-    const isVideoPlayerOn = useAppSelector(
-        (state) => state.videoPlayer.actions.isProcessOn
-    )
+    const { terminalApp, explorerApp, settingsApp, imageViewerApp, musicPlayerApp, videoPlayerApp } = useAppProcess();
 
     return (
         <>
             <AnimatePresence>
-                {terminal && (
-                    <Suspense fallback={<TerminalSkeleton />}>
+                {terminalApp.isProcessOn && (
+                    <Suspense fallback={<MountUnmountCallback onMount={terminalApp.setLoadingTrue} onUnmount={terminalApp.setLoadingFalse} />}>
                         <Terminal />
                     </Suspense>
                 )}
             </AnimatePresence>
             <AnimatePresence>
-                {isExplorerOn && (
-                    <Suspense fallback={<div>Loding.....</div>}>
+                {explorerApp.isProcessOn && (
+                    <Suspense fallback={<MountUnmountCallback onMount={explorerApp.setLoadingTrue} onUnmount={explorerApp.setLoadingFalse} />}>
                         <Explorer />
                     </Suspense>
                 )}
             </AnimatePresence>
             <AnimatePresence>
-                {isSettingsOn && (
-                    <Suspense fallback={<div>Loding.....</div>}>
+                {settingsApp.isProcessOn && (
+                    <Suspense fallback={<MountUnmountCallback onMount={settingsApp.setLoadingTrue} onUnmount={settingsApp.setLoadingFalse} />}>
                         <Settings />
                     </Suspense>
                 )}
             </AnimatePresence>
             <AnimatePresence>
-                {isImageViewerOpen && (
-                    <Suspense fallback={<div>Loding.....</div>}>
+                {imageViewerApp.isProcessOn && (
+                    <Suspense fallback={<MountUnmountCallback onMount={imageViewerApp.setLoadingTrue} onUnmount={imageViewerApp.setLoadingFalse} />}>
                         <ImageViewer />
                     </Suspense>
                 )}
             </AnimatePresence>
             <AnimatePresence>
-                {isMusicPlayerOn && (
-                    <Suspense fallback={<div>Loding.....</div>}>
+                {musicPlayerApp.isProcessOn && (
+                    <Suspense fallback={<MountUnmountCallback onMount={musicPlayerApp.setLoadingTrue} onUnmount={musicPlayerApp.setLoadingFalse} />}>
                         <MusicPlayer />
                     </Suspense>
                 )}
             </AnimatePresence>
             <AnimatePresence>
-                {isVideoPlayerOn && (
-                    <Suspense fallback={<div>Loding.....</div>}>
+                {videoPlayerApp.isProcessOn && (
+                    <Suspense fallback={<MountUnmountCallback onMount={videoPlayerApp.setLoadingTrue} onUnmount={videoPlayerApp.setLoadingFalse} />}>
                         <VideoPlayer />
                     </Suspense>
                 )}

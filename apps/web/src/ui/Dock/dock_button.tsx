@@ -1,6 +1,7 @@
 import { cn } from "@/utils/index";
 import { cva, VariantProps } from "class-variance-authority";
 import { AnimatePresence, HTMLMotionProps, motion } from "framer-motion";
+import Spinner from "../Spinner";
 
 
 const dockButtonStyles = cva(["font-semibold", "border", "outline-sky-400", "rounded-2xl", "shadow", "p-1", "w-fit", "backdrop-blur-md", "z-10"], {
@@ -37,6 +38,7 @@ const dockButtonStyles = cva(["font-semibold", "border", "outline-sky-400", "rou
 
 type DockButtonProps = HTMLMotionProps<"button"> & VariantProps<typeof dockButtonStyles> & {
   isActive?: boolean;
+  isLoading?: boolean;
 }
 
 
@@ -50,13 +52,14 @@ export const DockButton = ({
   className,
   title,
   isActive,
+  isLoading,
   ...props
 }: DockButtonProps) => {
 
   const item = {
     hidden: { y: 20, opacity: 0 },
     visible: {
-      y: isActive ? -10 : 0,
+      y: isActive || isLoading ? -10 : 0,
       opacity: 1
     }
   }
@@ -83,7 +86,30 @@ export const DockButton = ({
         {children}
       </motion.button>
       <AnimatePresence>
-        {isActive &&
+        {isLoading ?
+          (<motion.div
+            className="absolute -bottom-1.5"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: -2 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{
+              ease: "linear",
+              y: { duration: 0.2 }
+            }}
+          >
+            <Spinner className="h-6 w-6" />
+          </motion.div>) : (isActive && <motion.p
+            className=" transition-all p-1.5 backdrop-blur shadow bg-white/60 rounded-full text-gray-600 absolute bottom-0"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: -2 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{
+              ease: "linear",
+              y: { duration: 0.2 }
+            }}
+          >
+          </motion.p>)}
+        {/* {isActive &&
           <motion.p
             className=" transition-all p-1.5 backdrop-blur shadow bg-white/60 rounded-full text-gray-600 absolute bottom-0"
             initial={{ opacity: 0, y: -10 }}
@@ -94,7 +120,7 @@ export const DockButton = ({
               y: { duration: 0.2 }
             }}
           >
-          </motion.p>}
+          </motion.p>} */}
       </AnimatePresence>
     </div>
 

@@ -3,9 +3,13 @@ import { useGetUserInfoQuery } from "@/redux/apis/userAuthApi";
 import useTheme from "./useTheme";
 
 const useSkydockInitialLoad = () => {
-  const { data, isLoading, isError } = useGetUserInfoQuery("");
-  useGetAllFilesQuery("", {
-    skip: isLoading || isError,
+  const {
+    data,
+    isLoading: isLoadingUserInfo,
+    isError,
+  } = useGetUserInfoQuery("");
+  const { isLoading: isLoadingFiles } = useGetAllFilesQuery("", {
+    skip: isLoadingUserInfo || isError,
   });
 
   useTheme();
@@ -14,7 +18,7 @@ const useSkydockInitialLoad = () => {
   return {
     data,
     isError,
-    isLoading,
+    isLoading: isLoadingUserInfo || isLoadingFiles,
   };
 };
 

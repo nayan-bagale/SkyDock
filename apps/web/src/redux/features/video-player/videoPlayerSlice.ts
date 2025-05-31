@@ -10,6 +10,9 @@ const intialState = {
     lastSize: { width: 0, height: 0 },
   },
   videoInfo: null,
+  state: {
+    isLoading: false,
+  },
 } as VideoPlayerStateT;
 
 export const videoPlayerSlice = createSlice({
@@ -24,9 +27,13 @@ export const videoPlayerSlice = createSlice({
       state.actions.isProcessOn = false;
       state.videoInfo = null;
     },
+    setVideoPlayerLoading: (state, action: PayloadAction<boolean>) => {
+      state.state.isLoading = action.payload;
+    },
   },
 });
 
-export const { openVideoPlayer, closeVideoPlayer } = videoPlayerSlice.actions;
+export const { openVideoPlayer, closeVideoPlayer, setVideoPlayerLoading } =
+  videoPlayerSlice.actions;
 
 export default videoPlayerSlice.reducer;

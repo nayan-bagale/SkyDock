@@ -5,4 +5,7 @@ export interface ImageViewerStateT {
   imageViewer: {
     currentImageId: string | null;
   };
+  state: {
+    isLoading: boolean;
+  };
 }

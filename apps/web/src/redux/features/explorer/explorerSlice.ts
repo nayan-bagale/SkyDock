@@ -58,6 +58,9 @@ const initialState = {
     operation: null,
     // sourceFolder: null,
   },
+  state: {
+    isLoading: false,
+  },
 } as ExplorerT;
 
 export const explorerSlice = createSlice({
@@ -308,6 +311,10 @@ export const explorerSlice = createSlice({
       // This will be handled in a thunk action
       // The actual paste logic is complex and requires API calls
     },
+
+    setExplorerLoading: (state, action: PayloadAction<boolean>) => {
+      state.state.isLoading = action.payload;
+    },
   },
 });
 
@@ -336,6 +343,7 @@ export const {
   cutToClipboard,
   clearClipboard,
   pasteFromClipboard,
+  setExplorerLoading,
 } = explorerSlice.actions;
 
 export default explorerSlice.reducer;

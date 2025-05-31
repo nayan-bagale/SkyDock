@@ -11,6 +11,7 @@ import imageViewerReducer from "./features/imageViewer/imageViewerSlice";
 import lockScreenReducer from "./features/lockScreen/lockScreenSlice";
 import musicPlayerReducer from "./features/music-player/musicPlayerSlice";
 import { settingsSlice } from "./features/settings/settingsSlice";
+import skydockReducer from "./features/skydock/skydockSlice";
 import { terminalSlice } from "./features/terminal/terminalSlice";
 import videoPlayerReducer from "./features/video-player/videoPlayerSlice";
 
@@ -27,6 +28,7 @@ export const store = configureStore({
     lockScreen: lockScreenReducer,
     musicPlayer: musicPlayerReducer,
     videoPlayer: videoPlayerReducer,
+    skydock: skydockReducer,
 
     [userAuthApi.reducerPath]: userAuthApi.reducer,
     [filesAndFolderApi.reducerPath]: filesAndFolderApi.reducer,

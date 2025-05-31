@@ -12,6 +12,9 @@ const intialState = {
   imageViewer: {
     currentImageId: null,
   },
+  state: {
+    isLoading: false,
+  },
 } as ImageViewerStateT;
 
 export const imageViewSlice = createSlice({
@@ -26,9 +29,13 @@ export const imageViewSlice = createSlice({
       state.actions.isProcessOn = false;
       state.imageViewer.currentImageId = null;
     },
+    setImageViewerLoading: (state, action: PayloadAction<boolean>) => {
+      state.state.isLoading = action.payload;
+    },
   },
 });
 
-export const { openImageViewer, closeImageViewer } = imageViewSlice.actions;
+export const { openImageViewer, closeImageViewer, setImageViewerLoading } =
+  imageViewSlice.actions;
 
 export default imageViewSlice.reducer;

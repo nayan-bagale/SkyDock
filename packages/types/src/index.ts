@@ -4,6 +4,7 @@ export type * from "./apps/terminal";
 export type * from "./custom-types";
 export type * from "./explorer-items";
 export type * from "./prisma";
+export type * from "./skydock";
 
 export type * from "./apps/music-player";
 export type * from "./apps/video-player";

@@ -1,9 +1,10 @@
+import cn from "@/utils"
 import { Icons } from "@skydock/ui/icons"
 
-const Spinner = () => {
+const Spinner = ({ className }: { className?: string }) => {
     return (
         // <div className=" animate-spin">
-        <Icons.Spinner className=" animate-spin text-white h-10 w-10 bg-transparent " />
+        <Icons.Spinner className={cn(" animate-spin text-white h-10 w-10 bg-transparent ", className)} />
         // </div>
     )
 }

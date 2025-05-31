@@ -1,43 +1,40 @@
-import { explorerProcess } from "@/redux/features/explorer/explorerSlice";
+import {
+  explorerProcess,
+  setExplorerLoading,
+} from "@/redux/features/explorer/explorerSlice";
 import {
   closeImageViewer,
   openImageViewer,
+  setImageViewerLoading,
 } from "@/redux/features/imageViewer/imageViewerSlice";
 import {
   closeMusicPlayer,
   openMusicPlayer,
+  setMusicPlayerLoading,
 } from "@/redux/features/music-player/musicPlayerSlice";
-import { settingsProcess } from "@/redux/features/settings/settingsSlice";
-import { terminalProcess } from "@/redux/features/terminal/terminalSlice";
+import {
+  setSettingsLoading,
+  settingsProcess,
+} from "@/redux/features/settings/settingsSlice";
+import {
+  setTerminalLoading,
+  terminalProcess,
+} from "@/redux/features/terminal/terminalSlice";
 import {
   closeVideoPlayer,
   openVideoPlayer,
+  setVideoPlayerLoading,
 } from "@/redux/features/video-player/videoPlayerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useCallback } from "react";
 
 const useAppProcess = () => {
-  const isSettingsOpen = useAppSelector(
-    (state) => state.settings.actions.isProcessOn
-  );
-  const isTerminalOpen = useAppSelector(
-    (state) => state.terminal.actions.isProcessOn
-  );
-  const isExplorerOpen = useAppSelector(
-    (state) => state.explorer.actions.isProcessOn
-  );
-
-  const isMusicPlayerOpen = useAppSelector(
-    (state) => state.musicPlayer.actions.isProcessOn
-  );
-
-  const isImageViewerOpen = useAppSelector(
-    (state) => state.imageViewer.actions.isProcessOn
-  );
-
-  const isVideoPlayerOpen = useAppSelector(
-    (state) => state.videoPlayer.actions.isProcessOn
-  );
+  const settingsState = useAppSelector((state) => state.settings);
+  const terminalState = useAppSelector((state) => state.terminal);
+  const explorerState = useAppSelector((state) => state.explorer);
+  const musicPlayerState = useAppSelector((state) => state.musicPlayer);
+  const imageViewerState = useAppSelector((state) => state.imageViewer);
+  const videoPlayerState = useAppSelector((state) => state.videoPlayer);
 
   const dispatch = useAppDispatch();
 
@@ -49,7 +46,14 @@ const useAppProcess = () => {
     close: useCallback(() => {
       dispatch(settingsProcess(false));
     }, []),
-    isProcessOn: isSettingsOpen,
+    isProcessOn: settingsState.actions.isProcessOn,
+    isLoading: settingsState.state.isLoading,
+    setLoadingTrue: useCallback(() => {
+      dispatch(setSettingsLoading(true));
+    }, []),
+    setLoadingFalse: useCallback(() => {
+      dispatch(setSettingsLoading(false));
+    }, []),
   };
 
   const terminalApp = {
@@ -60,7 +64,14 @@ const useAppProcess = () => {
     close: useCallback(() => {
       dispatch(terminalProcess(false));
     }, []),
-    isProcessOn: isTerminalOpen,
+    isProcessOn: terminalState.actions.isProcessOn,
+    isLoading: terminalState.state.isLoading,
+    setLoadingTrue: useCallback(() => {
+      dispatch(setTerminalLoading(true));
+    }, []),
+    setLoadingFalse: useCallback(() => {
+      dispatch(setTerminalLoading(false));
+    }, []),
   };
 
   const explorerApp = {
@@ -70,7 +81,14 @@ const useAppProcess = () => {
     close: useCallback(() => {
       dispatch(explorerProcess(false));
     }, []),
-    isProcessOn: isExplorerOpen,
+    isProcessOn: explorerState.actions.isProcessOn,
+    isLoading: explorerState.state.isLoading,
+    setLoadingTrue: useCallback(() => {
+      dispatch(setExplorerLoading(true));
+    }, []),
+    setLoadingFalse: useCallback(() => {
+      dispatch(setExplorerLoading(false));
+    }, []),
   };
 
   const musicPlayerApp = {
@@ -80,7 +98,14 @@ const useAppProcess = () => {
     close: useCallback(() => {
       dispatch(closeMusicPlayer());
     }, []),
-    isProcessOn: isMusicPlayerOpen,
+    isProcessOn: musicPlayerState.actions.isProcessOn,
+    isLoading: musicPlayerState.state.isLoading,
+    setLoadingTrue: useCallback(() => {
+      dispatch(setMusicPlayerLoading(true));
+    }, []),
+    setLoadingFalse: useCallback(() => {
+      dispatch(setMusicPlayerLoading(false));
+    }, []),
   };
 
   const imageViewerApp = {
@@ -90,7 +115,14 @@ const useAppProcess = () => {
     close: useCallback(() => {
       dispatch(closeImageViewer());
     }, []),
-    isProcessOn: isImageViewerOpen,
+    isProcessOn: imageViewerState.actions.isProcessOn,
+    isLoading: imageViewerState.state.isLoading,
+    setLoadingTrue: useCallback(() => {
+      dispatch(setImageViewerLoading(true));
+    }, []),
+    setLoadingFalse: useCallback(() => {
+      dispatch(setImageViewerLoading(false));
+    }, []),
   };
 
   const videoPlayerApp = {
@@ -100,7 +132,14 @@ const useAppProcess = () => {
     close: useCallback(() => {
       dispatch(closeVideoPlayer());
     }, []),
-    isProcessOn: isVideoPlayerOpen,
+    isProcessOn: videoPlayerState.actions.isProcessOn,
+    isLoading: videoPlayerState.state.isLoading,
+    setLoadingTrue: useCallback(() => {
+      dispatch(setVideoPlayerLoading(true));
+    }, []),
+    setLoadingFalse: useCallback(() => {
+      dispatch(setVideoPlayerLoading(false));
+    }, []),
   };
 
   return {
