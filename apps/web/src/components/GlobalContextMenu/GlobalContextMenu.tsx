@@ -4,6 +4,7 @@ import { ContextMenu } from '@/ui/ContextMenu';
 import { useRef } from 'react';
 import useOnClickOutside from '../hooks/useOnclickOutside';
 import DesktopContextMenu from './DesktopContextMenu';
+import DockContextMenu from './DockContextMenu';
 import ExplorerContextMenu from './ExplorerContextMenu';
 import ImageViewerContextMenu from './ImageViewerContextMenu';
 
@@ -14,10 +15,12 @@ const GlobalContextMenu = () => {
     );
     const contextMenuRef = useRef<HTMLDivElement>(null);
 
-    // Close context menu when clicking outside
-    useOnClickOutside(contextMenuRef, () => {
+    const closeMenu = () => {
         dispatch(closeContextMenu());
-    });
+    }
+
+    // Close context menu when clicking outside
+    useOnClickOutside(contextMenuRef, closeMenu);
 
     if (!isOpen) return null;
 
@@ -39,6 +42,11 @@ const GlobalContextMenu = () => {
             {location === 'ImageViewer' && (
                 <ImageViewerContextMenu additionalData={additionalData} />
             )}
+            {
+                location === 'Dock' && (
+                    <DockContextMenu closeMenu={closeMenu} targetId={targetId} additionalData={additionalData} />
+                )
+            }
         </ContextMenu>
     );
 };

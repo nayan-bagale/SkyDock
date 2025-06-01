@@ -3,7 +3,7 @@ import { AppsT } from "@skydock/types/enums";
 
 type AppNames = `${AppsT}`;
 
-export type ContextMenuLocation = "Desktop" | AppNames | null;
+export type ContextMenuLocation = "Desktop" | "Dock" | AppNames | null;
 
 interface ContextMenuState {
   isOpen: boolean;

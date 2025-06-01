@@ -28,7 +28,7 @@ export const ContextMenu = forwardRef<HTMLDivElement, ContextMenuT>(
                 >
                     {children}
                 </motion.div>
-            // </AnimatePresence>
+            </AnimatePresence>
         )
     })
 
