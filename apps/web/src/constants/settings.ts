@@ -14,4 +14,6 @@ export const theme = [
 export const background = [
   { id: "bg1", src: "background-1.jpg" },
   { id: "bg2", src: "background-2.jpg" },
+  { id: "bg3", src: "background-3.jpg" },
+  // { id: "bg4", src: "background-4.jpg" },
 ] as BackgroundT[];
