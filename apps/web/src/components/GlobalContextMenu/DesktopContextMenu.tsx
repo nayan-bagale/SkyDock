@@ -12,6 +12,7 @@ import { useState } from 'react';
 import useAppProcess from '../hooks/useAppProcess';
 import useContextMenu from '../hooks/useContextMenu';
 import RenameInputBox from '../RenameInputBox';
+import FileUploadButton from './UploadButton';
 
 interface DesktopContextMenuProps {
     targetId: string | null;
@@ -67,6 +68,7 @@ const DesktopContextMenu = ({ targetId, additionalData }: DesktopContextMenuProp
         const hasClipboardItems = clipboardItems.items.length > 0 && clipboardItems.operation !== null;
         return (
             <>
+
                 <Button size={'menu'} onClick={() => handleAddFolder(currentFolder)}>
                     <div>New Folder</div>
                     <Icons.Folder_Add className="h-4" />
@@ -80,6 +82,8 @@ const DesktopContextMenu = ({ targetId, additionalData }: DesktopContextMenuProp
                     <div>Paste</div>
                     <Icons.Paste className="h-4" />
                 </Button>
+                <ContextMenuSeparator />
+                <FileUploadButton parent='desktop' onClick={() => dispatch(closeContextMenu())} />
                 <ContextMenuSeparator />
                 <Button size={'menu'} onClick={handleDisplaySettings}>
                     <div>Display Settings</div>
@@ -102,28 +106,6 @@ const DesktopContextMenu = ({ targetId, additionalData }: DesktopContextMenuProp
 
     // If we're renaming
     if (isRenaming) {
-        // return (
-        //     <form onSubmit={handleRenameSubmit} className="p-1">
-        //         <input
-        //             type="text"
-        //             value={newName}
-        //             onChange={(e) => setNewName(e.target.value)}
-        //             autoFocus
-        //             className="px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm"
-        //             onBlur={() => setIsRenaming(false)}
-        //         />
-        //         <div className="flex justify-end mt-2">
-        //             <Button
-        //                 type="button"
-        //                 onClick={() => setIsRenaming(false)}
-        //                 className="mr-2"
-        //             >
-        //                 Cancel
-        //             </Button>
-        //             <Button type="submit">Rename</Button>
-        //         </div>
-        //     </form>
-        // );
 
         return (
             <RenameInputBox

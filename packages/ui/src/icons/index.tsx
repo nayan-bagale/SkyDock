@@ -54,6 +54,7 @@ import rename_svg from './assests/text-field-focus-svgrepo-com.svg';
 import trash_svg3 from './assests/trash-bin-minimalistic-svgrepo-com.svg';
 import trash_svg2 from './assests/trash-bin-trash-svgrepo-com.svg';
 import upload_svg from './assests/upload-svgrepo-com.svg';
+import upload1_svg from './assests/upload1-svgrepo-com.svg';
 import user_svg from './assests/user-circle-svgrepo-com.svg';
 import video_svg from './assests/video-svgrepo-com.svg';
 import vite_svg from './assests/vite-svgrepo-com.svg';
@@ -120,6 +121,7 @@ export const Icons = {
   Music: ({ className }: { className: string }) => $({ svg: music_svg, name: 'music', className }),
   Video: ({ className }: { className: string }) => $({ svg: video_svg, name: 'video', className }),
   Google_Logo_White: ({ className }: { className: string }) => $({ svg: google_logo_white_svg, name: 'google_logo_white', className }),
+  Upload1: ({ className }: { className: string }) => $({ svg: upload1_svg, name: 'upload1', className }),
 
 }
 

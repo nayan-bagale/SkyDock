@@ -9,6 +9,7 @@ import { FolderT } from '@skydock/types';
 import { Icons } from '@skydock/ui/icons';
 import { useState } from 'react';
 import useContextMenu from '../hooks/useContextMenu';
+import FileUploadButton from './UploadButton';
 
 interface ExplorerContextMenuProps {
     targetId: string | null;
@@ -24,6 +25,8 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
     const [updateItem] = useUpdateItemMutation();
     const [isRenaming, setIsRenaming] = useState(false);
     const [newName, setNewName] = useState('');
+
+    console.log(currentFolder)
 
 
     // If targetId exists, we're right-clicking on an item
@@ -104,6 +107,8 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
                     <div>Paste</div>
                     <Icons.Paste className="h-4" />
                 </Button>
+                <ContextMenuSeparator />
+                <FileUploadButton parent={currentFolder.id} onClick={() => dispatch(closeContextMenu())} />
             </>
         );
     }
