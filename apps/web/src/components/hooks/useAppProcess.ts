@@ -1,3 +1,4 @@
+import { setFocusedApp } from "@/redux/features/apps/appsSlice";
 import {
   explorerProcess,
   setExplorerLoading,
@@ -26,6 +27,7 @@ import {
   setVideoPlayerLoading,
 } from "@/redux/features/video-player/videoPlayerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { AppsT } from "@skydock/types/enums";
 import { useCallback } from "react";
 
 const useAppProcess = () => {
@@ -36,12 +38,17 @@ const useAppProcess = () => {
   const imageViewerState = useAppSelector((state) => state.imageViewer);
   const videoPlayerState = useAppSelector((state) => state.videoPlayer);
 
+  const focusedApp = useAppSelector((state) => state.apps.focusedApp);
+
   const dispatch = useAppDispatch();
 
   const settingsApp = {
     open: useCallback(() => {
       dispatch(settingsProcess(true));
-    }, []),
+      if (focusedApp !== AppsT.Settings) {
+        dispatch(setFocusedApp(AppsT.Settings));
+      }
+    }, [focusedApp]),
 
     close: useCallback(() => {
       dispatch(settingsProcess(false));
@@ -59,7 +66,10 @@ const useAppProcess = () => {
   const terminalApp = {
     open: useCallback(() => {
       dispatch(terminalProcess(true));
-    }, []),
+      if (focusedApp !== AppsT.Terminal) {
+        dispatch(setFocusedApp(AppsT.Terminal));
+      }
+    }, [focusedApp]),
 
     close: useCallback(() => {
       dispatch(terminalProcess(false));
@@ -77,7 +87,10 @@ const useAppProcess = () => {
   const explorerApp = {
     open: useCallback(() => {
       dispatch(explorerProcess(true));
-    }, []),
+      if (focusedApp !== AppsT.Explorer) {
+        dispatch(setFocusedApp(AppsT.Explorer));
+      }
+    }, [focusedApp]),
     close: useCallback(() => {
       dispatch(explorerProcess(false));
     }, []),
@@ -93,8 +106,13 @@ const useAppProcess = () => {
 
   const musicPlayerApp = {
     open: useCallback(() => {
-      dispatch(openMusicPlayer(null));
-    }, []),
+      if (!musicPlayerState.actions.isProcessOn) {
+        dispatch(openMusicPlayer(null));
+      }
+      if (focusedApp !== AppsT.MusicPlayer) {
+        dispatch(setFocusedApp(AppsT.MusicPlayer));
+      }
+    }, [focusedApp, musicPlayerState.actions.isProcessOn]),
     close: useCallback(() => {
       dispatch(closeMusicPlayer());
     }, []),
@@ -110,8 +128,13 @@ const useAppProcess = () => {
 
   const imageViewerApp = {
     open: useCallback(() => {
-      dispatch(openImageViewer(null));
-    }, []),
+      if (!imageViewerState.actions.isProcessOn) {
+        dispatch(openImageViewer(null));
+      }
+      if (focusedApp !== AppsT.ImageViewer) {
+        dispatch(setFocusedApp(AppsT.ImageViewer));
+      }
+    }, [focusedApp, imageViewerState.actions.isProcessOn]),
     close: useCallback(() => {
       dispatch(closeImageViewer());
     }, []),
@@ -127,8 +150,13 @@ const useAppProcess = () => {
 
   const videoPlayerApp = {
     open: useCallback(() => {
-      dispatch(openVideoPlayer(null));
-    }, []),
+      if (!videoPlayerState.actions.isProcessOn) {
+        dispatch(openVideoPlayer(null));
+      }
+      if (focusedApp !== AppsT.VideoPlayer) {
+        dispatch(setFocusedApp(AppsT.VideoPlayer));
+      }
+    }, [focusedApp, videoPlayerState.actions.isProcessOn]),
     close: useCallback(() => {
       dispatch(closeVideoPlayer());
     }, []),

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import cn from '../../utils';
 import CloudAnimation from './CloudAnimation';
@@ -56,7 +57,13 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
     }, [finishAfter, autoFinish, onFinishLoading, isResourcesLoaded]);
 
     return (
-        <div className={cn("fixed inset-0 flex flex-col items-center justify-center bg-[#1A1F2C] text-white overflow-hidden z-50", "backdrop-blur-2xl bg-black/10")}>
+        <motion.div
+            className={cn("fixed transition-all inset-0 flex flex-col items-center justify-center bg-[#1A1F2C] text-white overflow-hidden z-50", " bg-black/10")}
+            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            animate={{ opacity: 1, backdropFilter: 'blur(40px)' }}
+            exit={{ opacity: 0, backdropFilter: 'blur(0px)', transition: { duration: 1 } }}
+            transition={{ duration: 0.5, ease: 'easeInOut' }}
+        >
             <CloudAnimation />
 
             <div className="relative z-10 flex flex-col items-center justify-center gap-8 px-6">
@@ -77,7 +84,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
                     <div className="text-sm font-light text-white/60">SkyDock</div>
                 </div>
             </div>
-        </div>
+        </motion.div >
     );
 };
 

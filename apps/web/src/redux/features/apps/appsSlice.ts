@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppsT } from "@skydock/types/enums";
 
 export interface AppsStateT {
@@ -15,7 +15,7 @@ export const appsSlice = createSlice({
   name: "apps",
   initialState: initialState,
   reducers: {
-    setFocusedApp: (state, action) => {
+    setFocusedApp: (state, action: PayloadAction<keyof typeof AppsT | "">) => {
       state.focusedApp = action.payload;
     },
     openSubscriptionPlanCard: (state) => {

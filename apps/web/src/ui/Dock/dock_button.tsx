@@ -63,16 +63,17 @@ export const DockButton = ({
       opacity: 1
     }
   }
-  // const [hover, setHover] = useState(false);
 
   return (
-    <div className=" flex flex-col items-center">
-      <motion.button onClick={(event) => !isActive && onClick && onClick(event)}
+    <motion.div className=" flex flex-col items-center"
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+    >
+      <motion.button onClick={(event) => onClick && onClick(event)}
         type="button"
         className={cn(dockButtonStyles({ intent, className }))}
         whileHover={{ scale: 1.1, y: "-15px" }}
-        // onMouseOver={() => setHover(true)}
-        // onMouseOut={() => setHover(false)}
         whileTap={{ scale: 1.1, y: "-25px" }}
         transition={{
           ease: "linear",
@@ -109,20 +110,8 @@ export const DockButton = ({
             }}
           >
           </motion.p>)}
-        {/* {isActive &&
-          <motion.p
-            className=" transition-all p-1.5 backdrop-blur shadow bg-white/60 rounded-full text-gray-600 absolute bottom-0"
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: -2 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{
-              ease: "linear",
-              y: { duration: 0.2 }
-            }}
-          >
-          </motion.p>} */}
       </AnimatePresence>
-    </div>
+    </motion.div>
 
   );
 };

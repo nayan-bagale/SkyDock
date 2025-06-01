@@ -4,6 +4,7 @@ import { setSkydockLoading } from "@/redux/features/skydock/skydockSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import cn from "@/utils";
 import LoadingScreen from "@skydock/ui/loading-screen";
+import { AnimatePresence } from "framer-motion";
 import { Outlet } from "react-router";
 import { Toaster } from "sonner";
 
@@ -26,7 +27,11 @@ const Layout = () => {
     return (
         <>
             <main className="pb-4 h-screen" onContextMenu={handleContext}>
-                {isSkydockLoading ? <LoadingScreen isResourcesLoaded={!isLoading} onFinishLoading={onFinishLoading} /> : <>
+                {isSkydockLoading && (
+                    <AnimatePresence>
+                        <LoadingScreen isResourcesLoaded={!isLoading} onFinishLoading={onFinishLoading} />
+                    </AnimatePresence>
+                )}{!isSkydockLoading && <>
 
                     <div
                         className={cn(
