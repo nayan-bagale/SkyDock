@@ -26,6 +26,7 @@ export const TerminalCard = forwardRef<HTMLDivElement, TerminalCardProps>(
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0 }}
                 onMouseDown={onMouseDownCard}
+                onContextMenu={(e) => { e.stopPropagation(); e.preventDefault(); }}
             >
                 <div className=" flex items-center justify-between px-2 py-1 text-sm w-full bg-black/80 rounded"
                     onMouseDown={onMouseDown}

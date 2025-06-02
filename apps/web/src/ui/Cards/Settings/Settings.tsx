@@ -38,6 +38,7 @@ export const SettingsCard = forwardRef<HTMLDivElement, SettingsCardProps>(({ opt
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0 }}
             onMouseDown={onMouseDownCard}
+            onContextMenu={(e) => { e.stopPropagation(); e.preventDefault(); }}
         >
             <div className="relative flex justify-between items-center bg-slate-200/60 shadow px-2 py-1 rounded w-full h-9"
                 onMouseDown={onMouseDown}

@@ -18,30 +18,6 @@ export interface Track {
     artwork: string;
 }
 
-const tracks: Track[] = [
-    {
-        id: 1,
-        title: "Summer Breeze",
-        artist: "Chill Waves",
-        duration: 245, // 4:05
-        artwork: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=300&h=300&auto=format&fit=crop"
-    },
-    {
-        id: 2,
-        title: "Midnight Dreams",
-        artist: "Luna Beats",
-        duration: 183, // 3:03
-        artwork: "https://images.unsplash.com/photo-1616356607338-fd87169ecf1a?w=300&h=300&auto=format&fit=crop"
-    },
-    {
-        id: 3,
-        title: "Ocean Waves",
-        artist: "Nature Sounds",
-        duration: 221, // 3:41
-        artwork: "https://images.unsplash.com/photo-1504898770365-14faca6a7320?w=300&h=300&auto=format&fit=crop"
-    }
-];
-
 const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
@@ -51,7 +27,7 @@ const formatTime = (seconds: number) => {
 const MusicPlayer = () => {
     const [isPlaying, setIsPlaying] = useState(true);
     const [currentTime, setCurrentTime] = useState(0);
-    const [volume, setVolume] = useState([0.7]);
+    const [volume, setVolume] = useState([1]);
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const [isAudioBuffering, setIsAudioBuffering] = useState(false);
     const [minimized, setMinimized] = useState(false);

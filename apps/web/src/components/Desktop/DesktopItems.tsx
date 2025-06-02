@@ -13,8 +13,6 @@ const DesktopItems = () => {
     const itemDragged = useAppSelector((state) => state.explorer.itemDragged);
     const [updateFileApi] = useUpdateItemMutation();
 
-
-
     const files = useMemo(() => {
         if (desktopItem?.isFolder) {
             return desktopItem.children.map((child) => explorerItems[child]).sort((a) => a.isFolder ? -1 : 1)
