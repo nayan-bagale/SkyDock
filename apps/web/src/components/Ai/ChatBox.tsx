@@ -1,10 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
-// import { Button } from '@/components/ui/button';
-// import { Input } from '@/components/ui/input';
 import { Button } from '@/ui/button';
 import { Input } from '@/ui/input';
 import { motion } from 'framer-motion';
-import { Bot, Paperclip, Send, X } from 'lucide-react';
+import { Bot, Send, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import ChatMessage from './ChatMessage';
 
 interface Message {
@@ -100,30 +98,30 @@ const ChatBox = ({ isOpen, onClose }: ChatBoxProps) => {
         }
     };
 
-    const handleAttachment = () => {
-        // Create a file input element
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.multiple = true;
-        fileInput.accept = 'image/*,application/pdf,.doc,.docx,.txt';
+    // const handleAttachment = () => {
+    //     // Create a file input element
+    //     const fileInput = document.createElement('input');
+    //     fileInput.type = 'file';
+    //     fileInput.multiple = true;
+    //     fileInput.accept = 'image/*,application/pdf,.doc,.docx,.txt';
 
-        fileInput.onchange = (e) => {
-            const files = (e.target as HTMLInputElement).files;
-            if (files && files.length > 0) {
-                // For now, just show a message about the files
-                const fileNames = Array.from(files).map(file => file.name).join(', ');
-                const attachmentMessage: Message = {
-                    id: Date.now().toString(),
-                    content: `📎 Attached files: ${fileNames}`,
-                    sender: 'user',
-                    timestamp: new Date()
-                };
-                setMessages(prev => [...prev, attachmentMessage]);
-            }
-        };
+    //     fileInput.onchange = (e) => {
+    //         const files = (e.target as HTMLInputElement).files;
+    //         if (files && files.length > 0) {
+    //             // For now, just show a message about the files
+    //             const fileNames = Array.from(files).map(file => file.name).join(', ');
+    //             const attachmentMessage: Message = {
+    //                 id: Date.now().toString(),
+    //                 content: `📎 Attached files: ${fileNames}`,
+    //                 sender: 'user',
+    //                 timestamp: new Date()
+    //             };
+    //             setMessages(prev => [...prev, attachmentMessage]);
+    //         }
+    //     };
 
-        fileInput.click();
-    };
+    //     fileInput.click();
+    // };
 
     if (!isOpen && !isVisible) return null;
 
@@ -149,8 +147,8 @@ const ChatBox = ({ isOpen, onClose }: ChatBoxProps) => {
                             <Bot className="w-5 h-5 text-white" />
                         </div>
                         <div>
-                            <h3 className="font-semibold text-white">AI Assistant</h3>
-                            {/* <p className="text-sm text-white/60">Always ready to help</p> */}
+                            <h3 className="font-semibold text-white">Hi, I’m Sky</h3>
+                            <p className="text-sm text-white/60">your AI assistant in the cloud</p>
                         </div>
                     </div>
                     <Button
@@ -189,7 +187,7 @@ const ChatBox = ({ isOpen, onClose }: ChatBoxProps) => {
                 {/* Input */}
                 <div className="p-4 border-t border-white/10">
                     <div className="flex gap-3">
-                        <Button
+                        {/* <Button
                             onClick={handleAttachment}
                             intent="ghost"
                             size="sm"
@@ -197,7 +195,7 @@ const ChatBox = ({ isOpen, onClose }: ChatBoxProps) => {
                             disabled={isTyping}
                         >
                             <Paperclip className="w-4 h-4" />
-                        </Button>
+                        </Button> */}
                         <Input
                             ref={inputRef}
                             value={input}
