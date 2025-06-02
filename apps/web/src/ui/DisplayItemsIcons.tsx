@@ -28,6 +28,7 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
         onKeyDown,
         handleDragStart,
         handleDrop,
+        className
     }) => {
         const [isOver, setIsOver] = useState(false);
 
@@ -64,6 +65,7 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                         className={cn(
                             ' relative w-fit flex flex-col justify-center items-center p-1 rounded-md hover:bg-gray-400/40',
                             isOver && 'bg-gray-400/10 border',
+                            className
                             // !item.isFolder && item?.state?.currentState === 'downloading' && 'bg-blue-500',
                         )}
                         id={item.id}
@@ -97,7 +99,7 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
             </AnimatePresence>
             <AnimatePresence>
                 {view === 'row' &&
-                    (<motion.div className={cn('hover:bg-gray-400/40 text-xs relative w-full flex justify-start items-center p-1 gap-2 rounded-md', isOver && 'bg-gray-400/10 border')}
+                    (<motion.div className={cn('hover:bg-gray-400/40 text-xs relative w-full flex justify-start items-center p-1 gap-2 rounded-md', isOver && 'bg-gray-400/10 border', className)}
                         id={item.id}
                         whileTap={{ scale: 0.95 }}
                         onContextMenu={onContextMenu}

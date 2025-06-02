@@ -58,6 +58,7 @@ const Item: FC<ItemPropsT> =
         return (
             <div className="relative h-fit">
                 <DisplayItemsIcons
+                    className="text-white"
                     view={'grid'}
                     Icon={Icon}
                     item={item}
