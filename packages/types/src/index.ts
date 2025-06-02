@@ -6,5 +6,7 @@ export type * from "./explorer-items";
 export type * from "./prisma";
 export type * from "./skydock";
 
+export type * from "./ai";
+
 export type * from "./apps/music-player";
 export type * from "./apps/video-player";

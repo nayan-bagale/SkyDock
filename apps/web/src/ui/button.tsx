@@ -46,6 +46,7 @@ const ButtonStyles = cva(["font-semibold", "outline-sky-400", "rounded-md", "w-f
         },
         size: {
             small: ["text-xs", "py-0.5", "px-1"],
+            sm: "h-9 rounded-md px-3",
             medium: ["text-base", "py-2", "px-4"],
             icon: ["p-0.5", "drop-shadow"],
             cta: ["text-base", "py-1.5", "px-4", "rounded-md", "w-full", 'justify-center'],

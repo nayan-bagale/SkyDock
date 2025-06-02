@@ -1,6 +1,6 @@
 import cn from "@/utils"
 import { Icons } from "@skydock/ui/icons"
-import { FC, InputHTMLAttributes, useState } from "react"
+import { FC, forwardRef, InputHTMLAttributes, useState } from "react"
 import { Button } from "./button"
 
 interface InputPasswordProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -30,7 +30,7 @@ export const InputPassword: FC<InputPasswordProps> = ({ className, placeholder =
     )
 }
 
-interface InputProps {
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     className?: string
     placeholder?: string
     type?: 'text' | 'email' | 'password'
@@ -38,13 +38,15 @@ interface InputProps {
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export const Input: FC<InputProps> = ({ className, placeholder, type = "text", id, onChange }) => {
+export const Input = forwardRef<HTMLInputElement, InputProps>(({ className, placeholder, type = "text", id, onChange, ...props }, ref) => {
     return (
         <input className={cn(" w-full  rounded-lg bg-transparent border p-1 px-2 outline-sky-400 placeholder:text-white/80", className)}
             placeholder={placeholder}
+            ref={ref}
             type={type}
             id={id}
             onChange={onChange}
+            {...props}
         />
     )
-}
+})

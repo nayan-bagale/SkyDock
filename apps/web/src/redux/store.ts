@@ -4,6 +4,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import filesAndFolderApi from "./apis/filesAndFolderApi";
 import planApi from "./apis/planApis";
 import userAuthApi from "./apis/userAuthApi";
+import aiReducer from "./features/ai/aiSlice";
 import { appsSlice } from "./features/apps/appsSlice";
 import contextMenuReducer from "./features/contextMenu/contextMenuSlice";
 import { controlCenterSlice } from "./features/control-center/controlCenterSlice";
@@ -29,6 +30,7 @@ export const store = configureStore({
     musicPlayer: musicPlayerReducer,
     videoPlayer: videoPlayerReducer,
     skydock: skydockReducer,
+    ai: aiReducer,
 
     [userAuthApi.reducerPath]: userAuthApi.reducer,
     [filesAndFolderApi.reducerPath]: filesAndFolderApi.reducer,
