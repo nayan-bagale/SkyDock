@@ -1,8 +1,6 @@
 import { closeContextMenu } from '@/redux/features/contextMenu/contextMenuSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { ContextMenu } from '@/ui/ContextMenu';
-import { useRef } from 'react';
-import useOnClickOutside from '../hooks/useOnclickOutside';
 import DesktopContextMenu from './DesktopContextMenu';
 import DockContextMenu from './DockContextMenu';
 import ExplorerContextMenu from './ExplorerContextMenu';
@@ -13,20 +11,18 @@ const GlobalContextMenu = () => {
     const { isOpen, position, location, targetId, additionalData } = useAppSelector(
         (state) => state.contextMenu
     );
-    const contextMenuRef = useRef<HTMLDivElement>(null);
 
     const closeMenu = () => {
         dispatch(closeContextMenu());
     }
 
     // Close context menu when clicking outside
-    useOnClickOutside(contextMenuRef, closeMenu);
 
     if (!isOpen) return null;
 
     return (
         <ContextMenu
-            ref={contextMenuRef}
+            close={closeMenu}
             className='fixed'
             position={{
                 x: position.x,
