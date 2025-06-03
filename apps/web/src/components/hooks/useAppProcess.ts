@@ -18,6 +18,10 @@ import {
   settingsProcess,
 } from "@/redux/features/settings/settingsSlice";
 import {
+  setAppsMenuLoading,
+  setAppsMenuOpen,
+} from "@/redux/features/skydock/skydockSlice";
+import {
   setTerminalLoading,
   terminalProcess,
 } from "@/redux/features/terminal/terminalSlice";
@@ -28,7 +32,7 @@ import {
 } from "@/redux/features/video-player/videoPlayerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { AppsT } from "@skydock/types/enums";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 const useAppProcess = () => {
   const settingsState = useAppSelector((state) => state.settings);
@@ -37,6 +41,7 @@ const useAppProcess = () => {
   const musicPlayerState = useAppSelector((state) => state.musicPlayer);
   const imageViewerState = useAppSelector((state) => state.imageViewer);
   const videoPlayerState = useAppSelector((state) => state.videoPlayer);
+  const appsMenuState = useAppSelector((state) => state.skydock.appsMenu);
 
   const focusedApp = useAppSelector((state) => state.apps.focusedApp);
 
@@ -170,6 +175,26 @@ const useAppProcess = () => {
     }, []),
   };
 
+  const appsMenuSystem = useMemo(() => {
+    return {
+      isOpen: appsMenuState.isOpen,
+      isLoading: appsMenuState.isLoading,
+      isProcessOn: appsMenuState.isOpen,
+      setLoadingTrue: () => {
+        dispatch(setAppsMenuLoading(true));
+      },
+      setLoadingFalse: () => {
+        dispatch(setAppsMenuLoading(false));
+      },
+      open: () => {
+        dispatch(setAppsMenuOpen(true));
+      },
+      close: () => {
+        dispatch(setAppsMenuOpen(false));
+      },
+    };
+  }, [appsMenuState.isLoading, appsMenuState.isOpen]);
+
   return {
     settingsApp,
     terminalApp,
@@ -177,6 +202,7 @@ const useAppProcess = () => {
     musicPlayerApp,
     imageViewerApp,
     videoPlayerApp,
+    appsMenuSystem,
   };
 };
 

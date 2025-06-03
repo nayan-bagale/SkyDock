@@ -1,9 +1,14 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { SkydockT } from "@skydock/types";
 
 const intialState = {
   isLoading: true,
   isError: false,
+  appsMenu: {
+    isOpen: false,
+    isLoading: false,
+    isProcessOn: false,
+  },
 } as SkydockT;
 
 export const skydockSlice = createSlice({
@@ -16,9 +21,20 @@ export const skydockSlice = createSlice({
     setSkydockError: (state, action) => {
       state.isError = action.payload;
     },
+    setAppsMenuOpen: (state, action: PayloadAction<boolean>) => {
+      state.appsMenu.isOpen = action.payload;
+    },
+    setAppsMenuLoading: (state, action: PayloadAction<boolean>) => {
+      state.appsMenu.isLoading = action.payload;
+    },
   },
 });
 
-export const { setSkydockError, setSkydockLoading } = skydockSlice.actions;
+export const {
+  setSkydockError,
+  setSkydockLoading,
+  setAppsMenuOpen,
+  setAppsMenuLoading,
+} = skydockSlice.actions;
 
 export default skydockSlice.reducer;

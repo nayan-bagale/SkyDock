@@ -1,4 +1,5 @@
 export enum AppsT {
+  AppsMenu = "AppsMenu",
   Terminal = "Terminal",
   Explorer = "Explorer",
   Settings = "Settings",
