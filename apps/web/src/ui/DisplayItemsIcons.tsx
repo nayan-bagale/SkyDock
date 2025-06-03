@@ -63,7 +63,7 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                     (<motion.div
                         ref={iconRef}
                         className={cn(
-                            ' relative w-fit flex flex-col justify-center items-center p-1 rounded-md hover:bg-gray-400/40',
+                            ' relative w-fit flex flex-col justify-center items-center p-1 rounded-md outline-gray-400/50 focus:bg-gray-400/40 hover:bg-gray-400/40',
                             isOver && 'bg-gray-400/10 border',
                             className
                             // !item.isFolder && item?.state?.currentState === 'downloading' && 'bg-blue-500',

@@ -1,4 +1,6 @@
-import { Bot, User } from 'lucide-react';
+import { useAppSelector } from '@/redux/hooks';
+import { Icons } from '@skydock/ui/icons';
+import { User } from 'lucide-react';
 
 interface Message {
     id: string;
@@ -13,16 +15,26 @@ interface ChatMessageProps {
 
 const ChatMessage = ({ message }: ChatMessageProps) => {
     const isAI = message.sender === 'ai';
+    const user = useAppSelector((state) => state.auth.user);
+    const bgColor = useAppSelector((state) => state.settings.apperance.theme?.color);
+
 
     return (
         <div className={`flex items-start gap-3 animate-fade-in ${isAI ? '' : 'flex-row-reverse'}`}>
             <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg ${isAI
-                ? 'bg-gradient-to-r from-blue-500 to-purple-600'
+                ? bgColor //'bg-gradient-to-r from-blue-500 to-purple-600'
                 : 'bg-gradient-to-r from-green-500 to-blue-500'
                 }`}>
                 {isAI ? (
-                    <Bot className="w-4 h-4 text-white" />
+                    // <Bot className="w-4 h-4 text-white" />
+                    // <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shadow-lg", bgColor)}>
+                    <Icons.Logo className="h-5" />
+                    // </div>
+                ) : user?.picture ? (
+                    <img src={user.picture} alt="Profile" className="mx-auto h-8 rounded-full" />
+
                 ) : (
+
                     <User className="w-4 h-4 text-white" />
                 )}
             </div>
