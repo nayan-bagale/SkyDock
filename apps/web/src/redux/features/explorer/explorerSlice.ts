@@ -265,6 +265,7 @@ export const explorerSlice = createSlice({
 
     explorerProcess: (state, action) => {
       state.currentFolder = "skydrive";
+      state.activeTab = "skydrive";
       state.backStack = [];
       state.forwardStack = [];
       state.actions.isProcessOn = action.payload;
@@ -274,6 +275,11 @@ export const explorerSlice = createSlice({
       state.actions.isProcessOn = true;
     },
 
+    openTrash: (state) => {
+      state.activeTab = "trash";
+      state.currentFolder = "trash";
+      state.actions.isProcessOn = true;
+    },
     changeExplorerSize: (state) => {
       state.actions.isMaximized = !state.actions.isMaximized;
     },
@@ -333,6 +339,7 @@ export const {
   moveFileIntoFolder,
   changeView,
   explorerProcess,
+  openTrash,
   openExplorer,
   changeExplorerSize,
   changeExplorerMinimized,

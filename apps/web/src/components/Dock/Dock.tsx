@@ -1,4 +1,5 @@
 import { openContextMenu } from "@/redux/features/contextMenu/contextMenuSlice";
+import { openTrash } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { Dock as DockPanel } from "@/ui/Dock/dock";
 import { DockButton } from "@/ui/Dock/dock_button";
@@ -21,7 +22,7 @@ const Dock = () => {
         appsMenuSystem,
     } = useAppProcess();
 
-    const apps = [
+    const systemApps = [
         {
             id: AppsT.AppsMenu,
             name: 'Menu',
@@ -31,6 +32,20 @@ const Dock = () => {
             isLoading: appsMenuSystem.isLoading,
             pin: true,
         },
+        {
+            id: AppsT.Trash,
+            name: 'Trash',
+            Icon: Icons.Trash2,
+            fun: () => { dispatch(openTrash()) },
+            active: false,
+            isLoading: false,
+            pin: true,
+        },
+
+    ]
+
+    const apps = [
+
         {
             id: AppsT.Settings,
             name: "Settings",
@@ -116,6 +131,28 @@ const Dock = () => {
                 size={"medium"}
                 onContextMenu={(e) => e.preventDefault()}
             >
+                {systemApps.map(({ name, Icon, fun, active, isLoading, id }, index) => (
+                    <AnimatePresence key={id}>
+                        <DockButton
+                            key={id}
+                            intent={"primary"}
+                            title={name}
+                            onClick={fun}
+                            isActive={active}
+                            isLoading={isLoading}
+                            onContextMenu={(e) => handleContextMenu(e, id)}
+                        >
+                            <Icon className="h-10" />
+                        </DockButton>
+                    </AnimatePresence>
+                ))}
+                {systemApps.length > 0 && (
+                    <Separator
+                        className="h-10 my-auto rounded-full w-0.5"
+                        orientation="vertical"
+                    />
+                )}
+
                 {pinedApps.map(({ name, Icon, fun, active, isLoading, id }, index) => (
                     <AnimatePresence key={id}>
                         <DockButton

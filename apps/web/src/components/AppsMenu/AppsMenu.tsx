@@ -123,6 +123,7 @@ const AppsMenu = () => {
                         placeholder="Type here to search"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
+                        autoFocus
                         className="pl-10 h-10 bg-gray-50 border-gray-300 rounded-3xl text-sm text-gray-900 placeholder:text-gray-500 focus:bg-white transition-colors"
                     />
                 </div>
