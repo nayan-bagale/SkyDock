@@ -1,6 +1,5 @@
 import { useGetFileUrlMutation } from "@/redux/apis/filesAndFolderApi";
 import { FileT } from "@skydock/types";
-// import { FileT } from "@/redux/features/explorer/explorerSlice";
 
 const useFileDownloadWithProgress = () => {
   const [getFileUrl] = useGetFileUrlMutation();
@@ -24,7 +23,8 @@ const useFileDownloadWithProgress = () => {
       const reader = response.body.getReader();
       const chunks: Uint8Array[] = [];
       let receivedLength = 0;
-      //   ts-ignore
+
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         const { done, value } = await reader.read();
         if (done) {
@@ -46,7 +46,7 @@ const useFileDownloadWithProgress = () => {
         }
       }
 
-      const blob = new Blob(chunks);
+      const blob = new Blob(chunks as BlobPart[]);
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;

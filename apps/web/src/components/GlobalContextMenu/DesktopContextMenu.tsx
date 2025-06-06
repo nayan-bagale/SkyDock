@@ -50,7 +50,7 @@ const DesktopContextMenu = ({ targetId, additionalData }: DesktopContextMenuProp
         try {
             await updateItem({ id: targetItem.id, name: newName });
             dispatch(renameItem({ id: targetItem.id, name: newName }));
-            setIsRenaming(false);
+            // setIsRenaming(false);
             dispatch(closeContextMenu());
         } catch (error) {
             console.error('Error renaming item:', error);

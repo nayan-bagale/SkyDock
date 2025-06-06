@@ -18,7 +18,6 @@ const RenameInputBox = ({ setIsRenaming, handleRename, currentName }: RenameInpu
         e.preventDefault();
         if (!newName.trim()) return;
         handleRename(newName);
-        setIsRenaming(false);
     }
 
     return (
@@ -29,7 +28,6 @@ const RenameInputBox = ({ setIsRenaming, handleRename, currentName }: RenameInpu
                 onChange={(e) => setNewName(e.target.value)}
                 autoFocus
                 className="px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm"
-                onBlur={() => setIsRenaming(false)}
             />
             <div className="flex justify-end mt-2">
                 <Button

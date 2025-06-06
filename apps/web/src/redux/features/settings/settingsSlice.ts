@@ -1,6 +1,6 @@
 import { background, theme } from "@/constants/settings";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { SettingsT } from "@skydock/types";
+import { BackgroundT, SettingsT, ThemeT } from "@skydock/types";
 
 const intialState = {
   apperance: {
@@ -26,10 +26,10 @@ export const settingsSlice = createSlice({
     settingsProcess: (state, action) => {
       state.actions.isProcessOn = action.payload;
     },
-    changeTheme: (state, action) => {
+    changeTheme: (state, action: PayloadAction<ThemeT>) => {
       state.apperance.theme = action.payload;
     },
-    changeBackground: (state, action) => {
+    changeBackground: (state, action: PayloadAction<BackgroundT>) => {
       state.apperance.background = action.payload;
     },
     setSettingsLoading: (state, action: PayloadAction<boolean>) => {
