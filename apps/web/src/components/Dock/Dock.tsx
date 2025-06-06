@@ -131,8 +131,8 @@ const Dock = () => {
                 size={"medium"}
                 onContextMenu={(e) => e.preventDefault()}
             >
-                {systemApps.map(({ name, Icon, fun, active, isLoading, id }, index) => (
-                    <AnimatePresence key={id}>
+                <AnimatePresence>
+                    {systemApps.map(({ name, Icon, fun, active, isLoading, id }, index) => (
                         <DockButton
                             key={id}
                             intent={"primary"}
@@ -144,8 +144,8 @@ const Dock = () => {
                         >
                             <Icon className="h-10" />
                         </DockButton>
-                    </AnimatePresence>
-                ))}
+                    ))}
+                </AnimatePresence>
                 {systemApps.length > 0 && (
                     <Separator
                         className="h-10 my-auto rounded-full w-0.5"
@@ -153,8 +153,8 @@ const Dock = () => {
                     />
                 )}
 
-                {pinedApps.map(({ name, Icon, fun, active, isLoading, id }, index) => (
-                    <AnimatePresence key={id}>
+                <AnimatePresence >
+                    {pinedApps.map(({ name, Icon, fun, active, isLoading, id }, index) => (
                         <DockButton
                             key={id}
                             intent={"primary"}
@@ -166,17 +166,17 @@ const Dock = () => {
                         >
                             <Icon className="h-10" />
                         </DockButton>
-                    </AnimatePresence>
-                ))}
+                    ))}
+                </AnimatePresence>
                 {notPinedApps.length > 0 && (
                     <Separator
                         className="h-10 my-auto rounded-full w-0.5"
                         orientation="vertical"
                     />
                 )}
-                {notPinedApps.map(
-                    ({ name, Icon, fun, active, isLoading, id }, index) => (
-                        <AnimatePresence key={id}>
+                <AnimatePresence>
+                    {notPinedApps.map(
+                        ({ name, Icon, fun, active, isLoading, id }, index) => (
                             <DockButton
                                 key={id}
                                 intent={"primary"}
@@ -188,9 +188,9 @@ const Dock = () => {
                             >
                                 <Icon className="h-10" />
                             </DockButton>
-                        </AnimatePresence>
-                    )
-                )}
+                        )
+                    )}
+                </AnimatePresence>
             </DockPanel>
         </>
     );
