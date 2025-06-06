@@ -1,5 +1,6 @@
 import { setAppsMenuOpen } from "@/redux/features/skydock/skydockSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Icons } from "@skydock/ui/icons";
 import { AnimatePresence, motion } from "framer-motion";
@@ -7,6 +8,7 @@ import { LogOut, Search, User } from "lucide-react";
 import { useRef, useState } from "react";
 import useAppProcess from "../hooks/useAppProcess";
 import useOnClickOutside from "../hooks/useOnclickOutside";
+import useSkydockSystem from "../hooks/useSkydockSystem";
 import { AppCard } from "./AppCard";
 
 const AppsMenu = () => {
@@ -22,6 +24,8 @@ const AppsMenu = () => {
         terminalApp,
         videoPlayerApp,
     } = useAppProcess();
+
+    const { signOutFunction } = useSkydockSystem();
 
     const pinnedApps = [
         { id: 1, name: "Explorer", Icon: Icons.Folder, open: explorerApp.open },
@@ -66,7 +70,7 @@ const AppsMenu = () => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="bg-white/60 z-30 fixed bottom-[5.8rem] left-0 right-0 mx-auto  backdrop-blur-md  rounded-2xl shadow border border-white/20 w-full max-w-md min-h-[50vh] max-h-[60vh] overflow-hidden"
+            className="bg-white/50 z-30 fixed bottom-[5.8rem] left-0 right-0 mx-auto  backdrop-blur-md  rounded-3xl shadow border border-transparent w-fit max-w-md min-h-[50vh] max-h-[60vh] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
         >
             {/* Apps Section */}
@@ -146,13 +150,15 @@ const AppsMenu = () => {
                             {user?.name}
                         </span>
                     </div>
-                    <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="p-2 hover:bg-gray-100 rounded-md transition-colors"
+                    <Button
+                        // whileHover={{ scale: 1.05 }}
+                        // whileTap={{ scale: 0.95 }}
+                        onClick={signOutFunction}
+                        intent={'destructive'}
+                        className=" rounded-xl p-2 hover:text-white text-gray-900 "
                     >
-                        <LogOut size={16} className="text-gray-600 hover:text-red-500" />
-                    </motion.button>
+                        <LogOut size={16} />
+                    </Button>
                 </div>
             </div>
         </motion.div>

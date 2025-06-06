@@ -1,7 +1,6 @@
 import useAppProcess from "@/components/hooks/useAppProcess";
 import useOutsideAlerter from "@/components/hooks/useOnclickOutside";
-import { useLogOutApiMutation } from "@/redux/apis/userAuthApi";
-import { logOut } from "@/redux/features/auth";
+import useSkydockSystem from "@/components/hooks/useSkydockSystem";
 import { lockScreen } from "@/redux/features/lockScreen/lockScreenSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
@@ -12,6 +11,7 @@ import {
 import { changeBytes, getStorageUsage } from "@/utils/changeBytes";
 import { Icons } from "@skydock/ui/icons";
 import { AnimatePresence, motion } from "framer-motion";
+import { LogOut, Settings } from "lucide-react";
 import { useRef, useState } from "react";
 
 const ProfileDropdown = () => {
@@ -20,8 +20,7 @@ const ProfileDropdown = () => {
     useOutsideAlerter(ref, () => setShow(false));
     const dispatch = useAppDispatch();
 
-    const [logOutApi] = useLogOutApiMutation();
-    const signOut = () => logOutApi("").then(() => dispatch(logOut()));
+    const { signOutFunction } = useSkydockSystem();
 
     const user = useAppSelector((state) => state.auth.user);
 
@@ -49,7 +48,6 @@ const ProfileDropdown = () => {
             <AnimatePresence>
                 {show && (
                     <MainDropDownMenu ref={ref} className="right-0 z-30 rounded-xl">
-                        {/* <div className="right-0 absolute bg-gradient-to-r from-pink-500/50 via-purple-500/50 to-indigo-500/50 shadow-xl backdrop-blur-lg mt-2 py-2 border border-gray-100 rounded-lg w-64"> */}
                         <div className="px-4 py-2">
                             {user?.picture ? (
                                 <img src={user.picture} alt="Profile" className="mx-auto h-24 rounded-full" />
@@ -89,19 +87,19 @@ const ProfileDropdown = () => {
                                 onClick={settingsApp.open}
                                 className="p-1 gap-2 rounded-full w-full hover:bg-blue-400 hover:text-white"
                             >
-                                <Icons.Settings className="h-4" /> Settings
+                                <Settings size={16} className="ml-1" />  Settings
+
                             </Button>
                             {/* <Button className="p-1 gap-2 rounded-full w-full" onClick={handleLockScreen}>
                             <Icons.Lock className="h-5" />
                         </Button> */}
                             <Button
-                                onClick={signOut}
-                                className="hover:bg-red-600 hover:text-white rounded-full p-1 gap-2 w-full"
+                                onClick={signOutFunction}
+                                className="hover:bg-red-600 hover:text-white text-center rounded-full p-1 gap-2 w-full"
                             >
-                                <Icons.Logout className="h-5" /> Logout
+                                <LogOut size={16} className="ml-1" /> Logout
                             </Button>
                         </div>
-                        {/* </div> */}
                     </MainDropDownMenu>
                 )}
             </AnimatePresence>

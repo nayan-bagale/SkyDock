@@ -1,4 +1,4 @@
-import { background, theme } from "@/constants/settings";
+import { background as bgEnum, theme as themeEnum } from "@/constants/settings";
 import {
   changeBackground,
   changeTheme,
@@ -13,7 +13,13 @@ const useTheme = () => {
     const savedSettings = localStorage.getItem("settings");
 
     if (savedSettings) {
-      const { theme, background } = JSON.parse(savedSettings);
+      let { theme, background } = JSON.parse(savedSettings);
+      if (background && !background.src.includes("wallpapers/")) {
+        // If the theme is not a valid background, set it to default
+        theme = themeEnum[2]; // Default theme
+        background = bgEnum[0]; // Default background
+      }
+
       dispatch(changeTheme(theme));
       dispatch(changeBackground(background));
       document.body.style.backgroundImage = `url(${background?.src})`;
@@ -22,9 +28,9 @@ const useTheme = () => {
       document.body.style.backgroundPosition = "center";
     } else {
       // Set default theme and background if not found in localStorage
-      dispatch(changeTheme(theme[2])); // Default theme
-      dispatch(changeBackground(background[0])); // Default background
-      document.body.style.backgroundImage = `url(${background[0]?.src})`;
+      dispatch(changeTheme(themeEnum[2])); // Default theme
+      dispatch(changeBackground(bgEnum[0])); // Default background
+      document.body.style.backgroundImage = `url(${bgEnum[0]?.src})`;
       document.body.style.backgroundRepeat = "no-repeat";
       document.body.style.backgroundSize = "cover";
       document.body.style.backgroundPosition = "center";

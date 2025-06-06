@@ -1,4 +1,3 @@
-import AiButton from "@/components/Ai/AiButton";
 import GlobalContextApi from "@/components/ContextApi/GlobalContextApi";
 import { useAppSelector } from "@/redux/hooks";
 import { AnimatePresence } from "framer-motion";
@@ -23,13 +22,12 @@ const MainApp = () => {
                 <MenuBar />
             </div>
             <Desktop>
-                {/* <Folders /> */}
                 <Apps_ />
             </Desktop>
             <div className="justify-self-end">
                 <Dock />
             </div>
-            <AiButton />
+            {/* <AiButton /> */}
             <AnimatePresence>
                 {isSubscriptionPlanCardOpen && <SubscriptionPlans />}
             </AnimatePresence>
