@@ -29,7 +29,8 @@ const DockContextMenu = ({
             [AppsT.AppsMenu]: apps.appsMenuSystem,
         };
         if (!targetId) return null;
-        return AppsObj[targetId as keyof typeof AppsT];
+        if (!(targetId in AppsObj)) return null;
+        return AppsObj[targetId as keyof typeof AppsObj];
     }, [
         apps.settingsApp,
         apps.terminalApp,
