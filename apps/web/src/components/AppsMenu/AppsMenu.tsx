@@ -70,7 +70,7 @@ const AppsMenu = () => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="bg-white/50 z-30 fixed bottom-[5.8rem] left-0 right-0 mx-auto  backdrop-blur-md  rounded-3xl shadow border border-transparent w-fit max-w-md min-h-[50vh] max-h-[60vh] overflow-hidden"
+            className="bg-white/50 z-30 fixed bottom-[5.8rem] left-0 right-0 mx-auto  backdrop-blur-md  rounded-3xl shadow border border-transparent max-w-md min-h-[50vh] max-h-[60vh] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
         >
             {/* Apps Section */}
