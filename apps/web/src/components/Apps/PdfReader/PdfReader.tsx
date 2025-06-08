@@ -1,5 +1,6 @@
 import { useDrag } from "@/components/hooks/useDrag";
 import useGetFileURl from "@/components/hooks/useGetFileURl";
+import useResizeObserver from "@/components/hooks/useResizeObserver";
 import { closePdfReader } from "@/redux/features/pdf-reader/pdfReaderSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import PdfReaderCard from "@/ui/Cards/PdfReader/PdfReaderCard";
@@ -21,11 +22,14 @@ const PdfReader = () => {
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef
     });
+    const localRef = useRef<HTMLDivElement>(null);
     const focusedApp = useAppSelector((state) => state.apps.focusedApp);
     const theme = useAppSelector((state) => state.settings.apperance.theme);
     const pdfInfo = useAppSelector((state) => state.pdfReader.pdfInfo);
     const { getFileUrl } = useGetFileURl()
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+    const { width } = useResizeObserver(localRef);
+
 
     useEffect(() => {
         const setUrl = async () => {
@@ -40,6 +44,8 @@ const PdfReader = () => {
         }
         setUrl()
     }, [pdfInfo]);
+
+
 
     const handleContextMenu = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -72,17 +78,17 @@ const PdfReader = () => {
     };
 
     const [numPages, setNumPages] = useState<number>();
-    const [pageNumber, setPageNumber] = useState<number>(1);
 
     function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
         setNumPages(numPages);
     }
+    console.log(width)
 
     return (
         <>
             <PdfReaderCard
-                ref={draggableRef}
                 style={{ x: position.x, y: position.y }}
+                ref={draggableRef}
                 onMouseDown={handleMouseDown}
                 onMouseDownCard={() => { }}
                 action={Action}
@@ -91,45 +97,37 @@ const PdfReader = () => {
                 onContextMenu={handleContextMenu}
                 title="PDF Reader"
             >
-
-                <Document
-                    file={pdfUrl}
-                    onLoadSuccess={onDocumentLoadSuccess}
-                    // onLoadError={onDocumentLoadError}
-                    loading={
-                        <div className="flex items-center justify-center h-96">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                        </div>
-                    }
-
-
+                <div
+                    className="w-full h-full flex-1 overflow-y-auto"
+                    ref={localRef}
                 >
-                    {Array.from(
-                        new Array(numPages),
-                        (el, index) => (
-                            // <Page
-                            //     // key={`page_${index + 1}`}
-                            //     // pageNumber={index + 1}
-                            //     // // width={window.innerWidth - 100}
-                            //     // renderAnnotationLayer={false}
-                            //     // // renderTextLayer={false}
-                            //     // className="w-full h-auto"
-
-                            // />
-                            <div className="shadow-lg">
-                                <Page
-                                    pageNumber={pageNumber}
-                                    scale={1}
-                                    renderAnnotationLayer={true}
-                                    renderTextLayer={true}
-                                    className={'shadow border w-fit border-gray-200 rounded-lg my-2'}
-                                />
+                    <Document
+                        file={pdfUrl}
+                        onLoadSuccess={onDocumentLoadSuccess}
+                        className={'p-4'}
+                        loading={
+                            <div className="flex items-center justify-center h-96">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                             </div>
-                        ),
-                    )}
-                </Document>
-
-
+                        }
+                    >
+                        {Array.from(
+                            new Array(numPages),
+                            (el, index) => (
+                                <div className="m-2" key={index}>
+                                    <Page
+                                        pageNumber={index + 1}
+                                        scale={1}
+                                        renderAnnotationLayer={true}
+                                        renderTextLayer={true}
+                                        className={'border fill m-0'}
+                                        width={width - 32} // Adjust width based on the container size
+                                    />
+                                </div>
+                            ),
+                        )}
+                    </Document>
+                </div>
             </PdfReaderCard>
         </>
     )

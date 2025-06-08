@@ -29,7 +29,7 @@ const PdfReaderCard = forwardRef<HTMLDivElement, PdfReaderCardProps>(
     ({ style, theme, onMouseDown, action, children, onMouseDownCard, className, title, onContextMenu }, ref) => {
         return (
             <motion.div
-                className={cn("text-black bg-white resize shadow absolute min-w-[30rem] max-w-[45rem] min-h-[30rem] max-h-[40rem] backdrop-blur rounded-xl overflow-hidden",
+                className={cn("text-black bg-white resize shadow absolute min-w-[30rem] w-[30rem] max-w-[45rem] min-h-[30rem] max-h-[40rem] backdrop-blur rounded-xl overflow-hidden flex flex-col",
                     // theme?.color,
                     className
                 )}
@@ -53,7 +53,7 @@ const PdfReaderCard = forwardRef<HTMLDivElement, PdfReaderCardProps>(
                         <span className="font-medium text-sm">{ }</span>
                     </div>
                 </div>
-                <div className="w-full h-full overflow-y-scroll">
+                <div className="w-full h-full flex-1">
                     {children}
                 </div>
             </motion.div>

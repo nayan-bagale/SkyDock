@@ -14,6 +14,7 @@
     "@reduxjs/toolkit": "^2.2.6",
     "@skydock/ui": "*",
     "@skydock/validation": "*",
+    "@uidotdev/usehooks": "^2.4.1",
     "axios": "^1.7.9",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
