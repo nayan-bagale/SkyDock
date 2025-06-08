@@ -6,5 +6,6 @@ export enum AppsT {
   ImageViewer = "ImageViewer",
   MusicPlayer = "MusicPlayer",
   VideoPlayer = "VideoPlayer",
+  PdfReader = "PdfReader",
   Trash = "Trash",
 }

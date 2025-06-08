@@ -7,6 +7,7 @@ import {
     Explorer,
     ImageViewer,
     MusicPlayer,
+    PdfReader,
     Settings,
     Terminal,
     VideoPlayer,
@@ -21,6 +22,7 @@ const Apps_ = () => {
         musicPlayerApp,
         videoPlayerApp,
         appsMenuSystem,
+        pdfReaderApp,
     } = useAppProcess();
 
     return (
@@ -108,6 +110,17 @@ const Apps_ = () => {
                         <VideoPlayer />
                     </Suspense>
                 )}
+            </AnimatePresence>
+            <AnimatePresence>
+                {pdfReaderApp.isProcessOn && (<Suspense
+                    fallback={
+                        <MountUnmountCallback
+                            onMount={pdfReaderApp.setLoadingTrue}
+                            onUnmount={pdfReaderApp.setLoadingFalse}
+                        />
+                    }>
+                    <PdfReader />
+                </Suspense>)}
             </AnimatePresence>
             <AnimatePresence>
                 {appsMenuSystem.isOpen && (<Suspense

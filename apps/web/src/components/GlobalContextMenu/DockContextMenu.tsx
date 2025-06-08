@@ -27,6 +27,7 @@ const DockContextMenu = ({
             [AppsT.MusicPlayer]: apps.musicPlayerApp,
             [AppsT.VideoPlayer]: apps.videoPlayerApp,
             [AppsT.AppsMenu]: apps.appsMenuSystem,
+            [AppsT.PdfReader]: apps.pdfReaderApp,
         };
         if (!targetId) return null;
         if (!(targetId in AppsObj)) return null;
@@ -39,6 +40,7 @@ const DockContextMenu = ({
         apps.musicPlayerApp,
         apps.videoPlayerApp,
         apps.appsMenuSystem,
+        apps.pdfReaderApp,
         targetId,
     ]);
 

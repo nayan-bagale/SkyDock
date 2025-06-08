@@ -20,6 +20,7 @@ const Dock = () => {
         musicPlayerApp,
         videoPlayerApp,
         appsMenuSystem,
+        pdfReaderApp,
     } = useAppProcess();
 
     const systemApps = [
@@ -100,6 +101,15 @@ const Dock = () => {
             isLoading: videoPlayerApp.isLoading,
             pin: false,
         },
+        {
+            id: AppsT.PdfReader,
+            name: "PDF Reader",
+            Icon: Icons.PDF,
+            fun: pdfReaderApp.open,
+            active: pdfReaderApp.isProcessOn,
+            isLoading: pdfReaderApp.isLoading,
+            pin: false,
+        }
 
     ];
 

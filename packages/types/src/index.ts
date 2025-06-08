@@ -9,4 +9,5 @@ export type * from "./skydock";
 export type * from "./ai";
 
 export type * from "./apps/music-player";
+export type * from "./apps/pdf-reader";
 export type * from "./apps/video-player";

@@ -1,12 +1,14 @@
 import { setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
 import { openImageViewer } from "@/redux/features/imageViewer/imageViewerSlice";
 import { openMusicPlayer } from "@/redux/features/music-player/musicPlayerSlice";
+import { openPdfReader } from "@/redux/features/pdf-reader/pdfReaderSlice";
 import { openVideoPlayer } from "@/redux/features/video-player/videoPlayerSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { FileT, FolderT } from "@skydock/types";
 
 const useAppOpenBasedOnFileType = (item: FileT | FolderT | null) => {
   const dispatch = useAppDispatch();
+  // const { getFileUrl } = useGetFileURl();
 
   const isItemStartsWith = (type: string) => {
     if (!item) return false;
@@ -24,6 +26,8 @@ const useAppOpenBasedOnFileType = (item: FileT | FolderT | null) => {
       dispatch(openMusicPlayer(item));
     } else if (isItemStartsWith("video/")) {
       dispatch(openVideoPlayer(item));
+    } else if (isItemStartsWith("application/pdf")) {
+      dispatch(openPdfReader(item));
     }
   };
 

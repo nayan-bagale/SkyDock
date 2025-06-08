@@ -14,6 +14,11 @@ import {
   setMusicPlayerLoading,
 } from "@/redux/features/music-player/musicPlayerSlice";
 import {
+  closePdfReader,
+  openPdfReader,
+  setPdfReaderLoading,
+} from "@/redux/features/pdf-reader/pdfReaderSlice";
+import {
   setSettingsLoading,
   settingsProcess,
 } from "@/redux/features/settings/settingsSlice";
@@ -41,6 +46,7 @@ const useAppProcess = () => {
   const musicPlayerState = useAppSelector((state) => state.musicPlayer);
   const imageViewerState = useAppSelector((state) => state.imageViewer);
   const videoPlayerState = useAppSelector((state) => state.videoPlayer);
+  const pdfReaderState = useAppSelector((state) => state.pdfReader);
   const appsMenuState = useAppSelector((state) => state.skydock.appsMenu);
 
   const focusedApp = useAppSelector((state) => state.apps.focusedApp);
@@ -175,6 +181,28 @@ const useAppProcess = () => {
     }, []),
   };
 
+  const pdfReaderApp = {
+    open: useCallback(() => {
+      if (!pdfReaderState.actions.isProcessOn) {
+        dispatch(openPdfReader(null));
+      }
+      if (focusedApp !== AppsT.PdfReader) {
+        dispatch(setFocusedApp(AppsT.PdfReader));
+      }
+    }, [focusedApp, pdfReaderState.actions.isProcessOn]),
+    close: useCallback(() => {
+      dispatch(closePdfReader());
+    }, []),
+    isProcessOn: pdfReaderState.actions.isProcessOn,
+    isLoading: pdfReaderState.state.isLoading,
+    setLoadingTrue: useCallback(() => {
+      dispatch(setPdfReaderLoading(true));
+    }, []),
+    setLoadingFalse: useCallback(() => {
+      dispatch(setPdfReaderLoading(false));
+    }, []),
+  };
+
   const appsMenuSystem = useMemo(() => {
     return {
       isOpen: appsMenuState.isOpen,
@@ -203,6 +231,7 @@ const useAppProcess = () => {
     imageViewerApp,
     videoPlayerApp,
     appsMenuSystem,
+    pdfReaderApp,
   };
 };
 
