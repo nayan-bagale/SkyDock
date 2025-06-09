@@ -7,6 +7,7 @@ import { closePdfReader } from "@/redux/features/pdf-reader/pdfReaderSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import PdfReaderCard from "@/ui/Cards/PdfReader/PdfReaderCard";
 import Spinner from "@/ui/Spinner";
+import cn from "@/utils";
 import { SupportedMimeTypes } from "@skydock/types/enums";
 import { useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -118,7 +119,7 @@ const PdfReader = () => {
                         file={pdfUrl ?? undefined}
                         onLoadSuccess={onDocumentLoadSuccess}
                         onLoadError={onDocumentLoadError}
-                        className={' p-2 bg-slate-200'}
+                        className={cn(' p-2 bg-slate-200', !pdfUrl && 'h-full')}
                         loading={
                             <div className="flex items-center justify-center h-96">
                                 {/* <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"> */}
@@ -128,7 +129,7 @@ const PdfReader = () => {
                         }
 
                         noData={
-                            <div className="flex items-center justify-center h-96">
+                            <div className="flex items-center justify-center h-full">
                                 <p className="text-gray-500">No PDF file loaded</p>
                             </div>
                         }
@@ -141,7 +142,7 @@ const PdfReader = () => {
                         {Array.from(
                             new Array(numPages),
                             (el, index) => (
-                                <div className="my-2" key={index}>
+                                <div className="my-2 pb-4" key={index}>
                                     <Page
                                         loading={
                                             <div className="flex items-center justify-center h-96">

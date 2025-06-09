@@ -53,7 +53,7 @@ const PdfReaderCard = forwardRef<HTMLDivElement, PdfReaderCardProps>(
                         <span className="font-medium text-sm">{ }</span>
                     </div>
                 </div>
-                <div className="w-full h-full flex-1 pb-6">
+                <div className="w-full h-full flex-1 ">
                     {children}
                 </div>
             </motion.div>
