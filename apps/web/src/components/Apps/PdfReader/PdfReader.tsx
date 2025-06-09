@@ -1,9 +1,12 @@
+import usePdfReader from "@/components/hooks/apps/usePdfReader";
+import useChangeAppFocus from "@/components/hooks/useChangeAppFocus";
 import { useDrag } from "@/components/hooks/useDrag";
 import useGetFileURl from "@/components/hooks/useGetFileURl";
 import useResizeObserver from "@/components/hooks/useResizeObserver";
 import { closePdfReader } from "@/redux/features/pdf-reader/pdfReaderSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import PdfReaderCard from "@/ui/Cards/PdfReader/PdfReaderCard";
+import Spinner from "@/ui/Spinner";
 import { SupportedMimeTypes } from "@skydock/types/enums";
 import { useEffect, useRef, useState } from "react";
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -29,6 +32,11 @@ const PdfReader = () => {
     const { getFileUrl } = useGetFileURl()
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const { width } = useResizeObserver(localRef);
+    const { handleAppFocus } = useChangeAppFocus('PdfReader');
+
+    const { numPages, onDocumentLoadSuccess, onDocumentLoadError, scale, handleResetZoom, handleZoomIn, handleZoomOut,
+        isLoading
+    } = usePdfReader()
 
 
     useEffect(() => {
@@ -48,7 +56,7 @@ const PdfReader = () => {
 
 
     const handleContextMenu = (e: React.MouseEvent) => {
-        e.preventDefault();
+        // e.preventDefault();
         e.stopPropagation();
         // dispatch(openContextMenu({
         //     position: { x: e.clientX, y: e.clientY },
@@ -77,51 +85,75 @@ const PdfReader = () => {
         }
     };
 
-    const [numPages, setNumPages] = useState<number>();
-
-    function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
-        setNumPages(numPages);
-    }
-    console.log(width)
-
     return (
         <>
             <PdfReaderCard
                 style={{ x: position.x, y: position.y }}
                 ref={draggableRef}
                 onMouseDown={handleMouseDown}
-                onMouseDownCard={() => { }}
+                onMouseDownCard={handleAppFocus}
                 action={Action}
                 theme={theme}
                 className={focusedApp === 'MusicPlayer' ? 'z-20' : ''}
                 onContextMenu={handleContextMenu}
                 title="PDF Reader"
+
             >
+                {/* <div className="flex z-20 overflow-hidden gap-2 justify-center items-center bg-white/60 backdrop-blur shadow px-2 py-1 rounded w-full">
+                    <Button onClick={handleZoomIn} size='icon' className="p-1">
+                        <ZoomIn className="h-5 w-5" />
+                    </Button>
+                    <Button onClick={handleZoomOut} size='icon' className="p-1">
+                        <ZoomOut className="h-5 w-5" />
+                    </Button>
+                    <Button onClick={handleResetZoom} size='icon' className="p-1">
+                        <RotateCcw className="h-5 w-5" />
+                    </Button>
+                </div> */}
                 <div
-                    className="w-full h-full flex-1 overflow-y-auto"
+                    className="w-full h-full overflow-auto select-text"
                     ref={localRef}
                 >
                     <Document
-                        file={pdfUrl}
+                        file={pdfUrl ?? undefined}
                         onLoadSuccess={onDocumentLoadSuccess}
-                        className={'p-4'}
+                        onLoadError={onDocumentLoadError}
+                        className={' p-2 bg-slate-200'}
                         loading={
                             <div className="flex items-center justify-center h-96">
-                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                                {/* <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"> */}
+                                <Spinner />
+                                {/* </div> */}
+                            </div>
+                        }
+
+                        noData={
+                            <div className="flex items-center justify-center h-96">
+                                <p className="text-gray-500">No PDF file loaded</p>
+                            </div>
+                        }
+                        error={
+                            <div className="flex items-center justify-center h-96">
+                                <p className="text-red-500">Error loading PDF file</p>
                             </div>
                         }
                     >
                         {Array.from(
                             new Array(numPages),
                             (el, index) => (
-                                <div className="m-2" key={index}>
+                                <div className="my-2" key={index}>
                                     <Page
+                                        loading={
+                                            <div className="flex items-center justify-center h-96">
+                                                <Spinner />
+                                            </div>
+                                        }
                                         pageNumber={index + 1}
-                                        scale={1}
+                                        scale={scale}
                                         renderAnnotationLayer={true}
                                         renderTextLayer={true}
-                                        className={'border fill m-0'}
-                                        width={width - 32} // Adjust width based on the container size
+                                        className={'border m-0'}
+                                        width={(width) - 32} // Adjust width based on the container size
                                     />
                                 </div>
                             ),
