@@ -3,6 +3,7 @@ import useChangeAppFocus from "@/components/hooks/useChangeAppFocus";
 import { useDrag } from "@/components/hooks/useDrag";
 import useGetFileURl from "@/components/hooks/useGetFileURl";
 import useResizeObserver from "@/components/hooks/useResizeObserver";
+import { MAX_WIDTH_PDF } from "@/constants";
 import { closePdfReader } from "@/redux/features/pdf-reader/pdfReaderSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
@@ -37,9 +38,8 @@ const PdfReader = () => {
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const { width } = useResizeObserver(localRef);
     const { handleAppFocus } = useChangeAppFocus('PdfReader');
-    const docRef = useRef<null | any>(null);
 
-    const { numPages, onDocumentLoadSuccess, onDocumentLoadError, scale, handleResetZoom, handleZoomIn, handleZoomOut,
+    const { numPages, onDocumentLoadSuccess, onDocumentLoadError, scale, handleResetZoom, handleZoomIn, handleZoomOut, goToPage, pageNumber,
         isLoading
     } = usePdfReader()
 
@@ -92,35 +92,13 @@ const PdfReader = () => {
     const pdfWidth = useMemo(() => {
         if (!width) return 0;
         // Calculate the width based on the container size
-        const maxPdfWidth = 1300; // Maximum width for the PDF
+        const maxPdfWidth = MAX_WIDTH_PDF; // Maximum width for the PDF
         if (width > maxPdfWidth) {
             return maxPdfWidth - 32; // Adjust for padding
         }
         return width - 32; // Adjust for padding
     }, [width])
 
-    const [pageNumber, setPageNumber] = useState<number>(1);
-
-    const goToPage = (page: number) => {
-        if (page >= 1 && page <= numPages) {
-            setPageNumber(page);
-
-            console.log(docRef.current?.viewer?.current?.scrollPageIntoView(page))
-            console.log(docRef)
-
-            const pageElement = document.getElementById(`page-${page}`);
-            if (pageElement) {
-                pageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
-    };
-
-    const handlePageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const page = parseInt(e.target.value);
-        if (!isNaN(page)) {
-            goToPage(page);
-        }
-    };
 
 
     return (
@@ -146,15 +124,6 @@ const PdfReader = () => {
                     </Button>
 
                     <div className="flex items-center gap-1">
-                        {/* <Input
-                            type="number"
-                            value={pageNumber}
-                            onChange={handlePageInputChange}
-                            className="w-10  text-center"
-                            min={1}
-                            max={numPages}
-                            disabled={!pdfUrl}
-                        /> */}
                         <span className="text-sm text-muted-foreground">{pageNumber} / {numPages}</span>
                     </div>
 
@@ -185,7 +154,6 @@ const PdfReader = () => {
                     ref={localRef}
                 >
                     <Document
-                        ref={docRef}
                         file={pdfUrl ?? undefined}
                         onLoadSuccess={onDocumentLoadSuccess}
                         onLoadError={onDocumentLoadError}

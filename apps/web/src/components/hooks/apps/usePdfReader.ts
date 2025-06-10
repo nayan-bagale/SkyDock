@@ -5,6 +5,7 @@ const usePdfReader = () => {
   const [numPages, setNumPages] = useState<number>(1);
   const [scale, setScale] = useState<number>(1.0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [pageNumber, setPageNumber] = useState<number>(1);
 
   const onDocumentLoadSuccess = useCallback(
     ({ numPages }: { numPages: number }): void => {
@@ -32,6 +33,17 @@ const usePdfReader = () => {
     setScale(1.0);
   };
 
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= numPages) {
+      setPageNumber(page);
+
+      const pageElement = document.getElementById(`page-${page}`);
+      if (pageElement) {
+        pageElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  };
+
   return {
     numPages,
     onDocumentLoadSuccess,
@@ -41,6 +53,8 @@ const usePdfReader = () => {
     handleZoomIn,
     handleZoomOut,
     handleResetZoom,
+    pageNumber,
+    goToPage,
   };
 };
 
