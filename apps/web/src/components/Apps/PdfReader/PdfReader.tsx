@@ -13,7 +13,7 @@ import cn from "@/utils";
 import { SupportedMimeTypes } from "@skydock/types/enums";
 import { Separator } from "@skydock/ui/components";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
-import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -30,7 +30,7 @@ const PdfReader = () => {
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef
     });
-    const localRef = useRef<HTMLDivElement>() as MutableRefObject<HTMLInputElement>;
+    const localRef = useRef<HTMLDivElement>(null);
     const focusedApp = useAppSelector((state) => state.apps.focusedApp);
     const theme = useAppSelector((state) => state.settings.apperance.theme);
     const pdfInfo = useAppSelector((state) => state.pdfReader.pdfInfo);
@@ -100,7 +100,6 @@ const PdfReader = () => {
     }, [width])
 
 
-
     return (
         <>
             <PdfReaderCard
@@ -123,7 +122,7 @@ const PdfReader = () => {
                         <ChevronLeft className="w-4 h-4" />
                     </Button>
 
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 w-9">
                         <span className="text-sm text-muted-foreground">{pageNumber} / {numPages}</span>
                     </div>
 
