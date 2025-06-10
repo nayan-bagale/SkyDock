@@ -5,11 +5,14 @@ import useGetFileURl from "@/components/hooks/useGetFileURl";
 import useResizeObserver from "@/components/hooks/useResizeObserver";
 import { closePdfReader } from "@/redux/features/pdf-reader/pdfReaderSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { Button } from "@/ui/button";
 import PdfReaderCard from "@/ui/Cards/PdfReader/PdfReaderCard";
 import Spinner from "@/ui/Spinner";
 import cn from "@/utils";
 import { SupportedMimeTypes } from "@skydock/types/enums";
-import { useEffect, useRef, useState } from "react";
+import { Separator } from "@skydock/ui/components";
+import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
+import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -26,7 +29,7 @@ const PdfReader = () => {
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef
     });
-    const localRef = useRef<HTMLDivElement>(null);
+    const localRef = useRef<HTMLDivElement>() as MutableRefObject<HTMLInputElement>;
     const focusedApp = useAppSelector((state) => state.apps.focusedApp);
     const theme = useAppSelector((state) => state.settings.apperance.theme);
     const pdfInfo = useAppSelector((state) => state.pdfReader.pdfInfo);
@@ -34,6 +37,7 @@ const PdfReader = () => {
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const { width } = useResizeObserver(localRef);
     const { handleAppFocus } = useChangeAppFocus('PdfReader');
+    const docRef = useRef<null | any>(null);
 
     const { numPages, onDocumentLoadSuccess, onDocumentLoadError, scale, handleResetZoom, handleZoomIn, handleZoomOut,
         isLoading
@@ -49,7 +53,6 @@ const PdfReader = () => {
                     setPdfUrl(url);
                 }
             }
-
         }
         setUrl()
     }, [pdfInfo]);
@@ -70,7 +73,6 @@ const PdfReader = () => {
         close: () => {
             // Close the image viewer
             // You'll need to add this action to your apps slice
-            // dispatch(closeImageViewer())
             dispatch(closePdfReader());
 
         },
@@ -86,6 +88,41 @@ const PdfReader = () => {
         }
     };
 
+
+    const pdfWidth = useMemo(() => {
+        if (!width) return 0;
+        // Calculate the width based on the container size
+        const maxPdfWidth = 1300; // Maximum width for the PDF
+        if (width > maxPdfWidth) {
+            return maxPdfWidth - 32; // Adjust for padding
+        }
+        return width - 32; // Adjust for padding
+    }, [width])
+
+    const [pageNumber, setPageNumber] = useState<number>(1);
+
+    const goToPage = (page: number) => {
+        if (page >= 1 && page <= numPages) {
+            setPageNumber(page);
+
+            console.log(docRef.current?.viewer?.current?.scrollPageIntoView(page))
+            console.log(docRef)
+
+            const pageElement = document.getElementById(`page-${page}`);
+            if (pageElement) {
+                pageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+    };
+
+    const handlePageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const page = parseInt(e.target.value);
+        if (!isNaN(page)) {
+            goToPage(page);
+        }
+    };
+
+
     return (
         <>
             <PdfReaderCard
@@ -98,33 +135,64 @@ const PdfReader = () => {
                 className={focusedApp === 'MusicPlayer' ? 'z-20' : ''}
                 onContextMenu={handleContextMenu}
                 title="PDF Reader"
-
             >
-                {/* <div className="flex z-20 overflow-hidden gap-2 justify-center items-center bg-white/60 backdrop-blur shadow px-2 py-1 rounded w-full">
+                <div className="flex fixed mb-1.5 bottom-0 z-20 gap-2 -translate-x-1/2 left-1/2 justify-center bg-white/60 items-center backdrop-blur shadow border px-2 py-1 rounded-xl">
+                    <Button
+                        size="icon"
+                        onClick={() => goToPage(pageNumber - 1)}
+                        disabled={!pdfUrl || pageNumber <= 1}
+                    >
+                        <ChevronLeft className="w-4 h-4" />
+                    </Button>
+
+                    <div className="flex items-center gap-1">
+                        {/* <Input
+                            type="number"
+                            value={pageNumber}
+                            onChange={handlePageInputChange}
+                            className="w-10  text-center"
+                            min={1}
+                            max={numPages}
+                            disabled={!pdfUrl}
+                        /> */}
+                        <span className="text-sm text-muted-foreground">{pageNumber} / {numPages}</span>
+                    </div>
+
+                    <Button
+                        size="icon"
+                        onClick={() => goToPage(pageNumber + 1)}
+                        disabled={!pdfUrl || pageNumber >= numPages}
+                    >
+                        <ChevronRight className="w-4 h-4" />
+                    </Button>
+
+                    <Separator orientation="vertical" className="h-6" />
                     <Button onClick={handleZoomIn} size='icon' className="p-1">
                         <ZoomIn className="h-5 w-5" />
                     </Button>
+                    <span className="text-sm text-muted-foreground min-w-9 text-center">
+                        {Math.round(scale * 100)}%
+                    </span>
                     <Button onClick={handleZoomOut} size='icon' className="p-1">
                         <ZoomOut className="h-5 w-5" />
                     </Button>
                     <Button onClick={handleResetZoom} size='icon' className="p-1">
                         <RotateCcw className="h-5 w-5" />
                     </Button>
-                </div> */}
+                </div>
                 <div
-                    className="w-full h-full overflow-auto select-text"
+                    className="w-full bg-slate-200 h-full overflow-auto select-text"
                     ref={localRef}
                 >
                     <Document
+                        ref={docRef}
                         file={pdfUrl ?? undefined}
                         onLoadSuccess={onDocumentLoadSuccess}
                         onLoadError={onDocumentLoadError}
-                        className={cn(' p-2 bg-slate-200', !pdfUrl && 'h-full')}
+                        className={cn(' p-2 pb-16 bg-slate-200', !pdfUrl && 'h-full')}
                         loading={
                             <div className="flex items-center justify-center h-96">
-                                {/* <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"> */}
                                 <Spinner />
-                                {/* </div> */}
                             </div>
                         }
 
@@ -134,7 +202,7 @@ const PdfReader = () => {
                             </div>
                         }
                         error={
-                            <div className="flex items-center justify-center h-96">
+                            <div className="flex items-center justify-center h-full">
                                 <p className="text-red-500">Error loading PDF file</p>
                             </div>
                         }
@@ -142,7 +210,7 @@ const PdfReader = () => {
                         {Array.from(
                             new Array(numPages),
                             (el, index) => (
-                                <div className="my-2 pb-4" key={index}>
+                                <div id={`page-${index + 1}`} className="my-2 flex flex-col items-center" key={index}>
                                     <Page
                                         loading={
                                             <div className="flex items-center justify-center h-96">
@@ -153,8 +221,8 @@ const PdfReader = () => {
                                         scale={scale}
                                         renderAnnotationLayer={true}
                                         renderTextLayer={true}
-                                        className={'border m-0'}
-                                        width={(width) - 32} // Adjust width based on the container size
+                                        className={'border '}
+                                        width={pdfWidth} // Adjust width based on the container 
                                     />
                                 </div>
                             ),

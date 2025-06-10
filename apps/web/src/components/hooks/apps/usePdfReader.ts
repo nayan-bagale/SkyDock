@@ -2,7 +2,7 @@ import { showToast } from "@skydock/ui/toast";
 import { useCallback, useState } from "react";
 
 const usePdfReader = () => {
-  const [numPages, setNumPages] = useState<number>();
+  const [numPages, setNumPages] = useState<number>(1);
   const [scale, setScale] = useState<number>(1.0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
