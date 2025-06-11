@@ -1,3 +1,4 @@
+import ActionButton from "@/ui/action-button";
 import cn from "@/utils";
 import { ThemeT } from "@skydock/types";
 import { motion } from "framer-motion";
@@ -39,7 +40,7 @@ const VideoPlayerCard = forwardRef<HTMLDivElement, VideoPlayerCardProps>(
         const [isMaximized, setIsMaximized] = useState(false);
         return (
             <motion.div
-                className={cn("text-black  shadow absolute aspect-video min-w-[35rem] max-w-[85vw] min-h-[20rem] max-h-[88vh] backdrop-blur bg-black  overflow-hidden",
+                className={cn("text-black shadow absolute aspect-video min-w-[35rem] max-w-[85vw] min-h-[20rem] max-h-[88vh] backdrop-blur  overflow-hidden",
                     // theme?.color,
                     className,
                     isMaximized ? "max-w-full min-w-[100vw] min-h-[88vh] top-0 rounded-none resize-none" : "w-[35rem] h-[25rem] resize rounded-xl",
@@ -52,14 +53,18 @@ const VideoPlayerCard = forwardRef<HTMLDivElement, VideoPlayerCardProps>(
                 onMouseDown={onMouseDownCard}
                 onContextMenu={onContextMenu}
             >
-                <div className={cn("relative flex justify-between items-center bg-white/60 backdrop-blur shadow px-2 py-3 w-full", theme?.color, isMaximized ? "rounded-none border-t border-gray-300" : "rounded")}
+                <div className={cn("relative flex justify-between items-center bg-white/60 backdrop-blur shadow px-2 py-3.5 w-full", theme?.color, isMaximized ? "rounded-none border-t border-gray-300" : "rounded-t")}
                     onMouseDown={onMouseDown}
                 >
                     <div className="absolute flex gap-2">
-                        <div className="flex justify-center items-center bg-red-400 hover:bg-red-600 hover:shadow rounded-full w-3 h-3 transition-colors cursor-default"
+                        <ActionButton
+                            color="red"
+                            size={'medium'}
                             onClick={() => action.close()}
                         />
-                        <div className="flex justify-center items-center bg-yellow-400 hover:bg-yellow-600 hover:shadow rounded-full w-3 h-3 transition-colors cursor-default"
+                        <ActionButton
+                            color="lime"
+                            size={'medium'}
                             onClick={() => setIsMaximized(!isMaximized)}
                         />
                     </div>
@@ -67,7 +72,7 @@ const VideoPlayerCard = forwardRef<HTMLDivElement, VideoPlayerCardProps>(
                         <span className="font-medium text-sm">{ }</span>
                     </div>
                 </div>
-                <div className="w-full h-full">
+                <div className="w-full bg-black h-full">
                     {children}
                 </div>
             </motion.div>

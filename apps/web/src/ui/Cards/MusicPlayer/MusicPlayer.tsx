@@ -1,3 +1,4 @@
+import ActionButton from "@/ui/action-button";
 import cn from "@/utils";
 import { ThemeT } from "@skydock/types";
 import { motion } from "framer-motion";
@@ -50,11 +51,13 @@ const MusicPlayerCard = forwardRef<HTMLDivElement, MusicPlayerCardProps>(
                 onMouseDown={onMouseDownCard}
                 onContextMenu={onContextMenu}
             >
-                <div className={cn("relative flex justify-between items-center bg-white/60 backdrop-blur shadow px-2 py-3 rounded w-full", theme?.color,)}
+                <div className={cn("relative flex justify-between items-center bg-white/60 backdrop-blur shadow px-2 py-3 w-full", theme?.color,)}
                     onMouseDown={onMouseDown}
                 >
                     <div className="absolute flex gap-1">
-                        <div className="flex justify-center items-center bg-red-400 hover:bg-red-600 hover:shadow rounded-full w-3 h-3 transition-colors cursor-default"
+                        <ActionButton
+                            color="red"
+                            size={'medium'}
                             onClick={() => action.close()}
                         />
                     </div>

@@ -1,3 +1,4 @@
+import ActionButton from "@/ui/action-button";
 import cn from "@/utils";
 import { ThemeT } from "@skydock/types";
 import { motion } from "framer-motion";
@@ -45,11 +46,15 @@ const PdfReaderCard = forwardRef<HTMLDivElement, PdfReaderCardProps>(
                 <div className={cn(" z-20 fixed flex justify-between items-center bg-white/60 backdrop-blur shadow px-2 py-3 rounded w-full", theme?.color,)}
                     onMouseDown={onMouseDown}
                 >
-                    <div className="absolute flex gap-1.5">
-                        <div className="flex justify-center items-center bg-red-400 hover:bg-red-600 hover:shadow rounded-full w-3 h-3 transition-colors cursor-default"
+                    <div className="absolute flex gap-2">
+                        <ActionButton
+                            color="red"
+                            size={'medium'}
                             onClick={() => action.close()}
                         />
-                        <div className="flex justify-center items-center bg-yellow-400 hover:bg-yellow-600 hover:shadow rounded-full w-3 h-3 transition-colors cursor-default"
+                        <ActionButton
+                            color="lime"
+                            size={'medium'}
                             onClick={() => setIsMaximized(!isMaximized)}
                         />
                     </div>

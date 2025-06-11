@@ -1,10 +1,11 @@
 import { ConfirmModalContext } from "@/components/ContextApi/ConfirmModal";
 import { FolderT } from "@/types/explorer";
+import ActionButton from "@/ui/action-button";
 import cn from "@/utils";
 import { ExplorerItemsActiveTabs, ThemeT } from "@skydock/types";
 import { Icons } from "@skydock/ui/icons";
 import { motion } from "framer-motion";
-import { forwardRef, Fragment, ReactNode, useContext } from "react";
+import { forwardRef, Fragment, ReactNode, useContext, useState } from "react";
 import { Button } from "../../button";
 
 interface ExplorerCardProps {
@@ -82,16 +83,18 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
         ref
     ) => {
         const { open, close } = useContext(ConfirmModalContext);
+        const [isMaximized, setIsMaximized] = useState(false);
         return (
             // <AnimatePresence>
             <motion.div
                 className={cn(
-                    " text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] bg-white/80 backdrop-blur rounded-xl overflow-hidden",
+                    " text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] bg-white/80 backdrop-blur overflow-hidden",
                     theme?.color,
+                    isMaximized ? "max-w-full min-w-[100vw] min-h-[88vh] top-0 rounded-none resize-none" : "w-[40rem] h-[26rem] resize rounded-xl",
                     className
                 )}
                 ref={ref}
-                style={{ left: style.x, top: style.y }}
+                style={{ left: isMaximized ? 0 : style?.x, top: isMaximized ? 24 : style?.y }}
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0 }}
@@ -106,21 +109,19 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
                     onMouseDown={onMouseDown}
                     onContextMenu={(e) => e.preventDefault()}
                 >
-                    <div className="absolute flex gap-1">
-                        <div
-                            className="flex justify-center items-center bg-red-400 hover:bg-red-600 hover:shadow rounded-full w-3 h-3 transition-colors cursor-default"
+                    <div className="absolute flex gap-2">
+                        <ActionButton
+                            color="red"
+                            size={'medium'}
                             onClick={() => action.close()}
-                        >
-                            {/* <Icons.Cross className="fill-white w-4 h-4" /> */}
-                        </div>
-                        {/* <div className="bg-yellow-600 rounded-full w-3 h-3"
-                                onClick={() => action.size.changeSize()}
-                            ></div> */}
-                        {/* <div className="bg-green-600 rounded-full w-3 h-3"
-                            onClick={() => Action("close")}
-                            ></div> */}
+                        />
+                        <ActionButton
+                            color="lime"
+                            size={'medium'}
+                            onClick={() => setIsMaximized(!isMaximized)}
+                        />
                     </div>
-                    <div className="flex justify-start items-center gap-2 ml-8 w-full text-xs cursor-default">
+                    <div className="flex justify-start items-center gap-2 ml-12 w-full text-xs cursor-default">
                         <div className="flex justify-evenly gap-2">
                             <Button
                                 intent={"ghost"}
@@ -302,6 +303,7 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
                         </div>
                     </div>
                 </div>
+                {/* <div className=" p-3 border-black/60 -bottom-0 -right-1 rounded-br-xl border-r-4 border-b-4 absolute "></div> */}
             </motion.div>
             // </AnimatePresence>
         );

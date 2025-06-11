@@ -1,3 +1,4 @@
+import ActionButton from "@/ui/action-button";
 import cn from "@/utils";
 import { ThemeT } from "@skydock/types";
 import { motion } from "framer-motion";
@@ -22,22 +23,22 @@ const SubscriptionPlanWrapper = forwardRef<
 >(({ theme, onMouseDown, action, children, className, onContextMenu }, ref) => {
     return (
         <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            animate={{ opacity: 1, backdropFilter: "blur(4px)" }}
+            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
             onContextMenu={onContextMenu}
-            className=" absolute flex bg-black/20 z-30 backdrop-blur-sm justify-center items-center inset-0"
+            className=" absolute flex bg-black/20 z-30 justify-center items-center inset-0"
         >
             <motion.div
                 className={cn(
-                    "text-black shadow absolute bg-stone-100 min-w-[40rem] max-w-[80rem] min-h-[30rem] max-h-[40rem] backdrop-blur rounded-xl overflow-hidden",
+                    "text-black shadow absolute bg-stone-100 min-w-[40rem] max-w-[80rem] min-h-[30rem] max-h-[40rem] rounded-xl overflow-hidden",
                     // theme?.color,
                     className
                 )}
                 ref={ref}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 20, }}
+                animate={{ opacity: 1, y: 0, }}
+                exit={{ opacity: 0, y: 20, }}
                 transition={{ duration: 0.3 }}
             >
                 <div
@@ -45,9 +46,9 @@ const SubscriptionPlanWrapper = forwardRef<
                     onMouseDown={onMouseDown}
                 >
                     <div className="absolute flex gap-1">
-                        <div
-                            title="close"
-                            className="flex justify-center items-center bg-red-400 hover:bg-red-600 hover:shadow rounded-full w-3 h-3 transition-colors cursor-default"
+                        <ActionButton
+                            color="red"
+                            size={'medium'}
                             onClick={() => action.close()}
                         />
                     </div>

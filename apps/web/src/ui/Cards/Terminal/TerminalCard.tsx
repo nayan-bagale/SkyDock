@@ -1,3 +1,4 @@
+import ActionButton from "@/ui/action-button";
 import cn from "@/utils";
 import { motion } from "framer-motion";
 import { forwardRef } from "react";
@@ -28,19 +29,15 @@ export const TerminalCard = forwardRef<HTMLDivElement, TerminalCardProps>(
                 onMouseDown={onMouseDownCard}
                 onContextMenu={(e) => { e.stopPropagation(); e.preventDefault(); }}
             >
-                <div className=" flex items-center justify-between px-2 py-1 text-sm w-full bg-black/80 rounded"
+                <div className=" flex items-center justify-between px-2 py-1.5 text-sm w-full bg-black/80 rounded"
                     onMouseDown={onMouseDown}
                 >
                     <div className=" flex gap-1 absolute">
-                        <div className=" h-3 w-3 rounded-full bg-red-600"
+                        <ActionButton
+                            color="dark-red"
+                            size={'medium'}
                             onClick={() => Action.close()}
-                        ></div>
-                        {/* <div className=" h-3 w-3 rounded-full bg-yellow-600"
-                            onClick={() => Action("")}
-                        ></div>
-                        <div className=" h-3 w-3 rounded-full bg-green-600"
-                            onClick={() => Action("close")}
-                        ></div> */}
+                        />
                     </div>
                     <div className="text-xs w-full flex items-center justify-center cursor-default">Terminal</div>
                 </div>
