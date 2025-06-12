@@ -25,7 +25,7 @@ const ControlCenter = () => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         ref={ref}
-                        className={cn(" absolute z-10 top-7 h-40 w-28 bg-white/50 backdrop-blur p-2 text-xs min-w-[18rem] gap-1 shadow-md flex flex-col rounded-xl right-0 ")}
+                        className={cn(" absolute z-10 top-7 h-40 w-28 bg-white/50 backdrop-blur p-2 text-xs min-w-[18rem] gap-1 shadow-md flex flex-col rounded-xl right-2/4 translate-x-2/4",)}
                     >
                         <AnimatePresence>
                             {notification.map((item, index) => (
