@@ -1,5 +1,5 @@
+import useChangeAppFocus from '@/components/hooks/useChangeAppFocus';
 import { useDrag } from '@/components/hooks/useDrag';
-import { setFocusedApp } from '@/redux/features/apps/appsSlice';
 import { terminalProcess } from '@/redux/features/terminal/terminalSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { TerminalCard } from '@/ui/Cards/Terminal/TerminalCard';
@@ -12,14 +12,11 @@ const Terminal = () => {
 
     const draggableRef = useRef<HTMLDivElement>(null);
     const focusedApp = useAppSelector((state) => state.apps.focusedApp)
+    const { handleAppFocus } = useChangeAppFocus(AppsT.Terminal);
 
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef
     });
-
-    const handleZIndex = () => {
-        focusedApp !== 'Terminal' && dispatch(setFocusedApp('Terminal'))
-    }
 
     const Action = {
         close: () => {
@@ -33,7 +30,7 @@ const Terminal = () => {
             style={{ x: position.x, y: position.y }}
             onMouseDown={handleMouseDown}
             Action={Action}
-            onMouseDownCard={handleZIndex}
+            onMouseDownCard={handleAppFocus}
             className={focusedApp === AppsT.Terminal ? 'z-20' : ''}
         />
 
