@@ -6,6 +6,7 @@ import { forwardRef, ReactNode, useState } from "react";
 
 interface VideoPlayerCardProps {
     style: { x: number, y: number };
+    isFocused?: boolean;
     onMouseDown: any;
     children?: ReactNode;
     action: {
@@ -36,12 +37,14 @@ export interface Track {
 }
 
 const VideoPlayerCard = forwardRef<HTMLDivElement, VideoPlayerCardProps>(
-    ({ style, theme, onMouseDown, action, children, onMouseDownCard, className, title, onContextMenu }, ref) => {
+    ({ style, theme, onMouseDown, action, isFocused, children, onMouseDownCard, className, title, onContextMenu }, ref) => {
         const [isMaximized, setIsMaximized] = useState(false);
         return (
             <motion.div
                 className={cn("text-black shadow absolute aspect-video min-w-[35rem] max-w-[85vw] min-h-[20rem] max-h-[88vh] backdrop-blur  overflow-hidden",
                     // theme?.color,
+                    isFocused && "z-20",
+                    (isFocused && !isMaximized) && "shadow-app  transition-shadow",
                     className,
                     isMaximized ? "max-w-full min-w-[100vw] min-h-[88vh] top-0 rounded-none resize-none" : "w-[35rem] h-[25rem] resize rounded-xl",
                 )}

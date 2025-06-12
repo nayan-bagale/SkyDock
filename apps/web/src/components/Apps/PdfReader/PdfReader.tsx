@@ -10,7 +10,7 @@ import { Button } from "@/ui/button";
 import PdfReaderCard from "@/ui/Cards/PdfReader/PdfReaderCard";
 import Spinner from "@/ui/Spinner";
 import cn from "@/utils";
-import { SupportedMimeTypes } from "@skydock/types/enums";
+import { AppsT, SupportedMimeTypes } from "@skydock/types/enums";
 import { Separator } from "@skydock/ui/components";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -109,7 +109,7 @@ const PdfReader = () => {
                 onMouseDownCard={handleAppFocus}
                 action={Action}
                 theme={theme}
-                className={focusedApp === 'MusicPlayer' ? 'z-20' : ''}
+                isFocused={focusedApp === AppsT.PdfReader}
                 onContextMenu={handleContextMenu}
                 title="PDF Reader"
             >

@@ -8,6 +8,7 @@ import { forwardRef, useState } from "react";
 
 interface SettingsCardProps extends HTMLMotionProps<'div'> {
     className?: string;
+    isFocused?: boolean;
     style: { x: number, y: number };
     action: {
         close: () => void;
@@ -25,7 +26,7 @@ interface SettingsCardProps extends HTMLMotionProps<'div'> {
 
 }
 
-export const SettingsCard = forwardRef<HTMLDivElement, SettingsCardProps>(({ options, theme, className, onMouseDownCard, children, onMouseDown, action, style, activeTab, setActiveTab }, ref) => {
+export const SettingsCard = forwardRef<HTMLDivElement, SettingsCardProps>(({ options, isFocused, theme, className, onMouseDownCard, children, onMouseDown, action, style, activeTab, setActiveTab }, ref) => {
     const [isMaximized, setIsMaximized] = useState(false);
 
     return (
@@ -35,6 +36,8 @@ export const SettingsCard = forwardRef<HTMLDivElement, SettingsCardProps>(({ opt
             className={cn(
                 "text-black resize shadow absolute  min-w-[36rem] max-w-[55rem] min-h-[25rem] max-h-[40rem] backdrop-blur rounded-xl overflow-hidden",
                 theme?.color,
+                isFocused && "z-20",
+                (isFocused && !isMaximized) && "shadow-app  transition-shadow",
                 isMaximized ? "max-w-full min-w-[100vw] min-h-[88vh] h-[88vh] top-0 rounded-none resize-none" : "w-[40rem] h-[26rem] resize rounded-xl",
                 className
             )}

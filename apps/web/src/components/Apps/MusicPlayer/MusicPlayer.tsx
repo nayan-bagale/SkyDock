@@ -161,7 +161,7 @@ const MusicPlayer = () => {
                         onMouseDown={handleMouseDown}
                         action={Action}
                         onMouseDownCard={handleAppFocus}
-                        className={focusedApp === 'MusicPlayer' ? 'z-20' : ''}
+                        isFocused={focusedApp === 'MusicPlayer'}
                         theme={theme}
                         title={"Music Player"}
                         onContextMenu={handleContextMenu}

@@ -6,6 +6,7 @@ import CommandsInput from "./CommandsInput";
 
 interface TerminalCardProps {
     style: { x: number, y: number };
+    isFocused?: boolean;
     onMouseDown: any;
     Action: {
         close: () => void;
@@ -17,10 +18,15 @@ interface TerminalCardProps {
 }
 
 export const TerminalCard = forwardRef<HTMLDivElement, TerminalCardProps>(
-    ({ style, onMouseDown, onMouseDownCard, Action, className }, ref) => {
+    ({ style, onMouseDown, onMouseDownCard, Action, isFocused, className }, ref) => {
         return (
             // <AnimatePresence>
-            <motion.div className={cn(" resize absolute min-w-[32rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] text-gray-200 bg-black/60 backdrop-blur rounded-xl overflow-hidden", className)}
+            <motion.div className={cn(
+                " resize absolute min-w-[32rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] text-gray-200 bg-black/60 backdrop-blur rounded-xl overflow-hidden",
+
+                isFocused && "shadow-app  transition-shadow z-20",
+                className
+            )}
                 ref={ref}
                 style={{ left: style.x, top: style.y }}
                 initial={{ opacity: 0, scale: 0 }}

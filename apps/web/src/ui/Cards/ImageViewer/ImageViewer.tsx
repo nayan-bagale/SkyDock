@@ -7,6 +7,7 @@ import { forwardRef, ReactNode, useState } from "react";
 
 interface ImageViewerCardProps {
     style: { x: number, y: number };
+    isFocused?: boolean;
     onMouseDown: any;
     children?: ReactNode;
     action: {
@@ -28,12 +29,14 @@ interface ImageViewerCardProps {
 }
 
 export const ImageViewerCard = forwardRef<HTMLDivElement, ImageViewerCardProps>(
-    ({ style, theme, onMouseDown, action, children, onMouseDownCard, className, title, onContextMenu }, ref) => {
+    ({ style, theme, onMouseDown, action, children, onMouseDownCard, isFocused, className, title, onContextMenu }, ref) => {
         const [isMaximized, setIsMaximized] = useState(false);
         return (
             <motion.div
                 className={cn("text-black resize shadow absolute  min-w-[30rem] max-w-[60rem] min-h-[20rem] max-h-[45rem] bg-white/80 backdrop-blur rounded-xl overflow-hidden",
                     theme?.color,
+                    isFocused && "z-20",
+                    (isFocused && !isMaximized) && "shadow-app  transition-shadow",
                     isMaximized ? "max-w-full min-w-[100vw] min-h-[88vh] h-[88vh] top-0 rounded-none resize-none" : "w-[40rem] h-[30rem] resize rounded-xl",
 
                     className

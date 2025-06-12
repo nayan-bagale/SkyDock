@@ -6,6 +6,7 @@ import { forwardRef, ReactNode, useState } from "react";
 
 interface PdfReaderCardProps {
     style: { x: number, y: number };
+    isFocused?: boolean;
     onMouseDown: any;
     children?: ReactNode;
     action: {
@@ -27,12 +28,14 @@ interface PdfReaderCardProps {
 }
 
 const PdfReaderCard = forwardRef<HTMLDivElement, PdfReaderCardProps>(
-    ({ style, theme, onMouseDown, action, children, onMouseDownCard, className, title, onContextMenu }, ref) => {
+    ({ style, theme, onMouseDown, isFocused, action, children, onMouseDownCard, className, title, onContextMenu }, ref) => {
         const [isMaximized, setIsMaximized] = useState(false);
         return (
             <motion.div
                 className={cn("text-black overflow-auto  bg-white resize shadow absolute min-w-[30rem]  max-w-[85%]  min-h-[30rem] max-h-[88%] backdrop-blur rounded-xl  flex flex-col",
                     className,
+                    isFocused && "z-20",
+                    (isFocused && !isMaximized) && "shadow-app  transition-shadow",
                     isMaximized ? "max-w-full min-w-[100vw] min-h-[88vh] h-[88vh] top-0 rounded-none resize-none" : "w-[30rem] h-[28rem] resize rounded-xl",
                 )}
                 ref={ref}

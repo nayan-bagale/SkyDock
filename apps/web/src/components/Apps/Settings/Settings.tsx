@@ -3,6 +3,7 @@ import { useDrag } from "@/components/hooks/useDrag";
 import { settingsProcess } from "@/redux/features/settings/settingsSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { SettingsCard } from "@/ui/Cards/Settings/Settings";
+import { AppsT } from "@skydock/types/enums";
 import { Icons } from "@skydock/ui/icons";
 import { AnimatePresence } from "framer-motion";
 import { useRef, useState } from "react";
@@ -73,7 +74,7 @@ const Settings = () => {
             style={{ x: position.x, y: position.y }}
             onMouseDown={handleMouseDown}
             onMouseDownCard={handleAppFocus}
-            className={focusedApp === 'Settings' ? 'z-20' : ''}
+            isFocused={focusedApp === AppsT.Settings}
             theme={theme}
             options={options}
             activeTab={activeTab}

@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import useGetFileURl from '@/components/hooks/useGetFileURl';
 import { useVideoPlayer } from '@/components/hooks/useVideoPlayer';
 import { cn } from '@/utils';
+import { AppsT } from '@skydock/types/enums';
 import { Maximize, Pause, Play, Volume1, Volume2, VolumeX } from 'lucide-react';
 
 const VideoPlayer = () => {
@@ -145,7 +146,7 @@ const VideoPlayer = () => {
             onMouseDown={handleMouseDown}
             action={Action}
             onMouseDownCard={handleAppFocus}
-            className={focusedApp === 'VideoPlayer' ? 'z-20' : ''}
+            isFocused={focusedApp === AppsT.VideoPlayer}
             theme={theme}
             title={"Music Player"}
             onContextMenu={handleContextMenu}

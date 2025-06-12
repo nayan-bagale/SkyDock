@@ -103,7 +103,7 @@ const ImageViewer = () => {
             onMouseDown={handleMouseDown}
             action={Action}
             onMouseDownCard={handleAppFocus}
-            className={focusedApp === 'ImageViewer' ? 'z-20' : ''}
+            isFocused={focusedApp === 'ImageViewer'}
             theme={theme}
             title={imageTitle}
             onContextMenu={handleContextMenu}

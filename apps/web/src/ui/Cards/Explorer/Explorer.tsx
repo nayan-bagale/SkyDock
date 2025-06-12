@@ -12,6 +12,7 @@ interface ExplorerCardProps {
     style: { x: number; y: number };
     onMouseDown: any;
     children?: ReactNode;
+    isFocused?: boolean;
     action: {
         close: () => void;
         size: {
@@ -79,6 +80,7 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
             handleActiveTabs,
             onContextMenu,
             onEmptyTrash,
+            isFocused
         },
         ref
     ) => {
@@ -90,6 +92,8 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
                 className={cn(
                     " text-black resize shadow absolute w-[40rem] h-[26rem] min-w-[36rem] max-w-[55rem] min-h-[18rem] max-h-[40rem] bg-white/80 backdrop-blur overflow-hidden",
                     theme?.color,
+                    isFocused && "z-20",
+                    (isFocused && !isMaximized) && "shadow-app  transition-shadow",
                     isMaximized ? "max-w-full min-w-[100vw] min-h-[88vh] top-0 rounded-none resize-none" : "w-[40rem] h-[26rem] resize rounded-xl",
                     className
                 )}

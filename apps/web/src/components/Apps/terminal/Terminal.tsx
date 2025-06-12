@@ -31,7 +31,7 @@ const Terminal = () => {
             onMouseDown={handleMouseDown}
             Action={Action}
             onMouseDownCard={handleAppFocus}
-            className={focusedApp === AppsT.Terminal ? 'z-20' : ''}
+            isFocused={focusedApp === AppsT.Terminal}
         />
 
     )
