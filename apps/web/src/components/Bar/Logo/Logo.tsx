@@ -37,8 +37,8 @@ const Logo = () => {
 
     return (
         <>
-            <Button className="hover:bg-transparent hover:drop-shadow-[0px_0px_5px_#ffffff] p-0"
-                onClick={() => setShow(true)}
+            <Button className="hover:bg-transparent transition hover:drop-shadow-[0px_0px_5px_#ffffff] p-0"
+            // onClick={() => setShow(true)}
             >
                 <Icons.Logo className="h-7" />
             </Button>

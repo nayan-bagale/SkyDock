@@ -3,6 +3,7 @@ import { setFocusedApp } from '@/redux/features/apps/appsSlice';
 import { terminalProcess } from '@/redux/features/terminal/terminalSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { TerminalCard } from '@/ui/Cards/Terminal/TerminalCard';
+import { AppsT } from '@skydock/types/enums';
 import { useRef } from 'react';
 
 const Terminal = () => {
@@ -33,7 +34,7 @@ const Terminal = () => {
             onMouseDown={handleMouseDown}
             Action={Action}
             onMouseDownCard={handleZIndex}
-            className={focusedApp === 'Terminal' ? 'z-30' : 'z-20'}
+            className={focusedApp === AppsT.Terminal ? 'z-20' : ''}
         />
 
     )

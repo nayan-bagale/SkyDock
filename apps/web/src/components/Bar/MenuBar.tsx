@@ -1,4 +1,5 @@
 import { useAppSelector } from "@/redux/hooks";
+import { Button } from "@/ui/button";
 import ControlCenter from "@/ui/Cards/ControlCenter/ControlCenter";
 import { Bar } from "@/ui/MenuBar/Bar";
 import Date_n_Time from "./DatenTime/Date_n_Time";
@@ -17,12 +18,14 @@ const MenuBar = () => {
           <div className="flex justify-evenly items-center gap-3 px-3">
             <Logo />
             <div className="flex items-center gap-4">
-              {/* <div className="font-semibold text-xs cursor-default">
-                {focusedAppName}
-              </div>
-              <Button size={'small'} className="drop-shadow">
-                File
-              </Button> */}
+              {focusedAppName && (<>
+                <div className="font-semibold text-gray-800 text-xs cursor-default">
+                  {focusedAppName}
+                </div>
+                <Button size={'small'} className="drop-shadow">
+                  File
+                </Button>
+              </>)}
             </div>
           </div>
           <div className="flex justify-evenly items-center gap-2 px-2">

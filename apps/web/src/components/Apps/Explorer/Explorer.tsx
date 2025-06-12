@@ -56,7 +56,6 @@ const Explorer = () => {
 
     const handleEmptyTrash = async () => {
         const arrayItems = getNestedFolderItemsId('trash', []).filter((item: any) => !ExplorerTabs.includes(item));
-        console.log(arrayItems)
         try {
             await emptyTrashApi(arrayItems);
             invalidUserInfo();
