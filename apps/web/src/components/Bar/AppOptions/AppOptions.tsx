@@ -1,4 +1,5 @@
 import { useAppSelector } from "@/redux/hooks";
+import { APPS_TEXT } from "@skydock/types/enums";
 import { AnimatePresence, motion } from "framer-motion";
 
 const AppOptions = () => {
@@ -12,7 +13,7 @@ const AppOptions = () => {
                     animate={{ opacity: 1, }}
                     exit={{ opacity: 0, }}
                     className="font-semibold text-gray-800 text-xs cursor-default">
-                    {focusedAppName}
+                    {APPS_TEXT[focusedAppName]}
                 </motion.div>
                 {/* <Button size={'small'} className="drop-shadow"
                     initial={{ opacity: 0, }}

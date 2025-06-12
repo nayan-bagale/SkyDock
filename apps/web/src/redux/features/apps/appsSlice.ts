@@ -1,8 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppsT } from "@skydock/types/enums";
 
+type ExcludeAppsT = Exclude<keyof typeof AppsT, "AppsMenu"> | "";
+
 export interface AppsStateT {
-  focusedApp: keyof typeof AppsT | "";
+  focusedApp: ExcludeAppsT;
   subscriptionPlanCard: boolean;
 }
 
@@ -15,7 +17,7 @@ export const appsSlice = createSlice({
   name: "apps",
   initialState: initialState,
   reducers: {
-    setFocusedApp: (state, action: PayloadAction<keyof typeof AppsT | "">) => {
+    setFocusedApp: (state, action: PayloadAction<ExcludeAppsT>) => {
       state.focusedApp = action.payload;
     },
     openSubscriptionPlanCard: (state) => {

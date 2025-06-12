@@ -9,3 +9,15 @@ export enum AppsT {
   PdfReader = "PdfReader",
   Trash = "Trash",
 }
+
+export const APPS_TEXT: Record<AppsT, string> = {
+  [AppsT.AppsMenu]: "Apps Menu",
+  [AppsT.Terminal]: "Terminal",
+  [AppsT.Explorer]: "Explorer",
+  [AppsT.Settings]: "Settings",
+  [AppsT.ImageViewer]: "Image Viewer",
+  [AppsT.MusicPlayer]: "Music Player",
+  [AppsT.VideoPlayer]: "Video Player",
+  [AppsT.PdfReader]: "PDF Reader",
+  [AppsT.Trash]: "Trash",
+} as const;
