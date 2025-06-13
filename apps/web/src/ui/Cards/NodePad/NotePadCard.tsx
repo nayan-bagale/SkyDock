@@ -1,35 +1,27 @@
 import ActionButton from "@/ui/action-button";
 import cn from "@/utils";
 import { ThemeT } from "@skydock/types";
-import { motion } from "framer-motion";
+import { HTMLMotionProps, motion } from "framer-motion";
 import { forwardRef, ReactNode, useState } from "react";
 
 
-interface NotePadCardProps {
+type NotePadCardProps = {
     style: { x: number, y: number };
     isFocused?: boolean;
     onMouseDown: any;
     children?: ReactNode;
     action: {
         close: () => void;
-        size: {
-            isMaximized: boolean;
-            changeSize: () => void;
-            lastSize: {
-                width: number;
-                height: number;
-            };
-        }
     };
     onMouseDownCard: () => void;
     className?: string;
     theme: ThemeT | null;
     title: string;
     onContextMenu: (e: React.MouseEvent) => void;
-}
+} & HTMLMotionProps<"div">;
 
 const NotePadCard = forwardRef<HTMLDivElement, NotePadCardProps>(
-    ({ style, theme, onMouseDown, isFocused, action, children, onMouseDownCard, className, title, onContextMenu }, ref) => {
+    ({ style, theme, onMouseDown, isFocused, action, children, onMouseDownCard, className, title, onContextMenu, ...props }, ref) => {
         const [isMaximized, setIsMaximized] = useState(false);
         return (
             <motion.div
@@ -46,8 +38,9 @@ const NotePadCard = forwardRef<HTMLDivElement, NotePadCardProps>(
                 exit={{ opacity: 0, scale: 0.2 }}
                 onMouseDown={onMouseDownCard}
                 onContextMenu={onContextMenu}
+                {...props}
             >
-                <div className={cn(" z-20 fixed flex justify-between items-center bg-white/60 backdrop-blur shadow px-2 py-3 rounded w-full", theme?.color,)}
+                <div className={cn(" z-20 fixed flex justify-between items-center bg-white/60 backdrop-blur px-2 py-3.5 rounded w-full", theme?.color,)}
                     onMouseDown={onMouseDown}
                 >
                     <div className="absolute flex gap-2">
@@ -67,7 +60,7 @@ const NotePadCard = forwardRef<HTMLDivElement, NotePadCardProps>(
                         <span className="font-medium text-sm">{ }</span>
                     </div>
                 </div>
-                <div className="w-full overflow-hidden h-full flex-1 mt-6 ">
+                <div className="w-full h-full flex-1 mt-7 flex flex-col overflow-hidden">
                     {children}
                 </div>
             </motion.div>

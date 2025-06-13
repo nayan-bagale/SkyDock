@@ -1,27 +1,33 @@
+import useNotePad from "@/components/hooks/apps/useNotePad";
 import useChangeAppFocus from "@/components/hooks/useChangeAppFocus";
 import { useDrag } from "@/components/hooks/useDrag";
-import { useAppSelector } from "@/redux/hooks";
+import { closeNotePad } from "@/redux/features/note-pad/notePadSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { Button } from "@/ui/button";
 import NotePadCard from "@/ui/Cards/NodePad/NotePadCard";
 import { AppsT } from "@skydock/types/enums";
+import { Save } from "lucide-react";
 import { useRef } from "react";
+
+type SyncStatus = "saved" | "saving" | "synced" | "error";
 
 const NotePad = () => {
     const theme = useAppSelector((state) => state.settings.apperance.theme);
-
+    const dispatch = useAppDispatch();
     const draggableRef = useRef<HTMLDivElement>(null);
     const { position, handleMouseDown } = useDrag({
-        ref: draggableRef
+        ref: draggableRef,
     });
     const { handleAppFocus } = useChangeAppFocus(AppsT.NotePad);
-
+    const isFocused = useAppSelector((state) => state.apps.focusedApp === AppsT.NotePad);
     const action = {
         close: () => {
-            // Close the image viewer
-            // You'll need to add this action to your apps slice
-            // dispatch(closePdfReader());
-
+            dispatch(closeNotePad());
         },
     };
+
+    const { content, getSyncColor, getSyncText, setContent, syncStatus, syncToCloud } = useNotePad();
+
     return (
         <NotePadCard
             style={{ x: position.x, y: position.y }}
@@ -29,7 +35,7 @@ const NotePad = () => {
             onMouseDown={handleMouseDown}
             theme={theme}
             action={action}
-            isFocused={true}
+            isFocused={isFocused}
             onMouseDownCard={handleAppFocus}
             onContextMenu={(e) => {
                 e.stopPropagation();
@@ -37,15 +43,62 @@ const NotePad = () => {
             }}
             title="NotePad"
         >
-            <div className="p-4">
-                <h1 className="text-xl font-bold mb-4">NotePad</h1>
+            <div className="bg-white flex items-center p-1 border-b">
+                <Button
+                    onClick={syncToCloud}
+                    disabled={syncStatus === 'saving'}
+                    size={'small'}
+                    className={`${getSyncColor()} text-white  px-2 transition-all duration-200 transform hover:scale-105`}
+                >
+                    {/* {getSyncIcon()} */}
+                    <Save className="w-4 h-4" />
+                    <span className="ml-2">{getSyncText()}</span>
+                </Button>
+            </div>
+            <div className="bg-white flex-1 overflow-hidden">
                 <textarea
-                    className="w-full h-full p-2 border rounded"
-                    placeholder="Type your notes here..."
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder="Start writing your thoughts..."
+                    className="w-full h-full p-2 text-slate-700 leading-relaxed text-md resize-none border-none outline-none focus:ring-0 placeholder-slate-400"
                 />
             </div>
+            {/* Status Bar */}
+            <div className=" px-4 py-1 border-t flex items-center justify-between text-sm text-slate-500">
+                <div className="flex text-xs items-center space-x-4">
+                    <span>{content.length} characters</span>
+                    <span>
+                        {content.split(/\s+/).filter((word) => word.length > 0).length}{" "}
+                        words
+                    </span>
+                </div>
+                <div className=" text-center text-xs text-slate-400">
+                    Press <kbd className=" p-1 bg-slate-100 rounded text-slate-600 font-mono">Ctrl + S</kbd> to save
+                </div>
+                <div className="flex  items-center space-x-2">
+                    <div
+                        className={`w-2 h-2 rounded-full ${syncStatus === "synced"
+                            ? "bg-green-400"
+                            : syncStatus === "saving"
+                                ? "bg-blue-400 animate-pulse"
+                                : syncStatus === "error"
+                                    ? "bg-red-400"
+                                    : "bg-slate-400"
+                            }`}
+                    />
+                    <span className="text-xs">
+                        {syncStatus === "synced"
+                            ? "All changes saved"
+                            : syncStatus === "saving"
+                                ? "Syncing to cloud..."
+                                : syncStatus === "error"
+                                    ? "Offline - saved locally"
+                                    : "Ready to save"}
+                    </span>
+                </div>
+            </div>
         </NotePadCard>
-    )
-}
+    );
+};
 
-export default NotePad
+export default NotePad;
