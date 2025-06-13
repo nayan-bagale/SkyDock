@@ -14,6 +14,11 @@ import {
   setMusicPlayerLoading,
 } from "@/redux/features/music-player/musicPlayerSlice";
 import {
+  closeNotePad,
+  openNotePad,
+  setNotePadLoading,
+} from "@/redux/features/note-pad/notePadSlice";
+import {
   closePdfReader,
   openPdfReader,
   setPdfReaderLoading,
@@ -48,6 +53,7 @@ const useAppProcess = () => {
   const videoPlayerState = useAppSelector((state) => state.videoPlayer);
   const pdfReaderState = useAppSelector((state) => state.pdfReader);
   const appsMenuState = useAppSelector((state) => state.skydock.appsMenu);
+  const notePadState = useAppSelector((state) => state.notePad);
 
   const focusedApp = useAppSelector((state) => state.apps.focusedApp);
 
@@ -223,6 +229,35 @@ const useAppProcess = () => {
     };
   }, [appsMenuState.isLoading, appsMenuState.isOpen]);
 
+  const notePadApp = useMemo(() => {
+    return {
+      open: () => {
+        if (!notePadState.actions.isProcessOn) {
+          dispatch(openNotePad(null));
+        }
+        if (focusedApp !== AppsT.NotePad) {
+          dispatch(setFocusedApp(AppsT.NotePad));
+        }
+      },
+      close: () => {
+        dispatch(closeNotePad());
+      },
+      isProcessOn: notePadState.actions.isProcessOn,
+      isLoading: notePadState.state.isLoading,
+      setLoadingTrue: () => {
+        dispatch(setNotePadLoading(true));
+      },
+      setLoadingFalse: () => {
+        dispatch(setNotePadLoading(false));
+      },
+    };
+  }, [
+    notePadState.actions.isProcessOn,
+    notePadState.state.isLoading,
+    focusedApp,
+    // dispatch,
+  ]);
+
   return {
     settingsApp,
     terminalApp,
@@ -232,6 +267,7 @@ const useAppProcess = () => {
     videoPlayerApp,
     appsMenuSystem,
     pdfReaderApp,
+    notePadApp,
   };
 };
 

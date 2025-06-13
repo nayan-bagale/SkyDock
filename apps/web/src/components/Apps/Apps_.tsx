@@ -7,6 +7,7 @@ import {
     Explorer,
     ImageViewer,
     MusicPlayer,
+    NotePad,
     PdfReader,
     Settings,
     Terminal,
@@ -23,6 +24,7 @@ const Apps_ = () => {
         videoPlayerApp,
         appsMenuSystem,
         pdfReaderApp,
+        notePadApp,
     } = useAppProcess();
 
     return (
@@ -122,6 +124,19 @@ const Apps_ = () => {
                     <PdfReader />
                 </Suspense>)}
             </AnimatePresence>
+
+            <AnimatePresence>
+                {notePadApp.isProcessOn && (<Suspense
+                    fallback={
+                        <MountUnmountCallback
+                            onMount={notePadApp.setLoadingTrue}
+                            onUnmount={notePadApp.setLoadingFalse}
+                        />
+                    }>
+                    <NotePad />
+                </Suspense>)}
+            </AnimatePresence>
+
             <AnimatePresence>
                 {appsMenuSystem.isOpen && (<Suspense
                     fallback={

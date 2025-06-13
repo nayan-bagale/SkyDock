@@ -21,6 +21,7 @@ const Dock = () => {
         videoPlayerApp,
         appsMenuSystem,
         pdfReaderApp,
+        notePadApp,
     } = useAppProcess();
 
     const systemApps = [
@@ -108,6 +109,14 @@ const Dock = () => {
             fun: pdfReaderApp.open,
             active: pdfReaderApp.isProcessOn,
             isLoading: pdfReaderApp.isLoading,
+            pin: false,
+        }, {
+            id: AppsT.NotePad,
+            name: "Note Pad",
+            Icon: Icons.Notepad,
+            fun: notePadApp.open,
+            active: notePadApp.isProcessOn,
+            isLoading: notePadApp.isLoading,
             pin: false,
         }
 

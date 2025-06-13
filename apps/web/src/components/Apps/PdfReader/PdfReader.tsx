@@ -37,7 +37,7 @@ const PdfReader = () => {
     const { getFileUrl } = useGetFileURl()
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const { width } = useResizeObserver(localRef);
-    const { handleAppFocus } = useChangeAppFocus('PdfReader');
+    const { handleAppFocus } = useChangeAppFocus(AppsT.PdfReader);
 
     const { numPages, onDocumentLoadSuccess, onDocumentLoadError, scale, handleResetZoom, handleZoomIn, handleZoomOut, goToPage, pageNumber,
         isLoading

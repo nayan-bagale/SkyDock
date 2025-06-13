@@ -11,6 +11,7 @@ import { controlCenterSlice } from "./features/control-center/controlCenterSlice
 import imageViewerReducer from "./features/imageViewer/imageViewerSlice";
 import lockScreenReducer from "./features/lockScreen/lockScreenSlice";
 import musicPlayerReducer from "./features/music-player/musicPlayerSlice";
+import notePadReducer from "./features/note-pad/notePadSlice";
 import pdfReaderReducer from "./features/pdf-reader/pdfReaderSlice";
 import { settingsSlice } from "./features/settings/settingsSlice";
 import skydockReducer from "./features/skydock/skydockSlice";
@@ -32,6 +33,7 @@ export const store = configureStore({
     videoPlayer: videoPlayerReducer,
     pdfReader: pdfReaderReducer,
     skydock: skydockReducer,
+    notePad: notePadReducer,
     ai: aiReducer,
 
     [userAuthApi.reducerPath]: userAuthApi.reducer,

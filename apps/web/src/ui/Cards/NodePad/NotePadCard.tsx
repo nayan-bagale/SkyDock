@@ -4,13 +4,22 @@ import { ThemeT } from "@skydock/types";
 import { motion } from "framer-motion";
 import { forwardRef, ReactNode, useState } from "react";
 
-interface PdfReaderCardProps {
+
+interface NotePadCardProps {
     style: { x: number, y: number };
     isFocused?: boolean;
     onMouseDown: any;
     children?: ReactNode;
     action: {
         close: () => void;
+        size: {
+            isMaximized: boolean;
+            changeSize: () => void;
+            lastSize: {
+                width: number;
+                height: number;
+            };
+        }
     };
     onMouseDownCard: () => void;
     className?: string;
@@ -19,7 +28,7 @@ interface PdfReaderCardProps {
     onContextMenu: (e: React.MouseEvent) => void;
 }
 
-const PdfReaderCard = forwardRef<HTMLDivElement, PdfReaderCardProps>(
+const NotePadCard = forwardRef<HTMLDivElement, NotePadCardProps>(
     ({ style, theme, onMouseDown, isFocused, action, children, onMouseDownCard, className, title, onContextMenu }, ref) => {
         const [isMaximized, setIsMaximized] = useState(false);
         return (
@@ -62,8 +71,7 @@ const PdfReaderCard = forwardRef<HTMLDivElement, PdfReaderCardProps>(
                     {children}
                 </div>
             </motion.div>
-        );
-    }
-);
+        )
+    })
 
-export default PdfReaderCard
+export default NotePadCard

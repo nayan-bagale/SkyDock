@@ -23,7 +23,8 @@ const AppsMenu = () => {
         settingsApp,
         terminalApp,
         videoPlayerApp,
-        pdfReaderApp
+        pdfReaderApp,
+        notePadApp,
     } = useAppProcess();
 
     const { signOutFunction } = useSkydockSystem();
@@ -36,6 +37,8 @@ const AppsMenu = () => {
         { id: 5, name: "Terminal", Icon: Icons.Terminal, open: terminalApp.open },
         { id: 6, name: "Video Player", Icon: Icons.Video, open: videoPlayerApp.open },
         { id: 7, name: "PDF Reader", Icon: Icons.PDF, open: pdfReaderApp.open },
+        { id: 8, name: "Note Pad", Icon: Icons.Notepad, open: notePadApp.open },
+
     ];
 
     useOnClickOutside(ref, () => {

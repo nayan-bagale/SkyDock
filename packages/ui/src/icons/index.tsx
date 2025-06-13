@@ -33,6 +33,7 @@ import zoom_out_svg from './assests/magnifer-zoom-out-svgrepo-com.svg';
 import menu_svg from './assests/mjml-svgrepo-com.svg';
 import move_svg from './assests/move-to-folder-svgrepo-com.svg';
 import music_svg from './assests/music-svgrepo-com.svg';
+import notepad_svg from './assests/notepad-svgrepo-com.svg';
 import paint_svg from './assests/paint-svgrepo-com.svg';
 import pdf_svg from './assests/pdf-svgrepo-com-1.svg';
 import image_svg from './assests/picture-photo-image-svgrepo-com.svg';
@@ -122,6 +123,7 @@ export const Icons = {
   Video: ({ className }: { className: string }) => $({ svg: video_svg, name: 'video', className }),
   Google_Logo_White: ({ className }: { className: string }) => $({ svg: google_logo_white_svg, name: 'google_logo_white', className }),
   Upload1: ({ className }: { className: string }) => $({ svg: upload1_svg, name: 'upload1', className }),
+  Notepad: ({ className }: { className: string }) => $({ svg: notepad_svg, name: 'notepad', className }),
 
 }
 

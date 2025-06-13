@@ -1,3 +1,5 @@
+import { AppsT } from "./enums";
+
 export interface SkydockT {
   isLoading: boolean;
   isError: boolean;
@@ -7,3 +9,5 @@ export interface SkydockT {
     isProcessOn: boolean;
   };
 }
+
+export type FocusedAppsT = Exclude<keyof typeof AppsT, "AppsMenu"> | "";

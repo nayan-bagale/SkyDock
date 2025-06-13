@@ -1,9 +1,9 @@
 import { setFocusedApp } from "@/redux/features/apps/appsSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { AppsT } from "@skydock/types/enums";
+import { FocusedAppsT } from "@skydock/types";
 import { useEffect } from "react";
 
-const useChangeAppFocus = (AppName: keyof typeof AppsT | "") => {
+const useChangeAppFocus = (AppName: FocusedAppsT) => {
   const dispatch = useAppDispatch();
   const focusedApp = useAppSelector((state) => state.apps.focusedApp);
 
