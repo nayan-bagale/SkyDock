@@ -33,7 +33,7 @@ export const AppCard = ({ app, index }: AppCardProps) => {
                 className=" bg-white  px-4 hover:border-white rounded-2xl p-1 flex flex-col items-center justify-center"
             >
                 <div
-                    className={`p-1 rounded-md flex items-center justify-center text-white text-sm shadow-sm`}
+                    className={`p-1 rounded-md flex items-center justify-center text-white text-sm `}
                 >
                     <Icon className="h-12" />
                 </div>
