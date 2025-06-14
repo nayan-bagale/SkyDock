@@ -31,6 +31,8 @@ export const notePadSlice = createSlice({
     closeNotePad: (state) => {
       state.actions.isProcessOn = false;
       state.notePadInfo.textFileInfo = null;
+      state.notePadInfo.content = "";
+      state.notePadInfo.lastSaved = null;
     },
     setNotePadLoading: (state, action: PayloadAction<boolean>) => {
       state.state.isLoading = action.payload;

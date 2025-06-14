@@ -36,6 +36,14 @@ router.post("/folder/delete", authMiddleware, async (req, res) => {
   await filesController.deleteFolder(req, res);
 });
 
+router.get("/file/text/:id", authMiddleware, async (req, res) => {
+  await filesController.getTextFileContent(req, res);
+});
+
+router.patch("/file/text/:id", authMiddleware, async (req, res) => {
+  await filesController.patchTextFileContent(req, res);
+});
+
 router.put(
   "/folderAndFile/softDelete",
   authMiddleware,

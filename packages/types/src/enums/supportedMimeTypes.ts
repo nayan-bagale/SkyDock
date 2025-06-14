@@ -4,4 +4,5 @@ export enum SupportedMimeTypes {
   Audio = "audio/",
   Video = "video/",
   PDF = "application/pdf",
+  Text = "text/plain",
 }

@@ -5,33 +5,46 @@ import { closeNotePad } from "@/redux/features/note-pad/notePadSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
 import NotePadCard from "@/ui/Cards/NodePad/NotePadCard";
+import { Input } from "@/ui/input";
 import { AppsT } from "@skydock/types/enums";
+import { AnimatePresence, motion } from "framer-motion";
 import { Save } from "lucide-react";
 import { useRef, useState } from "react";
-import { useDebounce } from "react-use";
-
 
 const NotePad = () => {
     const theme = useAppSelector((state) => state.settings.apperance.theme);
-    const [contentValue, setContentValue] = useState<string>("");
+    const contentValue = useAppSelector(
+        (state) => state.notePad.notePadInfo.content
+    );
+    // const [contentValue, setContentValue] = useState<string>(initialContent);
     const dispatch = useAppDispatch();
     const draggableRef = useRef<HTMLDivElement>(null);
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef,
     });
+    const [fontSize, setFontSize] = useState<number>(14); // Default font size
     const { handleAppFocus } = useChangeAppFocus(AppsT.NotePad);
-    const isFocused = useAppSelector((state) => state.apps.focusedApp === AppsT.NotePad);
+    const isFocused = useAppSelector(
+        (state) => state.apps.focusedApp === AppsT.NotePad
+    );
     const action = {
         close: () => {
             dispatch(closeNotePad());
         },
     };
 
-    const { getSyncColor, getSyncText, setContent, syncStatus, syncToCloud } = useNotePad();
+    const {
+        getSyncColor,
+        getSyncText,
+        setContent: setContentValue,
+        syncStatus,
+        syncToCloud,
+        isFileActionModalOn,
+    } = useNotePad();
 
-    const [isReady, cancel] = useDebounce(() => {
-        setContent(contentValue);
-    }, 500, [contentValue, setContent]);
+    // const [isReady, cancel] = useDebounce(() => {
+    //     setContent(contentValue);
+    // }, 500, [contentValue, setContent]);
 
     return (
         <NotePadCard
@@ -44,27 +57,40 @@ const NotePad = () => {
             onMouseDownCard={handleAppFocus}
             onContextMenu={(e) => {
                 e.stopPropagation();
-                // Handle context menu if needed
             }}
             title="NotePad"
         >
             <div className="bg-white flex items-center p-1 border-b">
                 <Button
                     onClick={syncToCloud}
-                    disabled={syncStatus === 'saving'}
-                    size={'small'}
+                    disabled={syncStatus === "saving"}
+                    size={"small"}
                     className={`${getSyncColor()} text-white  px-2 transition-all duration-200 transform hover:scale-105`}
                 >
                     {/* {getSyncIcon()} */}
                     <Save className="w-4 h-4" />
                     <span className="ml-2">{getSyncText()}</span>
                 </Button>
+                <div>
+                    <label className="ml-4 text-xs text-slate-600">
+                        Font Size:
+                        <Input
+                            type="number"
+                            value={fontSize}
+                            onChange={(e) => setFontSize(Number(e.target.value))}
+                            min={10}
+                            max={36}
+                            className="ml-2 w-16 p-1 border rounded"
+                        />
+                    </label>
+                </div>
             </div>
             <div className="bg-white flex-1 overflow-hidden">
                 <textarea
                     value={contentValue}
                     onChange={(e) => setContentValue(e.target.value)}
-                    placeholder="Start writing your thoughts..."
+                    // placeholder="Start writing your thoughts..."
+                    style={{ fontSize: `${fontSize}px` }}
                     className="w-full h-full p-2 text-slate-700 leading-relaxed text-md resize-none border-none outline-none focus:ring-0 placeholder-slate-400"
                 />
             </div>
@@ -78,7 +104,11 @@ const NotePad = () => {
                     </span>
                 </div>
                 <div className=" text-center text-xs text-slate-400">
-                    Press <kbd className=" p-1 bg-slate-100 rounded text-slate-600 font-mono">Ctrl + S</kbd> to save
+                    Press{" "}
+                    <kbd className=" p-1 bg-slate-100 rounded text-slate-600 font-mono">
+                        Ctrl + S
+                    </kbd>{" "}
+                    to save
                 </div>
                 <div className="flex  items-center space-x-2">
                     <div
@@ -102,6 +132,16 @@ const NotePad = () => {
                     </span>
                 </div>
             </div>
+            <AnimatePresence>
+                {isFileActionModalOn && (
+                    <motion.div
+                        className="absolute inset-0  flex items-center justify-center z-50"
+                        initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                        animate={{ opacity: 1, backdropFilter: "blur(5px)" }}
+                        exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                    ></motion.div>
+                )}
+            </AnimatePresence>
         </NotePadCard>
     );
 };

@@ -1,10 +1,12 @@
 import { setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
 import { openImageViewer } from "@/redux/features/imageViewer/imageViewerSlice";
 import { openMusicPlayer } from "@/redux/features/music-player/musicPlayerSlice";
+import { openNotePad } from "@/redux/features/note-pad/notePadSlice";
 import { openPdfReader } from "@/redux/features/pdf-reader/pdfReaderSlice";
 import { openVideoPlayer } from "@/redux/features/video-player/videoPlayerSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { FileT, FolderT } from "@skydock/types";
+import { SupportedMimeTypes } from "@skydock/types/enums";
 
 const useAppOpenBasedOnFileType = (item: FileT | FolderT | null) => {
   const dispatch = useAppDispatch();
@@ -20,14 +22,16 @@ const useAppOpenBasedOnFileType = (item: FileT | FolderT | null) => {
     if (!item) return;
     if (item.isFolder) {
       dispatch(setCurrentFolder(item.id));
-    } else if (isItemStartsWith("image/")) {
+    } else if (isItemStartsWith(SupportedMimeTypes.Image)) {
       dispatch(openImageViewer(item.id));
-    } else if (isItemStartsWith("audio/")) {
+    } else if (isItemStartsWith(SupportedMimeTypes.Audio)) {
       dispatch(openMusicPlayer(item));
-    } else if (isItemStartsWith("video/")) {
+    } else if (isItemStartsWith(SupportedMimeTypes.Video)) {
       dispatch(openVideoPlayer(item));
-    } else if (isItemStartsWith("application/pdf")) {
+    } else if (isItemStartsWith(SupportedMimeTypes.PDF)) {
       dispatch(openPdfReader(item));
+    } else if (isItemStartsWith(SupportedMimeTypes.Text)) {
+      dispatch(openNotePad(item));
     }
   };
 

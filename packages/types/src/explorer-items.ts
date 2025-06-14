@@ -100,6 +100,8 @@ export interface ExplorerT {
   };
 }
 
+export type ExplorerItemT = FileT | FolderT;
+
 export type handleDragStartT = (e: any, item: FileT | FolderT) => void;
 
 export type handleDropT = (

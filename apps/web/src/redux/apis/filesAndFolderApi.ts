@@ -85,6 +85,23 @@ const filesAndFolderApi = createApi({
       }),
       // invalidatesTags: ["UserInfo"],
     }),
+    getTextFileContent: builder.mutation({
+      query: (id: string) => ({
+        url: `/file/text/${id}`,
+        method: "GET",
+        responseHandler: "text",
+      }),
+    }),
+
+    updateTextFileContent: builder.mutation({
+      query: ({ id, content }: { id: string; content: string }) => ({
+        url: `/file/text/${id}`,
+        method: "PATCH",
+        body: { content },
+      }),
+    }),
+
+    // Endpoint Ends Here
   }),
 });
 
@@ -100,5 +117,7 @@ export const {
   useCreateFolderMutation,
   useDeleteFolderMutation,
   useSoftDeleteFileAndFolderMutation,
+  useGetTextFileContentMutation,
+  useUpdateTextFileContentMutation,
 } = filesAndFolderApi;
 export default filesAndFolderApi;

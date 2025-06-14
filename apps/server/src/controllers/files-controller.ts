@@ -334,6 +334,66 @@ class FilesController {
         .json({ message: messages.INTERNAL_SERVER_ERROR });
     }
   }
+
+  async getTextFileContent(req: Request, res: Response) {
+    const fileId = req.params.id as string;
+    const userId = req.userInfo?.id as string;
+
+    try {
+      const file = await prisma.explorerItems.findUnique({
+        where: { id: fileId, user_id: userId, is_deleted: false },
+      });
+
+      if (!file || file.mime_type !== "text/plain") {
+        return res.status(INTERNALERROR).json({ message: "File not found" });
+      }
+
+      const content = await Store.getObject(
+        `${userId}/${fileId}.${file.name.split(".").pop()}`
+      );
+      if (!content.Body) {
+        return res
+          .status(INTERNALERROR)
+          .json({ message: "File content not found" });
+      }
+      const textContent = await content.Body.transformToString();
+      res.send(textContent);
+    } catch (err) {
+      logger.error("Error fetching text file content", err);
+      res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+  }
+
+  async patchTextFileContent(req: Request, res: Response) {
+    const fileId = req.params.id as string;
+    const userId = req.userInfo?.id as string;
+    const content = req.body.content as string;
+
+    try {
+      const file = await prisma.explorerItems.findUnique({
+        where: { id: fileId, user_id: userId, is_deleted: false },
+      });
+
+      if (!file || file.mime_type !== "text/plain") {
+        return res.status(INTERNALERROR).json({ message: "File not found" });
+      }
+
+      await Store.putObject(
+        `${userId}/${fileId}.${file.name.split(".").pop()}`,
+        content,
+        "text/plain"
+      );
+
+      res.json({ message: "File content updated" });
+    } catch (err) {
+      logger.error("Error updating text file content", err);
+      res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+  }
 }
 
 export default FilesController.getInstance();

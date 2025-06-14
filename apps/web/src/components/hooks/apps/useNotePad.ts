@@ -1,19 +1,33 @@
 import {
+  useGetTextFileContentMutation,
+  useUpdateTextFileContentMutation,
+} from "@/redux/apis/filesAndFolderApi";
+import {
   setNotePadContent,
   setNotePadLastSaved,
   setNotePadSyncStatus,
 } from "@/redux/features/note-pad/notePadSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { FileT } from "@skydock/types";
 import { useCallback, useEffect } from "react";
-import { useDebounce } from "react-use";
 
 type SyncStatus = "saved" | "saving" | "synced" | "error";
 
 const useNotePad = () => {
   const dispatch = useAppDispatch();
-  const { content, syncStatus, lastSaved, textFileInfo } = useAppSelector(
+  const { content, syncStatus, lastSaved } = useAppSelector(
     (state) => state.notePad.notePadInfo
   );
+  const fileInfo = useAppSelector(
+    (state) => state.notePad.notePadInfo.textFileInfo
+  );
+
+  const isFileActionModalOn = useAppSelector(
+    (state) => state.notePad.actions.isFileActionModalOn
+  );
+
+  const [updateTextFile] = useUpdateTextFileContentMutation();
+  const [getTextFileContent] = useGetTextFileContentMutation();
 
   const setLastSaved = useCallback(
     (date: Date | null) => {
@@ -36,35 +50,61 @@ const useNotePad = () => {
     [dispatch]
   );
 
+  const fetchFileContent = useCallback(
+    async (fileInfo: FileT | null) => {
+      try {
+        if (!fileInfo) {
+          throw new Error("No file info available to fetch content");
+        }
+        const content = await getTextFileContent(fileInfo.id).unwrap();
+        setContent(content);
+        setLastSaved(new Date());
+      } catch (error) {
+        console.error("Failed to fetch file content:", error);
+        setContent("");
+        setLastSaved(null);
+        setSyncStatus("error");
+      }
+    },
+    [getTextFileContent, setContent, setLastSaved, setSyncStatus]
+  );
+
+  useEffect(() => {
+    fetchFileContent(fileInfo);
+  }, [fetchFileContent, fileInfo]);
+
   const syncToCloud = useCallback(async () => {
     setSyncStatus("saving");
 
     try {
       // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Simulate random success/failure (90% success rate)
-      if (Math.random() > 0.1) {
-        setSyncStatus("synced");
-        setLastSaved(new Date());
-      } else {
-        throw new Error("Sync failed");
+      // await new Promise((resolve) => setTimeout(resolve, 1500));
+      if (!fileInfo) {
+        throw new Error("No file info available to update");
       }
+
+      await updateTextFile({
+        id: fileInfo.id,
+        content,
+      }).unwrap();
+
+      setSyncStatus("synced");
+      setLastSaved(new Date());
     } catch (error) {
       setSyncStatus("error");
     }
     setSyncStatus("saved");
-  }, []);
+  }, [content, fileInfo, setLastSaved, setSyncStatus, updateTextFile]);
 
-  const [] = useDebounce(
-    () => {
-      if (content) {
-        syncToCloud();
-      }
-    },
-    3000,
-    [content, syncToCloud]
-  );
+  // const [] = useDebounce(
+  //   () => {
+  //     if (content) {
+  //       syncToCloud();
+  //     }
+  //   },
+  //   3000,
+  //   [content, syncToCloud]
+  // );
 
   // Auto-save to localStorage when content changes
   // useEffect(() => {
@@ -136,6 +176,7 @@ const useNotePad = () => {
     // getSyncIcon,
     getSyncText,
     getSyncColor,
+    isFileActionModalOn,
   };
 };
 

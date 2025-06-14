@@ -1,21 +1,16 @@
 import { useAppSelector } from "@/redux/hooks";
 import { FileT } from "@/types/explorer";
 import FileSaveAndOpenModal from "@/ui/FileSaveAndOpenModal/FileSaveAndOpenModal";
-import { FolderT } from "@skydock/types";
-import { AppsT } from "@skydock/types/enums";
+import { FileSaveAndOpenModalT, FolderT } from "@skydock/types";
 import { AnimatePresence } from "framer-motion";
 import { createContext, useCallback, useEffect, useState } from "react";
 
-interface ContextType {
-    openFileOpenerModal: ({ app, onSuccess, onClose }: { app: keyof typeof AppsT, onSuccess: (item: FileT | FolderT) => void, onClose: () => void }) => void;
-    openSaveFileModal: ({ app, onSuccess, onClose }: { app: keyof typeof AppsT, onSuccess: (item: FileT | FolderT) => void, onClose: () => void }) => void;
-}
 
-export const FileSaveAndOpenModalContext = createContext<ContextType>({
-    openFileOpenerModal({ app, onSuccess, onClose }) {
+export const FileSaveAndOpenModalContext = createContext<FileSaveAndOpenModalT>({
+    openFileOpenerModal({ appName, onSuccess, onClose }) {
 
     },
-    openSaveFileModal({ app, onSuccess, onClose }) {
+    openSaveFileModal({ appName, onSuccess, onClose }) {
 
     },
 });
@@ -25,15 +20,16 @@ export const FileSaveAndOpenModalProvider = ({ children }: { children: React.Rea
     const [focusedAppId, setFocusedAppId] = useState<string | null>(null);
     const focusedApp = useAppSelector((state) => state.apps.focusedApp);
     const [action, setAction] = useState<'open' | 'save'>('open');
-    const [onSuccess, setOnSuccess] = useState<((item: FileT | FolderT) => void) | null>(null);
+    const [onSuccess, setOnSuccess] = useState<((item: FileT | FolderT | string) => void) | null>(null);
     const [onClose, setOnClose] = useState<(() => void) | null>(null);
+    const [supportedMimeTypes, setSupportedMimeType] = useState<string[] | null>(null);
 
     const closeModal = useCallback(() => {
         setIsOpen(false);
         setFocusedAppId(null);
         setAction('open');
         setOnSuccess(null);
-        if (onClose) {
+        if (typeof onClose === 'function') {
             onClose();
         }
         // Reset the onClose function to avoid memory leaks
@@ -44,26 +40,27 @@ export const FileSaveAndOpenModalProvider = ({ children }: { children: React.Rea
         if (focusedAppId && focusedAppId !== focusedApp) {
             closeModal()
         }
-
     }, [closeModal, focusedApp, focusedAppId]);
 
-    const openFileOpenerModal: ContextType['openFileOpenerModal'] = ({ app, onSuccess, onClose }) => {
+    const openFileOpenerModal: FileSaveAndOpenModalT['openFileOpenerModal'] = ({ appName, onSuccess, onClose, supportedMimeTypes }) => {
         setIsOpen(true);
-        setFocusedAppId(app);
+        setFocusedAppId(appName);
         setAction('open');
         setOnSuccess(() => onSuccess);
         setOnClose(() => onClose)
+        setSupportedMimeType(supportedMimeTypes || null);
     }
 
-    const openSaveFileModal: ContextType['openSaveFileModal'] = ({ app, onSuccess, onClose }) => {
+    const openSaveFileModal: FileSaveAndOpenModalT['openSaveFileModal'] = ({ appName, onSuccess, onClose, supportedMimeTypes }) => {
         setIsOpen(true);
-        setFocusedAppId(app);
+        setFocusedAppId(appName);
         setAction('save');
         setOnSuccess(() => onSuccess);
         setOnClose(() => onClose)
+        setSupportedMimeType(supportedMimeTypes || null);
     }
 
-    const handleSuccess = useCallback((item: FileT | FolderT) => {
+    const handleSuccess = useCallback((item: FileT | FolderT | string) => {
         if (onSuccess) {
             onSuccess(item);
         }
@@ -78,10 +75,11 @@ export const FileSaveAndOpenModalProvider = ({ children }: { children: React.Rea
             openSaveFileModal,
         }}>
             {children}
-            {isOpen &&
-                <AnimatePresence>
-                    <FileSaveAndOpenModal closeModal={closeModal} onSuccess={handleSuccess} action={action} />
-                </AnimatePresence>}
+            <AnimatePresence>
+                {isOpen &&
+                    <FileSaveAndOpenModal supportedMimeTypes={supportedMimeTypes} closeModal={closeModal} onSuccess={handleSuccess} action={action} />
+                }
+            </AnimatePresence>
         </FileSaveAndOpenModalContext.Provider>
     );
 }

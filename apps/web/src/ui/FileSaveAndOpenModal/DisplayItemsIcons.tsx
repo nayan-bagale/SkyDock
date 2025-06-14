@@ -3,12 +3,12 @@ import { FileT, FolderT } from '@skydock/types';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { FC } from 'react';
 
-interface DisplayItemsIconsT {
+interface DisplayItemsIconsT extends React.HTMLAttributes<HTMLDivElement> {
     children?: React.ReactNode;
     className?: string;
     item: FileT | FolderT;
     Icon: ({ className }: { className: string }) => JSX.Element;
-    onClick?: () => void;
+    // onClick?: () => void;
     onContextMenu?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     view: 'grid' | 'row';
     onDoubleClick?: () => void;

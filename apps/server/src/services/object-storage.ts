@@ -41,6 +41,21 @@ class Store {
     return await getSignedUrl(s3, command);
   }
 
+  async putObject(
+    key: string,
+    body: Buffer | string,
+    contentType: string
+  ): Promise<void> {
+    const command = new PutObjectCommand({
+      Bucket: process.env.AWS_BUCKET_NAME!,
+      Key: key,
+      Body: body,
+      ContentType: contentType,
+    });
+
+    await s3.send(command);
+  }
+
   async deleteObject(key: string) {
     const deletedObj = new DeleteObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME!,
@@ -48,6 +63,15 @@ class Store {
     });
 
     return await s3.send(deletedObj);
+  }
+
+  async getObject(key: string) {
+    const command = new GetObjectCommand({
+      Bucket: process.env.AWS_BUCKET_NAME!,
+      Key: key,
+    });
+
+    return await s3.send(command);
   }
 }
 

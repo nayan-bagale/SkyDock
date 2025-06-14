@@ -18,14 +18,16 @@ import { DisplayItemsIcons } from "./DisplayItemsIcons";
 
 interface FileSaveAndOpenModalT {
     closeModal: (() => void) | null;
-    onSuccess: ((item: FileT | FolderT) => void) | null;
-    action: string;
+    onSuccess: ((item: FileT | FolderT | string) => void) | null;
+    action: 'open' | 'save';
+    supportedMimeTypes: string[] | null;
 }
 
 const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
     closeModal,
     action,
     onSuccess,
+    supportedMimeTypes
 }) => {
     // TODO: Implement the functionality to save and open files.
     const draggableRef = useRef<HTMLDivElement>(null);
@@ -75,7 +77,7 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
         .map((child) => explorerItems[child])
         .filter((item) => {
             if (item.isFolder) return true;
-            if (!item.isFolder && item.details?.type.includes("text")) {
+            if (!item.isFolder && supportedMimeTypes?.includes(item.details?.type || '')) {
                 return true;
             } else {
                 return false;
@@ -119,9 +121,43 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
         tabsOptions,
     };
 
-    const selectedItemFunc = useCallback((item: FileT | FolderT) => {
+    const selectedItemFunc = useCallback((item: FileT | FolderT | null) => {
         setSelectedItem(item);
     }, []);
+
+    const submitButtonText = useMemo(() => {
+
+        if (selectedItem?.isFolder) return 'Open Folder';
+
+        if (action === 'open') {
+            return 'Select File'
+        } else if (action === 'save') {
+            return 'Save in Folder';
+        }
+
+    }, [action, selectedItem?.isFolder])
+
+    const submitButtonAction = useCallback(() => {
+        if (selectedItem?.isFolder) {
+            openItem(selectedItem as FolderT);
+            return;
+        }
+        if (action === 'save') {
+            onSuccess?.(currentFolder)
+        } else if (action === 'open') {
+            if (!selectedItem) return;
+            onSuccess?.(selectedItem as FileT | FolderT);
+        }
+    }, [action, currentFolder, onSuccess, selectedItem]);
+
+    const isSubmitDisabled = useMemo(() => {
+        if (action === 'save') {
+            return !currentFolder && !selectedItem;
+        } else {
+            // For open action, we can select a file or folder
+            return !selectedItem
+        }
+    }, [action, currentFolder, selectedItem]);
 
 
     return (
@@ -227,7 +263,7 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
                         </div>
                     </div>
                 </div>
-                <div className="flex pb-10 overflow-auto  flex-1 flex-col h-full bg-white p-2 w-full">
+                <div onClick={() => selectedItemFunc(null)} className="flex pb-10 overflow-auto  flex-1 flex-col h-full bg-white p-2 w-full">
                     {item?.isFolder && (
                         <div className={cn("relative", " w-full")}>
                             {files.map((item) => {
@@ -258,16 +294,8 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
                     Cancel
                 </Button>
 
-                <Button className="px-2 py-1" size={"small"} disabled={!selectedItem} onClick={() => {
-                    if (!selectedItem) return;
-                    if (selectedItem.isFolder) {
-                        openItem(selectedItem as FolderT);
-                    } else {
-                        onSuccess?.(selectedItem as FileT | FolderT)
-                    }
-                }} intent={"secondary"}>
-
-                    {selectedItem?.isFolder ? 'Open Folder' : 'Select File'}
+                <Button className="px-2 py-1" size={"small"} disabled={isSubmitDisabled} onClick={submitButtonAction} intent={"secondary"}>
+                    {submitButtonText}
                 </Button>
             </div>
         </motion.div>
@@ -282,7 +310,7 @@ const ItemDisplay = ({
 }: {
     item: FolderT | FileT;
     openItem: (item: FolderT | FileT) => void;
-    selectedItemFunc: (item: FolderT | FileT) => void;
+    selectedItemFunc: (item: FolderT | FileT | null) => void;
     selectedItem: FileT | FolderT | null;
 }) => {
     const Icon = IconByMimeType(
@@ -314,7 +342,10 @@ const ItemDisplay = ({
                 onContextMenu={handleContextMenu}
                 onDoubleClick={handleDoubleClick}
                 onKeyDown={handleKeyDown}
-                onClick={() => selectedItemFunc(item)}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    selectedItemFunc(item)
+                }}
                 className={cn(
                     selectedItem?.id === item.id && "bg-gray-400/20"
                 )}
