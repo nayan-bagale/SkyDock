@@ -99,7 +99,7 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
             </AnimatePresence>
             <AnimatePresence>
                 {view === 'row' &&
-                    (<motion.div className={cn('hover:bg-gray-400/40 text-xs relative w-full flex justify-start items-center p-1 gap-2 rounded-md', isOver && 'bg-gray-400/10 border', className)}
+                    (<motion.div className={cn('hover:bg-gray-400/40 text-xs relative w-full flex justify-start items-center p-1 gap-2 focus:bg-gray-400/40 rounded-md', isOver && 'bg-gray-400/10 border', className)}
                         id={item.id}
                         whileTap={{ scale: 0.95 }}
                         onContextMenu={onContextMenu}

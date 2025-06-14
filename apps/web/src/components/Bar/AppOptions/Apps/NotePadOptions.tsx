@@ -4,6 +4,7 @@ import { openNotePad, openNotePadFileActionModal } from "@/redux/features/note-p
 import { useAppDispatch } from "@/redux/hooks";
 import { Button } from "@/ui/button";
 import { MainDropDownMenu, MainMenuSeparator } from "@/ui/Cards/Menus/MainDropDownMenu/MainDropDownMenu";
+import { FileT } from "@skydock/types";
 import { AppsT } from "@skydock/types/enums";
 import { useContext, useRef, useState } from "react";
 
@@ -17,10 +18,16 @@ const NotePadOptions = () => {
 
     const handleFileOpen = () => {
         dispatch(openNotePadFileActionModal(true));
+        setShow(false)
         openFileOpenerModal({
-            app: AppsT.NotePad, cb: (e) => {
-                openNotePad(e);
+            app: AppsT.NotePad,
+            onSuccess: (e) => {
+
+                dispatch(openNotePad(e as FileT))
                 console.log(e)
+            },
+            onClose: () => {
+                // dispatch(openNotePadFileActionModal(false));
             }
         })
     }

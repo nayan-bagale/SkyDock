@@ -33,11 +33,14 @@ export const FileSaveAndOpenModalProvider = ({ children }: { children: React.Rea
         setFocusedAppId(null);
         setAction('open');
         setOnSuccess(null);
+        if (onClose) {
+            onClose();
+        }
+        // Reset the onClose function to avoid memory leaks
         setOnClose(null)
-    }, [])
+    }, [onClose])
 
     useEffect(() => {
-        console.log(focusedApp, focusedAppId)
         if (focusedAppId && focusedAppId !== focusedApp) {
             closeModal()
         }
@@ -58,8 +61,15 @@ export const FileSaveAndOpenModalProvider = ({ children }: { children: React.Rea
         setAction('save');
         setOnSuccess(() => onSuccess);
         setOnClose(() => onClose)
-
     }
+
+    const handleSuccess = useCallback((item: FileT | FolderT) => {
+        if (onSuccess) {
+            onSuccess(item);
+        }
+        closeModal();
+    }, [closeModal, onSuccess]);
+
 
 
     return (
@@ -70,7 +80,7 @@ export const FileSaveAndOpenModalProvider = ({ children }: { children: React.Rea
             {children}
             {isOpen &&
                 <AnimatePresence>
-                    <FileSaveAndOpenModal closeModal={closeModal} onSuccess={onSuccess} action={action} />
+                    <FileSaveAndOpenModal closeModal={closeModal} onSuccess={handleSuccess} action={action} />
                 </AnimatePresence>}
         </FileSaveAndOpenModalContext.Provider>
     );

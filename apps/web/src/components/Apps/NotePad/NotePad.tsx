@@ -7,12 +7,13 @@ import { Button } from "@/ui/button";
 import NotePadCard from "@/ui/Cards/NodePad/NotePadCard";
 import { AppsT } from "@skydock/types/enums";
 import { Save } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { useDebounce } from "react-use";
 
-type SyncStatus = "saved" | "saving" | "synced" | "error";
 
 const NotePad = () => {
     const theme = useAppSelector((state) => state.settings.apperance.theme);
+    const [contentValue, setContentValue] = useState<string>("");
     const dispatch = useAppDispatch();
     const draggableRef = useRef<HTMLDivElement>(null);
     const { position, handleMouseDown } = useDrag({
@@ -26,7 +27,11 @@ const NotePad = () => {
         },
     };
 
-    const { content, getSyncColor, getSyncText, setContent, syncStatus, syncToCloud } = useNotePad();
+    const { getSyncColor, getSyncText, setContent, syncStatus, syncToCloud } = useNotePad();
+
+    const [isReady, cancel] = useDebounce(() => {
+        setContent(contentValue);
+    }, 500, [contentValue, setContent]);
 
     return (
         <NotePadCard
@@ -57,8 +62,8 @@ const NotePad = () => {
             </div>
             <div className="bg-white flex-1 overflow-hidden">
                 <textarea
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
+                    value={contentValue}
+                    onChange={(e) => setContentValue(e.target.value)}
                     placeholder="Start writing your thoughts..."
                     className="w-full h-full p-2 text-slate-700 leading-relaxed text-md resize-none border-none outline-none focus:ring-0 placeholder-slate-400"
                 />
@@ -66,9 +71,9 @@ const NotePad = () => {
             {/* Status Bar */}
             <div className=" px-4 py-1 border-t flex items-center justify-between text-sm text-slate-500">
                 <div className="flex text-xs items-center space-x-4">
-                    <span>{content.length} characters</span>
+                    <span>{contentValue.length} characters</span>
                     <span>
-                        {content.split(/\s+/).filter((word) => word.length > 0).length}{" "}
+                        {contentValue.split(/\s+/).filter((word) => word.length > 0).length}{" "}
                         words
                     </span>
                 </div>

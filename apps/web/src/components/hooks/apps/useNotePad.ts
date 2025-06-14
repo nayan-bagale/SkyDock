@@ -1,11 +1,40 @@
-import { useCallback, useEffect, useState } from "react";
+import {
+  setNotePadContent,
+  setNotePadLastSaved,
+  setNotePadSyncStatus,
+} from "@/redux/features/note-pad/notePadSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useCallback, useEffect } from "react";
+import { useDebounce } from "react-use";
 
 type SyncStatus = "saved" | "saving" | "synced" | "error";
 
 const useNotePad = () => {
-  const [content, setContent] = useState("");
-  const [syncStatus, setSyncStatus] = useState<SyncStatus>("saved");
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const dispatch = useAppDispatch();
+  const { content, syncStatus, lastSaved, textFileInfo } = useAppSelector(
+    (state) => state.notePad.notePadInfo
+  );
+
+  const setLastSaved = useCallback(
+    (date: Date | null) => {
+      dispatch(setNotePadLastSaved(date ? date.toISOString() : null));
+    },
+    [dispatch]
+  );
+
+  const setSyncStatus = useCallback(
+    (status: SyncStatus) => {
+      dispatch(setNotePadSyncStatus(status));
+    },
+    [dispatch]
+  );
+
+  const setContent = useCallback(
+    (newContent: string) => {
+      dispatch(setNotePadContent(newContent));
+    },
+    [dispatch]
+  );
 
   const syncToCloud = useCallback(async () => {
     setSyncStatus("saving");
@@ -27,14 +56,24 @@ const useNotePad = () => {
     setSyncStatus("saved");
   }, []);
 
-  // Auto-save to localStorage when content changes
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      syncToCloud();
-    }, 3000);
+  const [] = useDebounce(
+    () => {
+      if (content) {
+        syncToCloud();
+      }
+    },
+    3000,
+    [content, syncToCloud]
+  );
 
-    return () => clearTimeout(timer);
-  }, [content, syncToCloud]);
+  // Auto-save to localStorage when content changes
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     syncToCloud();
+  //   }, 3000);
+
+  //   return () => clearTimeout(timer);
+  // }, [content]);
 
   // Keyboard shortcut for save
   useEffect(() => {
