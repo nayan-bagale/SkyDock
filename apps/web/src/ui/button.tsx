@@ -30,6 +30,8 @@ const ButtonStyles = cva(["font-semibold", "outline-sky-400", "rounded-md", "w-f
                 "text-gray-900",
                 "border-transparent",
                 "hover:bg-red-600",
+                "hover:text-white",
+
             ],
             cta: [
                 "bg-gradient-to-r from-green-200 to-blue-500",
@@ -46,6 +48,7 @@ const ButtonStyles = cva(["font-semibold", "outline-sky-400", "rounded-md", "w-f
         },
         size: {
             small: ["text-xs", "py-0.5", "px-1"],
+            md: ["text-sm", "py-1", "px-3"],
             sm: "h-9 rounded-md px-3",
             medium: ["text-base", "py-2", "px-4"],
             icon: ["p-0.5", "drop-shadow"],

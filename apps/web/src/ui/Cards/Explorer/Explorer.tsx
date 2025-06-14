@@ -15,14 +15,14 @@ interface ExplorerCardProps {
     isFocused?: boolean;
     action: {
         close: () => void;
-        size: {
-            isMaximized: boolean;
-            changeSize: () => void;
-            lastSize: {
-                width: number;
-                height: number;
-            };
-        };
+        // size: {
+        //     isMaximized: boolean;
+        //     changeSize: () => void;
+        //     lastSize: {
+        //         width: number;
+        //         height: number;
+        //     };
+        // };
     };
     currentFolder: FolderT;
     settings: {

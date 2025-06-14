@@ -4,6 +4,7 @@ import { FileT, NotePadStateT } from "@skydock/types";
 const intialState = {
   actions: {
     isProcessOn: false,
+    isFileActionModalOn: false,
   },
   textFileInfo: null,
   state: {
@@ -18,6 +19,9 @@ export const notePadSlice = createSlice({
     openNotePad: (state, action: PayloadAction<FileT | null>) => {
       state.actions.isProcessOn = true;
       state.textFileInfo = action.payload;
+      if (state.actions.isFileActionModalOn) {
+        state.actions.isFileActionModalOn = false;
+      }
     },
     closeNotePad: (state) => {
       state.actions.isProcessOn = false;
@@ -26,10 +30,17 @@ export const notePadSlice = createSlice({
     setNotePadLoading: (state, action: PayloadAction<boolean>) => {
       state.state.isLoading = action.payload;
     },
+    openNotePadFileActionModal(state, action: PayloadAction<boolean>) {
+      state.actions.isFileActionModalOn = action.payload;
+    },
   },
 });
 
-export const { closeNotePad, openNotePad, setNotePadLoading } =
-  notePadSlice.actions;
+export const {
+  closeNotePad,
+  openNotePad,
+  setNotePadLoading,
+  openNotePadFileActionModal,
+} = notePadSlice.actions;
 
 export default notePadSlice.reducer;

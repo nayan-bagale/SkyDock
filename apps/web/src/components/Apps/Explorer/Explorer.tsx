@@ -5,13 +5,12 @@ import { useDrag } from "@/components/hooks/useDrag";
 import { useInvalidApi } from "@/components/hooks/useInvalidApis";
 import { useCreateFolderMutation, useDeleteFolderMutation } from "@/redux/apis/filesAndFolderApi";
 import { openContextMenu } from '@/redux/features/contextMenu/contextMenuSlice';
-import { addItem, changeExplorerLastSize, changeExplorerMinimized, changeExplorerSize, changeView, emptyTrash, explorerProcess, setActiveTab, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
+import { addItem, changeExplorerMinimized, changeView, emptyTrash, explorerProcess, setActiveTab, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { ExplorerCard } from "@/ui/Cards/Explorer/Explorer";
-import remToPx from "@/utils/rem-to-px";
 import { nanoid } from "@reduxjs/toolkit";
 import { ExplorerItemsActiveTabs, ExplorerT, FolderT } from "@skydock/types";
-import { ExplorerTabs } from "@skydock/types/enums";
+import { AppsT, ExplorerTabs } from "@skydock/types/enums";
 import { Icons } from "@skydock/ui/icons";
 import { showToast } from "@skydock/ui/toast";
 import { useMemo, useRef } from "react";
@@ -24,7 +23,7 @@ const Explorer = () => {
     const [emptyTrashApi] = useDeleteFolderMutation();
     const { invalidUserInfo } = useInvalidApi();
 
-    const { handleAppFocus } = useChangeAppFocus('Explorer');
+    const { handleAppFocus } = useChangeAppFocus(AppsT.Explorer);
 
     const draggableRef = useRef<HTMLDivElement>(null);
 
@@ -33,7 +32,7 @@ const Explorer = () => {
     const backStack = useAppSelector((state) => state.explorer.backStack)
     const backStackFoldersName = Object.values(useAppSelector((state) => state.explorer.explorerItems)).filter((item) => backStack.includes(item.id)).map((item) => ({ id: item.id, name: item.name }))
     const forwardStack = useAppSelector((state) => state.explorer.forwardStack)
-    const focusedApp = useAppSelector((state) => state.apps.focusedApp)
+    const isFocused = useAppSelector((state) => state.apps.focusedApp === AppsT.Explorer)
     const activeTab = useAppSelector((state) => state.explorer.activeTab)
     const { getNestedFolderItemsId } =
         useDeleteFolderRecursively();
@@ -98,19 +97,19 @@ const Explorer = () => {
 
     const Action = {
         close: () => { dispatch(explorerProcess(false)); },
-        size: {
-            isMaximized: useAppSelector((state) => state.explorer.actions.isMaximized),
-            lastSize: useAppSelector((state) => state.explorer.actions.lastSize),
-            changeSize: function () {
-                if (!this.isMaximized) {
-                    dispatch(changeExplorerLastSize({ width: draggableRef.current?.clientWidth, height: draggableRef.current?.clientHeight }))
-                } else {
-                    dispatch(changeExplorerLastSize({ width: remToPx(40), height: remToPx(26) }))
-                }
-                dispatch(changeExplorerSize())
+        // size: {
+        //     isMaximized: useAppSelector((state) => state.explorer.actions.isMaximized),
+        //     lastSize: useAppSelector((state) => state.explorer.actions.lastSize),
+        //     changeSize: function () {
+        //         if (!this.isMaximized) {
+        //             dispatch(changeExplorerLastSize({ width: draggableRef.current?.clientWidth, height: draggableRef.current?.clientHeight }))
+        //         } else {
+        //             dispatch(changeExplorerLastSize({ width: remToPx(40), height: remToPx(26) }))
+        //         }
+        //         dispatch(changeExplorerSize())
 
-            },
-        },
+        //     },
+        // },
         minimize: () => dispatch(changeExplorerMinimized()),
     }
 
@@ -165,7 +164,7 @@ const Explorer = () => {
             onMouseDownCard={handleAppFocus}
             handleActiveTabs={handleActiveTabs}
             // className={focusedApp === 'Explorer' ? 'z-20' : ''}
-            isFocused={focusedApp === 'Explorer'}
+            isFocused={isFocused}
             theme={theme}
             onContextMenu={handleContextMenu}
             onEmptyTrash={handleEmptyTrash}

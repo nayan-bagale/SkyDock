@@ -21,5 +21,5 @@ export const APPS_TEXT: Record<AppsT, string> = {
   [AppsT.VideoPlayer]: "Video Player",
   [AppsT.PdfReader]: "PDF Reader",
   [AppsT.Trash]: "Trash",
-  [AppsT.NotePad]: "Note Pad",
+  [AppsT.NotePad]: "NotePad",
 } as const;
