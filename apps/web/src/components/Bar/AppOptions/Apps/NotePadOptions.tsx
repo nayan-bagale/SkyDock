@@ -50,6 +50,9 @@ const NotePadOptions = () => {
         openSaveFileModal({
             appName: AppsT.NotePad,
             onSuccess: async (e) => {
+                // TODO: Handle file save logic here
+                // Build a text file from the content in the note pad
+                // And Upload it to the server
                 console.log(e);
                 // dispatch(openNotePad(e as FileT))
                 // getTextFileContent(e.id)
