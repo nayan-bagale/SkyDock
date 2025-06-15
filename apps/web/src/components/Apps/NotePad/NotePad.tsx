@@ -1,7 +1,8 @@
 import useNotePad from "@/components/hooks/apps/useNotePad";
 import useChangeAppFocus from "@/components/hooks/useChangeAppFocus";
 import { useDrag } from "@/components/hooks/useDrag";
-import { closeNotePad } from "@/redux/features/note-pad/notePadSlice";
+import { LAST_POSITION_DEBOUNCE_TIME } from "@/constants";
+import { closeNotePad, setLastPosition } from "@/redux/features/note-pad/notePadSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
 import NotePadCard from "@/ui/Cards/NodePad/NotePadCard";
@@ -10,6 +11,7 @@ import { AppsT } from "@skydock/types/enums";
 import { AnimatePresence, motion } from "framer-motion";
 import { Save } from "lucide-react";
 import { useRef, useState } from "react";
+import { useDebounce } from "react-use";
 
 const NotePad = () => {
     const theme = useAppSelector((state) => state.settings.apperance.theme);
@@ -25,7 +27,9 @@ const NotePad = () => {
         ref: draggableRef,
     });
     const [fontSize, setFontSize] = useState<number>(14); // Default font size
-    const { handleAppFocus } = useChangeAppFocus(AppsT.NotePad);
+    const { handleAppFocus } = useChangeAppFocus(AppsT.NotePad, () => {
+        dispatch(setLastPosition({ x: 0, y: 0 }));
+    });
     const isFocused = useAppSelector(
         (state) => state.apps.focusedApp === AppsT.NotePad
     );
@@ -44,9 +48,9 @@ const NotePad = () => {
         save
     } = useNotePad();
 
-    // const [isReady, cancel] = useDebounce(() => {
-    //     setContent(contentValue);
-    // }, 500, [contentValue, setContent]);
+    useDebounce(() => {
+        dispatch(setLastPosition({ x: position.x, y: position.y }));
+    }, LAST_POSITION_DEBOUNCE_TIME, [position]);
 
     return (
         <NotePadCard

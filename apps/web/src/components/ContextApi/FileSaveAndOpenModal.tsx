@@ -22,6 +22,7 @@ export const FileSaveAndOpenModalProvider = ({ children }: { children: React.Rea
     const [onSuccess, setOnSuccess] = useState<((item: ExplorerItemT | FileDetailsT) => void) | null>(null);
     const [onClose, setOnClose] = useState<(() => void) | null>(null);
     const [supportedMimeTypes, setSupportedMimeType] = useState<string[] | null>(null);
+    const [lastPosition, setLastPosition] = useState<{ x: number; y: number } | undefined>(undefined);
 
     const closeModal = useCallback(() => {
         setIsOpen(false);
@@ -31,6 +32,8 @@ export const FileSaveAndOpenModalProvider = ({ children }: { children: React.Rea
         if (typeof onClose === 'function') {
             onClose();
         }
+        setSupportedMimeType(null);
+        setLastPosition(undefined);
         // Reset the onClose function to avoid memory leaks
         setOnClose(null)
     }, [onClose])
@@ -41,22 +44,28 @@ export const FileSaveAndOpenModalProvider = ({ children }: { children: React.Rea
         }
     }, [closeModal, focusedApp, focusedAppId]);
 
-    const openFileOpenerModal: FileSaveAndOpenModalT['openFileOpenerModal'] = ({ appName, onSuccess, onClose, supportedMimeTypes }) => {
+    const openFileOpenerModal: FileSaveAndOpenModalT['openFileOpenerModal'] = ({ appName, onSuccess, onClose, supportedMimeTypes, lastPosition }) => {
         setIsOpen(true);
         setFocusedAppId(appName);
         setAction('open');
         setOnSuccess(() => onSuccess);
         setOnClose(() => onClose)
         setSupportedMimeType(supportedMimeTypes || null);
+        if (lastPosition) {
+            setLastPosition(lastPosition);
+        }
     }
 
-    const openSaveFileModal: FileSaveAndOpenModalT['openSaveFileModal'] = ({ appName, onSuccess, onClose, supportedMimeTypes }) => {
+    const openSaveFileModal: FileSaveAndOpenModalT['openSaveFileModal'] = ({ appName, onSuccess, onClose, supportedMimeTypes, lastPosition }) => {
         setIsOpen(true);
         setFocusedAppId(appName);
         setAction('save');
         setOnSuccess(() => onSuccess);
         setOnClose(() => onClose)
         setSupportedMimeType(supportedMimeTypes || null);
+        if (lastPosition) {
+            setLastPosition(lastPosition);
+        }
     }
 
     const handleSuccess = useCallback((item: ExplorerItemT | FileDetailsT) => {
@@ -76,7 +85,7 @@ export const FileSaveAndOpenModalProvider = ({ children }: { children: React.Rea
             {children}
             <AnimatePresence>
                 {isOpen &&
-                    <FileSaveAndOpenModal supportedMimeTypes={supportedMimeTypes} closeModal={closeModal} onSuccess={handleSuccess} action={action} />
+                    <FileSaveAndOpenModal lastPosition={lastPosition} supportedMimeTypes={supportedMimeTypes} closeModal={closeModal} onSuccess={handleSuccess} action={action} />
                 }
             </AnimatePresence>
         </FileSaveAndOpenModalContext.Provider>

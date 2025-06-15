@@ -5,6 +5,7 @@ const intialState = {
   actions: {
     isProcessOn: false,
     isFileActionModalOn: false,
+    lastPosition: { x: 0, y: 0 },
   },
   notePadInfo: {
     textFileInfo: null,
@@ -55,6 +56,13 @@ export const notePadSlice = createSlice({
     resetNotePad: () => {
       return intialState;
     },
+
+    setLastPosition: (
+      state,
+      action: PayloadAction<{ x: number; y: number }>
+    ) => {
+      state.actions.lastPosition = action.payload;
+    },
   },
 });
 
@@ -67,6 +75,7 @@ export const {
   setNotePadContent,
   setNotePadLastSaved,
   setNotePadSyncStatus,
+  setLastPosition,
 } = notePadSlice.actions;
 
 export default notePadSlice.reducer;

@@ -40,9 +40,8 @@ const useNotePad = () => {
     (state) => state.notePad.notePadInfo.textFileInfo
   );
 
-  const isFileActionModalOn = useAppSelector(
-    (state) => state.notePad.actions.isFileActionModalOn
-  );
+  const { isFileActionModalOn: isFileActionModalOn, lastPosition } =
+    useAppSelector((state) => state.notePad.actions);
 
   const [updateTextFile] = useUpdateTextFileContentMutation();
   const [getTextFileContent] = useGetTextFileContentMutation();
@@ -96,6 +95,8 @@ const useNotePad = () => {
     },
     [getTextFileContent, setContent, setLastSaved, setSyncStatus]
   );
+
+  // TODO: Add a debounce to setContent to avoid too many updates
 
   // useEffect(() => {
   //   fetchFileContent(fileInfo);
@@ -184,12 +185,14 @@ const useNotePad = () => {
         dispatch(openNotePadFileActionModal(false));
       },
       supportedMimeTypes: [SupportedMimeTypes.Text],
+      lastPosition,
     });
   }, [
     content,
     dispatch,
     generateFile,
     isFileActionModalOn,
+    lastPosition,
     openFile,
     openSaveFileModal,
     uploadFileAndUpdateState,
@@ -206,8 +209,9 @@ const useNotePad = () => {
         dispatch(openNotePadFileActionModal(false));
       },
       supportedMimeTypes: [SupportedMimeTypes.Text],
+      lastPosition,
     });
-  }, [dispatch, openFile, openFileOpenerModal]);
+  }, [dispatch, lastPosition, openFile, openFileOpenerModal]);
 
   const save = useCallback(async () => {
     if (syncStatus === "saving") return;

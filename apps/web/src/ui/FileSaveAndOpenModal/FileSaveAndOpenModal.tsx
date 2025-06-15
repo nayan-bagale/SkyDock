@@ -25,6 +25,7 @@ interface FileSaveAndOpenModalT {
     onSuccess: ((item: ExplorerItemT | FileDetailsT) => void) | null;
     action: "open" | "save";
     supportedMimeTypes: string[] | null;
+    lastPosition?: { x: number; y: number };
 }
 
 const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
@@ -32,11 +33,12 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
     action,
     onSuccess,
     supportedMimeTypes,
+    lastPosition,
 }) => {
-    // TODO: Implement the functionality to save and open files.
     const draggableRef = useRef<HTMLDivElement>(null);
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef,
+        lastPosition: lastPosition,
     });
     const theme = useAppSelector((state) => state.settings.apperance.theme);
     const [activeTab, setActiveTab] =

@@ -3,7 +3,10 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { FocusedAppsT } from "@skydock/types";
 import { useEffect } from "react";
 
-const useChangeAppFocus = (AppName: FocusedAppsT) => {
+const useChangeAppFocus = (
+  AppName: FocusedAppsT,
+  onUnmountCallback?: () => void
+) => {
   const dispatch = useAppDispatch();
   const focusedApp = useAppSelector((state) => state.apps.focusedApp);
 
@@ -17,6 +20,9 @@ const useChangeAppFocus = (AppName: FocusedAppsT) => {
     dispatch(setFocusedApp(AppName));
     return () => {
       dispatch(setFocusedApp(""));
+      if (onUnmountCallback) {
+        onUnmountCallback();
+      }
     };
   }, []);
 

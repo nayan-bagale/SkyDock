@@ -30,6 +30,7 @@ export interface FileSaveAndOpenModalT {
     onSuccess: (item: ExplorerItemT) => Promise<void>;
     onClose: () => void;
     supportedMimeTypes?: string[];
+    lastPosition?: { x: number; y: number };
   }) => void;
   openSaveFileModal: ({
     appName,
@@ -41,5 +42,6 @@ export interface FileSaveAndOpenModalT {
     onSuccess: (item: FileDetailsT) => Promise<void>;
     onClose: () => void;
     supportedMimeTypes?: string[];
+    lastPosition?: { x: number; y: number };
   }) => void;
 }

@@ -4,14 +4,16 @@ import { useCallback, useEffect, useState } from "react";
 export const useDrag = ({
   ref,
   calculateFor = "topLeft",
+  lastPosition = { x: X_POSITION, y: Y_POSITION },
 }: {
   ref: any;
   calculateFor?: string;
+  lastPosition?: { x: number; y: number };
 }) => {
   const [dragInfo, setDragInfo] = useState<any>();
   const [finalPosition, setFinalPosition] = useState<{ x: number; y: number }>({
-    x: X_POSITION,
-    y: Y_POSITION,
+    x: lastPosition.x,
+    y: lastPosition.y + 24,
   });
   const [isDragging, setIsDragging] = useState(false);
 
@@ -128,9 +130,17 @@ export const useDrag = ({
     };
   }, [handleMouseMove]);
 
+  const initialPosition = (lastPosition: { x: number; y: number }) => {
+    setFinalPosition({
+      x: lastPosition.x,
+      y: lastPosition.y,
+    });
+  };
+
   return {
     position: finalPosition,
     handleMouseDown,
     recalculate,
+    initialPosition,
   };
 };
