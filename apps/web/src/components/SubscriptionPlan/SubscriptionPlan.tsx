@@ -16,7 +16,6 @@ export default function SubscriptionPlans() {
     const { data: allPlans, isLoading } = useGetAllPlansQuery();
 
     const handleUpgrade = async (plan: string): Promise<boolean> => {
-        console.log(`Upgrading to ${plan} plan`)
 
         // Simulate API call with 50% success rate for demo purposes
         return new Promise((resolve) => {

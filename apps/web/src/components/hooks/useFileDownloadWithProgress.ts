@@ -28,7 +28,6 @@ const useFileDownloadWithProgress = () => {
       while (true) {
         const { done, value } = await reader.read();
         if (done) {
-          console.log("Download complete");
           break;
         }
         if (!value) continue;

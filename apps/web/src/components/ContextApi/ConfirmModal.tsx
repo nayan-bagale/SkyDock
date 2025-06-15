@@ -26,8 +26,6 @@ export const ConfirmModalProvider = ({ children }: { children: ReactNode }) => {
         setType(type);
         setOnConfirm(() => onConfirm);
         setOnCancel(() => onCancel || (() => { }));
-        console.log('Modal opened with title:', title, 'message:', message, 'type:', type);
-
     };
 
     const close = () => {

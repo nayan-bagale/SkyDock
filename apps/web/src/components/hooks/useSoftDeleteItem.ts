@@ -36,7 +36,7 @@ const useSoftDeleteItem = () => {
       invalidUserInfo();
       dispatch(deleteItem(targetItem));
     } catch (error) {
-      console.log(error);
+      console.error(error);
       showToast("Server error occurred while deleting item", "error");
     }
   };
@@ -55,18 +55,15 @@ const useSoftDeleteItem = () => {
         return item;
       });
       try {
-        console.log(arrayItems);
         await softDeleteFileAndFolder(arrayItems);
         dispatch(
           moveFileIntoFolder({ fileId: targetItem.id, folderId: "trash" })
         );
       } catch (error) {
-        console.log(error);
+        console.error(error);
         showToast("Server error occurred while deleting item", "error");
       }
     } else {
-      console.log("handleSoftDelete called with:", targetItem);
-
       open(
         "Delete Forever",
         `Are you sure you want to delete ${targetItem.name} forever? This action cannot be undone.`,

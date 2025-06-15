@@ -27,9 +27,6 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
     const [isRenaming, setIsRenaming] = useState(false);
     const [newName, setNewName] = useState('');
 
-    console.log(currentFolder)
-
-
     // If targetId exists, we're right-clicking on an item
     const targetItem = targetId ? explorerItems[targetId] : null;
 
@@ -44,7 +41,6 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
     const handleRenameSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!targetItem || !newName.trim()) return;
-        console.log(targetItem)
 
         try {
             await updateItem({ id: targetItem.id, name: newName });

@@ -39,14 +39,13 @@ const ChangeName = memo(({ closeModal }: CommonProps) => {
         }
         try {
             const res = await changeName({ fname: firstName, lname: lastName }).unwrap()
-            console.log(res)
             closeModal()
             showToast(
                 res.message ?? 'Name changed successfully',
                 'success'
             )
         } catch (e: any) {
-            console.log(e)
+            console.error(e)
             showToast(
                 e.data.message,
                 'error'
@@ -105,7 +104,6 @@ const ChangePassword = memo(({ closeModal }: CommonProps) => {
         const newPassword = e.target[2].value
         const confirmPassword = e.target[4].value
 
-        console.log(currentPassword, newPassword, confirmPassword)
 
         if (!currentPassword) {
             setFormError((prev) => ({ ...prev, currentPassword: 'Current password is required' }))
@@ -131,7 +129,6 @@ const ChangePassword = memo(({ closeModal }: CommonProps) => {
         try {
 
             const res = await changePassword({ oldPassword: currentPassword, newPassword }).unwrap()
-            console.log(res)
             showToast(
                 res.message ?? 'Password changed successfully',
                 'success'
@@ -139,7 +136,7 @@ const ChangePassword = memo(({ closeModal }: CommonProps) => {
             closeModal()
 
         } catch (e: any) {
-            console.log(e)
+            console.error(e)
             showToast(
                 e.data.message,
                 'error'
@@ -197,7 +194,6 @@ const SetPassword = memo(({ closeModal }: CommonProps) => {
         const password = e.target[0].value
         const confirmPassword = e.target[2].value
 
-        console.log(password, confirmPassword)
 
         if (!password) {
             setFormError((prev) => ({ ...prev, password: 'New password is required' }))
@@ -215,7 +211,6 @@ const SetPassword = memo(({ closeModal }: CommonProps) => {
         try {
 
             const res = await setPassword({ password }).unwrap()
-            console.log(res)
             showToast(
                 res.message ?? 'Password Set successfully',
                 'success'
@@ -223,7 +218,7 @@ const SetPassword = memo(({ closeModal }: CommonProps) => {
             closeModal()
 
         } catch (e: any) {
-            console.log(e)
+            console.error(e)
             showToast(
                 e.data.message,
                 'error'

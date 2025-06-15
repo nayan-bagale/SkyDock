@@ -182,8 +182,6 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
         );
       });
 
-      console.log(filteredItems);
-
       const fileName = fileNameGenerator(extension, filteredItems.length);
 
       try {

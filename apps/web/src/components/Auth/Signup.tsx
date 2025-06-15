@@ -69,7 +69,6 @@ const Signup: FC<SignupProps> = () => {
 
         try {
             const response = await registerUser({ email, password, firstName: fname, lastName: lname }).unwrap();
-            console.log(response)
             e.target.reset()
             navigate('/login')
         } catch (e: any) {

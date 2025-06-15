@@ -52,7 +52,7 @@ const useFileUploadsAndUpdateState = (addItemfunc: any = addItem) => {
     } catch (error: any) {
       setError((prev) => [...prev, { id: "unknown", error: error.data }]);
       showToast(error.data.message, "error");
-      console.log(error);
+      console.error(error);
       return null;
     }
   };
