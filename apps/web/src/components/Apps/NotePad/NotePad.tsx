@@ -16,6 +16,8 @@ const NotePad = () => {
     const contentValue = useAppSelector(
         (state) => state.notePad.notePadInfo.content
     );
+
+    const fileName = useAppSelector((state) => state.notePad.notePadInfo.textFileInfo?.name)
     // const [contentValue, setContentValue] = useState<string>(initialContent);
     const dispatch = useAppDispatch();
     const draggableRef = useRef<HTMLDivElement>(null);
@@ -38,8 +40,8 @@ const NotePad = () => {
         getSyncText,
         setContent: setContentValue,
         syncStatus,
-        syncToCloud,
         isFileActionModalOn,
+        save
     } = useNotePad();
 
     // const [isReady, cancel] = useDebounce(() => {
@@ -58,11 +60,11 @@ const NotePad = () => {
             onContextMenu={(e) => {
                 e.stopPropagation();
             }}
-            title="NotePad"
+            title={fileName ?? "NotePad"}
         >
             <div className="bg-white flex items-center p-1 border-b">
                 <Button
-                    onClick={syncToCloud}
+                    onClick={save}
                     disabled={syncStatus === "saving"}
                     size={"small"}
                     className={`${getSyncColor()} text-white  px-2 transition-all duration-200 transform hover:scale-105`}

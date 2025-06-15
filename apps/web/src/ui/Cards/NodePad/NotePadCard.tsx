@@ -40,7 +40,7 @@ const NotePadCard = forwardRef<HTMLDivElement, NotePadCardProps>(
                 onContextMenu={onContextMenu}
                 {...props}
             >
-                <div className={cn(" z-20 fixed flex justify-between items-center bg-white/60 backdrop-blur px-2 py-3.5 rounded w-full", theme?.color,)}
+                <div className={cn(" z-20 fixed flex justify-between items-center bg-white/60 backdrop-blur px-2 py-1.5 rounded w-full", theme?.color,)}
                     onMouseDown={onMouseDown}
                 >
                     <div className="absolute flex gap-2">
@@ -56,8 +56,8 @@ const NotePadCard = forwardRef<HTMLDivElement, NotePadCardProps>(
                         />
                     </div>
 
-                    <div className="flex justify-center items-center w-full text-xs cursor-default">
-                        <span className="font-medium text-sm">{ }</span>
+                    <div className="flex justify-center items-center text-gray-800 w-full text-xs cursor-default">
+                        <span className="font-medium ">{title}</span>
                     </div>
                 </div>
                 <div className="w-full h-full flex-1 mt-7 flex flex-col overflow-hidden">

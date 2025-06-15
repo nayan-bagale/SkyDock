@@ -309,23 +309,11 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
                 </div>
             </div>
             <div
-                className="flex absolute bottom-0 shadow gap-2 items-center justify-end bg-slate-200 px-4  py-1  border-t w-full text-xs"
+                className={cn("flex absolute bottom-0 shadow gap-2 items-center  bg-slate-200 px-4  py-1  border-t w-full text-xs",
+                    action === 'save' ? 'justify-between' : 'justify-end'
+                )}
                 onContextMenu={(e) => e.preventDefault()}
             >
-                <Input
-                    className="w-48 text-gray-900 placeholder:text-gray-600 border-gray-400 rounded-lg"
-                    value={fileName}
-                    onChange={(e) => {
-                        setFileName(e.target.value);
-                    }}
-                    placeholder="File Name"
-                />
-                {/* <div className="flex items-center gap-2">
-                    <Icons.File className="w-4 h-4" />
-                    <span className="text-gray-500">
-                        {selectedItem?.name || "No file selected"}
-                    </span>
-                </div> */}
                 <Button
                     size={"small"}
                     className="px-2 py-1"
@@ -334,7 +322,16 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
                 >
                     Cancel
                 </Button>
-
+                {action === 'save' && <Input
+                    className="w-48 text-gray-900 placeholder:text-gray-600 border-gray-400 rounded-lg"
+                    // value={action === "open" ? selectedItem?.name ?? '' : fileName}
+                    value={fileName}
+                    onChange={(e) => {
+                        setFileName(e.target.value);
+                    }}
+                    // disabled={action === "open"}
+                    placeholder="File Name"
+                />}
                 <Button
                     className="px-2 py-1"
                     size={"small"}

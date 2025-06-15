@@ -1,19 +1,30 @@
+import { FileSaveAndOpenModalContext } from "@/components/ContextApi/FileSaveAndOpenModal";
+import { RESPONSE_DELAY } from "@/constants";
 import {
   useGetTextFileContentMutation,
   useUpdateTextFileContentMutation,
 } from "@/redux/apis/filesAndFolderApi";
 import { addItemToFolder } from "@/redux/features/explorer/explorerSlice";
 import {
+  closeNotePad,
   openNotePad,
+  openNotePadFileActionModal,
   setNotePadContent,
   setNotePadLastSaved,
   setNotePadSyncStatus,
 } from "@/redux/features/note-pad/notePadSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { fileArrayGenerator } from "@/utils/file-array-generator";
+import sleep from "@/utils/sleep";
 import { FileT } from "@skydock/types";
-import { FileExtensions } from "@skydock/types/enums";
-import { useCallback, useEffect } from "react";
+import {
+  AppsT,
+  FileExtensions,
+  SupportedMimeTypes,
+} from "@skydock/types/enums";
+import { showToast } from "@skydock/ui/toast";
+import { useCallback, useContext, useEffect } from "react";
+import useFileDownloadWithProgress from "../useFileDownloadWithProgress";
 import { useFileGenerator } from "../useFileGenerator";
 import useFileUploadsAndUpdateState from "../useFileUploadsAndUpdateState";
 
@@ -37,6 +48,11 @@ const useNotePad = () => {
   const [getTextFileContent] = useGetTextFileContentMutation();
   const [uploadFileAndUpdateState] =
     useFileUploadsAndUpdateState(addItemToFolder);
+  const { openFileOpenerModal, openSaveFileModal } = useContext(
+    FileSaveAndOpenModalContext
+  );
+
+  const { downloadFile } = useFileDownloadWithProgress();
 
   const { generateFile } = useFileGenerator();
 
@@ -75,6 +91,7 @@ const useNotePad = () => {
         setContent("");
         setLastSaved(null);
         setSyncStatus("error");
+        showToast("Error fetching file content", "error");
       }
     },
     [getTextFileContent, setContent, setLastSaved, setSyncStatus]
@@ -83,29 +100,6 @@ const useNotePad = () => {
   // useEffect(() => {
   //   fetchFileContent(fileInfo);
   // }, [fetchFileContent, fileInfo]);
-
-  const syncToCloud = useCallback(async () => {
-    setSyncStatus("saving");
-
-    try {
-      // Simulate API call delay
-      // await new Promise((resolve) => setTimeout(resolve, 1500));
-      if (!fileInfo) {
-        throw new Error("No file info available to update");
-      }
-
-      await updateTextFile({
-        id: fileInfo.id,
-        content,
-      }).unwrap();
-
-      setSyncStatus("synced");
-      setLastSaved(new Date());
-    } catch (error) {
-      setSyncStatus("error");
-    }
-    setSyncStatus("saved");
-  }, [content, fileInfo, setLastSaved, setSyncStatus, updateTextFile]);
 
   // const [] = useDebounce(
   //   () => {
@@ -125,32 +119,6 @@ const useNotePad = () => {
 
   //   return () => clearTimeout(timer);
   // }, [content]);
-
-  // Keyboard shortcut for save
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.key === "s") {
-        e.preventDefault();
-        syncToCloud();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [syncToCloud]);
-
-  //   const getSyncIcon = () => {
-  //     switch (syncStatus) {
-  //       // case "saving":
-  //       //     return <Cloud className="w-4 h-4 animate-pulse" />;
-  //       // case "synced":
-  //       //     return <Check className="w-4 h-4" />;
-  //       // case "error":
-  //       //     return <CloudOff className="w-4 h-4" />;
-  //       default:
-  //         return <Save className="w-4 h-4" />;
-  //     }
-  //   };
 
   const getSyncText = () => {
     switch (syncStatus) {
@@ -192,46 +160,128 @@ const useNotePad = () => {
     [dispatch, fetchFileContent, setContent, setLastSaved, setSyncStatus]
   );
 
-  const saveAs = useCallback(
-    async ({
-      content,
-      name,
-      type,
-      folderId,
-    }: {
-      content: string;
-      name: string;
-      folderId: string;
-      type: FileExtensions.txt;
-    }) => {
-      const buffer_file = generateFile({
-        content,
-        name,
-        type,
-      });
-      if (!buffer_file) return;
-      const structuredFile = fileArrayGenerator([buffer_file], folderId);
-      const files = await uploadFileAndUpdateState(structuredFile);
+  const saveAs = useCallback(() => {
+    if (isFileActionModalOn) return;
 
-      if (files && files[0]) {
-        openFile(files[0]);
+    dispatch(openNotePadFileActionModal(true));
+    openSaveFileModal({
+      appName: AppsT.NotePad,
+      onSuccess: async ({ fileName, folderId }) => {
+        const buffer_file = generateFile({
+          content,
+          name: fileName,
+          type: FileExtensions.txt,
+        });
+        if (!buffer_file) return;
+        const structuredFile = fileArrayGenerator([buffer_file], folderId);
+        const files = await uploadFileAndUpdateState(structuredFile);
+
+        if (files && files[0]) {
+          openFile(files[0]);
+        }
+      },
+      onClose: () => {
+        dispatch(openNotePadFileActionModal(false));
+      },
+      supportedMimeTypes: [SupportedMimeTypes.Text],
+    });
+  }, [
+    content,
+    dispatch,
+    generateFile,
+    isFileActionModalOn,
+    openFile,
+    openSaveFileModal,
+    uploadFileAndUpdateState,
+  ]);
+
+  const openFileUsingModal = useCallback(() => {
+    dispatch(openNotePadFileActionModal(true));
+    openFileOpenerModal({
+      appName: AppsT.NotePad,
+      onSuccess: async (e) => {
+        openFile(e as FileT);
+      },
+      onClose: () => {
+        dispatch(openNotePadFileActionModal(false));
+      },
+      supportedMimeTypes: [SupportedMimeTypes.Text],
+    });
+  }, [dispatch, openFile, openFileOpenerModal]);
+
+  const save = useCallback(async () => {
+    if (syncStatus === "saving") return;
+    if (!fileInfo) {
+      saveAs();
+    } else {
+      try {
+        setSyncStatus("saving");
+        await updateTextFile({
+          id: fileInfo.id,
+          content,
+        });
+        await sleep(RESPONSE_DELAY);
+        setSyncStatus("synced");
+        setLastSaved(new Date());
+      } catch (error) {
+        setSyncStatus("error");
       }
-    },
-    [generateFile, openFile, uploadFileAndUpdateState]
-  );
+      setSyncStatus("saved");
+    }
+  }, [
+    content,
+    fileInfo,
+    saveAs,
+    setLastSaved,
+    setSyncStatus,
+    syncStatus,
+    updateTextFile,
+  ]);
+
+  const close = useCallback(() => {
+    dispatch(closeNotePad());
+  }, [dispatch]);
+
+  const download = useCallback(async () => {
+    if (!fileInfo) {
+      showToast("No file selected to download", "error");
+      return;
+    }
+    return await downloadFile(fileInfo);
+  }, [downloadFile, fileInfo]);
+
+  // Keyboard shortcut for save
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+        e.preventDefault();
+
+        save();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [save]);
 
   return {
     content,
     setContent,
     syncStatus,
-    syncToCloud,
     lastSaved,
-    // getSyncIcon,
     getSyncText,
     getSyncColor,
     isFileActionModalOn,
     saveAs,
+    save,
     openFile,
+    openFileUsingModal,
+    close,
+    download,
+    fileInfo,
   };
 };
 

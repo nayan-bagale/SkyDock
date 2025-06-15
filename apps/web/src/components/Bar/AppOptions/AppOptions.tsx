@@ -28,8 +28,8 @@ const AppOptions = () => {
                     {APPS_TEXT[focusedAppName]}
                 </motion.div>
 
+                {AppBasedOptions}
             </>)}
-            {AppBasedOptions}
         </AnimatePresence>
     )
 }
