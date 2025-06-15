@@ -31,7 +31,7 @@ type FileTWithFile = FileT & {
   };
 };
 
-const useFileUploadsAndUpdateState = () => {
+const useFileUploadsAndUpdateState = (addItemfunc: any = addItem) => {
   const dispatch = useAppDispatch();
   const { invalidUserInfo } = useInvalidApi();
 
@@ -117,7 +117,7 @@ const useFileUploadsAndUpdateState = () => {
             state: { currentState: "uploding", progress: 0 },
           };
           delete fileToBeAdded.details.File;
-          dispatch(addItem(fileToBeAdded));
+          dispatch(addItemfunc(fileToBeAdded));
 
           const response = await axios.put<void>(uploadUrl[file.id], fileData, {
             headers: {
@@ -211,38 +211,15 @@ const useFileUploadsAndUpdateState = () => {
 
     invalidUserInfo();
 
-    return true;
+    return uploadFilesPromise
+      .filter((result) => result.status === "fulfilled")
+      .map((result) => {
+        return (result as PromiseFulfilledResult<{ details: FileT }>).value
+          .details;
+      });
   };
 
-  const uploadGuestModeFiles = (files: FileTWithFile[]) => {
-    files.forEach((file) =>
-      dispatch(
-        addItem({
-          name: file.name,
-          id: file.id,
-          isFolder: false,
-          parent: file.parent,
-          details: {
-            name: file.name,
-            size: file.details.size,
-            type: file.details.type,
-            lastModified: file.details.lastModified,
-          },
-          state: {
-            currentState: "idle",
-            progress: 0,
-          },
-        })
-      )
-    );
-    return true;
-  };
-
-  return [
-    uploadFiles,
-    uploadGuestModeFiles,
-    { isErrors: error.length > 0, errors: error },
-  ] as const;
+  return [uploadFiles, { isErrors: error.length > 0, errors: error }] as const;
 };
 
 export default useFileUploadsAndUpdateState;

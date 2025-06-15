@@ -1,16 +1,17 @@
 import { setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
 import { openImageViewer } from "@/redux/features/imageViewer/imageViewerSlice";
 import { openMusicPlayer } from "@/redux/features/music-player/musicPlayerSlice";
-import { openNotePad } from "@/redux/features/note-pad/notePadSlice";
 import { openPdfReader } from "@/redux/features/pdf-reader/pdfReaderSlice";
 import { openVideoPlayer } from "@/redux/features/video-player/videoPlayerSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { FileT, FolderT } from "@skydock/types";
 import { SupportedMimeTypes } from "@skydock/types/enums";
+import useNotePad from "./apps/useNotePad";
 
 const useAppOpenBasedOnFileType = (item: FileT | FolderT | null) => {
   const dispatch = useAppDispatch();
   // const { getFileUrl } = useGetFileURl();
+  const { openFile } = useNotePad();
 
   const isItemStartsWith = (type: string) => {
     if (!item) return false;
@@ -31,7 +32,7 @@ const useAppOpenBasedOnFileType = (item: FileT | FolderT | null) => {
     } else if (isItemStartsWith(SupportedMimeTypes.PDF)) {
       dispatch(openPdfReader(item));
     } else if (isItemStartsWith(SupportedMimeTypes.Text)) {
-      dispatch(openNotePad(item));
+      openFile(item);
     }
   };
 

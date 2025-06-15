@@ -2,14 +2,20 @@ import {
   useGetTextFileContentMutation,
   useUpdateTextFileContentMutation,
 } from "@/redux/apis/filesAndFolderApi";
+import { addItemToFolder } from "@/redux/features/explorer/explorerSlice";
 import {
+  openNotePad,
   setNotePadContent,
   setNotePadLastSaved,
   setNotePadSyncStatus,
 } from "@/redux/features/note-pad/notePadSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { fileArrayGenerator } from "@/utils/file-array-generator";
 import { FileT } from "@skydock/types";
+import { FileExtensions } from "@skydock/types/enums";
 import { useCallback, useEffect } from "react";
+import { useFileGenerator } from "../useFileGenerator";
+import useFileUploadsAndUpdateState from "../useFileUploadsAndUpdateState";
 
 type SyncStatus = "saved" | "saving" | "synced" | "error";
 
@@ -18,6 +24,7 @@ const useNotePad = () => {
   const { content, syncStatus, lastSaved } = useAppSelector(
     (state) => state.notePad.notePadInfo
   );
+
   const fileInfo = useAppSelector(
     (state) => state.notePad.notePadInfo.textFileInfo
   );
@@ -28,6 +35,10 @@ const useNotePad = () => {
 
   const [updateTextFile] = useUpdateTextFileContentMutation();
   const [getTextFileContent] = useGetTextFileContentMutation();
+  const [uploadFileAndUpdateState] =
+    useFileUploadsAndUpdateState(addItemToFolder);
+
+  const { generateFile } = useFileGenerator();
 
   const setLastSaved = useCallback(
     (date: Date | null) => {
@@ -69,9 +80,9 @@ const useNotePad = () => {
     [getTextFileContent, setContent, setLastSaved, setSyncStatus]
   );
 
-  useEffect(() => {
-    fetchFileContent(fileInfo);
-  }, [fetchFileContent, fileInfo]);
+  // useEffect(() => {
+  //   fetchFileContent(fileInfo);
+  // }, [fetchFileContent, fileInfo]);
 
   const syncToCloud = useCallback(async () => {
     setSyncStatus("saving");
@@ -167,6 +178,48 @@ const useNotePad = () => {
     }
   };
 
+  const openFile = useCallback(
+    (file: FileT | null) => {
+      if (file) {
+        fetchFileContent(file);
+        dispatch(openNotePad(file));
+      } else {
+        setContent("");
+        setLastSaved(null);
+        setSyncStatus("saved");
+      }
+    },
+    [dispatch, fetchFileContent, setContent, setLastSaved, setSyncStatus]
+  );
+
+  const saveAs = useCallback(
+    async ({
+      content,
+      name,
+      type,
+      folderId,
+    }: {
+      content: string;
+      name: string;
+      folderId: string;
+      type: FileExtensions.txt;
+    }) => {
+      const buffer_file = generateFile({
+        content,
+        name,
+        type,
+      });
+      if (!buffer_file) return;
+      const structuredFile = fileArrayGenerator([buffer_file], folderId);
+      const files = await uploadFileAndUpdateState(structuredFile);
+
+      if (files && files[0]) {
+        openFile(files[0]);
+      }
+    },
+    [generateFile, openFile, uploadFileAndUpdateState]
+  );
+
   return {
     content,
     setContent,
@@ -177,6 +230,8 @@ const useNotePad = () => {
     getSyncText,
     getSyncColor,
     isFileActionModalOn,
+    saveAs,
+    openFile,
   };
 };
 

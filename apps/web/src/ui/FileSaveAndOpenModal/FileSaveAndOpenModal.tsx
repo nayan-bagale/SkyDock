@@ -5,21 +5,25 @@ import { useAppSelector } from "@/redux/hooks";
 import cn from "@/utils";
 import {
     ExplorerItemsActiveTabs,
+    ExplorerItemT,
     ExplorerT,
+    FileDetailsT,
     FileT,
     FolderT,
 } from "@skydock/types";
 import { Icons } from "@skydock/ui/icons";
+import { showToast } from "@skydock/ui/toast";
 import { motion } from "framer-motion";
-import { FC, useCallback, useMemo, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ActionButton from "../action-button";
 import { Button } from "../button";
+import { Input } from "../input";
 import { DisplayItemsIcons } from "./DisplayItemsIcons";
 
 interface FileSaveAndOpenModalT {
     closeModal: (() => void) | null;
-    onSuccess: ((item: FileT | FolderT | string) => void) | null;
-    action: 'open' | 'save';
+    onSuccess: ((item: ExplorerItemT | FileDetailsT) => void) | null;
+    action: "open" | "save";
     supportedMimeTypes: string[] | null;
 }
 
@@ -27,7 +31,7 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
     closeModal,
     action,
     onSuccess,
-    supportedMimeTypes
+    supportedMimeTypes,
 }) => {
     // TODO: Implement the functionality to save and open files.
     const draggableRef = useRef<HTMLDivElement>(null);
@@ -60,7 +64,6 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
         ];
     }, []);
 
-
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
     const [currentFolder, setCurrentFolder] =
         useState<ExplorerT["currentFolder"]>("skydrive");
@@ -68,22 +71,37 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
     const [selectedItem, setSelectedItem] = useState<FileT | FolderT | null>(
         null
     );
+    const [fileName, setFileName] = useState<string>('');
 
     const item = useMemo(() => {
         return explorerItems[currentFolder];
     }, [currentFolder, explorerItems]);
 
-    const files = (item as FolderT)?.children
-        .map((child) => explorerItems[child])
-        .filter((item) => {
-            if (item.isFolder) return true;
-            if (!item.isFolder && supportedMimeTypes?.includes(item.details?.type || '')) {
-                return true;
-            } else {
-                return false;
-            }
-        })
-        .sort((a) => (a.isFolder ? -1 : 1));
+    const files = useMemo(
+        () =>
+            (item as FolderT)?.children
+                .map((child) => explorerItems[child])
+                .filter((item) => {
+                    if (item.isFolder) return true;
+                    if (
+                        !item.isFolder &&
+                        supportedMimeTypes?.includes(item.details?.type || "")
+                    ) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                })
+                .sort((a) => (a.isFolder ? -1 : 1)),
+        [explorerItems, item, supportedMimeTypes]
+    );
+
+    useEffect(() => {
+        if (action === 'save') {
+            const count = files.filter((file) => !file.isFolder && file.name.startsWith('untitled')).length;
+            setFileName(`untitled${count > 0 ? `(${count})` : ''}.txt`);
+        }
+    }, [])
 
     const openItem = (item: FolderT | FileT) => {
         if (item.isFolder) {
@@ -92,7 +110,6 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
                 return [...prev, item.parent];
             });
             setSelectedItem(null);
-
         }
     };
 
@@ -104,7 +121,6 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
                 return prev.filter((item) => item !== prevFolder);
             });
             setSelectedItem(null);
-
         }
     }, [backward]);
 
@@ -126,39 +142,47 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
     }, []);
 
     const submitButtonText = useMemo(() => {
+        if (selectedItem?.isFolder) return "Open Folder";
 
-        if (selectedItem?.isFolder) return 'Open Folder';
-
-        if (action === 'open') {
-            return 'Select File'
-        } else if (action === 'save') {
-            return 'Save in Folder';
+        if (action === "open") {
+            return "Select File";
+        } else if (action === "save") {
+            return "Save in Folder";
         }
-
-    }, [action, selectedItem?.isFolder])
+    }, [action, selectedItem?.isFolder]);
 
     const submitButtonAction = useCallback(() => {
         if (selectedItem?.isFolder) {
             openItem(selectedItem as FolderT);
             return;
         }
-        if (action === 'save') {
-            onSuccess?.(currentFolder)
-        } else if (action === 'open') {
+        if (action === "save") {
+            const isFileNameExists = files.some(
+                (file) => file.name === fileName && file.isFolder === false
+            );
+
+            if (isFileNameExists) {
+                showToast("File name already exists", "error");
+                return;
+            }
+            onSuccess?.({
+                fileName,
+                folderId: currentFolder,
+            });
+        } else if (action === "open") {
             if (!selectedItem) return;
             onSuccess?.(selectedItem as FileT | FolderT);
         }
-    }, [action, currentFolder, onSuccess, selectedItem]);
+    }, [action, currentFolder, fileName, files, onSuccess, selectedItem]);
 
     const isSubmitDisabled = useMemo(() => {
-        if (action === 'save') {
+        if (action === "save") {
             return !currentFolder && !selectedItem;
         } else {
             // For open action, we can select a file or folder
-            return !selectedItem
+            return !selectedItem;
         }
     }, [action, currentFolder, selectedItem]);
-
 
     return (
         <motion.div
@@ -263,7 +287,10 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
                         </div>
                     </div>
                 </div>
-                <div onClick={() => selectedItemFunc(null)} className="flex pb-10 overflow-auto  flex-1 flex-col h-full bg-white p-2 w-full">
+                <div
+                    onClick={() => selectedItemFunc(null)}
+                    className="flex pb-10 overflow-auto  flex-1 flex-col h-full bg-white p-2 w-full"
+                >
                     {item?.isFolder && (
                         <div className={cn("relative", " w-full")}>
                             {files.map((item) => {
@@ -285,6 +312,20 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
                 className="flex absolute bottom-0 shadow gap-2 items-center justify-end bg-slate-200 px-4  py-1  border-t w-full text-xs"
                 onContextMenu={(e) => e.preventDefault()}
             >
+                <Input
+                    className="w-48 text-gray-900 placeholder:text-gray-600 border-gray-400 rounded-lg"
+                    value={fileName}
+                    onChange={(e) => {
+                        setFileName(e.target.value);
+                    }}
+                    placeholder="File Name"
+                />
+                {/* <div className="flex items-center gap-2">
+                    <Icons.File className="w-4 h-4" />
+                    <span className="text-gray-500">
+                        {selectedItem?.name || "No file selected"}
+                    </span>
+                </div> */}
                 <Button
                     size={"small"}
                     className="px-2 py-1"
@@ -294,7 +335,13 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
                     Cancel
                 </Button>
 
-                <Button className="px-2 py-1" size={"small"} disabled={isSubmitDisabled} onClick={submitButtonAction} intent={"secondary"}>
+                <Button
+                    className="px-2 py-1"
+                    size={"small"}
+                    disabled={isSubmitDisabled}
+                    onClick={submitButtonAction}
+                    intent={"secondary"}
+                >
                     {submitButtonText}
                 </Button>
             </div>
@@ -344,11 +391,9 @@ const ItemDisplay = ({
                 onKeyDown={handleKeyDown}
                 onClick={(e) => {
                     e.stopPropagation();
-                    selectedItemFunc(item)
+                    selectedItemFunc(item);
                 }}
-                className={cn(
-                    selectedItem?.id === item.id && "bg-gray-400/20"
-                )}
+                className={cn(selectedItem?.id === item.id && "bg-gray-400/20")}
             />
         </div>
     );

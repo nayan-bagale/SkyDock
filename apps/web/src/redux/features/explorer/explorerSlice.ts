@@ -100,6 +100,27 @@ export const explorerSlice = createSlice({
       }
     },
 
+    addItemToFolder: (state, action: PayloadAction<FileT>) => {
+      const file = action.payload;
+      const folderItem = state.explorerItems[file.parent] as FolderT;
+
+      if (folderItem.isFolder) {
+        state.explorerItems = {
+          ...state.explorerItems,
+          [file.parent]: {
+            ...folderItem,
+            children: [...folderItem.children, file.id],
+          },
+          [file.id]: {
+            ...file,
+            parent: file.parent,
+            isDeleted: false,
+            deletedAt: null,
+          },
+        };
+      }
+    },
+
     initializeItems: (state, action) => {
       const drives: ExplorerT["activeTab"][] = ["skydrive", "desktop", "trash"];
       if (drives.includes(action.payload.parent)) {
@@ -351,6 +372,7 @@ export const {
   clearClipboard,
   pasteFromClipboard,
   setExplorerLoading,
+  addItemToFolder,
 } = explorerSlice.actions;
 
 export default explorerSlice.reducer;

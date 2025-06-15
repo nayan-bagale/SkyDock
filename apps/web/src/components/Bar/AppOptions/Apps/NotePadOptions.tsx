@@ -1,12 +1,13 @@
 import { FileSaveAndOpenModalContext } from "@/components/ContextApi/FileSaveAndOpenModal";
+import useNotePad from "@/components/hooks/apps/useNotePad";
 import useOnClickOutside from "@/components/hooks/useOnclickOutside";
 import { useGetTextFileContentMutation } from "@/redux/apis/filesAndFolderApi";
 import { openNotePad, openNotePadFileActionModal, setNotePadContent } from "@/redux/features/note-pad/notePadSlice";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
 import { MainDropDownMenu, MainMenuSeparator } from "@/ui/Cards/Menus/MainDropDownMenu/MainDropDownMenu";
 import { FileT } from "@skydock/types";
-import { AppsT, SupportedMimeTypes } from "@skydock/types/enums";
+import { AppsT, FileExtensions, SupportedMimeTypes } from "@skydock/types/enums";
 import { showToast } from "@skydock/ui/toast";
 import { useContext, useRef, useState } from "react";
 
@@ -18,6 +19,8 @@ const NotePadOptions = () => {
 
     const { openFileOpenerModal, openSaveFileModal } = useContext(FileSaveAndOpenModalContext);
     const [getTextFileContent] = useGetTextFileContentMutation();
+    const textContaint = useAppSelector((state) => state.notePad.notePadInfo.content);
+    const { saveAs } = useNotePad();
 
     const handleFileOpen = () => {
         dispatch(openNotePadFileActionModal(true));
@@ -53,21 +56,22 @@ const NotePadOptions = () => {
                 // TODO: Handle file save logic here
                 // Build a text file from the content in the note pad
                 // And Upload it to the server
-                console.log(e);
-                // dispatch(openNotePad(e as FileT))
-                // getTextFileContent(e.id)
-                //     .unwrap()
-                //     .then((content) => {
-                //         dispatch(setNotePadContent(content))
-                //     })
-                //     .catch((error) => {
-                //         console.error("Failed to fetch file content:", error);
-                //         showToast("Error fetching file content", "error");
-                //     });
+                await saveAs({ content: textContaint, name: e.fileName, folderId: e.folderId, type: FileExtensions.txt })
+                // const buffer_file = generateFile({
+                //     content: textContaint,
+                //     name: e.fileName,
+                //     type: FileExtensions.txt
+                // })
+                // if (!buffer_file) return;
+                // const structuredFile = fileArrayGenerator([buffer_file], e.folderId);
+                // await uploadFileAndUpdateState(structuredFile)
+
+
             },
             onClose: () => {
                 dispatch(openNotePadFileActionModal(false));
-            }
+            },
+            supportedMimeTypes: [SupportedMimeTypes.Text]
         })
     }
 

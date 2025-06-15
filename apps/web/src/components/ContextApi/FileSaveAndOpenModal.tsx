@@ -1,7 +1,6 @@
 import { useAppSelector } from "@/redux/hooks";
-import { FileT } from "@/types/explorer";
 import FileSaveAndOpenModal from "@/ui/FileSaveAndOpenModal/FileSaveAndOpenModal";
-import { FileSaveAndOpenModalT, FolderT } from "@skydock/types";
+import { ExplorerItemT, FileDetailsT, FileSaveAndOpenModalT } from "@skydock/types";
 import { AnimatePresence } from "framer-motion";
 import { createContext, useCallback, useEffect, useState } from "react";
 
@@ -20,7 +19,7 @@ export const FileSaveAndOpenModalProvider = ({ children }: { children: React.Rea
     const [focusedAppId, setFocusedAppId] = useState<string | null>(null);
     const focusedApp = useAppSelector((state) => state.apps.focusedApp);
     const [action, setAction] = useState<'open' | 'save'>('open');
-    const [onSuccess, setOnSuccess] = useState<((item: FileT | FolderT | string) => void) | null>(null);
+    const [onSuccess, setOnSuccess] = useState<((item: ExplorerItemT | FileDetailsT) => void) | null>(null);
     const [onClose, setOnClose] = useState<(() => void) | null>(null);
     const [supportedMimeTypes, setSupportedMimeType] = useState<string[] | null>(null);
 
@@ -60,7 +59,7 @@ export const FileSaveAndOpenModalProvider = ({ children }: { children: React.Rea
         setSupportedMimeType(supportedMimeTypes || null);
     }
 
-    const handleSuccess = useCallback((item: FileT | FolderT | string) => {
+    const handleSuccess = useCallback((item: ExplorerItemT | FileDetailsT) => {
         if (onSuccess) {
             onSuccess(item);
         }

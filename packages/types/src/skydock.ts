@@ -13,6 +13,12 @@ export interface SkydockT {
 
 export type FocusedAppsT = Exclude<keyof typeof AppsT, "AppsMenu"> | "";
 
+export interface FileDetailsT {
+  fileName: string;
+  folderId: string;
+  path?: string;
+  mimeType?: string;
+}
 export interface FileSaveAndOpenModalT {
   openFileOpenerModal: ({
     appName,
@@ -32,7 +38,7 @@ export interface FileSaveAndOpenModalT {
     supportedMimeTypes,
   }: {
     appName: keyof typeof AppsT;
-    onSuccess: (item: ExplorerItemT["id"]) => Promise<void>;
+    onSuccess: (item: FileDetailsT) => Promise<void>;
     onClose: () => void;
     supportedMimeTypes?: string[];
   }) => void;
