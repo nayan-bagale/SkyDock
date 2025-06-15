@@ -66,7 +66,7 @@ export interface FileT {
   name: string;
   parent: string;
   isDeleted?: boolean;
-  deletedAt?: Date | null;
+  deletedAt?: string | null;
   details: {
     name: string;
     size: string;

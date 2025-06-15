@@ -10,7 +10,6 @@ import {
   addItem,
   clearClipboard,
   cutToClipboard,
-  deleteItem,
   moveFileIntoFolder,
   openExplorer,
   setCurrentFolder,
@@ -29,6 +28,7 @@ import useDeleteFolderRecursively from "./useDeleteFolderRecursively";
 import useEmptyFileGenerator from "./useEmptyFileGenerator";
 import useFileDownloadWithProgress from "./useFileDownloadWithProgress";
 import { useInvalidApi } from "./useInvalidApis";
+import useSoftDeleteItem from "./useSoftDeleteItem";
 
 const useContextMenu = (targetItem: FileT | FolderT | null) => {
   const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
@@ -51,6 +51,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
     useDeleteFolderRecursively();
   const { downloadFile } = useFileDownloadWithProgress();
   const { generateEmptyFile } = useEmptyFileGenerator();
+  const { handleSoftDelete } = useSoftDeleteItem();
 
   const handleAddFolder = async (currentFolder: FolderT) => {
     // Get all folders in current directory
@@ -117,39 +118,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
   const handleDelete = async () => {
     if (!targetItem) return;
 
-    if (targetItem.parent !== "trash") {
-      const arrayItems = getNestedFolderItems(targetItem.id, []).map((item) => {
-        if (targetItem.id === item.id) {
-          return {
-            ...item,
-            parent: "trash",
-          };
-        }
-        return item;
-      });
-      try {
-        console.log(arrayItems);
-        await softDeleteFileAndFolder(arrayItems);
-        dispatch(
-          moveFileIntoFolder({ fileId: targetItem.id, folderId: "trash" })
-        );
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      try {
-        if (targetItem.isFolder) {
-          const arrayItems = getNestedFolderItemsId(targetItem.id, []);
-          await deleteFolder(arrayItems);
-        } else {
-          await deleteFile(targetItem.id);
-        }
-        invalidUserInfo();
-        dispatch(deleteItem(targetItem));
-      } catch (error) {
-        console.log(error);
-      }
-    }
+    await handleSoftDelete(targetItem);
 
     dispatch(closeContextMenu());
   };

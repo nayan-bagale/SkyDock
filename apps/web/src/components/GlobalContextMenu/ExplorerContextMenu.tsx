@@ -76,7 +76,6 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
     // };
 
     if (isTrashTab) {
-
         return (
             <>
                 <Button size={'menu'} disabled={!targetItem} className="hover:bg-red-600" onClick={handleDelete}>

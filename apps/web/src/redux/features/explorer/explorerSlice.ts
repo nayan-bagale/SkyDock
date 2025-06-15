@@ -1,67 +1,7 @@
-import { X_POSITION, Y_POSITION } from "@/constants";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ExplorerT, FileT, FolderT } from "@skydock/types";
-
-const initialState = {
-  explorerItems: {
-    skydrive: {
-      id: "skydrive",
-      isFolder: true,
-      name: "Sky-Drive",
-      parent: "",
-      details: {
-        size: 0,
-        lastModified: "2023-10-01T12:00:00Z",
-      },
-      children: [],
-    },
-    desktop: {
-      id: "desktop",
-      isFolder: true,
-      name: "Desktop",
-      parent: "",
-      details: {
-        size: 0,
-        lastModified: "2023-10-01T12:00:00Z",
-      },
-      children: [],
-    },
-    trash: {
-      id: "trash",
-      isFolder: true,
-      name: "Trash",
-      parent: "",
-      details: {
-        size: 0,
-        lastModified: "2023-10-01T12:00:00Z",
-      },
-      children: [],
-    },
-  },
-  currentFolder: "skydrive",
-  backStack: [],
-  forwardStack: [],
-  activeTab: "skydrive",
-  actions: {
-    isMinimized: false,
-    isMaximized: false,
-    isProcessOn: false,
-    lastSize: { width: 0, height: 0 },
-    lastPosition: { x: X_POSITION, y: Y_POSITION },
-  },
-  settings: {
-    view: "grid",
-  },
-  itemDragged: null,
-  clipboard: {
-    items: [],
-    operation: null,
-    // sourceFolder: null,
-  },
-  state: {
-    isLoading: false,
-  },
-} as ExplorerT;
+import { ExplorerTabs } from "@skydock/types/enums";
+import { initialState } from "./intialState";
 
 export const explorerSlice = createSlice({
   name: "explorer",
@@ -122,7 +62,7 @@ export const explorerSlice = createSlice({
     },
 
     initializeItems: (state, action) => {
-      const drives: ExplorerT["activeTab"][] = ["skydrive", "desktop", "trash"];
+      const drives: ExplorerT["activeTab"][] = [...ExplorerTabs];
       if (drives.includes(action.payload.parent)) {
         const currentDriveItem = state.explorerItems[
           action.payload.parent
@@ -233,7 +173,8 @@ export const explorerSlice = createSlice({
           ...fileItem,
           parent: folderId,
           isDeleted: folderItem.id === "trash" ? true : false,
-          deletedAt: folderItem.id === "trash" ? new Date() : null,
+          deletedAt:
+            folderItem.id === "trash" ? new Date().toDateString() : null,
         },
       };
     },

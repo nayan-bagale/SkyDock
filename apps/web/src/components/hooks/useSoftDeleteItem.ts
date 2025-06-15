@@ -9,6 +9,7 @@ import {
 } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { FileT, FolderT } from "@skydock/types";
+import { showToast } from "@skydock/ui/toast";
 import { useContext } from "react";
 import { ConfirmModalContext } from "../ContextApi/ConfirmModal";
 import useDeleteFolderRecursively from "./useDeleteFolderRecursively";
@@ -36,6 +37,7 @@ const useSoftDeleteItem = () => {
       dispatch(deleteItem(targetItem));
     } catch (error) {
       console.log(error);
+      showToast("Server error occurred while deleting item", "error");
     }
   };
 
@@ -60,8 +62,11 @@ const useSoftDeleteItem = () => {
         );
       } catch (error) {
         console.log(error);
+        showToast("Server error occurred while deleting item", "error");
       }
     } else {
+      console.log("handleSoftDelete called with:", targetItem);
+
       open(
         "Delete Forever",
         `Are you sure you want to delete ${targetItem.name} forever? This action cannot be undone.`,

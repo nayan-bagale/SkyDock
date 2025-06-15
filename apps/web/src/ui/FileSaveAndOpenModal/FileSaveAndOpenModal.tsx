@@ -42,7 +42,7 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
     });
     const theme = useAppSelector((state) => state.settings.apperance.theme);
     const [activeTab, setActiveTab] =
-        useState<ExplorerT["activeTab"]>("skydrive");
+        useState<ExplorerT["activeTab"]>("documents");
     const { addFolder } = useExplorer();
 
     const tabsOptions = useMemo<
@@ -63,12 +63,13 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
                 id: "desktop",
                 Icon: <Icons.Folder className="w-4 h-4" />,
             },
+            { name: "Documents", id: 'documents', Icon: <Icons.File className="w-4 h-4" /> },
         ];
     }, []);
 
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
     const [currentFolder, setCurrentFolder] =
-        useState<ExplorerT["currentFolder"]>("skydrive");
+        useState<ExplorerT["currentFolder"]>("documents");
     const [backward, setBackward] = useState<string[]>([]);
     const [selectedItem, setSelectedItem] = useState<FileT | FolderT | null>(
         null

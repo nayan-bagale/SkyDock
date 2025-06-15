@@ -1,4 +1,3 @@
-import GlobalContextMenu from "@/components/GlobalContextMenu/GlobalContextMenu";
 import useSkydockInitialLoad from "@/components/hooks/useSkydockInitialLoad";
 import { setSkydockLoading } from "@/redux/features/skydock/skydockSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -40,7 +39,6 @@ const Layout = () => {
                     >
                         <Outlet />
                     </div>
-                    <GlobalContextMenu />
                 </>}
 
             </main>

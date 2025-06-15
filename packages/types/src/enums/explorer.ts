@@ -1,1 +1,6 @@
-export const ExplorerTabs = ["skydrive", "trash", "desktop"] as const;
+export const ExplorerTabs = [
+  "skydrive",
+  "trash",
+  "desktop",
+  "documents",
+] as const;

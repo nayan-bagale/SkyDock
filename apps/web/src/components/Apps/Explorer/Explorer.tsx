@@ -50,6 +50,7 @@ const Explorer = () => {
             { name: 'Sky-Drive', id: 'skydrive', Icon: <Icons.Cloud className="w-5 h-5" /> },
             // { name: 'Trash', id: 'trash', Icon: <Icons.Trash className="w-5 h-5" /> },
             { name: 'Desktop', id: 'desktop', Icon: <Icons.Folder className="w-5 h-5" /> },
+            { name: "Documents", id: 'documents', Icon: <Icons.File className="w-5 h-5" /> },
         ]
     }, [])
 

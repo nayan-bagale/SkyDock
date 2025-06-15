@@ -1,4 +1,5 @@
 import GlobalContextApi from "@/components/ContextApi/GlobalContextApi";
+import GlobalContextMenu from "@/components/GlobalContextMenu/GlobalContextMenu";
 import { useAppSelector } from "@/redux/hooks";
 import { AnimatePresence } from "framer-motion";
 import Apps_ from "../components/Apps/Apps_";
@@ -31,7 +32,8 @@ const MainApp = () => {
             <AnimatePresence>
                 {isSubscriptionPlanCardOpen && <SubscriptionPlans />}
             </AnimatePresence>
-            {<DraggingItem />}
+            <DraggingItem />
+            <GlobalContextMenu />
         </GlobalContextApi>
     )
 }
