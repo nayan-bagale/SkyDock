@@ -38,6 +38,7 @@ import paint_svg from './assests/paint-svgrepo-com.svg';
 import pdf_svg from './assests/pdf-svgrepo-com-1.svg';
 import image_svg from './assests/picture-photo-image-svgrepo-com.svg';
 import pie_svg from './assests/pie-chart-svgrepo-com.svg';
+import note_svg from './assests/post-it-svgrepo-com.svg';
 import python_image from './assests/python-svgrepo-com.svg';
 import react_svg from './assests/react-svgrepo-com.svg';
 import reset_svg from './assests/reset-svgrepo-com.svg';
@@ -124,6 +125,6 @@ export const Icons = {
   Google_Logo_White: ({ className }: { className: string }) => $({ svg: google_logo_white_svg, name: 'google_logo_white', className }),
   Upload1: ({ className }: { className: string }) => $({ svg: upload1_svg, name: 'upload1', className }),
   Notepad: ({ className }: { className: string }) => $({ svg: notepad_svg, name: 'notepad', className }),
-
+  Note: ({ className }: { className: string }) => $({ svg: note_svg, name: 'note', className }),
 }
 

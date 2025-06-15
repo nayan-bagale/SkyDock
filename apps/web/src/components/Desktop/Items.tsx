@@ -6,6 +6,7 @@ import { DisplayItemsIcons } from "@/ui/DisplayItemsIcons";
 import { DragEventT, FileT, FolderT, MouseEventT } from "@skydock/types";
 import { FC } from "react";
 import useAppOpenBasedOnFileType from "../hooks/useAppOpenBasedOnFileType";
+import useSoftDeleteItem from "../hooks/useSoftDeleteItem";
 
 interface ItemPropsT {
     item: FileT | FolderT,
@@ -20,6 +21,7 @@ const Item: FC<ItemPropsT> =
         const dispatch = useAppDispatch()
         const Icon = IconByMimeType('type' in item.details ? item.details.type : null);
         const { openApp } = useAppOpenBasedOnFileType(item);
+        const { handleSoftDelete } = useSoftDeleteItem()
 
         const handleContextMenu = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
             e.preventDefault();
@@ -52,6 +54,9 @@ const Item: FC<ItemPropsT> =
         const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
             if (e.key === 'Enter') {
                 handleOpen()
+
+            } else if (e.key === 'Delete' || e.key === 'Backspace') {
+                handleSoftDelete(item)
             }
         }
 

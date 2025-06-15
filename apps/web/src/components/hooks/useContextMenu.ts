@@ -19,7 +19,10 @@ import {
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { nanoid } from "@reduxjs/toolkit";
 import { FileT, FolderT } from "@skydock/types";
-import { FileExtensions } from "@skydock/types/enums";
+import {
+  FILE_EXTENSIONS_TO_MIME_TYPES,
+  FileExtensions,
+} from "@skydock/types/enums";
 import { useCallback } from "react";
 import useAppOpenBasedOnFileType from "./useAppOpenBasedOnFileType";
 import useDeleteFolderRecursively from "./useDeleteFolderRecursively";
@@ -187,7 +190,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
     mimeType: keyof typeof FileExtensions,
     number: number
   ) => {
-    let newFileName = number < 0 ? "untitled" : `untitled ${number}`;
+    let newFileName = number === 0 ? "untitled" : `untitled ${number}`;
     switch (mimeType) {
       case FileExtensions.txt:
         newFileName += ".txt";
@@ -200,7 +203,8 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
   };
 
   const handleGenerateEmptyFile = useCallback(
-    async (currentFolder: FolderT, mimeType: keyof typeof FileExtensions) => {
+    async (currentFolder: FolderT, extension: keyof typeof FileExtensions) => {
+      const mimeType = FILE_EXTENSIONS_TO_MIME_TYPES[extension];
       const filteredItems = Object.values(explorerItems).filter((item) => {
         return (
           item.isFolder === false &&
@@ -209,19 +213,22 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
         );
       });
 
-      const fileName = fileNameGenerator(mimeType, filteredItems.length);
+      console.log(filteredItems);
+
+      const fileName = fileNameGenerator(extension, filteredItems.length);
 
       try {
         await generateEmptyFile({
-          mimeType,
+          mimeType: extension,
           fileName,
           folderId: currentFolder.id,
         });
       } catch (error) {
         console.error("Error generating empty file:", error);
       }
+      dispatch(closeContextMenu());
     },
-    [explorerItems, generateEmptyFile]
+    [dispatch, explorerItems, generateEmptyFile]
   );
 
   return {

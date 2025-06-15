@@ -17,3 +17,13 @@ export enum FileExtensions {
   csv = "csv",
   md = "md",
 }
+
+export const FILE_EXTENSIONS_TO_MIME_TYPES: Record<
+  FileExtensions,
+  SupportedMimeTypes
+> = {
+  [FileExtensions.txt]: SupportedMimeTypes.Text,
+  [FileExtensions.json]: SupportedMimeTypes.JSON,
+  [FileExtensions.csv]: SupportedMimeTypes.CSV,
+  [FileExtensions.md]: SupportedMimeTypes.Markdown,
+};

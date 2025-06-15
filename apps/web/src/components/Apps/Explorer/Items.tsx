@@ -1,5 +1,6 @@
 import IconByMimeType from "@/components/FileIconByMimeType";
 import useAppOpenBasedOnFileType from "@/components/hooks/useAppOpenBasedOnFileType";
+import useSoftDeleteItem from "@/components/hooks/useSoftDeleteItem";
 import { openContextMenu } from "@/redux/features/contextMenu/contextMenuSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { DisplayItemsIcons } from "@/ui/DisplayItemsIcons";
@@ -18,6 +19,7 @@ const Item: FC<ItemPropsT> =
         const dispatch = useAppDispatch()
 
         const { openApp } = useAppOpenBasedOnFileType(item);
+        const { handleSoftDelete } = useSoftDeleteItem()
 
         const view = useAppSelector((state) => state.explorer.settings.view)
 
@@ -51,6 +53,8 @@ const Item: FC<ItemPropsT> =
         const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
             if (e.key === 'Enter') {
                 openApp()
+            } else if (e.key === 'Delete' || e.key === 'Backspace') {
+                handleSoftDelete(item)
             }
         }
 
