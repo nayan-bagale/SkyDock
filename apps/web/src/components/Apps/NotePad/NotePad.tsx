@@ -61,6 +61,12 @@ const NotePad = () => {
                 e.stopPropagation();
             }}
             title={fileName ?? "NotePad"}
+            onKeyDown={(e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+                    e.preventDefault();
+                    save();
+                }
+            }}
         >
             <div className="bg-white flex items-center p-1 border-b">
                 <Button
@@ -89,9 +95,9 @@ const NotePad = () => {
             </div>
             <div className="bg-white flex-1 overflow-hidden">
                 <textarea
+
                     value={contentValue}
                     onChange={(e) => setContentValue(e.target.value)}
-                    // placeholder="Start writing your thoughts..."
                     style={{ fontSize: `${fontSize}px` }}
                     className="w-full h-full p-2 text-slate-700 leading-relaxed text-md resize-none border-none outline-none focus:ring-0 placeholder-slate-400"
                 />

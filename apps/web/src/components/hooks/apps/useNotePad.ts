@@ -23,7 +23,7 @@ import {
   SupportedMimeTypes,
 } from "@skydock/types/enums";
 import { showToast } from "@skydock/ui/toast";
-import { useCallback, useContext, useEffect } from "react";
+import { useCallback, useContext } from "react";
 import { useBlobFileGenerator } from "../useBlobFileGenerator";
 import useFileDownloadWithProgress from "../useFileDownloadWithProgress";
 import useFileUploadsAndUpdateState from "../useFileUploadsAndUpdateState";
@@ -249,23 +249,6 @@ const useNotePad = () => {
     }
     return await downloadFile(fileInfo);
   }, [downloadFile, fileInfo]);
-
-  // Keyboard shortcut for save
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-        e.preventDefault();
-
-        save();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [save]);
 
   return {
     content,
