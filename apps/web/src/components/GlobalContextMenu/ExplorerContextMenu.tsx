@@ -30,7 +30,7 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
     // If targetId exists, we're right-clicking on an item
     const targetItem = targetId ? explorerItems[targetId] : null;
 
-    const { handleAddFolder, handleOpen, handleDelete, handleDownload, handleCut, handlePaste, handleGenerateEmptyFile } = useContextMenu(targetItem);
+    const { handleAddFolder, handleOpen, handleDelete, handleDownload, handleCut, handlePaste, handleGenerateEmptyFile, handleRestoreFile } = useContextMenu(targetItem);
 
     const handleRename = () => {
         if (!targetItem) return;
@@ -74,6 +74,12 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
     if (isTrashTab) {
         return (
             <>
+                <Button size={'menu'} disabled={!targetItem} className="hover:bg-red-600" onClick={handleRestoreFile}>
+                    <div>Restore</div>
+                    {/* <Icons.Rotate className="h-4" /> */}
+                </Button>
+                <ContextMenuSeparator />
+
                 <Button size={'menu'} disabled={!targetItem} className="hover:bg-red-600" onClick={handleDelete}>
                     <div>Delete</div>
                     <Icons.Trash3 className="h-4" />

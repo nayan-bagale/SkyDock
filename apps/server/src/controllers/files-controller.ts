@@ -357,6 +357,7 @@ class FilesController {
           .json({ message: "File content not found" });
       }
       const textContent = await content.Body.transformToString();
+      res.set("Content-Type", "text/plain");
       res.send(textContent);
     } catch (err) {
       logger.error("Error fetching text file content", err);

@@ -253,6 +253,13 @@ export const explorerSlice = createSlice({
       state.actions.lastSize = action.payload;
     },
 
+    setExplorerLastPosition: (
+      state,
+      action: PayloadAction<{ x: number; y: number }>
+    ) => {
+      state.actions.lastPosition = action.payload;
+    },
+
     setItemDragged: (state, action) => {
       state.itemDragged = action.payload;
     },
@@ -283,6 +290,10 @@ export const explorerSlice = createSlice({
     setExplorerLoading: (state, action: PayloadAction<boolean>) => {
       state.state.isLoading = action.payload;
     },
+
+    setExplorerFileActionModalOn: (state, action: PayloadAction<boolean>) => {
+      state.actions.isFileActionModalOn = action.payload;
+    },
   },
 });
 
@@ -306,6 +317,7 @@ export const {
   changeExplorerSize,
   changeExplorerMinimized,
   changeExplorerLastSize,
+  setExplorerLastPosition,
   setItemDragged,
   setActiveTab,
   copyToClipboard,
@@ -314,6 +326,7 @@ export const {
   pasteFromClipboard,
   setExplorerLoading,
   addItemToFolder,
+  setExplorerFileActionModalOn,
 } = explorerSlice.actions;
 
 export default explorerSlice.reducer;

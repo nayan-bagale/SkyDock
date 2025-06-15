@@ -59,6 +59,7 @@ export const initialState = {
     isProcessOn: false,
     lastSize: { width: 0, height: 0 },
     lastPosition: { x: 0, y: 0 },
+    isFileActionModalOn: false,
   },
   settings: {
     view: "grid",

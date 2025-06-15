@@ -1,14 +1,21 @@
-import { X_POSITION, Y_POSITION } from "@/constants";
+import {
+  LAST_POSITION_DEBOUNCE_TIME,
+  X_POSITION,
+  Y_POSITION,
+} from "@/constants";
 import { useCallback, useEffect, useState } from "react";
+import { useDebounce, useUnmount } from "react-use";
 
 export const useDrag = ({
   ref,
   calculateFor = "topLeft",
   lastPosition = { x: X_POSITION, y: Y_POSITION },
+  onChangePosition,
 }: {
   ref: any;
   calculateFor?: string;
   lastPosition?: { x: number; y: number };
+  onChangePosition?: (position: { x: number; y: number }) => void;
 }) => {
   const [dragInfo, setDragInfo] = useState<any>();
   const [finalPosition, setFinalPosition] = useState<{ x: number; y: number }>({
@@ -136,6 +143,16 @@ export const useDrag = ({
       y: lastPosition.y,
     });
   };
+
+  useDebounce(
+    () => {
+      onChangePosition?.(finalPosition);
+    },
+    LAST_POSITION_DEBOUNCE_TIME,
+    [finalPosition]
+  );
+
+  useUnmount(() => onChangePosition?.({ x: 0, y: 0 }));
 
   return {
     position: finalPosition,

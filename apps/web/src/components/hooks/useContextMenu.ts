@@ -1,8 +1,5 @@
 import {
   useCreateFolderMutation,
-  useDeleteFileMutation,
-  useDeleteFolderMutation,
-  useSoftDeleteFileAndFolderMutation,
   useUpdateItemMutation,
 } from "@/redux/apis/filesAndFolderApi";
 import { closeContextMenu } from "@/redux/features/contextMenu/contextMenuSlice";
@@ -14,6 +11,7 @@ import {
   openExplorer,
   setCurrentFolder,
   setCurrentFolderAndCurrentTab,
+  setExplorerFileActionModalOn,
 } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { nanoid } from "@reduxjs/toolkit";
@@ -22,12 +20,12 @@ import {
   FILE_EXTENSIONS_TO_MIME_TYPES,
   FileExtensions,
 } from "@skydock/types/enums";
-import { useCallback } from "react";
+import { showToast } from "@skydock/ui/toast";
+import { useCallback, useContext } from "react";
+import { FileSaveAndOpenModalContext } from "../ContextApi/FileSaveAndOpenModal";
 import useAppOpenBasedOnFileType from "./useAppOpenBasedOnFileType";
-import useDeleteFolderRecursively from "./useDeleteFolderRecursively";
 import useEmptyFileGenerator from "./useEmptyFileGenerator";
 import useFileDownloadWithProgress from "./useFileDownloadWithProgress";
-import { useInvalidApi } from "./useInvalidApis";
 import useSoftDeleteItem from "./useSoftDeleteItem";
 
 const useContextMenu = (targetItem: FileT | FolderT | null) => {
@@ -37,21 +35,18 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
   );
   const clipboardItems = useAppSelector((state) => state.explorer.clipboard);
   const activeTab = useAppSelector((state) => state.explorer.activeTab);
+  const explorerLastPosition = useAppSelector(
+    (state) => state.explorer.actions.lastPosition
+  );
   const { openApp } = useAppOpenBasedOnFileType(targetItem);
 
   const [createFolder] = useCreateFolderMutation();
-  const [deleteFile] = useDeleteFileMutation();
-  const [deleteFolder] = useDeleteFolderMutation();
   const [updateFileApi] = useUpdateItemMutation();
-  const [softDeleteFileAndFolder] = useSoftDeleteFileAndFolderMutation();
-  const { invalidUserInfo } = useInvalidApi();
-
   const dispatch = useAppDispatch();
-  const { getNestedFolderItems, getNestedFolderItemsId } =
-    useDeleteFolderRecursively();
   const { downloadFile } = useFileDownloadWithProgress();
   const { generateEmptyFile } = useEmptyFileGenerator();
   const { handleSoftDelete } = useSoftDeleteItem();
+  const { restoreFileModal } = useContext(FileSaveAndOpenModalContext);
 
   const handleAddFolder = async (currentFolder: FolderT) => {
     // Get all folders in current directory
@@ -198,6 +193,34 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
     [dispatch, explorerItems, generateEmptyFile]
   );
 
+  const handleRestoreFile = async () => {
+    if (!targetItem) return;
+    dispatch(closeContextMenu());
+    dispatch(setExplorerFileActionModalOn(true));
+    restoreFileModal({
+      appName: "Explorer",
+      onSuccess: async (item) => {
+        try {
+          await updateFileApi({
+            id: targetItem.id,
+            parent_id: item.id,
+          });
+          dispatch(
+            moveFileIntoFolder({ fileId: targetItem.id, folderId: item.id })
+          );
+        } catch (error) {
+          showToast("Error occurred while restoring the file", "error");
+        } finally {
+          dispatch(setExplorerFileActionModalOn(false));
+        }
+      },
+      onClose: () => {
+        dispatch(setExplorerFileActionModalOn(false));
+      },
+      lastPosition: explorerLastPosition,
+    });
+  };
+
   return {
     handleAddFolder,
     handleOpen,
@@ -206,6 +229,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
     handleCut,
     handlePaste,
     handleGenerateEmptyFile,
+    handleRestoreFile,
   };
 };
 

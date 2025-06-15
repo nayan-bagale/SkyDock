@@ -5,7 +5,7 @@ import { useDrag } from "@/components/hooks/useDrag";
 import { useInvalidApi } from "@/components/hooks/useInvalidApis";
 import { useCreateFolderMutation, useDeleteFolderMutation } from "@/redux/apis/filesAndFolderApi";
 import { openContextMenu } from '@/redux/features/contextMenu/contextMenuSlice';
-import { addItem, changeExplorerMinimized, changeView, emptyTrash, explorerProcess, setActiveTab, setBackStack, setBreadCrumb, setForwardStack } from "@/redux/features/explorer/explorerSlice";
+import { addItem, changeExplorerMinimized, changeView, emptyTrash, explorerProcess, setActiveTab, setBackStack, setBreadCrumb, setExplorerLastPosition, setForwardStack } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { ExplorerCard } from "@/ui/Cards/Explorer/Explorer";
 import { nanoid } from "@reduxjs/toolkit";
@@ -13,6 +13,7 @@ import { ExplorerItemsActiveTabs, ExplorerT, FolderT } from "@skydock/types";
 import { AppsT, ExplorerTabs } from "@skydock/types/enums";
 import { Icons } from "@skydock/ui/icons";
 import { showToast } from "@skydock/ui/toast";
+import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useRef } from "react";
 import ExplorerItems from "./ExplorerItems";
 
@@ -27,6 +28,7 @@ const Explorer = () => {
 
     const draggableRef = useRef<HTMLDivElement>(null);
 
+    const isFileActionModalOn = useAppSelector((state) => state.explorer.actions.isFileActionModalOn);
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems)
     const currentFolder = useAppSelector((state) => state.explorer.explorerItems[state.explorer.currentFolder]) as FolderT
     const backStack = useAppSelector((state) => state.explorer.backStack)
@@ -38,7 +40,10 @@ const Explorer = () => {
         useDeleteFolderRecursively();
 
     const { position, handleMouseDown } = useDrag({
-        ref: draggableRef
+        ref: draggableRef,
+        onChangePosition: (position) => {
+            dispatch(setExplorerLastPosition(position))
+        }
     });
 
     const tabsOptions = useMemo<{
@@ -173,6 +178,16 @@ const Explorer = () => {
             <DragnDropWrapper_Explorer>
                 <ExplorerItems />
             </DragnDropWrapper_Explorer>
+            <AnimatePresence>
+                {isFileActionModalOn && (
+                    <motion.div
+                        className="absolute inset-0 flex items-center justify-center z-50"
+                        initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                        animate={{ opacity: 1, backdropFilter: "blur(5px)" }}
+                        exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                    ></motion.div>
+                )}
+            </AnimatePresence>
         </ExplorerCard>
     )
 }

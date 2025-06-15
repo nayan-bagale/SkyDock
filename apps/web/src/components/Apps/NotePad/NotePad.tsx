@@ -1,7 +1,6 @@
 import useNotePad from "@/components/hooks/apps/useNotePad";
 import useChangeAppFocus from "@/components/hooks/useChangeAppFocus";
 import { useDrag } from "@/components/hooks/useDrag";
-import { LAST_POSITION_DEBOUNCE_TIME } from "@/constants";
 import { closeNotePad, setLastPosition } from "@/redux/features/note-pad/notePadSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
@@ -11,7 +10,6 @@ import { AppsT } from "@skydock/types/enums";
 import { AnimatePresence, motion } from "framer-motion";
 import { Save } from "lucide-react";
 import { useRef, useState } from "react";
-import { useDebounce } from "react-use";
 
 const NotePad = () => {
     const theme = useAppSelector((state) => state.settings.apperance.theme);
@@ -20,16 +18,16 @@ const NotePad = () => {
     );
 
     const fileName = useAppSelector((state) => state.notePad.notePadInfo.textFileInfo?.name)
-    // const [contentValue, setContentValue] = useState<string>(initialContent);
     const dispatch = useAppDispatch();
     const draggableRef = useRef<HTMLDivElement>(null);
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef,
+        onChangePosition: (position) => {
+            dispatch(setLastPosition({ x: position.x, y: position.y }));
+        },
     });
     const [fontSize, setFontSize] = useState<number>(14); // Default font size
-    const { handleAppFocus } = useChangeAppFocus(AppsT.NotePad, () => {
-        dispatch(setLastPosition({ x: 0, y: 0 }));
-    });
+    const { handleAppFocus } = useChangeAppFocus(AppsT.NotePad);
     const isFocused = useAppSelector(
         (state) => state.apps.focusedApp === AppsT.NotePad
     );
@@ -48,9 +46,6 @@ const NotePad = () => {
         save
     } = useNotePad();
 
-    useDebounce(() => {
-        dispatch(setLastPosition({ x: position.x, y: position.y }));
-    }, LAST_POSITION_DEBOUNCE_TIME, [position]);
 
     return (
         <NotePadCard
@@ -147,7 +142,7 @@ const NotePad = () => {
             <AnimatePresence>
                 {isFileActionModalOn && (
                     <motion.div
-                        className="absolute inset-0  flex items-center justify-center z-50"
+                        className="absolute inset-0 flex items-center justify-center z-50"
                         initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
                         animate={{ opacity: 1, backdropFilter: "blur(5px)" }}
                         exit={{ opacity: 0, backdropFilter: "blur(0px)" }}

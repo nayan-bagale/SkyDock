@@ -44,4 +44,16 @@ export interface FileSaveAndOpenModalT {
     supportedMimeTypes?: string[];
     lastPosition?: { x: number; y: number };
   }) => void;
+
+  restoreFileModal: ({
+    appName,
+    onSuccess,
+    onClose,
+    lastPosition,
+  }: {
+    appName: keyof typeof AppsT;
+    onSuccess: (item: ExplorerItemT) => Promise<void>;
+    onClose: () => void;
+    lastPosition?: { x: number; y: number };
+  }) => void;
 }

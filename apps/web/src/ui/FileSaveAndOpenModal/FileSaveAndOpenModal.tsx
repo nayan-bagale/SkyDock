@@ -23,7 +23,7 @@ import { DisplayItemsIcons } from "./DisplayItemsIcons";
 interface FileSaveAndOpenModalT {
     closeModal: (() => void) | null;
     onSuccess: ((item: ExplorerItemT | FileDetailsT) => void) | null;
-    action: "open" | "save";
+    action: "open" | "save" | 'restore';
     supportedMimeTypes: string[] | null;
     lastPosition?: { x: number; y: number };
 }
@@ -42,34 +42,14 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
     });
     const theme = useAppSelector((state) => state.settings.apperance.theme);
     const [activeTab, setActiveTab] =
-        useState<ExplorerT["activeTab"]>("documents");
+        useState<ExplorerT["activeTab"]>(action === 'save' ? "documents" : 'skydrive');
     const { addFolder } = useExplorer();
 
-    const tabsOptions = useMemo<
-        {
-            name: string;
-            id: ExplorerItemsActiveTabs;
-            Icon: JSX.Element;
-        }[]
-    >(() => {
-        return [
-            {
-                name: "Sky-Drive",
-                id: "skydrive",
-                Icon: <Icons.Cloud className="w-4 h-4" />,
-            },
-            {
-                name: "Desktop",
-                id: "desktop",
-                Icon: <Icons.Folder className="w-4 h-4" />,
-            },
-            { name: "Documents", id: 'documents', Icon: <Icons.File className="w-4 h-4" /> },
-        ];
-    }, []);
+
 
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
     const [currentFolder, setCurrentFolder] =
-        useState<ExplorerT["currentFolder"]>("documents");
+        useState<ExplorerT["currentFolder"]>(action === 'save' ? "documents" : 'skydrive');
     const [backward, setBackward] = useState<string[]>([]);
     const [selectedItem, setSelectedItem] = useState<FileT | FolderT | null>(
         null
@@ -134,6 +114,28 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
         setSelectedItem(null);
     }, []);
 
+    const tabsOptions = useMemo<
+        {
+            name: string;
+            id: ExplorerItemsActiveTabs;
+            Icon: JSX.Element;
+        }[]
+    >(() => {
+        return [
+            {
+                name: "Sky-Drive",
+                id: "skydrive",
+                Icon: <Icons.Cloud className="w-4 h-4" />,
+            },
+            {
+                name: "Desktop",
+                id: "desktop",
+                Icon: <Icons.Folder className="w-4 h-4" />,
+            },
+            { name: "Documents", id: 'documents', Icon: <Icons.File className="w-4 h-4" /> },
+        ];
+    }, []);
+
     const handleActiveTabs = {
         func: (tab: ExplorerT["activeTab"]) => changeTab(tab),
         activeTab,
@@ -151,6 +153,8 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
             return "Select File";
         } else if (action === "save") {
             return "Save in Folder";
+        } else if (action === 'restore') {
+            return "Restore";
         }
     }, [action, selectedItem?.isFolder]);
 
@@ -175,12 +179,21 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
         } else if (action === "open") {
             if (!selectedItem) return;
             onSuccess?.(selectedItem as FileT | FolderT);
+        } else if (action === 'restore') {
+            onSuccess?.(explorerItems[currentFolder]);
         }
-    }, [action, currentFolder, fileName, files, onSuccess, selectedItem]);
+    }, [action, currentFolder, explorerItems, fileName, files, onSuccess, selectedItem]);
 
     const isSubmitDisabled = useMemo(() => {
         if (action === "save") {
             return !currentFolder && !selectedItem;
+        } else if (action === 'restore') {
+
+            if (selectedItem && !selectedItem?.isFolder) {
+                return true; // Cannot restore a file, only folders can be restored
+            }
+
+            return false;
         } else {
             // For open action, we can select a file or folder
             return !selectedItem;
