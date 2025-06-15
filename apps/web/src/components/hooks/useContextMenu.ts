@@ -19,8 +19,11 @@ import {
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { nanoid } from "@reduxjs/toolkit";
 import { FileT, FolderT } from "@skydock/types";
+import { FileExtensions } from "@skydock/types/enums";
+import { useCallback } from "react";
 import useAppOpenBasedOnFileType from "./useAppOpenBasedOnFileType";
 import useDeleteFolderRecursively from "./useDeleteFolderRecursively";
+import useEmptyFileGenerator from "./useEmptyFileGenerator";
 import useFileDownloadWithProgress from "./useFileDownloadWithProgress";
 import { useInvalidApi } from "./useInvalidApis";
 
@@ -44,6 +47,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
   const { getNestedFolderItems, getNestedFolderItemsId } =
     useDeleteFolderRecursively();
   const { downloadFile } = useFileDownloadWithProgress();
+  const { generateEmptyFile } = useEmptyFileGenerator();
 
   const handleAddFolder = async (currentFolder: FolderT) => {
     // Get all folders in current directory
@@ -179,6 +183,47 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
     dispatch(closeContextMenu());
   };
 
+  const fileNameGenerator = (
+    mimeType: keyof typeof FileExtensions,
+    number: number
+  ) => {
+    let newFileName = number < 0 ? "untitled" : `untitled ${number}`;
+    switch (mimeType) {
+      case FileExtensions.txt:
+        newFileName += ".txt";
+        break;
+      // Add more cases for other mime types if needed
+      default:
+        newFileName += `.${mimeType.split("/")[1]}`;
+    }
+    return newFileName;
+  };
+
+  const handleGenerateEmptyFile = useCallback(
+    async (currentFolder: FolderT, mimeType: keyof typeof FileExtensions) => {
+      const filteredItems = Object.values(explorerItems).filter((item) => {
+        return (
+          item.isFolder === false &&
+          item.parent === currentFolder.id &&
+          item.details.type === mimeType
+        );
+      });
+
+      const fileName = fileNameGenerator(mimeType, filteredItems.length);
+
+      try {
+        await generateEmptyFile({
+          mimeType,
+          fileName,
+          folderId: currentFolder.id,
+        });
+      } catch (error) {
+        console.error("Error generating empty file:", error);
+      }
+    },
+    [explorerItems, generateEmptyFile]
+  );
+
   return {
     handleAddFolder,
     handleOpen,
@@ -186,6 +231,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
     handleDownload,
     handleCut,
     handlePaste,
+    handleGenerateEmptyFile,
   };
 };
 

@@ -24,8 +24,8 @@ import {
 } from "@skydock/types/enums";
 import { showToast } from "@skydock/ui/toast";
 import { useCallback, useContext, useEffect } from "react";
+import { useBlobFileGenerator } from "../useBlobFileGenerator";
 import useFileDownloadWithProgress from "../useFileDownloadWithProgress";
-import { useFileGenerator } from "../useFileGenerator";
 import useFileUploadsAndUpdateState from "../useFileUploadsAndUpdateState";
 
 type SyncStatus = "saved" | "saving" | "synced" | "error";
@@ -54,7 +54,7 @@ const useNotePad = () => {
 
   const { downloadFile } = useFileDownloadWithProgress();
 
-  const { generateFile } = useFileGenerator();
+  const { generateFile } = useBlobFileGenerator();
 
   const setLastSaved = useCallback(
     (date: Date | null) => {

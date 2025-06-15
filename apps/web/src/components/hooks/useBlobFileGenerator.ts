@@ -16,7 +16,7 @@ interface FileGenerationResult {
   generateFile: (input: FileInput) => File | null;
 }
 
-export function useFileGenerator(): FileGenerationResult {
+export function useBlobFileGenerator(): FileGenerationResult {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
 

@@ -7,7 +7,7 @@ import { ContextMenuSeparator } from '@/ui/ContextMenu';
 import SupportedMimeTypeCheck from '@/utils/supportedMimeTypeCheck';
 import { FolderT } from '@skydock/types';
 import { Icons } from '@skydock/ui/icons';
-import { X } from 'lucide-react';
+import { FileText, X } from 'lucide-react';
 import { useState } from 'react';
 import useAppProcess from '../hooks/useAppProcess';
 import useContextMenu from '../hooks/useContextMenu';
@@ -35,7 +35,7 @@ const DesktopContextMenu = ({ targetId, additionalData }: DesktopContextMenuProp
     // If targetId exists, we're right-clicking on an item
     const targetItem = targetId ? explorerItems[targetId] : null;
 
-    const { handleAddFolder, handleOpen, handleDelete, handleDownload, handleCut, handlePaste } = useContextMenu(targetItem);
+    const { handleAddFolder, handleOpen, handleDelete, handleDownload, handleCut, handlePaste, handleGenerateEmptyFile } = useContextMenu(targetItem);
 
     const handleRename = () => {
         if (!targetItem) return;
@@ -68,11 +68,6 @@ const DesktopContextMenu = ({ targetId, additionalData }: DesktopContextMenuProp
         const hasClipboardItems = clipboardItems.items.length > 0 && clipboardItems.operation !== null;
         return (
             <>
-
-                <Button size={'menu'} onClick={() => handleAddFolder(currentFolder)}>
-                    <div>New Folder</div>
-                    <Icons.Folder_Add className="h-4" />
-                </Button>
                 <Button
                     size={'menu'}
                     onClick={() => handlePaste(currentFolder)}
@@ -82,9 +77,18 @@ const DesktopContextMenu = ({ targetId, additionalData }: DesktopContextMenuProp
                     <div>Paste</div>
                     <Icons.Paste className="h-4" />
                 </Button>
-                <ContextMenuSeparator />
                 <FileUploadButton parent='desktop' onClick={() => dispatch(closeContextMenu())} />
                 <ContextMenuSeparator />
+                <Button size={'menu'} onClick={() => handleAddFolder(currentFolder)}>
+                    <div>New Folder</div>
+                    <Icons.Folder_Add className="h-4" />
+                </Button>
+                <Button size={'menu'} onClick={() => handleGenerateEmptyFile(currentFolder, 'txt')}>
+                    <div>New Text</div>
+                    <FileText className="h-4 w-4" />
+                </Button>
+                <ContextMenuSeparator />
+
                 <Button size={'menu'} onClick={handleDisplaySettings}>
                     <div>Display Settings</div>
                     <Icons.Settings className="h-4" />

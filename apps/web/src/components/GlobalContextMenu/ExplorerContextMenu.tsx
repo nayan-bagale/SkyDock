@@ -7,6 +7,7 @@ import { ContextMenuSeparator } from '@/ui/ContextMenu';
 import SupportedMimeTypeCheck from '@/utils/supportedMimeTypeCheck';
 import { FolderT } from '@skydock/types';
 import { Icons } from '@skydock/ui/icons';
+import { FileText } from 'lucide-react';
 import { useState } from 'react';
 import useContextMenu from '../hooks/useContextMenu';
 import FileUploadButton from './UploadButton';
@@ -32,7 +33,7 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
     // If targetId exists, we're right-clicking on an item
     const targetItem = targetId ? explorerItems[targetId] : null;
 
-    const { handleAddFolder, handleOpen, handleDelete, handleDownload, handleCut, handlePaste } = useContextMenu(targetItem);
+    const { handleAddFolder, handleOpen, handleDelete, handleDownload, handleCut, handlePaste, handleGenerateEmptyFile } = useContextMenu(targetItem);
 
     const handleRename = () => {
         if (!targetItem) return;
@@ -94,10 +95,7 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
 
         return (
             <>
-                <Button size={'menu'} onClick={() => handleAddFolder(currentFolder)}>
-                    <div>New Folder</div>
-                    <Icons.Folder_Add className="h-4" />
-                </Button>
+
                 <Button
                     size={'menu'}
                     onClick={() => handlePaste(currentFolder)}
@@ -107,8 +105,17 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
                     <div>Paste</div>
                     <Icons.Paste className="h-4" />
                 </Button>
-                <ContextMenuSeparator />
                 <FileUploadButton parent={currentFolder.id} onClick={() => dispatch(closeContextMenu())} />
+
+                <ContextMenuSeparator />
+                <Button size={'menu'} onClick={() => handleAddFolder(currentFolder)}>
+                    <div>New Folder</div>
+                    <Icons.Folder_Add className="h-4" />
+                </Button>
+                <Button size={'menu'} onClick={() => handleGenerateEmptyFile(currentFolder, 'txt')}>
+                    <div>New Text</div>
+                    <FileText className="h-4 w-4" />
+                </Button>
             </>
         );
     }
