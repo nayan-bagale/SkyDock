@@ -2,6 +2,7 @@ import { useAppSelector } from "@/redux/hooks";
 import { APPS_TEXT, AppsT } from "@skydock/types/enums";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMemo } from "react";
+import ImageViewerOptions from "./Apps/ImageViewerOptions";
 import NotePadOptions from "./Apps/NotePadOptions";
 
 const AppOptions = () => {
@@ -11,7 +12,8 @@ const AppOptions = () => {
         switch (focusedAppName) {
             case AppsT.NotePad:
                 return <NotePadOptions />;
-
+            case AppsT.ImageViewer:
+                return <ImageViewerOptions />;
             default:
                 return null;
         }

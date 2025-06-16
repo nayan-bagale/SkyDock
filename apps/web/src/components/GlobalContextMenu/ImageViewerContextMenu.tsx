@@ -18,7 +18,7 @@ const ImageViewerContextMenu = ({ additionalData }: ImageViewerContextMenuProps)
 
     const handleDownload = async () => {
         if (additionalData?.currentImageId) {
-            // You'll need to implement this to get the file object
+            //TODO: You'll need to implement this to get the file object
             const imageFile = { id: additionalData.currentImageId };
             // await downloadFile(imageFile);
         }

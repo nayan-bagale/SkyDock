@@ -60,6 +60,7 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
         return explorerItems[currentFolder];
     }, [currentFolder, explorerItems]);
 
+
     const files = useMemo(
         () =>
             (item as FolderT)?.children
@@ -68,7 +69,7 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
                     if (item.isFolder) return true;
                     if (
                         !item.isFolder &&
-                        supportedMimeTypes?.includes(item.details?.type || "")
+                        supportedMimeTypes?.some(mimeType => item.details?.type.startsWith(mimeType))
                     ) {
                         return true;
                     } else {

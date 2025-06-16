@@ -1,87 +1,37 @@
+import useImageViewer from '@/components/hooks/apps/useImageViewer';
 import useChangeAppFocus from '@/components/hooks/useChangeAppFocus';
 import { useDrag } from '@/components/hooks/useDrag';
-import useGetFileURl from '@/components/hooks/useGetFileURl';
-import { openContextMenu } from '@/redux/features/contextMenu/contextMenuSlice';
-import { closeImageViewer } from '@/redux/features/imageViewer/imageViewerSlice';
+import { closeImageViewer, setImageViewerLastPosition } from '@/redux/features/imageViewer/imageViewerSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Button } from '@/ui/button';
 import { ImageViewerCard } from '@/ui/Cards/ImageViewer/ImageViewer';
 import cn from '@/utils';
-import { FileT } from '@skydock/types';
+import { APPS_TEXT } from '@skydock/types/enums';
 import { Icons } from '@skydock/ui/icons';
-import { showToast } from '@skydock/ui/toast';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 
 const ImageViewer = () => {
-
-
-    const [currentImage, setCurrentImage] = useState<string | null>(null);
-    const [imageTitle, setImageTitle] = useState('Image Viewer');
-    const [zoom, setZoom] = useState(1);
-    const [rotation, setRotation] = useState(0);
-    const { getFileUrl } = useGetFileURl()
+    const { handleReset, handleRotate, handleZoomIn, handleZoomOut, imageUrl, rotation, zoom, imageFileInfo } = useImageViewer();
 
     const draggableRef = useRef<HTMLDivElement>(null);
 
     const dispatch = useAppDispatch();
     const { handleAppFocus } = useChangeAppFocus('ImageViewer');
     const focusedApp = useAppSelector((state) => state.apps.focusedApp);
-    const imageViewerState = useAppSelector((state) => state.imageViewer.imageViewer);
-    const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
 
     const { position, handleMouseDown } = useDrag({
-        ref: draggableRef
+        ref: draggableRef,
+        onChangePosition: (position) => dispatch(setImageViewerLastPosition(position))
     });
-
-    useEffect(() => {
-        const setUrl = async () => {
-            if (imageViewerState?.currentImageId) {
-                const imageItem = explorerItems[imageViewerState.currentImageId] as FileT;
-                if (imageItem && !imageItem.isFolder && imageItem.details.type.startsWith('image/')) {
-                    setImageTitle(imageItem.name);
-                    // In a real app, you would get the image URL from your backend
-                    try {
-
-                        const { url } = await getFileUrl(`${imageItem.id}.${imageItem.name.split(".").pop()}`)
-                        // console.log(url)
-                        setCurrentImage(url);
-                    } catch (error) {
-                        console.error('Error fetching image URL:', error);
-                        showToast('Error loading image', 'error');
-                        dispatch(closeImageViewer());
-                    }
-                }
-            }
-
-        }
-        setUrl()
-    }, [imageViewerState, explorerItems]);
-
-    const handleZoomIn = () => {
-        setZoom(prev => Math.min(prev + 0.1, 3));
-    };
-
-    const handleZoomOut = () => {
-        setZoom(prev => Math.max(prev - 0.1, 0.5));
-    };
-
-    const handleRotate = () => {
-        setRotation(prev => (prev + 90) % 360);
-    };
-
-    const handleReset = () => {
-        setZoom(1);
-        setRotation(0);
-    };
 
     const handleContextMenu = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        dispatch(openContextMenu({
-            position: { x: e.clientX, y: e.clientY },
-            location: 'ImageViewer',
-            additionalData: { currentImageId: imageViewerState?.currentImageId }
-        }));
+        // dispatch(openContextMenu({
+        //     position: { x: e.clientX, y: e.clientY },
+        //     location: 'ImageViewer',
+        //     additionalData: { currentImageId: imageViewerState?.currentImageId }
+        // }));
     };
 
     const Action = {
@@ -113,15 +63,15 @@ const ImageViewer = () => {
             onMouseDownCard={handleAppFocus}
             isFocused={focusedApp === 'ImageViewer'}
             theme={theme}
-            title={imageTitle}
+            title={imageFileInfo?.name ?? APPS_TEXT.ImageViewer}
             onContextMenu={handleContextMenu}
         >
             <div className="flex flex-col bg-white pt-1 w-full h-full">
                 <div className="flex flex-1 justify-center items-center overflow-auto">
-                    {currentImage ? (
+                    {imageUrl ? (
                         <img
-                            src={currentImage}
-                            alt={imageTitle}
+                            src={imageUrl}
+                            alt={imageFileInfo?.name}
                             style={{
                                 transform: `scale(${zoom}) rotate(${rotation}deg)`,
                                 transition: 'transform 0.2s ease-in-out'

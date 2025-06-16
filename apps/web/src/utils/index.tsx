@@ -1,4 +1,4 @@
-import { ExplorerItemsPrismaT } from '@skydock/types';
+import { ExplorerItemsPrismaT, FileT } from '@skydock/types';
 import clsx, { ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -47,4 +47,8 @@ export const initialFilesAndFoldersModifer = (
     });
 
     itemsObj.forEach((item) => callback(item));
+};
+
+export const fileIdGenerator = (file: FileT) => {
+    return `${file.id}.${file.name.split(".").pop()}`;
 };

@@ -1,17 +1,18 @@
 import { setCurrentFolder } from "@/redux/features/explorer/explorerSlice";
-import { openImageViewer } from "@/redux/features/imageViewer/imageViewerSlice";
 import { openMusicPlayer } from "@/redux/features/music-player/musicPlayerSlice";
 import { openPdfReader } from "@/redux/features/pdf-reader/pdfReaderSlice";
 import { openVideoPlayer } from "@/redux/features/video-player/videoPlayerSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { FileT, FolderT } from "@skydock/types";
 import { SupportedMimeTypes } from "@skydock/types/enums";
+import useImageViewer from "./apps/useImageViewer";
 import useNotePad from "./apps/useNotePad";
 
 const useAppOpenBasedOnFileType = (item: FileT | FolderT | null) => {
   const dispatch = useAppDispatch();
   // const { getFileUrl } = useGetFileURl();
-  const { openFile } = useNotePad();
+  const { openFile: openFileInNotePad } = useNotePad();
+  const { openImageFile } = useImageViewer();
 
   const isItemStartsWith = (type: string) => {
     if (!item) return false;
@@ -24,7 +25,7 @@ const useAppOpenBasedOnFileType = (item: FileT | FolderT | null) => {
     if (item.isFolder) {
       dispatch(setCurrentFolder(item.id));
     } else if (isItemStartsWith(SupportedMimeTypes.Image)) {
-      dispatch(openImageViewer(item.id));
+      openImageFile(item);
     } else if (isItemStartsWith(SupportedMimeTypes.Audio)) {
       dispatch(openMusicPlayer(item));
     } else if (isItemStartsWith(SupportedMimeTypes.Video)) {
@@ -32,7 +33,7 @@ const useAppOpenBasedOnFileType = (item: FileT | FolderT | null) => {
     } else if (isItemStartsWith(SupportedMimeTypes.PDF)) {
       dispatch(openPdfReader(item));
     } else if (isItemStartsWith(SupportedMimeTypes.Text)) {
-      openFile(item);
+      openFileInNotePad(item);
     }
   };
 

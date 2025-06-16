@@ -1,9 +1,11 @@
 import { ActionsT } from "../common";
+import { FileT } from "../explorer-items";
 
 export interface ImageViewerStateT {
   actions: ActionsT;
-  imageViewer: {
-    currentImageId: string | null;
+  imageViewerInfo: {
+    imageFileInfo: FileT | null;
+    imageUrl: string | null;
   };
   state: {
     isLoading: boolean;
