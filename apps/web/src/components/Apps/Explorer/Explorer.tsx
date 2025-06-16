@@ -62,7 +62,7 @@ const Explorer = () => {
     const handleEmptyTrash = async () => {
         const arrayItems = getNestedFolderItemsId('trash', []).filter((item: any) => !ExplorerTabs.includes(item));
         try {
-            await emptyTrashApi(arrayItems);
+            await emptyTrashApi(arrayItems).unwrap();
             invalidUserInfo();
             dispatch(emptyTrash());
         } catch (e) {
@@ -96,9 +96,14 @@ const Explorer = () => {
             },
             children: []
         }
+        try {
 
-        await createFolder(folderObj);
-        dispatch(addItem(folderObj))
+            await createFolder(folderObj).unwrap();
+            dispatch(addItem(folderObj))
+        } catch (error) {
+            showToast('Error creating folder', 'error');
+            console.error('Error creating folder:', error);
+        }
     }
 
     const Action = {

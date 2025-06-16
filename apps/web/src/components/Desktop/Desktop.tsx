@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { DraggedFilesT } from "@/ui/DragDropWrapper";
 import { nanoid } from "@reduxjs/toolkit";
 import { FolderT, PatchItemRequest } from "@skydock/types";
+import { showToast } from "@skydock/ui/toast";
 import useFileUploadsAndUpdateState from "../hooks/useFileUploadsAndUpdateState";
 import DragnDropWrapper_Desktop from "../Wrappers/DragnDropWrapper_Desktop";
 import DesktopItems from "./DesktopItems";
@@ -60,11 +61,15 @@ const Desktop = ({ children }: DesktopProps) => {
             deletedAt: null,
         };
 
-        await updateFileApi(requestBody);
-
-        dispatch(
-            moveFileIntoFolder({ fileId: itemDragged.id, folderId: desktopItem.id })
-        );
+        try {
+            await updateFileApi(requestBody).unwrap();
+            dispatch(
+                moveFileIntoFolder({ fileId: itemDragged.id, folderId: desktopItem.id })
+            );
+        } catch (error) {
+            console.error("Error moving item to desktop:", error);
+            showToast("Error moving item to desktop", "error");
+        }
         dispatch(setItemDragged(null));
     }
 

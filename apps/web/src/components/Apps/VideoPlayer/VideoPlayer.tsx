@@ -9,6 +9,7 @@ import useGetFileURl from '@/components/hooks/useGetFileURl';
 import { useVideoPlayer } from '@/components/hooks/useVideoPlayer';
 import { cn } from '@/utils';
 import { AppsT } from '@skydock/types/enums';
+import { showToast } from '@skydock/ui/toast';
 import { Maximize, Pause, Play, Volume1, Volume2, VolumeX } from 'lucide-react';
 
 const VideoPlayer = () => {
@@ -88,9 +89,16 @@ const VideoPlayer = () => {
                 if (videoInfo && !videoInfo.isFolder && videoInfo.details.type.startsWith('video/')) {
                     // setMusicTitle(imageItem.name);
                     // In a real app, you would get the image URL from your backend
-                    const { url } = await getFileUrl(`${videoInfo.id}.${videoInfo.name.split(".").pop()}`)
-                    setVideoUrl(url);
-                    togglePlay()
+                    try {
+
+                        const { url } = await getFileUrl(`${videoInfo.id}.${videoInfo.name.split(".").pop()}`)
+                        setVideoUrl(url);
+                        togglePlay()
+                    } catch (error) {
+                        console.error('Error fetching video URL:', error);
+                        showToast('Error loading video', 'error');
+                        dispatch(closeVideoPlayer());
+                    }
                     // console.log(url)
                     // setIsPlaying(true);
 

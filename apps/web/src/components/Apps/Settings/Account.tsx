@@ -47,7 +47,7 @@ const ChangeName = memo(({ closeModal }: CommonProps) => {
         } catch (e: any) {
             console.error(e)
             showToast(
-                e.data.message,
+                'Failed to change name',
                 'error'
             )
         }
@@ -138,7 +138,7 @@ const ChangePassword = memo(({ closeModal }: CommonProps) => {
         } catch (e: any) {
             console.error(e)
             showToast(
-                e.data.message,
+                'Failed to change password',
                 'error'
             )
         }
@@ -220,7 +220,7 @@ const SetPassword = memo(({ closeModal }: CommonProps) => {
         } catch (e: any) {
             console.error(e)
             showToast(
-                e.data.message,
+                'Failed to set password',
                 'error'
             )
         }

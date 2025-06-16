@@ -90,7 +90,8 @@ const useNotePad = () => {
         setContent("");
         setLastSaved(null);
         setSyncStatus("error");
-        showToast("Error fetching file content", "error");
+        showToast("Ops something went wrong...", "error");
+        throw error; // Re-throw to handle it in the component if needed
       }
     },
     [getTextFileContent, setContent, setLastSaved, setSyncStatus]
@@ -148,9 +149,9 @@ const useNotePad = () => {
   };
 
   const openFile = useCallback(
-    (file: FileT | null) => {
+    async (file: FileT | null) => {
       if (file) {
-        fetchFileContent(file);
+        await fetchFileContent(file);
         dispatch(openNotePad(file));
       } else {
         setContent("");

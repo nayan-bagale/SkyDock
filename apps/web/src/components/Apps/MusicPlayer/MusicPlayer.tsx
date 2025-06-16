@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 // import { tracks, Track } from '@/data/tracks';
 import useGetFileURl from "@/components/hooks/useGetFileURl";
 import { closeMusicPlayer } from "@/redux/features/music-player/musicPlayerSlice";
+import { showToast } from "@skydock/ui/toast";
 import { motion } from "framer-motion";
 
 export interface Track {
@@ -53,8 +54,15 @@ const MusicPlayer = () => {
                 if (musicInfo && !musicInfo.isFolder && musicInfo.details.type.startsWith('audio/')) {
                     setMusicTitle(musicInfo.name);
                     // In a real app, you would get the image URL from your backend
-                    const { url } = await getFileUrl(`${musicInfo.id}.${musicInfo.name.split(".").pop()}`)
-                    setMusicUrl(url);
+                    try {
+                        const { url } = await getFileUrl(`${musicInfo.id}.${musicInfo.name.split(".").pop()}`)
+                        setMusicUrl(url);
+                    } catch (error) {
+                        console.error("Error fetching music URL:", error);
+                        setMusicUrl(null);
+                        showToast("Error fetching music URL", "error");
+                        dispatch(closeMusicPlayer());
+                    }
                     // console.log(url)
                     setIsPlaying(true);
 

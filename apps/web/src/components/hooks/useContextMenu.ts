@@ -77,10 +77,11 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
     };
 
     try {
-      await createFolder(folderObj);
+      await createFolder(folderObj).unwrap();
       dispatch(addItem(folderObj));
       dispatch(closeContextMenu());
     } catch (error) {
+      showToast("Error creating folder", "error");
       console.error("Error creating folder:", error);
     }
   };
@@ -135,13 +136,18 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
     if (clipboardItems.operation === "cut") {
       clipboardItems.items.forEach(async (itemId) => {
         if (!currentFolder.children.includes(itemId)) {
-          await updateFileApi({
-            id: itemId,
-            parent_id: currentFolder.id,
-          });
-          dispatch(
-            moveFileIntoFolder({ fileId: itemId, folderId: currentFolder.id })
-          );
+          try {
+            await updateFileApi({
+              id: itemId,
+              parent_id: currentFolder.id,
+            }).unwrap();
+            dispatch(
+              moveFileIntoFolder({ fileId: itemId, folderId: currentFolder.id })
+            );
+          } catch (error) {
+            showToast("Error occurred while moving the file", "error");
+            console.error("Error moving file:", error);
+          }
         }
       });
     }
@@ -204,7 +210,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
           await updateFileApi({
             id: targetItem.id,
             parent_id: item.id,
-          });
+          }).unwrap();
           dispatch(
             moveFileIntoFolder({ fileId: targetItem.id, folderId: item.id })
           );

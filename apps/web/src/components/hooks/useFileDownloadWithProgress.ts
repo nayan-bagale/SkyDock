@@ -1,5 +1,6 @@
 import { useGetFileUrlMutation } from "@/redux/apis/filesAndFolderApi";
 import { FileT } from "@skydock/types";
+import { showToast } from "@skydock/ui/toast";
 
 const useFileDownloadWithProgress = () => {
   const [getFileUrl] = useGetFileUrlMutation();
@@ -8,11 +9,11 @@ const useFileDownloadWithProgress = () => {
     (await getFileUrl(id).unwrap())?.url || null;
 
   const downloadFile = async (item: FileT) => {
-    const fileDownloadUrl = await getDownloadUrl(
-      `${item.id}.${item.name.split(".").pop()}`
-    );
-    if (!fileDownloadUrl) return;
     try {
+      const fileDownloadUrl = await getDownloadUrl(
+        `${item.id}.${item.name.split(".").pop()}`
+      );
+      if (!fileDownloadUrl) return;
       const response = await fetch(fileDownloadUrl);
       if (!response?.body) return;
 
@@ -60,6 +61,7 @@ const useFileDownloadWithProgress = () => {
       a.click();
     } catch (error) {
       console.error(error);
+      showToast("Error occurred while downloading the file", "error");
     }
   };
   return { downloadFile };

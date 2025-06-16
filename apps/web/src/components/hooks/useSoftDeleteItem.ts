@@ -29,9 +29,9 @@ const useSoftDeleteItem = () => {
     try {
       if (targetItem.isFolder) {
         const arrayItems = getNestedFolderItemsId(targetItem.id, []);
-        await deleteFolder(arrayItems);
+        await deleteFolder(arrayItems).unwrap();
       } else {
-        await deleteFile(targetItem.id);
+        await deleteFile(targetItem.id).unwrap();
       }
       invalidUserInfo();
       dispatch(deleteItem(targetItem));
@@ -55,7 +55,7 @@ const useSoftDeleteItem = () => {
         return item;
       });
       try {
-        await softDeleteFileAndFolder(arrayItems);
+        await softDeleteFileAndFolder(arrayItems).unwrap();
         dispatch(
           moveFileIntoFolder({ fileId: targetItem.id, folderId: "trash" })
         );

@@ -7,15 +7,15 @@ import { useCallback } from "react";
 const useSkydockSystem = () => {
   const [logOutApi] = useLogOutApiMutation();
   const dispatch = useAppDispatch();
-  const signOutFunction = useCallback(() => {
-    logOutApi("")
-      .then(() => {
-        dispatch(logOut());
-      })
-      .catch((error) => {
-        showToast("Logout failed. Please try again.", "error");
-        console.error("Logout failed:", error);
-      });
+  const signOutFunction = useCallback(async () => {
+    try {
+      await logOutApi("").unwrap();
+
+      dispatch(logOut());
+    } catch (error) {
+      showToast("Logout failed. Please try again.", "error");
+      console.error("Logout failed:", error);
+    }
   }, [dispatch, logOutApi]);
 
   return {

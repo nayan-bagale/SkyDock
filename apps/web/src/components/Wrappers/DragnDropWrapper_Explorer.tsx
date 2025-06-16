@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { DragDropWrapper, DraggedFilesT } from "@/ui/DragDropWrapper";
 import { nanoid } from "@reduxjs/toolkit";
 import { FolderT, PatchItemRequest } from "@skydock/types";
+import { showToast } from "@skydock/ui/toast";
 import { FC, ReactNode } from "react";
 import useFileUploadsAndUpdateState from "../hooks/useFileUploadsAndUpdateState";
 
@@ -56,11 +57,18 @@ const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
             requestBody.is_deleted = true;
             requestBody.deletedAt = new Date();
         }
-        await updateFileApi(requestBody);
 
-        dispatch(
-            moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id })
-        );
+        try {
+
+            await updateFileApi(requestBody).unwrap();
+
+            dispatch(
+                moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id })
+            );
+        } catch (error) {
+            console.error("Error moving file:", error);
+            showToast("Error moving file", "error");
+        }
     };
 
     return (

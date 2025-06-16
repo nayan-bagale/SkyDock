@@ -12,6 +12,7 @@ import Spinner from "@/ui/Spinner";
 import cn from "@/utils";
 import { AppsT, SupportedMimeTypes } from "@skydock/types/enums";
 import { Separator } from "@skydock/ui/components";
+import { showToast } from "@skydock/ui/toast";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Document, Page, pdfjs } from 'react-pdf';
@@ -49,8 +50,15 @@ const PdfReader = () => {
             if (pdfInfo?.id) {
                 if (pdfInfo && !pdfInfo.isFolder && pdfInfo.details.type.startsWith(SupportedMimeTypes.PDF)) {
                     // In a real app, you would get the image URL from your backend
-                    const { url } = await getFileUrl(`${pdfInfo.id}.${pdfInfo.name.split(".").pop()}`)
-                    setPdfUrl(url);
+                    try {
+                        const { url } = await getFileUrl(`${pdfInfo.id}.${pdfInfo.name.split(".").pop()}`)
+                        setPdfUrl(url);
+                    } catch (error) {
+                        console.error("Error fetching PDF URL:", error);
+                        showToast('Error fetching PDF URL', 'error');
+                        setPdfUrl(null);
+                        dispatch(closePdfReader())
+                    }
                 }
             }
         }

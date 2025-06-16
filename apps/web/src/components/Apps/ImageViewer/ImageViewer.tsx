@@ -9,6 +9,7 @@ import { ImageViewerCard } from '@/ui/Cards/ImageViewer/ImageViewer';
 import cn from '@/utils';
 import { FileT } from '@skydock/types';
 import { Icons } from '@skydock/ui/icons';
+import { showToast } from '@skydock/ui/toast';
 import { useEffect, useRef, useState } from 'react';
 
 const ImageViewer = () => {
@@ -39,9 +40,16 @@ const ImageViewer = () => {
                 if (imageItem && !imageItem.isFolder && imageItem.details.type.startsWith('image/')) {
                     setImageTitle(imageItem.name);
                     // In a real app, you would get the image URL from your backend
-                    const { url } = await getFileUrl(`${imageItem.id}.${imageItem.name.split(".").pop()}`)
-                    // console.log(url)
-                    setCurrentImage(url);
+                    try {
+
+                        const { url } = await getFileUrl(`${imageItem.id}.${imageItem.name.split(".").pop()}`)
+                        // console.log(url)
+                        setCurrentImage(url);
+                    } catch (error) {
+                        console.error('Error fetching image URL:', error);
+                        showToast('Error loading image', 'error');
+                        dispatch(closeImageViewer());
+                    }
                 }
             }
 

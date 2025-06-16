@@ -51,7 +51,7 @@ const useFileUploadsAndUpdateState = (addItemfunc: any = addItem) => {
       return uploadUrls;
     } catch (error: any) {
       setError((prev) => [...prev, { id: "unknown", error: error.data }]);
-      showToast(error.data.message, "error");
+      showToast("Failed to upload", "error");
       console.error(error);
       return null;
     }
@@ -63,7 +63,7 @@ const useFileUploadsAndUpdateState = (addItemfunc: any = addItem) => {
       return true;
     } catch (error: any) {
       setError((prev) => [...prev, { id: "unknown", error: error.data }]);
-      showToast(error.data.message, "error");
+      showToast(" Failed to upload", "error");
       return null;
     }
   };

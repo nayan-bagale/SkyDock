@@ -2,6 +2,7 @@ import { useUpdateItemMutation } from "@/redux/apis/filesAndFolderApi";
 import { moveFileIntoFolder, setItemDragged } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { handleDragStartT, handleDropT } from "@skydock/types";
+import { showToast } from "@skydock/ui/toast";
 import { useMemo } from "react";
 import Item from "./Items";
 
@@ -35,8 +36,13 @@ const DesktopItems = () => {
         if (!itemDragged) return;
 
         if (droppedItem.isFolder && (itemDragged.id !== droppedItem.id)) {
-            await updateFileApi({ id: itemDragged.id, parent_id: droppedItem.id });
-            dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id }));
+            try {
+                await updateFileApi({ id: itemDragged.id, parent_id: droppedItem.id }).unwrap();
+                dispatch(moveFileIntoFolder({ fileId: itemDragged.id, folderId: droppedItem.id }));
+            } catch (error) {
+                console.error('Error moving item:', error);
+                showToast('Error moving item', 'error');
+            }
         }
 
 

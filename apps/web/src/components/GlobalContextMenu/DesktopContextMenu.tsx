@@ -7,6 +7,7 @@ import { ContextMenuSeparator } from '@/ui/ContextMenu';
 import SupportedMimeTypeCheck from '@/utils/supportedMimeTypeCheck';
 import { FolderT } from '@skydock/types';
 import { Icons } from '@skydock/ui/icons';
+import { showToast } from '@skydock/ui/toast';
 import { FileText, X } from 'lucide-react';
 import { useState } from 'react';
 import useAppProcess from '../hooks/useAppProcess';
@@ -48,12 +49,13 @@ const DesktopContextMenu = ({ targetId, additionalData }: DesktopContextMenuProp
         if (!targetItem || !newName.trim()) return;
 
         try {
-            await updateItem({ id: targetItem.id, name: newName });
+            await updateItem({ id: targetItem.id, name: newName }).unwrap();
             dispatch(renameItem({ id: targetItem.id, name: newName }));
             // setIsRenaming(false);
             dispatch(closeContextMenu());
         } catch (error) {
             console.error('Error renaming item:', error);
+            showToast('Error renaming item', 'error');
         }
     };
 
