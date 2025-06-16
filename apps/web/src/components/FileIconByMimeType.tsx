@@ -16,7 +16,7 @@ const IconByMimeType = (mimeType: string | null) => {
     } else if (mimeType.startsWith('video/')) {
         return Icons.Video
     } else if (mimeType.startsWith('text/')) {
-        return Icons.Note
+        return Icons.Documents
     }
 
 

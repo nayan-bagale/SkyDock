@@ -22,15 +22,17 @@ export const AppCard = ({ app, index }: AppCardProps) => {
             animate={{
                 opacity: 1,
                 y: 0,
+                // backdropFilter: "blur(12px)",
                 transition: { delay: index * 0.03 },
             }}
             exit={{ opacity: 0, y: 10 }}
-            whileTap={{ scale: 0.95 }}
-            className=" cursor-pointer rounded-2xl outline-sky-40"
+            whileTap={{ scale: 0.9 }}
+
+            className="border border-white/30 bg-white/20 backdrop-blur-md cursor-pointer rounded-3xl outline-sky-40"
         >
             <div
                 title={app.name}
-                className=" bg-white px-4 hover:border-white rounded-2xl p-1 flex flex-col items-center justify-center"
+                className="px-4  p-1 flex flex-col items-center justify-center"
             >
                 <div
                     className={`p-1 rounded-md flex items-center justify-center text-white text-sm `}

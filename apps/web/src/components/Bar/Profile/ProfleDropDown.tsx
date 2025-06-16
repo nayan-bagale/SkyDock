@@ -86,7 +86,7 @@ const ProfileDropdown = () => {
                         {/* <MainMenuSeparator /> */}
                         <div className="flex shadow rounded-2xl backdrop-blur-md bg-white/10 border border-white/20  gap-2 w-full ">
                             <Button
-                                onClick={settingsApp.open}
+                                onClick={() => { settingsApp.open(); setShow(false); }}
                                 className=" gap-1 p-2 rounded-l-full text-center w-full hover:bg-blue-400 hover:text-white"
                             >
                                 <Settings className="ml- h-4" /> Settings

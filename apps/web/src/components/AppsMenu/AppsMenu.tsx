@@ -75,7 +75,7 @@ const AppsMenu = () => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="bg-white/50 z-30 fixed bottom-[5.8rem] left-0 right-0 mx-auto  backdrop-blur-md  rounded-3xl shadow border border-transparent max-w-md min-h-[50vh] max-h-[60vh] overflow-hidden"
+            className="bg-white/40 z-30 fixed bottom-[5.8rem] left-0 right-0 mx-auto  backdrop-blur-md  rounded-3xl shadow border border-transparent max-w-md min-h-[50vh] max-h-[60vh] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
         >
             {/* Apps Section */}
@@ -91,7 +91,7 @@ const AppsMenu = () => {
                     layout
                     className="max-h-[calc(60vh-160px)] min-h-[calc(50vh-160px)] overflow-x-hidden overflow-y-auto"
                 >
-                    <div className="grid grid-cols-4 gap-2">
+                    <div className="grid grid-cols-4 p-1 gap-2">
                         <AnimatePresence>
                             {filteredApps.map((app, index) => {
                                 const appOpen = app.open;
@@ -121,10 +121,10 @@ const AppsMenu = () => {
             </div>
 
             {/* Search at bottom */}
-            <div className="p-3 pt-2 border-t border-gray-200">
-                <div className="relative mb-3">
+            <div className="p-3 border-t">
+                <div className="relative mb-3 rounded-3xl bg-white/20 backdrop-blur-md  shadow-inner">
                     <Search
-                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 "
                         size={18}
                     />
                     <Input
@@ -133,13 +133,13 @@ const AppsMenu = () => {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         autoFocus
-                        className="pl-10 h-10 bg-gray-50 border-gray-300 rounded-3xl text-sm text-gray-900 placeholder:text-gray-500 focus:bg-white transition-colors"
+                        className="pl-10 h-10 border-none rounded-3xl text-sm text-gray-900 placeholder:text-gray-700  transition-colors"
                     />
                 </div>
 
                 {/* Bottom Section with User */}
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
+                    <div className="flex rounded-2xl backdrop-blur-md bg-white/10 border border-white/20 items-center space-x-2">
                         <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                             {user?.picture ? (
                                 <img
@@ -151,7 +151,7 @@ const AppsMenu = () => {
                                 <User size={16} className="text-white" />
                             )}
                         </div>
-                        <span className="text-sm font-medium text-gray-900">
+                        <span className="text-sm pr-2 font-medium text-gray-900">
                             {user?.name}
                         </span>
                     </div>

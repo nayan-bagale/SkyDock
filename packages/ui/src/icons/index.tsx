@@ -9,6 +9,8 @@ import copy_svg from './assests/copy-svgrepo-com.svg';
 import cross_svg from './assests/cross-svgrepo-com.svg';
 import trash_svg from './assests/delete-svgrepo-com.svg';
 import docker_svg from './assests/docker-svgrepo-com.svg';
+import document_svg from './assests/document-text-svgrepo-com.svg';
+import documents_svg from './assests/documents-svgrepo-com.svg';
 import dollar_svg from './assests/dollar-svgrepo-com.svg';
 import download_svg from './assests/download-svgrepo-com.svg';
 import exclamation_svg from './assests/exclamation-mark-in-a-circle-svgrepo-com.svg';
@@ -126,5 +128,7 @@ export const Icons = {
   Upload1: ({ className }: { className: string }) => $({ svg: upload1_svg, name: 'upload1', className }),
   Notepad: ({ className }: { className: string }) => $({ svg: notepad_svg, name: 'notepad', className }),
   Note: ({ className }: { className: string }) => $({ svg: note_svg, name: 'note', className }),
+  Documents: ({ className }: { className: string }) => $({ svg: documents_svg, name: 'documents', className }),
+  Document: ({ className }: { className: string }) => $({ svg: document_svg, name: 'document', className }),
 }
 

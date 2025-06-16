@@ -23,7 +23,7 @@ import { DisplayItemsIcons } from "./DisplayItemsIcons";
 interface FileSaveAndOpenModalT {
     closeModal: (() => void) | null;
     onSuccess: ((item: ExplorerItemT | FileDetailsT) => void) | null;
-    action: "open" | "save" | 'restore';
+    action: "open" | "save" | "restore";
     supportedMimeTypes: string[] | null;
     lastPosition?: { x: number; y: number };
 }
@@ -41,20 +41,20 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
         lastPosition: lastPosition,
     });
     const theme = useAppSelector((state) => state.settings.apperance.theme);
-    const [activeTab, setActiveTab] =
-        useState<ExplorerT["activeTab"]>(action === 'save' ? "documents" : 'skydrive');
+    const [activeTab, setActiveTab] = useState<ExplorerT["activeTab"]>(
+        action === "save" ? "documents" : "skydrive"
+    );
     const { addFolder } = useExplorer();
 
-
-
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
-    const [currentFolder, setCurrentFolder] =
-        useState<ExplorerT["currentFolder"]>(action === 'save' ? "documents" : 'skydrive');
+    const [currentFolder, setCurrentFolder] = useState<
+        ExplorerT["currentFolder"]
+    >(action === "save" ? "documents" : "skydrive");
     const [backward, setBackward] = useState<string[]>([]);
     const [selectedItem, setSelectedItem] = useState<FileT | FolderT | null>(
         null
     );
-    const [fileName, setFileName] = useState<string>('');
+    const [fileName, setFileName] = useState<string>("");
 
     const item = useMemo(() => {
         return explorerItems[currentFolder];
@@ -80,11 +80,13 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
     );
 
     useEffect(() => {
-        if (action === 'save') {
-            const count = files.filter((file) => !file.isFolder && file.name.startsWith('untitled')).length;
-            setFileName(`untitled${count > 0 ? `(${count})` : ''}.txt`);
+        if (action === "save") {
+            const count = files.filter(
+                (file) => !file.isFolder && file.name.startsWith("untitled")
+            ).length;
+            setFileName(`untitled${count > 0 ? `(${count})` : ""}.txt`);
         }
-    }, [])
+    }, []);
 
     const openItem = (item: FolderT | FileT) => {
         if (item.isFolder) {
@@ -132,7 +134,11 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
                 id: "desktop",
                 Icon: <Icons.Folder className="w-4 h-4" />,
             },
-            { name: "Documents", id: 'documents', Icon: <Icons.File className="w-4 h-4" /> },
+            {
+                name: "Documents",
+                id: "documents",
+                Icon: <Icons.Document className="w-4 h-4" />,
+            },
         ];
     }, []);
 
@@ -153,7 +159,7 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
             return "Select File";
         } else if (action === "save") {
             return "Save in Folder";
-        } else if (action === 'restore') {
+        } else if (action === "restore") {
             return "Restore";
         }
     }, [action, selectedItem?.isFolder]);
@@ -179,16 +185,23 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
         } else if (action === "open") {
             if (!selectedItem) return;
             onSuccess?.(selectedItem as FileT | FolderT);
-        } else if (action === 'restore') {
+        } else if (action === "restore") {
             onSuccess?.(explorerItems[currentFolder]);
         }
-    }, [action, currentFolder, explorerItems, fileName, files, onSuccess, selectedItem]);
+    }, [
+        action,
+        currentFolder,
+        explorerItems,
+        fileName,
+        files,
+        onSuccess,
+        selectedItem,
+    ]);
 
     const isSubmitDisabled = useMemo(() => {
         if (action === "save") {
             return !currentFolder && !selectedItem;
-        } else if (action === 'restore') {
-
+        } else if (action === "restore") {
             if (selectedItem && !selectedItem?.isFolder) {
                 return true; // Cannot restore a file, only folders can be restored
             }
@@ -325,8 +338,9 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
                 </div>
             </div>
             <div
-                className={cn("flex absolute bottom-0 shadow gap-2 items-center  bg-slate-200 px-4  py-1  border-t w-full text-xs",
-                    action === 'save' ? 'justify-between' : 'justify-end'
+                className={cn(
+                    "flex absolute bottom-0 shadow gap-2 items-center  bg-slate-200 px-4  py-1  border-t w-full text-xs",
+                    action === "save" ? "justify-between" : "justify-end"
                 )}
                 onContextMenu={(e) => e.preventDefault()}
             >
@@ -338,16 +352,18 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
                 >
                     Cancel
                 </Button>
-                {action === 'save' && <Input
-                    className="w-48 text-gray-900 placeholder:text-gray-600 border-gray-400 rounded-lg"
-                    // value={action === "open" ? selectedItem?.name ?? '' : fileName}
-                    value={fileName}
-                    onChange={(e) => {
-                        setFileName(e.target.value);
-                    }}
-                    // disabled={action === "open"}
-                    placeholder="File Name"
-                />}
+                {action === "save" && (
+                    <Input
+                        className="w-48 text-gray-900 placeholder:text-gray-600 border-gray-400 rounded-lg"
+                        // value={action === "open" ? selectedItem?.name ?? '' : fileName}
+                        value={fileName}
+                        onChange={(e) => {
+                            setFileName(e.target.value);
+                        }}
+                        // disabled={action === "open"}
+                        placeholder="File Name"
+                    />
+                )}
                 <Button
                     className="px-2 py-1"
                     size={"small"}
