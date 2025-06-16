@@ -4,10 +4,7 @@ import useSkydockSystem from "@/components/hooks/useSkydockSystem";
 import { lockScreen } from "@/redux/features/lockScreen/lockScreenSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
-import {
-    MainDropDownMenu,
-    MainMenuSeparator,
-} from "@/ui/Cards/Menus/MainDropDownMenu/MainDropDownMenu";
+import cn from "@/utils";
 import { changeBytes, getStorageUsage } from "@/utils/changeBytes";
 import { Icons } from "@skydock/ui/icons";
 import { AnimatePresence, motion } from "framer-motion";
@@ -47,8 +44,13 @@ const ProfileDropdown = () => {
             </Button>
             <AnimatePresence>
                 {show && (
-                    <MainDropDownMenu ref={ref} className="right-0 z-30 rounded-xl">
-                        <div className="px-4 py-2">
+                    <motion.div className={cn(" p-2 right-0 z-30 rounded-2xl backdrop-blur-2xl top-7 absolute bg-white/40  text-xs min-w-[14rem] gap-2 shadow-lg flex flex-col")}
+                        ref={ref}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <div className="px-4 shadow rounded-2xl backdrop-blur-md bg-white/10 border border-white/20  py-2">
                             {user?.picture ? (
                                 <img src={user.picture} alt="Profile" className="mx-auto h-24 rounded-full" />
 
@@ -61,8 +63,8 @@ const ProfileDropdown = () => {
                                 <p className="text-gray-600 text-sm">{user?.email}</p>
                             </div>
                         </div>
-                        <div className="px-4 py-2">
-                            <div className="bg-gray-200 dark:bg-gray-300 rounded-full w-full h-2">
+                        <div className="px-4 py-2 shadow rounded-2xl backdrop-blur-md bg-white/10 border border-white/20">
+                            <div className="bg-white rounded-full w-full h-2">
                                 <motion.div
                                     className="bg-blue-600 rounded-full h-2"
                                     initial={{
@@ -81,26 +83,22 @@ const ProfileDropdown = () => {
                             Upgrade Plan
                         </Button>
                     </div> */}
-                        <MainMenuSeparator />
-                        <div className="grid grid-cols-2 gap-2 w-full px-4 py-1">
+                        {/* <MainMenuSeparator /> */}
+                        <div className="flex shadow rounded-2xl backdrop-blur-md bg-white/10 border border-white/20  gap-2 w-full ">
                             <Button
                                 onClick={settingsApp.open}
-                                className="p-1 gap-2 rounded-full w-full hover:bg-blue-400 hover:text-white"
+                                className=" gap-1 p-2 rounded-l-full text-center w-full hover:bg-blue-400 hover:text-white"
                             >
-                                <Settings size={16} className="ml-1" />  Settings
-
+                                <Settings className="ml- h-4" /> Settings
                             </Button>
-                            {/* <Button className="p-1 gap-2 rounded-full w-full" onClick={handleLockScreen}>
-                            <Icons.Lock className="h-5" />
-                        </Button> */}
                             <Button
                                 onClick={signOutFunction}
-                                className="hover:bg-red-600 hover:text-white text-center rounded-full p-1 gap-2 w-full"
+                                className="hover:bg-red-600  hover:text-white text-center rounded-r-full flex gap-1 w-full"
                             >
-                                <LogOut size={16} className="ml-1" /> Logout
+                                <LogOut className="ml- h-4" /> Logout
                             </Button>
                         </div>
-                    </MainDropDownMenu>
+                    </motion.div>
                 )}
             </AnimatePresence>
         </div>
