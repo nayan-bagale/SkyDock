@@ -1,5 +1,6 @@
 import { FileSaveAndOpenModalContext } from "@/components/ContextApi/FileSaveAndOpenModal";
 import { RESPONSE_DELAY } from "@/constants";
+import { ErrorHandler } from "@/errors/rtkQueryError";
 import {
   useGetTextFileContentMutation,
   useUpdateTextFileContentMutation,
@@ -82,15 +83,17 @@ const useNotePad = () => {
         if (!fileInfo) {
           throw new Error("No file info available to fetch content");
         }
+        throw new Error("Fetching file content is not implemented yet");
         const content = await getTextFileContent(fileInfo.id).unwrap();
         setContent(content);
         setLastSaved(new Date());
       } catch (error) {
         console.error("Failed to fetch file content:", error);
+        ErrorHandler.handleError(error, "Failed to fetch file content");
         setContent("");
         setLastSaved(null);
         setSyncStatus("error");
-        showToast("Ops something went wrong...", "error");
+        // showToast("Ops something went wrong...", "error");
         throw error; // Re-throw to handle it in the component if needed
       }
     },

@@ -1,3 +1,4 @@
+import { ErrorHandler } from "@/errors/rtkQueryError";
 import authReducer from "@/redux/features/auth";
 import explorerReducer from "@/redux/features/explorer/explorerSlice";
 import { configureStore } from "@reduxjs/toolkit";
@@ -44,7 +45,8 @@ export const store = configureStore({
     getDefaultMiddleware()
       .concat(userAuthApi.middleware)
       .concat(filesAndFolderApi.middleware)
-      .concat(planApi.middleware),
+      .concat(planApi.middleware)
+      .concat(ErrorHandler.rtkQueryErrorMiddleware),
   devTools: process.env.NODE_ENV !== "prod",
 });
 
