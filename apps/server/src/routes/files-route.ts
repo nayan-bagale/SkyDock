@@ -50,4 +50,8 @@ router.put(
   filesController.softDeleteFileAndFolder
 );
 
+// router.put("/restore/storage", authMiddleware, async (req, res) => {
+//   await filesController.restoreUserStorage(req, res);
+// });
+
 export default router;

@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import { prisma } from "../config/db";
 import messages from "../constants/messages";
 import { INTERNALERROR, PAYLOADTOOLARGE } from "../constants/status";
-import { userAvailableStorageCheck } from "../helpers/user-available-storage-check";
 import logger from "../logger";
 import Store from "../services/object-storage";
 import { RequestFileForUploaded, RequestFilesForSignedUrl } from "../types";
@@ -373,16 +372,48 @@ class FilesController {
     const userId = req.userInfo?.id as string;
     const content = req.body.content as string;
 
-    const contentLength = Buffer.byteLength(content, "utf-8");
+    const contentLength = BigInt(Buffer.byteLength(content, "utf-8"));
 
     try {
-      if (!(await userAvailableStorageCheck(userId, contentLength))) {
-        return res.status(PAYLOADTOOLARGE).json({
-          message: "Storage limit exceeded for your current plan.",
-        });
-      }
+      // if (!(await userAvailableStorageCheck(userId, contentLength))) {
+      //   return res.status(PAYLOADTOOLARGE).json({
+      //     message: "Storage limit exceeded for your current plan.",
+      //   });
+      // }
 
       prisma.$transaction(async (tx) => {
+        const userWithPlan = await tx.user.findUnique({
+          where: { id: userId },
+          select: {
+            usedStorage: true,
+            UserPlan: {
+              where: { status: "active" },
+              orderBy: { createdAt: "desc" },
+              take: 1,
+              select: {
+                plan: {
+                  select: {
+                    storageLimit: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        if (!userWithPlan) {
+          throw new Error("User not found");
+        }
+
+        const usedStorage = userWithPlan?.usedStorage ?? 0;
+        const storageLimit = userWithPlan?.UserPlan[0]?.plan?.storageLimit ?? 0;
+        const canUpload =
+          Number(usedStorage) + Number(contentLength) <= storageLimit;
+
+        if (!canUpload) {
+          throw new Error(`User ${userId} exceeded storage limit`);
+        }
+
         const file = await tx.explorerItems.findUnique({
           where: { id: fileId, user_id: userId, is_deleted: false },
         });
@@ -400,7 +431,8 @@ class FilesController {
         await tx.user.update({
           where: { id: userId },
           data: {
-            usedStorage: contentLength,
+            usedStorage:
+              Number(usedStorage) - Number(file.size) + Number(contentLength),
           },
         });
 
@@ -408,7 +440,7 @@ class FilesController {
           where: { id: fileId, user_id: userId },
           data: {
             last_modified: new Date(),
-            size: contentLength,
+            size: Number(contentLength),
           },
         });
       });
@@ -416,6 +448,65 @@ class FilesController {
       res.json({ message: "File content updated" });
     } catch (err) {
       logger.error("Error updating text file content", err);
+      res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+  }
+
+  async restoreUserStorage(req: Request, res: Response) {
+    let totalStorageUsed = 0;
+
+    try {
+      const userId = req.userInfo?.id as string;
+
+      await prisma.$transaction(async (tx) => {
+        const userWithPlan = await tx.user.findUnique({
+          where: { id: userId },
+          select: {
+            usedStorage: true,
+            UserPlan: {
+              where: { status: "active" },
+              orderBy: { createdAt: "desc" },
+              take: 1,
+              select: {
+                plan: {
+                  select: {
+                    storageLimit: true,
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        if (!userWithPlan) {
+          return res.status(INTERNALERROR).json({ message: "User not found" });
+        }
+
+        const explorerItems = await tx.explorerItems.findMany({
+          where: { user_id: userId, is_deleted: false, is_folder: false },
+        });
+
+        totalStorageUsed = explorerItems.reduce(
+          (acc, item) => acc + (item.size ?? 0),
+          0
+        );
+
+        await tx.user.update({
+          where: { id: userId },
+          data: {
+            usedStorage: totalStorageUsed,
+          },
+        });
+      });
+
+      return res.json({
+        message: "User storage restored successfully",
+        totalStorageUsed,
+      });
+    } catch (err) {
+      logger.error("Error restoring user storage", err);
       res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });

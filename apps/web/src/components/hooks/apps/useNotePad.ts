@@ -28,6 +28,7 @@ import { useCallback, useContext } from "react";
 import { useBlobFileGenerator } from "../useBlobFileGenerator";
 import useFileDownloadWithProgress from "../useFileDownloadWithProgress";
 import useFileUploadsAndUpdateState from "../useFileUploadsAndUpdateState";
+import { useInvalidApi } from "../useInvalidApis";
 
 type SyncStatus = "saved" | "saving" | "synced" | "error";
 
@@ -48,6 +49,8 @@ const useNotePad = () => {
   const [getTextFileContent] = useGetTextFileContentMutation();
   const [uploadFileAndUpdateState] =
     useFileUploadsAndUpdateState(addItemToFolder);
+
+  const { invalidUserInfo } = useInvalidApi();
   const { openFileOpenerModal, openSaveFileModal } = useContext(
     FileSaveAndOpenModalContext
   );
@@ -228,6 +231,7 @@ const useNotePad = () => {
           id: fileInfo.id,
           content,
         });
+        invalidUserInfo(); // Invalidate user info to ensure the latest data is fetched
         await sleep(RESPONSE_DELAY);
         setSyncStatus("synced");
         setLastSaved(new Date());
@@ -239,6 +243,7 @@ const useNotePad = () => {
   }, [
     content,
     fileInfo,
+    invalidUserInfo,
     saveAs,
     setLastSaved,
     setSyncStatus,
