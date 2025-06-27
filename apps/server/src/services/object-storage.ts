@@ -41,11 +41,7 @@ class Store {
     return await getSignedUrl(s3, command);
   }
 
-  async putObject(
-    key: string,
-    body: Buffer | string,
-    contentType: string
-  ): Promise<void> {
+  async putObject(key: string, body: Buffer | string, contentType: string) {
     const command = new PutObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME!,
       Key: key,
@@ -53,7 +49,7 @@ class Store {
       ContentType: contentType,
     });
 
-    await s3.send(command);
+    return await s3.send(command);
   }
 
   async deleteObject(key: string) {

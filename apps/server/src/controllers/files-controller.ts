@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { prisma } from "../config/db";
 import messages from "../constants/messages";
 import { INTERNALERROR, PAYLOADTOOLARGE } from "../constants/status";
+import { userAvailableStorageCheck } from "../helpers/user-available-storage-check";
 import logger from "../logger";
 import Store from "../services/object-storage";
 import { RequestFileForUploaded, RequestFilesForSignedUrl } from "../types";
@@ -372,20 +373,45 @@ class FilesController {
     const userId = req.userInfo?.id as string;
     const content = req.body.content as string;
 
-    try {
-      const file = await prisma.explorerItems.findUnique({
-        where: { id: fileId, user_id: userId, is_deleted: false },
-      });
+    const contentLength = Buffer.byteLength(content, "utf-8");
 
-      if (!file || file.mime_type !== "text/plain") {
-        return res.status(INTERNALERROR).json({ message: "File not found" });
+    try {
+      if (!(await userAvailableStorageCheck(userId, contentLength))) {
+        return res.status(PAYLOADTOOLARGE).json({
+          message: "Storage limit exceeded for your current plan.",
+        });
       }
 
-      await Store.putObject(
-        `${userId}/${fileId}.${file.name.split(".").pop()}`,
-        content,
-        "text/plain"
-      );
+      prisma.$transaction(async (tx) => {
+        const file = await tx.explorerItems.findUnique({
+          where: { id: fileId, user_id: userId, is_deleted: false },
+        });
+
+        if (!file || file.mime_type !== "text/plain") {
+          throw new Error("File not found or not a text file");
+        }
+
+        await Store.putObject(
+          `${userId}/${fileId}.${file.name.split(".").pop()}`,
+          content,
+          "text/plain"
+        );
+
+        await tx.user.update({
+          where: { id: userId },
+          data: {
+            usedStorage: contentLength,
+          },
+        });
+
+        await tx.explorerItems.update({
+          where: { id: fileId, user_id: userId },
+          data: {
+            last_modified: new Date(),
+            size: contentLength,
+          },
+        });
+      });
 
       res.json({ message: "File content updated" });
     } catch (err) {
