@@ -1,4 +1,4 @@
-import useNotePad from "@/components/hooks/apps/useNotePad";
+import useVideoPlayer from "@/components/hooks/apps/useVideoPlayer";
 import useOnClickOutside from "@/components/hooks/useOnclickOutside";
 import { Button } from "@/ui/button";
 import {
@@ -6,15 +6,14 @@ import {
     MainMenuSeparator,
 } from "@/ui/Cards/Menus/MainDropDownMenu/MainDropDownMenu";
 import { AnimatePresence, motion } from "framer-motion";
-import { Download, File, Save } from "lucide-react";
+import { Download, File } from "lucide-react";
 import { useRef, useState } from "react";
 
-const NotePadOptions = () => {
+const VideoPlayerOptions = () => {
     const [show, setShow] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     useOnClickOutside(ref, () => setShow(false));
-    const { saveAs, save, openFileUsingModal, close, download, fileInfo } =
-        useNotePad();
+    const { openVideoFileUsingModal, download, close, videoFileInfo } = useVideoPlayer();
 
     return (
         <motion.div
@@ -33,7 +32,7 @@ const NotePadOptions = () => {
                             size={"menu"}
                             onClick={() => {
                                 setShow(false);
-                                openFileUsingModal();
+                                openVideoFileUsingModal();
                             }}
                             className=" "
                         >
@@ -44,29 +43,7 @@ const NotePadOptions = () => {
                         <MainMenuSeparator />
                         <Button
                             size={"menu"}
-                            onClick={() => {
-                                setShow(false);
-                                save();
-                            }}
-                            className=" "
-                        >
-                            <div>Save</div>
-                            <Save className="h-4" />
-                        </Button>
-                        <Button
-                            size={"menu"}
-                            onClick={() => {
-                                setShow(false);
-                                saveAs();
-                            }}
-                            className=" "
-                        >
-
-                            <div>Save As</div>
-                        </Button>
-                        <Button
-                            size={"menu"}
-                            disabled={!fileInfo}
+                            disabled={!videoFileInfo}
 
                             onClick={() => {
                                 setShow(false);
@@ -101,4 +78,4 @@ const NotePadOptions = () => {
     );
 };
 
-export default NotePadOptions;
+export default VideoPlayerOptions;

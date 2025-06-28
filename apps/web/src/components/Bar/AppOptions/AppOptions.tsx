@@ -3,7 +3,10 @@ import { APPS_TEXT, AppsT } from "@skydock/types/enums";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMemo } from "react";
 import ImageViewerOptions from "./Apps/ImageViewerOptions";
+import MusicPlayerOptions from "./Apps/MusicPlayerOptions";
 import NotePadOptions from "./Apps/NotePadOptions";
+import PdfReaderOptions from "./Apps/PdfReaderOptions";
+import VideoPlayerOptions from "./Apps/VideoPlayerOptions";
 
 const AppOptions = () => {
     const focusedAppName = useAppSelector((state) => state.apps.focusedApp);
@@ -14,6 +17,12 @@ const AppOptions = () => {
                 return <NotePadOptions />;
             case AppsT.ImageViewer:
                 return <ImageViewerOptions />;
+            case AppsT.MusicPlayer:
+                return <MusicPlayerOptions />;
+            case AppsT.PdfReader:
+                return <PdfReaderOptions />;
+            case AppsT.VideoPlayer:
+                return <VideoPlayerOptions />;
             default:
                 return null;
         }

@@ -1,20 +1,18 @@
 import usePdfReader from "@/components/hooks/apps/usePdfReader";
 import useChangeAppFocus from "@/components/hooks/useChangeAppFocus";
 import { useDrag } from "@/components/hooks/useDrag";
-import useGetFileURl from "@/components/hooks/useGetFileURl";
 import useResizeObserver from "@/components/hooks/useResizeObserver";
 import { MAX_WIDTH_PDF } from "@/constants";
-import { closePdfReader } from "@/redux/features/pdf-reader/pdfReaderSlice";
+import { closePdfReader, setPdfReaderLastPosition } from "@/redux/features/pdf-reader/pdfReaderSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Button } from "@/ui/button";
 import PdfReaderCard from "@/ui/Cards/PdfReader/PdfReaderCard";
 import Spinner from "@/ui/Spinner";
 import cn from "@/utils";
-import { AppsT, SupportedMimeTypes } from "@skydock/types/enums";
+import { AppsT } from "@skydock/types/enums";
 import { Separator } from "@skydock/ui/components";
-import { showToast } from "@skydock/ui/toast";
 import { ChevronLeft, ChevronRight, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -29,43 +27,18 @@ const PdfReader = () => {
     const dispatch = useAppDispatch();
     const draggableRef = useRef<HTMLDivElement>(null);
     const { position, handleMouseDown } = useDrag({
-        ref: draggableRef
+        ref: draggableRef,
+        onChangePosition: (position) => dispatch(setPdfReaderLastPosition(position))
+
     });
     const localRef = useRef<HTMLDivElement>(null);
     const focusedApp = useAppSelector((state) => state.apps.focusedApp);
     const theme = useAppSelector((state) => state.settings.apperance.theme);
-    const pdfInfo = useAppSelector((state) => state.pdfReader.pdfInfo);
-    const { getFileUrl } = useGetFileURl()
-    const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const { width } = useResizeObserver(localRef);
     const { handleAppFocus } = useChangeAppFocus(AppsT.PdfReader);
 
-    const { numPages, onDocumentLoadSuccess, onDocumentLoadError, scale, handleResetZoom, handleZoomIn, handleZoomOut, goToPage, pageNumber,
-        isLoading
+    const { pdfUrl, numPages, onDocumentLoadSuccess, onDocumentLoadError, scale, handleResetZoom, handleZoomIn, handleZoomOut, goToPage, pageNumber,
     } = usePdfReader()
-
-
-    useEffect(() => {
-        const setUrl = async () => {
-            if (pdfInfo?.id) {
-                if (pdfInfo && !pdfInfo.isFolder && pdfInfo.details.type.startsWith(SupportedMimeTypes.PDF)) {
-                    // In a real app, you would get the image URL from your backend
-                    try {
-                        const { url } = await getFileUrl(`${pdfInfo.id}.${pdfInfo.name.split(".").pop()}`)
-                        setPdfUrl(url);
-                    } catch (error) {
-                        console.error("Error fetching PDF URL:", error);
-                        showToast('Error fetching PDF URL', 'error');
-                        setPdfUrl(null);
-                        dispatch(closePdfReader())
-                    }
-                }
-            }
-        }
-        setUrl()
-    }, [pdfInfo]);
-
-
 
     const handleContextMenu = (e: React.MouseEvent) => {
         // e.preventDefault();

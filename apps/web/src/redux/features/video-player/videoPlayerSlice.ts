@@ -9,7 +9,10 @@ const intialState = {
     lastPosition: { x: 0, y: 0 },
     lastSize: { width: 0, height: 0 },
   },
-  videoInfo: null,
+  videoPlayerInfo: {
+    videoFileInfo: null,
+    videoUrl: null,
+  },
   state: {
     isLoading: false,
   },
@@ -21,19 +24,41 @@ export const videoPlayerSlice = createSlice({
   reducers: {
     openVideoPlayer: (state, action: PayloadAction<FileT | null>) => {
       state.actions.isProcessOn = true;
-      state.videoInfo = action.payload;
+      state.videoPlayerInfo.videoFileInfo = action.payload;
+      if (state.actions.isFileActionModalOn) {
+        state.actions.isFileActionModalOn = false;
+      }
     },
     closeVideoPlayer: (state) => {
       state.actions.isProcessOn = false;
-      state.videoInfo = null;
+      state.videoPlayerInfo.videoFileInfo = null;
+      state.videoPlayerInfo.videoUrl = null;
     },
     setVideoPlayerLoading: (state, action: PayloadAction<boolean>) => {
       state.state.isLoading = action.payload;
     },
+    setVideoPlayerLastPosition: (
+      state,
+      action: PayloadAction<{ x: number; y: number }>
+    ) => {
+      state.actions.lastPosition = action.payload;
+    },
+    setVideoUrl: (state, action: PayloadAction<string | null>) => {
+      state.videoPlayerInfo.videoUrl = action.payload;
+    },
+    setVideoFileActionModalOn: (state, action: PayloadAction<boolean>) => {
+      state.actions.isFileActionModalOn = action.payload;
+    },
   },
 });
 
-export const { openVideoPlayer, closeVideoPlayer, setVideoPlayerLoading } =
-  videoPlayerSlice.actions;
+export const {
+  openVideoPlayer,
+  closeVideoPlayer,
+  setVideoPlayerLoading,
+  setVideoFileActionModalOn,
+  setVideoPlayerLastPosition,
+  setVideoUrl,
+} = videoPlayerSlice.actions;
 
 export default videoPlayerSlice.reducer;

@@ -9,7 +9,10 @@ const intialState = {
     lastPosition: { x: 0, y: 0 },
     lastSize: { width: 0, height: 0 },
   },
-  musicInfo: null,
+  musicPlayerInfo: {
+    musicFileInfo: null,
+    musicUrl: null,
+  },
   state: {
     isLoading: false,
   },
@@ -21,19 +24,41 @@ export const musicPLayerSlice = createSlice({
   reducers: {
     openMusicPlayer: (state, action: PayloadAction<FileT | null>) => {
       state.actions.isProcessOn = true;
-      state.musicInfo = action.payload;
+      state.musicPlayerInfo.musicFileInfo = action.payload;
+      if (state.actions.isFileActionModalOn) {
+        state.actions.isFileActionModalOn = false;
+      }
     },
     closeMusicPlayer: (state) => {
       state.actions.isProcessOn = false;
-      state.musicInfo = null;
+      state.musicPlayerInfo.musicFileInfo = null;
+      state.musicPlayerInfo.musicUrl = null;
     },
     setMusicPlayerLoading: (state, action: PayloadAction<boolean>) => {
       state.state.isLoading = action.payload;
     },
+    setMusicPlayerLastPosition: (
+      state,
+      action: PayloadAction<{ x: number; y: number }>
+    ) => {
+      state.actions.lastPosition = action.payload;
+    },
+    setMusicUrl: (state, action: PayloadAction<string | null>) => {
+      state.musicPlayerInfo.musicUrl = action.payload;
+    },
+    setMusicFileActionModalOn: (state, action: PayloadAction<boolean>) => {
+      state.actions.isFileActionModalOn = action.payload;
+    },
   },
 });
 
-export const { openMusicPlayer, closeMusicPlayer, setMusicPlayerLoading } =
-  musicPLayerSlice.actions;
+export const {
+  openMusicPlayer,
+  closeMusicPlayer,
+  setMusicPlayerLoading,
+  setMusicFileActionModalOn,
+  setMusicPlayerLastPosition,
+  setMusicUrl,
+} = musicPLayerSlice.actions;
 
 export default musicPLayerSlice.reducer;

@@ -3,13 +3,11 @@ import { useDrag } from '@/components/hooks/useDrag';
 import { closeVideoPlayer } from '@/redux/features/video-player/videoPlayerSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import VideoPlayerCard from '@/ui/Cards/VideoPlayer/VideoPlayer';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 
-import useGetFileURl from '@/components/hooks/useGetFileURl';
-import { useVideoPlayer } from '@/components/hooks/useVideoPlayer';
+import useVideoPlayer from '@/components/hooks/apps/useVideoPlayer';
 import { cn } from '@/utils';
 import { AppsT } from '@skydock/types/enums';
-import { showToast } from '@skydock/ui/toast';
 import { Maximize, Pause, Play, Volume1, Volume2, VolumeX } from 'lucide-react';
 
 const VideoPlayer = () => {
@@ -21,10 +19,11 @@ const VideoPlayer = () => {
     const { handleAppFocus } = useChangeAppFocus('VideoPlayer');
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef
+
     });
     // const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
 
-    const videoInfo = useAppSelector((state) => state.videoPlayer.videoInfo);
+    // const videoInfo = useAppSelector((state) => state.videoPlayer.videoInfo);
 
     const handleContextMenu = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -58,7 +57,7 @@ const VideoPlayer = () => {
 
 
     const playerRef = useRef<HTMLDivElement>(null);
-    const [videoUrl, setVideoUrl] = useState<string | undefined>();
+
     const {
         videoRef,
         isPlaying,
@@ -77,42 +76,9 @@ const VideoPlayer = () => {
         seekTo,
         changeVolume,
         toggleMute,
-        formatTime
+        formatTime,
+        videoUrl
     } = useVideoPlayer();
-
-    const { getFileUrl } = useGetFileURl()
-
-    useEffect(() => {
-        const setUrl = async () => {
-            if (videoInfo?.id) {
-
-                if (videoInfo && !videoInfo.isFolder && videoInfo.details.type.startsWith('video/')) {
-                    // setMusicTitle(imageItem.name);
-                    // In a real app, you would get the image URL from your backend
-                    try {
-
-                        const { url } = await getFileUrl(`${videoInfo.id}.${videoInfo.name.split(".").pop()}`)
-                        setVideoUrl(url);
-                        togglePlay()
-                    } catch (error) {
-                        console.error('Error fetching video URL:', error);
-                        showToast('Error loading video', 'error');
-                        dispatch(closeVideoPlayer());
-                    }
-                    // console.log(url)
-                    // setIsPlaying(true);
-
-                    // const audio = new Audio(url);
-                    // audio.addEventListener('loadedmetadata', () => {
-                    //     console.log(audio)
-                    // });
-                    // audioRef.current = audio;
-                }
-            }
-
-        }
-        setUrl()
-    }, [videoInfo]);
 
     // Handle mouse movements to show/hide controls
     const handleMouseMove = () => {
@@ -170,7 +136,7 @@ const VideoPlayer = () => {
             >
                 <video
                     ref={videoRef}
-                    src={videoUrl}
+                    src={videoUrl || ''}
                     className={cn("w-full h-full aspect-video object-contain", !isFullscreen && 'pb-16')}
                     onClick={togglePlay}
                     playsInline

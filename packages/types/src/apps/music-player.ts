@@ -3,7 +3,10 @@ import { FileT } from "../explorer-items";
 
 export interface MusicPlayerStateT {
   actions: ActionsT;
-  musicInfo: FileT | null;
+  musicPlayerInfo: {
+    musicFileInfo: FileT | null;
+    musicUrl: string | null;
+  };
   state: {
     isLoading: boolean;
   };

@@ -1,13 +1,39 @@
-import { useEffect, useRef, useState } from "react";
+import { FileSaveAndOpenModalContext } from "@/components/ContextApi/FileSaveAndOpenModal";
+import { useGetFileUrlMutation } from "@/redux/apis/filesAndFolderApi";
+import {
+  closeVideoPlayer,
+  openVideoPlayer,
+  setVideoFileActionModalOn,
+  setVideoUrl,
+} from "@/redux/features/video-player/videoPlayerSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { FileT } from "@skydock/types";
+import { AppsT, SupportedMimeTypes } from "@skydock/types/enums";
+import { showToast } from "@skydock/ui/toast";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import useFileDownloadWithProgress from "../useFileDownloadWithProgress";
 
 interface UseVideoPlayerProps {
   initialVolume?: number;
 }
 
-export const useVideoPlayer = ({
-  initialVolume = 1,
-}: UseVideoPlayerProps = {}) => {
+const useVideoPlayer = ({ initialVolume = 1 }: UseVideoPlayerProps = {}) => {
+  const dispatch = useAppDispatch();
+  const videoUrl = useAppSelector(
+    (state) => state.videoPlayer.videoPlayerInfo.videoUrl
+  );
+  const videoFileInfo = useAppSelector(
+    (state) => state.videoPlayer.videoPlayerInfo.videoFileInfo
+  );
+  const lastPosition = useAppSelector(
+    (state) => state.videoPlayer.actions.lastPosition
+  );
+
+  const { openFileOpenerModal } = useContext(FileSaveAndOpenModalContext);
+  const { downloadFile } = useFileDownloadWithProgress();
+  const [getFileUrl] = useGetFileUrlMutation();
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -243,6 +269,50 @@ export const useVideoPlayer = ({
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
+  const openVideoFile = useCallback(
+    async (item: FileT | null) => {
+      if (item) {
+        try {
+          const { url } = await getFileUrl(
+            `${item.id}.${item.name.split(".").pop()}`
+          ).unwrap();
+          dispatch(setVideoUrl(url));
+          dispatch(openVideoPlayer(item));
+        } catch (error) {
+          showToast("Failed to open video file.", "error");
+        }
+      }
+    },
+    [dispatch, getFileUrl]
+  );
+
+  const openVideoFileUsingModal = useCallback(() => {
+    dispatch(setVideoFileActionModalOn(true));
+    openFileOpenerModal({
+      appName: AppsT.VideoPlayer,
+      onSuccess: async (file) => {
+        await openVideoFile(file as FileT);
+      },
+      onClose: () => {
+        dispatch(setVideoFileActionModalOn(false));
+      },
+      supportedMimeTypes: [SupportedMimeTypes.Video],
+      lastPosition,
+    });
+  }, [dispatch, lastPosition, openFileOpenerModal, openVideoFile]);
+
+  const download = useCallback(async () => {
+    if (!videoFileInfo) {
+      showToast("No video file to download.", "error");
+      return;
+    }
+    return await downloadFile(videoFileInfo);
+  }, [downloadFile, videoFileInfo]);
+
+  const close = useCallback(() => {
+    dispatch(closeVideoPlayer());
+  }, [dispatch]);
+
   return {
     videoRef,
     isPlaying,
@@ -264,5 +334,13 @@ export const useVideoPlayer = ({
     changeVolume,
     toggleMute,
     formatTime,
+    openVideoFile,
+    openVideoFileUsingModal,
+    download,
+    close,
+    videoUrl,
+    videoFileInfo,
   };
 };
+
+export default useVideoPlayer;

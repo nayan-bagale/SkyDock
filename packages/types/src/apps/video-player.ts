@@ -3,7 +3,10 @@ import { FileT } from "../explorer-items";
 
 export interface VideoPlayerStateT {
   actions: ActionsT;
-  videoInfo: FileT | null;
+  videoPlayerInfo: {
+    videoFileInfo: FileT | null;
+    videoUrl: string | null;
+  };
   state: {
     isLoading: boolean;
   };

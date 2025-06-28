@@ -3,7 +3,10 @@ import { FileT } from "../explorer-items";
 
 export interface PdfReaderStateT {
   actions: ActionsT;
-  pdfInfo: FileT | null;
+  pdfReaderInfo: {
+    pdfFileInfo: FileT | null;
+    pdfUrl: string | null;
+  };
   state: {
     isLoading: boolean;
   };

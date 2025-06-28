@@ -9,7 +9,10 @@ const intialState = {
     lastPosition: { x: 0, y: 0 },
     lastSize: { width: 0, height: 0 },
   },
-  pdfInfo: null,
+  pdfReaderInfo: {
+    pdfFileInfo: null,
+    pdfUrl: null,
+  },
   state: {
     isLoading: false,
   },
@@ -21,19 +24,42 @@ export const pdfReaderSlice = createSlice({
   reducers: {
     openPdfReader: (state, action: PayloadAction<FileT | null>) => {
       state.actions.isProcessOn = true;
-      state.pdfInfo = action.payload;
+      state.pdfReaderInfo.pdfFileInfo = action.payload;
+      if (state.actions.isFileActionModalOn) {
+        state.actions.isFileActionModalOn = false;
+      }
     },
     closePdfReader: (state) => {
       state.actions.isProcessOn = false;
-      state.pdfInfo = null;
+      state.pdfReaderInfo.pdfFileInfo = null;
+      state.pdfReaderInfo.pdfUrl = null;
     },
     setPdfReaderLoading: (state, action: PayloadAction<boolean>) => {
       state.state.isLoading = action.payload;
     },
+
+    setPdfReaderLastPosition: (
+      state,
+      action: PayloadAction<{ x: number; y: number }>
+    ) => {
+      state.actions.lastPosition = action.payload;
+    },
+    setPdfUrl: (state, action: PayloadAction<string | null>) => {
+      state.pdfReaderInfo.pdfUrl = action.payload;
+    },
+    setPdfFileActionModalOn: (state, action: PayloadAction<boolean>) => {
+      state.actions.isFileActionModalOn = action.payload;
+    },
   },
 });
 
-export const { closePdfReader, openPdfReader, setPdfReaderLoading } =
-  pdfReaderSlice.actions;
+export const {
+  closePdfReader,
+  openPdfReader,
+  setPdfReaderLoading,
+  setPdfFileActionModalOn,
+  setPdfReaderLastPosition,
+  setPdfUrl,
+} = pdfReaderSlice.actions;
 
 export default pdfReaderSlice.reducer;
