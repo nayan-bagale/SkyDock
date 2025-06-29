@@ -24,6 +24,8 @@ const Terminal = () => {
         },
     }
 
+    // throw new Error('Simulated chunk load failure'); // Simulating an error to test the error boundary
+
     return (
         <TerminalCard
             ref={draggableRef}

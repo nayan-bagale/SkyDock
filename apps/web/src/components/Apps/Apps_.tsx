@@ -13,6 +13,7 @@ import {
     Terminal,
     VideoPlayer,
 } from "./Apps.Lazy";
+import AppsErrorBoundary from "./AppsErrorBoundary";
 
 const Apps_ = () => {
     const {
@@ -39,7 +40,9 @@ const Apps_ = () => {
                             />
                         }
                     >
-                        <Terminal />
+                        <AppsErrorBoundary app={terminalApp}>
+                            <Terminal />
+                        </AppsErrorBoundary>
                     </Suspense>
                 )}
             </AnimatePresence>
@@ -53,7 +56,11 @@ const Apps_ = () => {
                             />
                         }
                     >
-                        <Explorer />
+                        <AppsErrorBoundary app={explorerApp}>
+
+                            <Explorer />
+                        </AppsErrorBoundary>
+
                     </Suspense>
                 )}
             </AnimatePresence>
@@ -67,7 +74,9 @@ const Apps_ = () => {
                             />
                         }
                     >
-                        <Settings />
+                        <AppsErrorBoundary app={settingsApp}>
+                            <Settings />
+                        </AppsErrorBoundary>
                     </Suspense>
                 )}
             </AnimatePresence>
@@ -81,7 +90,9 @@ const Apps_ = () => {
                             />
                         }
                     >
-                        <ImageViewer />
+                        <AppsErrorBoundary app={imageViewerApp}>
+                            <ImageViewer />
+                        </AppsErrorBoundary>
                     </Suspense>
                 )}
             </AnimatePresence>
@@ -95,7 +106,9 @@ const Apps_ = () => {
                             />
                         }
                     >
-                        <MusicPlayer />
+                        <AppsErrorBoundary app={musicPlayerApp}>
+                            <MusicPlayer />
+                        </AppsErrorBoundary>
                     </Suspense>
                 )}
             </AnimatePresence>
@@ -109,7 +122,9 @@ const Apps_ = () => {
                             />
                         }
                     >
-                        <VideoPlayer />
+                        <AppsErrorBoundary app={videoPlayerApp}>
+                            <VideoPlayer />
+                        </AppsErrorBoundary>
                     </Suspense>
                 )}
             </AnimatePresence>
@@ -121,7 +136,10 @@ const Apps_ = () => {
                             onUnmount={pdfReaderApp.setLoadingFalse}
                         />
                     }>
-                    <PdfReader />
+                    <AppsErrorBoundary app={pdfReaderApp}>
+                        <PdfReader />
+                    </AppsErrorBoundary>
+
                 </Suspense>)}
             </AnimatePresence>
 
@@ -133,7 +151,9 @@ const Apps_ = () => {
                             onUnmount={notePadApp.setLoadingFalse}
                         />
                     }>
-                    <NotePad />
+                    <AppsErrorBoundary app={notePadApp}>
+                        <NotePad />
+                    </AppsErrorBoundary>
                 </Suspense>)}
             </AnimatePresence>
 
@@ -146,7 +166,10 @@ const Apps_ = () => {
                         />
                     }
                 >
-                    <AppsMenu />
+                    <AppsErrorBoundary app={appsMenuSystem}>
+                        <AppsMenu />
+                    </AppsErrorBoundary>
+
                 </Suspense>)}
             </AnimatePresence>
         </>

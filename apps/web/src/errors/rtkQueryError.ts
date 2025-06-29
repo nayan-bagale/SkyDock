@@ -75,6 +75,8 @@ export class ErrorHandler extends RtkErrorHandler {
     return this;
   }
 
+  public RenderError() {}
+
   private internalDisplay(message: string): void {
     this.hasDisplayed = true;
     ErrorHandler.toast(message);

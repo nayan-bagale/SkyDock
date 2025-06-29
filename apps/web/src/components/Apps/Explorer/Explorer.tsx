@@ -162,6 +162,7 @@ const Explorer = () => {
         }));
     };
 
+
     return (
         <ExplorerCard
             ref={draggableRef}
