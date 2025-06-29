@@ -126,6 +126,11 @@ export const explorerSlice = createSlice({
         });
         trashFolder.children = [];
       }
+
+      state.currentFolder = "trash";
+      state.activeTab = "trash";
+      state.backStack = [];
+      state.forwardStack = [];
     },
     renameItem: (state, action) => {
       const item = state.explorerItems[action.payload.id];

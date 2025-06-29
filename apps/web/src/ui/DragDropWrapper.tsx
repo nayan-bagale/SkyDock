@@ -44,15 +44,15 @@ export const DragDropWrapper = forwardRef<HTMLDivElement, DragDropWrapperProps>(
         const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
             e.preventDefault();
             e.stopPropagation();
-            if (disableDrag) return;
-            dragCounter.current = 0; // Reset counter on drop
             // Only call handlefiles if the drag is from outside the browser
             if (e.dataTransfer.types.includes("Files") && (e.dataTransfer.types.length === 1)) {
+                if (disableDrag) return;
                 handleExternalfiles(e.dataTransfer.files);
                 // console.log('Element is from the browser.');
             } else {
                 handleInternalFiles(e)
             }
+            dragCounter.current = 0; // Reset counter on drop
 
             setDragging(false)
         }, [disableDrag, handleExternalfiles, handleInternalFiles])
