@@ -6,7 +6,6 @@ import Apps_ from "../components/Apps/Apps_";
 import MenuBar from "../components/Bar/MenuBar";
 import Desktop from "../components/Desktop/Desktop";
 import Dock from "../components/Dock/Dock";
-import DraggingItem from "../components/DraggingItem";
 import SubscriptionPlans from "../components/SubscriptionPlan/SubscriptionPlan";
 import "../index.css";
 
@@ -32,7 +31,7 @@ const MainApp = () => {
             <AnimatePresence>
                 {isSubscriptionPlanCardOpen && <SubscriptionPlans />}
             </AnimatePresence>
-            <DraggingItem />
+            {/* <DraggingItem /> */}
             <GlobalContextMenu />
         </GlobalContextApi>
     )
