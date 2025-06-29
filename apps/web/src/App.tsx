@@ -84,12 +84,25 @@ import ForgotPassword from "./components/Auth/ForgotPassword/ForgotPassword";
 import OAuth from "./components/Auth/OAuth";
 import Signin from "./components/Auth/Signin";
 import Signup from "./components/Auth/Signup";
+import { useNetworkStatus } from "./components/hooks/useNetworkStatus";
+import OfflinePage from "./components/OfflinePage";
 import Layout from "./routes/Layout";
 import MainApp from "./routes/MainApp";
 import Protected from "./routes/Protected";
 
 
 const App = () => {
+
+  const { isOnline, isChecking, checkConnection } = useNetworkStatus();
+
+  if (!isOnline) {
+    return (
+      <OfflinePage
+        onRetry={checkConnection}
+        isRetrying={isChecking}
+      />
+    );
+  }
 
   return (
     <Routes>
