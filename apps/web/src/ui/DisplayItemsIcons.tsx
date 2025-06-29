@@ -16,6 +16,7 @@ interface DisplayItemsIconsT {
     onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
     handleDragStart: any;
     handleDrop: DragEventT;
+    isSelected?: boolean;
 }
 
 export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
@@ -28,7 +29,8 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
         onKeyDown,
         handleDragStart,
         handleDrop,
-        className
+        className,
+        isSelected
     }) => {
         const [isOver, setIsOver] = useState(false);
 
@@ -76,6 +78,7 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                         className={cn(
                             ' relative w-fit flex flex-col justify-center items-center p-1 rounded-md outline-gray-400/50 focus:bg-gray-400/40 hover:bg-gray-400/40',
                             isOver && 'bg-gray-400/10 border',
+                            isSelected && 'bg-gray-400/40',
                             className
                             // !item.isFolder && item?.state?.currentState === 'downloading' && 'bg-blue-500',
                         )}

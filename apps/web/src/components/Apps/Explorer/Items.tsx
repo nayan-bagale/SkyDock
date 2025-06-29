@@ -11,11 +11,13 @@ interface ItemPropsT {
     item: FileT | FolderT,
     handleDragStart: MouseEventT;
     handleDrop: DragEventT;
+    isSelected?: boolean;
+    setSelectedItems?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 
 const Item: FC<ItemPropsT> =
-    ({ item, handleDragStart, handleDrop }) => {
+    ({ item, handleDragStart, handleDrop, isSelected, setSelectedItems }) => {
         const dispatch = useAppDispatch()
 
         const { openApp } = useAppOpenBasedOnFileType(item);
@@ -69,6 +71,7 @@ const Item: FC<ItemPropsT> =
                     onKeyDown={handleKeyDown}
                     handleDragStart={handleDragStart}
                     handleDrop={handleDrop}
+                    isSelected={isSelected}
                 />
             </div>
         )

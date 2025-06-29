@@ -4,12 +4,14 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import cn from "@/utils";
 import { FolderT, handleDragStartT, handleDropT } from "@skydock/types";
 import { showToast } from "@skydock/ui/toast";
+import { useState } from "react";
 import Item from "./Items";
 
 const ExplorerItems = () => {
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
     const currentFolder = useAppSelector((state) => state.explorer.currentFolder);
     const view = useAppSelector((state) => state.explorer.settings.view);
+    const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
     const item = explorerItems[currentFolder]
 
@@ -70,6 +72,8 @@ const ExplorerItems = () => {
                         item={child}
                         handleDragStart={(e) => handleDragStart(e, child)}
                         handleDrop={(e) => handleDrop(e, child, index)}
+                        isSelected={selectedItems.includes(child.id)}
+                        setSelectedItems={setSelectedItems}
                     />
                 ))}
             </div>
