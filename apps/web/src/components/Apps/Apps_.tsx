@@ -57,7 +57,6 @@ const Apps_ = () => {
                         }
                     >
                         <AppsErrorBoundary app={explorerApp}>
-
                             <Explorer />
                         </AppsErrorBoundary>
 
