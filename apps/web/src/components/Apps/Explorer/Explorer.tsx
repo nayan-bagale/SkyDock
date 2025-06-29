@@ -175,7 +175,6 @@ const Explorer = () => {
             handleFolderTree={handleFolderTree}
             onMouseDownCard={handleAppFocus}
             handleActiveTabs={handleActiveTabs}
-            // className={focusedApp === 'Explorer' ? 'z-20' : ''}
             isFocused={isFocused}
             theme={theme}
             onContextMenu={handleContextMenu}

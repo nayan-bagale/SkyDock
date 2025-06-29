@@ -45,6 +45,7 @@ const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
 
         const droppedItem = explorerItems[currentFolder] as FolderT;
 
+        if (droppedItem.id === itemDragged.id) return;
         if (droppedItem.children.includes(itemDragged.id)) return;
 
         const requestBody: PatchItemRequest = {
@@ -53,6 +54,7 @@ const HandleDragnDrop: FC<{ children: ReactNode }> = ({ children }) => {
             is_deleted: false,
             deletedAt: null,
         };
+
         if (droppedItem.id === "trash") {
             requestBody.is_deleted = true;
             requestBody.deletedAt = new Date();

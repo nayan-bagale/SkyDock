@@ -35,11 +35,9 @@ const ExplorerItems = () => {
 
     };
 
-    // Handle reordering items
     const handleDrop: handleDropT = async (e, droppedItem) => {
         e.preventDefault();
         if (!itemDragged) return;
-
         if (droppedItem.isFolder && (itemDragged.id !== droppedItem.id)) {
             try {
 

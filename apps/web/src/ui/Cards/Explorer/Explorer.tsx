@@ -205,9 +205,9 @@ export const ExplorerCard = forwardRef<HTMLDivElement, ExplorerCardProps>(
 
                                 {handleActiveTabs.tabsOptions.map(
                                     ({ name, id, Icon }, index) => (
-                                        <div className="">
+                                        <div key={id} className="">
                                             <Button
-                                                key={id}
+
                                                 className={cn(
                                                     " px-1 w-full flex gap-1 hover:bg-slate-100 drop-shadow-none relative outline-2 outline-sky-400 focus-visible:outline",
                                                     handleActiveTabs.activeTab !== id &&
