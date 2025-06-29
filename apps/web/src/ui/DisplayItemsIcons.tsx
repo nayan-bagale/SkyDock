@@ -1,6 +1,6 @@
 import { onDropTweak } from '@/tweaks/ElementEvent';
 import cn from '@/utils';
-import { DragEventT, FileT, FolderT, MouseEventT } from '@skydock/types';
+import { DragEventT, FileT, FolderT } from '@skydock/types';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { FC, useRef, useState } from 'react';
 
@@ -14,7 +14,7 @@ interface DisplayItemsIconsT {
     view: 'grid' | 'row';
     onDoubleClick?: () => void;
     onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
-    handleDragStart: MouseEventT;
+    handleDragStart: any;
     handleDrop: DragEventT;
 }
 
@@ -32,7 +32,18 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
     }) => {
         const [isOver, setIsOver] = useState(false);
 
-        const iconRef = useRef<HTMLDivElement>(null);
+        const dragRef = useRef<HTMLDivElement>(null);
+
+        const enhancedOnDragStart = (e: any) => {
+            handleDragStart(e);
+            if (dragRef.current) {
+                const rect = dragRef.current.getBoundingClientRect();
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                e.dataTransfer.setDragImage(dragRef.current, centerX, centerY);
+            }
+        };
 
         const enhancedOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
             onKeyDown(e);
@@ -61,7 +72,7 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
             <AnimatePresence>
                 {view === 'grid' &&
                     (<motion.div
-                        ref={iconRef}
+                        ref={dragRef}
                         className={cn(
                             ' relative w-fit flex flex-col justify-center items-center p-1 rounded-md outline-gray-400/50 focus:bg-gray-400/40 hover:bg-gray-400/40',
                             isOver && 'bg-gray-400/10 border',
@@ -78,7 +89,7 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                         onDoubleClick={onDoubleClick}
                         onKeyDown={enhancedOnKeyDown}
                         draggable
-                        onDragStart={handleDragStart}
+                        onDragStart={enhancedOnDragStart}
                         onDragOver={handleDragOverInner}
                         onDrop={(e) => onDropTweak(e, handleDropInner)}
                         onDragLeave={handleDragLeaveInner}
