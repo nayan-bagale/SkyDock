@@ -1,6 +1,7 @@
 import { useGetFileUrlMutation } from "@/redux/apis/filesAndFolderApi";
 import { FileT } from "@skydock/types";
 import { showProgressToast } from "@skydock/ui/toast";
+import { toast } from "sonner";
 
 const useFileDownloadWithProgress = () => {
   const [getFileUrl] = useGetFileUrlMutation();
@@ -9,11 +10,8 @@ const useFileDownloadWithProgress = () => {
     (await getFileUrl(id).unwrap())?.url || null;
 
   const downloadFile = async (item: FileT) => {
-    const toastId = showProgressToast({
-      status: "loading",
-      fileName: item.name,
-      progress: 0,
-    });
+    let toastId: string | number | undefined;
+
     try {
       const fileDownloadUrl = await getDownloadUrl(
         `${item.id}.${item.name.split(".").pop()}`
@@ -22,6 +20,12 @@ const useFileDownloadWithProgress = () => {
       const controller = new AbortController();
       const response = await fetch(fileDownloadUrl, {
         signal: controller.signal,
+      });
+
+      toastId = showProgressToast({
+        status: "loading",
+        fileName: item.name,
+        progress: 0,
       });
 
       if (!response?.body) return;
@@ -90,6 +94,7 @@ const useFileDownloadWithProgress = () => {
       );
     } catch (error) {
       console.error(error);
+
       showProgressToast(
         {
           status: "error",
@@ -97,9 +102,15 @@ const useFileDownloadWithProgress = () => {
           fileName: item.name,
         },
         {
-          id: toastId,
+          id: toastId || undefined,
         }
       );
+    } finally {
+      if (toastId) {
+        setTimeout(() => {
+          toast.dismiss(toastId);
+        }, 2000);
+      }
     }
   };
   return { downloadFile };
