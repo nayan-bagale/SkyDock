@@ -40,6 +40,7 @@ import paint_svg from './assests/paint-svgrepo-com.svg';
 import pdf_svg from './assests/pdf-svgrepo-com-1.svg';
 import image_svg from './assests/picture-photo-image-svgrepo-com.svg';
 import pie_svg from './assests/pie-chart-svgrepo-com.svg';
+import play_button_svg from './assests/play-button-svgrepo-com.svg';
 import play_square_svg from './assests/play-square-svgrepo-com.svg';
 import note_svg from './assests/post-it-svgrepo-com.svg';
 import python_image from './assests/python-svgrepo-com.svg';
@@ -132,5 +133,6 @@ export const Icons = {
   Documents: ({ className }: { className: string }) => $({ svg: documents_svg, name: 'documents', className }),
   Document: ({ className }: { className: string }) => $({ svg: document_svg, name: 'document', className }),
   Play_Square: ({ className }: { className: string }) => $({ svg: play_square_svg, name: 'play_square', className }),
+  Play_Button: ({ className }: { className: string }) => $({ svg: play_button_svg, name: 'play_button', className }),
 }
 
