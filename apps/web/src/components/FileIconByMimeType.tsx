@@ -14,7 +14,7 @@ const IconByMimeType = (mimeType: string | null) => {
     } else if (mimeType === 'application/pdf') {
         return Icons.PDF
     } else if (mimeType.startsWith('video/')) {
-        return Icons.Video
+        return Icons.Play_Square
     } else if (mimeType.startsWith('text/')) {
         return Icons.Documents
     }
