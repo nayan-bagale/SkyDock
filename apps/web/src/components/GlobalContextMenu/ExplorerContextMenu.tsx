@@ -11,6 +11,7 @@ import { showToast } from '@skydock/ui/toast';
 import { FileText } from 'lucide-react';
 import { useState } from 'react';
 import useContextMenu from '../hooks/useContextMenu';
+import RenameInputBox from '../RenameInputBox';
 import FileUploadButton from './UploadButton';
 
 interface ExplorerContextMenuProps {
@@ -26,7 +27,7 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
     const isTrashTab = useAppSelector((state) => state.explorer.activeTab === 'trash');
     const [updateItem] = useUpdateItemMutation();
     const [isRenaming, setIsRenaming] = useState(false);
-    const [newName, setNewName] = useState('');
+    // const [newName, setNewName] = useState('');
 
     // If targetId exists, we're right-clicking on an item
     const targetItem = targetId ? explorerItems[targetId] : null;
@@ -35,18 +36,18 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
 
     const handleRename = () => {
         if (!targetItem) return;
-        setNewName(targetItem.name);
+        // setNewName(targetItem.name);
         setIsRenaming(true);
     };
 
-    const handleRenameSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleRenameSubmit = async (newName: string) => {
+        // e.preventDefault();
         if (!targetItem || !newName.trim()) return;
 
         try {
             await updateItem({ id: targetItem.id, name: newName }).unwrap();
             dispatch(renameItem({ id: targetItem.id, name: newName }));
-            setIsRenaming(false);
+            // setIsRenaming(false);
             dispatch(closeContextMenu());
         } catch (error) {
             console.error('Error renaming item:', error);
@@ -128,27 +129,12 @@ const ExplorerContextMenu = ({ targetId, additionalData }: ExplorerContextMenuPr
     // If we're renaming
     if (isRenaming) {
         return (
-            <form onSubmit={handleRenameSubmit} className="p-1">
-                <input
-                    type="text"
-                    value={newName}
-                    onChange={(e) => setNewName(e.target.value)}
-                    autoFocus
-                    className="px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm"
-                    onBlur={() => setIsRenaming(false)}
-                />
-                <div className="flex justify-end mt-2">
-                    <Button
-                        type="button"
-                        onClick={() => setIsRenaming(false)}
-                        className="mr-2"
-                    >
-                        Cancel
-                    </Button>
-                    <Button type="submit">Rename</Button>
-                </div>
-            </form>
-        );
+            <RenameInputBox
+                setIsRenaming={setIsRenaming}
+                handleRename={handleRenameSubmit}
+                currentName={targetItem.name}
+            />
+        )
     }
 
     // If we're right-clicking on an item
