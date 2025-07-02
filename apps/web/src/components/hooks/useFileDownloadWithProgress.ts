@@ -1,6 +1,6 @@
 import { useGetFileUrlMutation } from "@/redux/apis/filesAndFolderApi";
 import { FileT } from "@skydock/types";
-import { showToast } from "@skydock/ui/toast";
+import { showProgressToast } from "@skydock/ui/toast";
 
 const useFileDownloadWithProgress = () => {
   const [getFileUrl] = useGetFileUrlMutation();
@@ -9,12 +9,21 @@ const useFileDownloadWithProgress = () => {
     (await getFileUrl(id).unwrap())?.url || null;
 
   const downloadFile = async (item: FileT) => {
+    const toastId = showProgressToast({
+      status: "loading",
+      fileName: item.name,
+      progress: 0,
+    });
     try {
       const fileDownloadUrl = await getDownloadUrl(
         `${item.id}.${item.name.split(".").pop()}`
       );
       if (!fileDownloadUrl) return;
-      const response = await fetch(fileDownloadUrl);
+      const controller = new AbortController();
+      const response = await fetch(fileDownloadUrl, {
+        signal: controller.signal,
+      });
+
       if (!response?.body) return;
 
       const contentLength = response.headers.get("Content-Length");
@@ -38,11 +47,20 @@ const useFileDownloadWithProgress = () => {
         if (typeof totalLength === "number") {
           const progress =
             parseFloat((receivedLength / totalLength).toFixed(2)) * 100;
-          //TODO: Add a progress bar to show download progress to the user
+          showProgressToast(
+            {
+              status: "loading",
+              fileName: item.name,
+              progress: progress,
+              abort: () => controller.abort(),
+            },
+            {
+              id: toastId,
+            }
+          );
           //TODO: Add Throttling for the progress bar
           //TODO: Refer https://www.npmjs.com/package/lodash.throttle
-          //TODO: Add a toast notification to show download progress to the user
-          console.log(`Received ${progress}% of the file`);
+          // console.log(`Received ${progress}% of the file`);
         }
       }
 
@@ -58,10 +76,30 @@ const useFileDownloadWithProgress = () => {
         }, 0);
       };
       a.addEventListener("click", handleOnDownload, false);
+
       a.click();
+      showProgressToast(
+        {
+          status: "success",
+          progress: 100,
+          fileName: item.name,
+        },
+        {
+          id: toastId,
+        }
+      );
     } catch (error) {
       console.error(error);
-      showToast("Error occurred while downloading the file", "error");
+      showProgressToast(
+        {
+          status: "error",
+          progress: 0,
+          fileName: item.name,
+        },
+        {
+          id: toastId,
+        }
+      );
     }
   };
   return { downloadFile };
