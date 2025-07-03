@@ -16,7 +16,7 @@ import { decodeToken } from "./utils/token";
 const app = express();
 
 // trust proxy because the server is behind nginx
-app.set("trust proxy", true);
+app.set("trust proxy", process.env.NODE_ENV === "prod");
 
 // Cross Origin Resource Sharing
 app.use(cors(corsOptions));
