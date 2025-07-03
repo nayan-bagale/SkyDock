@@ -11,14 +11,6 @@ interface VideoPlayerCardProps {
     children?: ReactNode;
     action: {
         close: () => void;
-        size: {
-            isMaximized: boolean;
-            changeSize: () => void;
-            lastSize: {
-                width: number;
-                height: number;
-            };
-        },
         minimize: () => void;
     };
     onMouseDownCard: () => void;

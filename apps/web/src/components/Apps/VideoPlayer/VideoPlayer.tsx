@@ -1,14 +1,14 @@
 import useChangeAppFocus from '@/components/hooks/useChangeAppFocus';
 import { useDrag } from '@/components/hooks/useDrag';
-import { closeVideoPlayer } from '@/redux/features/video-player/videoPlayerSlice';
+import { closeVideoPlayer, setVideoPlayerLastPosition } from '@/redux/features/video-player/videoPlayerSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import VideoPlayerCard from '@/ui/Cards/VideoPlayer/VideoPlayer';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 import useVideoPlayer from '@/components/hooks/apps/useVideoPlayer';
 import { cn } from '@/utils';
 import { AppsT } from '@skydock/types/enums';
-import { Maximize, Pause, Play, Volume1, Volume2, VolumeX } from 'lucide-react';
+import { Loader, Maximize, Pause, Play, Volume1, Volume2, VolumeX } from 'lucide-react';
 
 const VideoPlayer = () => {
 
@@ -18,12 +18,12 @@ const VideoPlayer = () => {
     const theme = useAppSelector((state) => state.settings.apperance.theme);
     const { handleAppFocus } = useChangeAppFocus('VideoPlayer');
     const { position, handleMouseDown } = useDrag({
-        ref: draggableRef
+        ref: draggableRef,
+        onChangePosition: (pos) => dispatch(setVideoPlayerLastPosition(pos))
 
     });
-    // const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
 
-    // const videoInfo = useAppSelector((state) => state.videoPlayer.videoInfo);
+    const [isVideoBuffering, setIsVideoBuffering] = useState(true);
 
     const handleContextMenu = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -37,18 +37,8 @@ const VideoPlayer = () => {
 
     const Action = {
         close: () => {
-            // Close the image viewer
-            // You'll need to add this action to your apps slice
-            // dispatch(closeImageViewer())
             dispatch(closeVideoPlayer());
 
-        },
-        size: {
-            isMaximized: false,
-            lastSize: { width: 0, height: 0 },
-            changeSize: () => {
-                // Toggle maximize
-            }
         },
         minimize: () => {
             // Minimize the image viewer
@@ -138,16 +128,26 @@ const VideoPlayer = () => {
                     ref={videoRef}
                     src={videoUrl || ''}
                     className={cn("w-full h-full aspect-video object-contain", !isFullscreen && 'pb-16')}
-                    onClick={togglePlay}
+                    // onClick={togglePlay}
                     playsInline
+                    onWaiting={() => setIsVideoBuffering(true)}
+                    onPlaying={() => setIsVideoBuffering(false)}
+                    autoPlay
                 />
 
                 {/* Overlay for play indicator when paused */}
                 {!isPlaying && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20">
-                        <div className="w-16 h-16 rounded-full bg-purple-500/80 flex items-center justify-center">
-                            <Play onClick={togglePlay} size={32} className="text-white ml-1" />
+                        <div onClick={togglePlay} className="w-16 h-16 cursor-pointer rounded-full bg-purple-500/80 flex items-center justify-center">
+                            <Play size={32} className="text-white  ml-1" />
                         </div>
+                    </div>
+                )}
+
+                {/* Overlay for play indicator when loading */}
+                {isVideoBuffering && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                        <Loader className="animate-spin text-white" size={32} />
                     </div>
                 )}
 
@@ -169,7 +169,7 @@ const VideoPlayer = () => {
                         />
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center pb-2 justify-between">
                         <div className="flex items-center space-x-4">
                             {/* Play/pause button */}
                             <button

@@ -46,6 +46,21 @@ const useVideoPlayer = ({ initialVolume = 1 }: UseVideoPlayerProps = {}) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const controlsTimeout = useRef<NodeJS.Timeout>();
 
+  useEffect(() => {
+    // Reset video player state when videoUrl changes
+    if (videoUrl) {
+      setIsPlaying(false);
+      setProgress(0);
+      setCurrentTime(0);
+      setDuration(0);
+      setVolume(initialVolume);
+      // setIsMuted(false);
+      setPlaybackSpeed(1);
+      setShowControls(true);
+      setIsFullscreen(false);
+    }
+  }, [videoUrl]);
+
   // Initialize video once metadata is loaded
   useEffect(() => {
     const video = videoRef.current;
