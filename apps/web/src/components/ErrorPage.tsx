@@ -1,14 +1,11 @@
 import { Button } from "@/ui/button";
-import { AlertTriangle, Home, RefreshCw } from "lucide-react";
+import { AlertTriangle, RefreshCcw, RefreshCw } from "lucide-react";
 import { FallbackProps } from "react-error-boundary";
 
 
 const ErrorPage = ({ error, resetErrorBoundary }: FallbackProps) => {
     const handleGoHome = () => {
-
-
         window.location.href = "/";
-
     };
 
     const handleRetry = () => {
@@ -55,7 +52,7 @@ const ErrorPage = ({ error, resetErrorBoundary }: FallbackProps) => {
                 <div className=" space-x-3 flex">
                     <Button
                         onClick={handleRetry}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105"
+                        className="w-full justify-center  bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform"
                     >
                         <RefreshCw className="w-4 h-4 mr-2" />
                         Try Again
@@ -63,10 +60,10 @@ const ErrorPage = ({ error, resetErrorBoundary }: FallbackProps) => {
 
                     <Button
                         onClick={handleGoHome}
-                        className="w-full border-gray-300 text-white hover:text-gray-700 hover:bg-gray-50 font-medium py-3 px-6 rounded-lg transition-all duration-200"
+                        className="w-full justify-center text-white hover:text-gray-700 hover:bg-gray-50 font-medium py-3 px-6 rounded-lg transition-all duration-200"
                     >
-                        <Home className="w-4 h-4 mr-2" />
-                        Go to Home
+                        <RefreshCcw className="w-4 h-4 mr-2" />
+                        Refresh
                     </Button>
                 </div>
 

@@ -14,6 +14,10 @@ import planRoute from "./routes/subscription-plan-route";
 import { decodeToken } from "./utils/token";
 
 const app = express();
+
+// trust proxy because the server is behind nginx
+app.set("trust proxy", true);
+
 // Cross Origin Resource Sharing
 app.use(cors(corsOptions));
 

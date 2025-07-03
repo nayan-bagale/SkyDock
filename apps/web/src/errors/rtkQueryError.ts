@@ -91,6 +91,4 @@ export class ErrorHandler extends RtkErrorHandler {
   }
 }
 
-export const HandleError = (error: unknown) => {
-  return new ErrorHandler(error);
-};
+export const HandleError = (error: unknown) => new ErrorHandler(error);
