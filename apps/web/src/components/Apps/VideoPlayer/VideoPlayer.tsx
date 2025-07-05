@@ -145,7 +145,7 @@ const VideoPlayer = () => {
                 )}
 
                 {/* Overlay for play indicator when loading */}
-                {isVideoBuffering && (
+                {isVideoBuffering && videoUrl && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/50">
                         <Loader className="animate-spin text-white" size={32} />
                     </div>

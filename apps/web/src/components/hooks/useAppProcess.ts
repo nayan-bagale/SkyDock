@@ -55,17 +55,17 @@ const useAppProcess = () => {
   const appsMenuState = useAppSelector((state) => state.skydock.appsMenu);
   const notePadState = useAppSelector((state) => state.notePad);
 
-  const focusedApp = useAppSelector((state) => state.apps.focusedApp);
+  // const focusedApp = useAppSelector((state) => state.apps.focusedApp);
 
   const dispatch = useAppDispatch();
 
   const settingsApp = {
     open: useCallback(() => {
       dispatch(settingsProcess(true));
-      if (focusedApp !== AppsT.Settings) {
-        dispatch(setFocusedApp(AppsT.Settings));
-      }
-    }, [focusedApp]),
+      // if (focusedApp !== AppsT.Settings) {
+      dispatch(setFocusedApp(AppsT.Settings));
+      // }
+    }, []),
 
     close: useCallback(() => {
       dispatch(settingsProcess(false));
@@ -83,10 +83,10 @@ const useAppProcess = () => {
   const terminalApp = {
     open: useCallback(() => {
       dispatch(terminalProcess(true));
-      if (focusedApp !== AppsT.Terminal) {
-        dispatch(setFocusedApp(AppsT.Terminal));
-      }
-    }, [focusedApp]),
+      // if (focusedApp !== AppsT.Terminal) {
+      dispatch(setFocusedApp(AppsT.Terminal));
+      // }
+    }, []),
 
     close: useCallback(() => {
       dispatch(terminalProcess(false));
@@ -104,10 +104,10 @@ const useAppProcess = () => {
   const explorerApp = {
     open: useCallback(() => {
       dispatch(explorerProcess(true));
-      if (focusedApp !== AppsT.Explorer) {
-        dispatch(setFocusedApp(AppsT.Explorer));
-      }
-    }, [focusedApp]),
+      // if (focusedApp !== AppsT.Explorer) {
+      dispatch(setFocusedApp(AppsT.Explorer));
+      // }
+    }, []),
     close: useCallback(() => {
       dispatch(explorerProcess(false));
     }, []),
@@ -126,10 +126,10 @@ const useAppProcess = () => {
       if (!musicPlayerState.actions.isProcessOn) {
         dispatch(openMusicPlayer(null));
       }
-      if (focusedApp !== AppsT.MusicPlayer) {
-        dispatch(setFocusedApp(AppsT.MusicPlayer));
-      }
-    }, [focusedApp, musicPlayerState.actions.isProcessOn]),
+      // if (focusedApp !== AppsT.MusicPlayer) {
+      dispatch(setFocusedApp(AppsT.MusicPlayer));
+      // }
+    }, [dispatch, musicPlayerState.actions.isProcessOn]),
     close: useCallback(() => {
       dispatch(closeMusicPlayer());
     }, []),
@@ -148,10 +148,10 @@ const useAppProcess = () => {
       if (!imageViewerState.actions.isProcessOn) {
         dispatch(openImageViewer(null));
       }
-      if (focusedApp !== AppsT.ImageViewer) {
-        dispatch(setFocusedApp(AppsT.ImageViewer));
-      }
-    }, [focusedApp, imageViewerState.actions.isProcessOn]),
+      // if (focusedApp !== AppsT.ImageViewer) {
+      dispatch(setFocusedApp(AppsT.ImageViewer));
+      // }
+    }, [dispatch, imageViewerState.actions.isProcessOn]),
     close: useCallback(() => {
       dispatch(closeImageViewer());
     }, []),
@@ -170,10 +170,10 @@ const useAppProcess = () => {
       if (!videoPlayerState.actions.isProcessOn) {
         dispatch(openVideoPlayer(null));
       }
-      if (focusedApp !== AppsT.VideoPlayer) {
-        dispatch(setFocusedApp(AppsT.VideoPlayer));
-      }
-    }, [focusedApp, videoPlayerState.actions.isProcessOn]),
+      // if (focusedApp !== AppsT.VideoPlayer) {
+      dispatch(setFocusedApp(AppsT.VideoPlayer));
+      // }
+    }, [dispatch, videoPlayerState.actions.isProcessOn]),
     close: useCallback(() => {
       dispatch(closeVideoPlayer());
     }, []),
@@ -192,10 +192,10 @@ const useAppProcess = () => {
       if (!pdfReaderState.actions.isProcessOn) {
         dispatch(openPdfReader(null));
       }
-      if (focusedApp !== AppsT.PdfReader) {
-        dispatch(setFocusedApp(AppsT.PdfReader));
-      }
-    }, [focusedApp, pdfReaderState.actions.isProcessOn]),
+      // if (focusedApp !== AppsT.PdfReader) {
+      dispatch(setFocusedApp(AppsT.PdfReader));
+      // }
+    }, [dispatch, pdfReaderState.actions.isProcessOn]),
     close: useCallback(() => {
       dispatch(closePdfReader());
     }, []),
@@ -227,7 +227,7 @@ const useAppProcess = () => {
         dispatch(setAppsMenuOpen(false));
       },
     };
-  }, [appsMenuState.isLoading, appsMenuState.isOpen]);
+  }, [appsMenuState.isLoading, appsMenuState.isOpen, dispatch]);
 
   const notePadApp = useMemo(() => {
     return {
@@ -235,9 +235,9 @@ const useAppProcess = () => {
         if (!notePadState.actions.isProcessOn) {
           dispatch(openNotePad(null));
         }
-        if (focusedApp !== AppsT.NotePad) {
-          dispatch(setFocusedApp(AppsT.NotePad));
-        }
+        // if (focusedApp !== AppsT.NotePad) {
+        dispatch(setFocusedApp(AppsT.NotePad));
+        // }
       },
       close: () => {
         dispatch(closeNotePad());
@@ -254,8 +254,7 @@ const useAppProcess = () => {
   }, [
     notePadState.actions.isProcessOn,
     notePadState.state.isLoading,
-    focusedApp,
-    // dispatch,
+    dispatch,
   ]);
 
   return {

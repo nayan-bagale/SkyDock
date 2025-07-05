@@ -9,7 +9,7 @@ import { useDebounce, useUnmount } from "react-use";
 export const useDrag = ({
   ref,
   calculateFor = "topLeft",
-  lastPosition = { x: X_POSITION, y: Y_POSITION },
+  lastPosition,
   onChangePosition,
 }: {
   ref: any;
@@ -19,10 +19,38 @@ export const useDrag = ({
 }) => {
   const [dragInfo, setDragInfo] = useState<any>();
   const [finalPosition, setFinalPosition] = useState<{ x: number; y: number }>({
-    x: lastPosition.x,
-    y: lastPosition.y + 24,
+    x: X_POSITION,
+    y: Y_POSITION + 24,
   });
+
   const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    const observe = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.target === ref.current) {
+          const { height, width } = entry.contentRect;
+          setFinalPosition({
+            x: window.innerWidth / 2 - width / 2,
+            y: window.innerHeight / 2 - height / 2 - 100,
+          });
+        }
+      }
+    });
+
+    if (!lastPosition) {
+      observe.observe(ref.current);
+    } else {
+      setFinalPosition(lastPosition);
+    }
+    setTimeout(() => {
+      observe.disconnect();
+    }, 100);
+
+    // return () => {
+    //   clearTimeout(timer);
+    // };
+  }, []);
 
   const updateFinalPosition = useCallback(
     (width: number, height: number, x: number, y: number) => {
