@@ -96,6 +96,9 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
                 return [...prev, item.parent];
             });
             setSelectedItem(null);
+        } else if (!item.isFolder && action === "open") {
+            // if (!selectedItem) return;
+            onSuccess?.(selectedItem as FileT | FolderT);
         }
     };
 
@@ -184,7 +187,7 @@ const FileSaveAndOpenModal: FC<FileSaveAndOpenModalT> = ({
                 folderId: currentFolder,
             });
         } else if (action === "open") {
-            if (!selectedItem) return;
+            // if (!selectedItem) return;
             onSuccess?.(selectedItem as FileT | FolderT);
         } else if (action === "restore") {
             onSuccess?.(explorerItems[currentFolder]);
