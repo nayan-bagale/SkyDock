@@ -7,6 +7,7 @@ import planApi from "./apis/planApis";
 import userAuthApi from "./apis/userAuthApi";
 import aiReducer from "./features/ai/aiSlice";
 import { appsSlice } from "./features/apps/appsSlice";
+import cameraReducer from "./features/camera/cameraSlice";
 import contextMenuReducer from "./features/contextMenu/contextMenuSlice";
 import { controlCenterSlice } from "./features/control-center/controlCenterSlice";
 import imageViewerReducer from "./features/imageViewer/imageViewerSlice";
@@ -35,6 +36,7 @@ export const store = configureStore({
     pdfReader: pdfReaderReducer,
     skydock: skydockReducer,
     notePad: notePadReducer,
+    camera: cameraReducer,
     ai: aiReducer,
 
     [userAuthApi.reducerPath]: userAuthApi.reducer,

@@ -4,6 +4,7 @@ import useAppProcess from "../hooks/useAppProcess";
 import MountUnmountCallback from "../MountUnmountCallback";
 import {
     AppsMenu,
+    Camera,
     Explorer,
     ImageViewer,
     MusicPlayer,
@@ -11,10 +12,9 @@ import {
     PdfReader,
     Settings,
     Terminal,
-    VideoPlayer,
+    VideoPlayer
 } from "./Apps.Lazy";
 import AppsErrorBoundary from "./AppsErrorBoundary";
-import CameraApp from "./Camera/Camera";
 
 const Apps_ = () => {
     const {
@@ -27,11 +27,27 @@ const Apps_ = () => {
         appsMenuSystem,
         pdfReaderApp,
         notePadApp,
+        cameraApp
     } = useAppProcess();
 
     return (
         <>
-            <CameraApp />
+            <AnimatePresence>
+                {cameraApp.isProcessOn && (
+                    <Suspense
+                        fallback={
+                            <MountUnmountCallback
+                                onMount={cameraApp.setLoadingTrue}
+                                onUnmount={cameraApp.setLoadingFalse}
+                            />
+                        }
+                    >
+                        <AppsErrorBoundary app={cameraApp}>
+                            <Camera />
+                        </AppsErrorBoundary>
+                    </Suspense>
+                )}
+            </AnimatePresence>
             <AnimatePresence>
                 {terminalApp.isProcessOn && (
                     <Suspense

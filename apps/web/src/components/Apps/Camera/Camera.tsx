@@ -1,9 +1,12 @@
 import { useDrag } from '@/components/hooks/useDrag';
+import { closeCamera } from '@/redux/features/camera/cameraSlice';
+import { useAppDispatch } from '@/redux/hooks';
 import { Button } from '@/ui/button';
 import CameraCard from '@/ui/Cards/Camera/Camera';
 import { showToast } from '@skydock/ui/toast';
 import { Camera, Square, Video } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useUnmount } from 'react-use';
 
 
 const CameraApp = () => {
@@ -32,14 +35,17 @@ const CameraApp = () => {
         }
     }, []);
 
-    const stopCamera = useCallback(() => {
+    const stopCamera = () => {
+        console.log(videoRef.current)
         if (videoRef.current?.srcObject) {
             const stream = videoRef.current.srcObject as MediaStream;
             stream.getTracks().forEach(track => track.stop());
             videoRef.current.srcObject = null;
             setIsStreaming(false);
         }
-    }, []);
+    };
+
+    useUnmount(stopCamera)
 
     useEffect(() => {
         if (!isStreaming) {
@@ -120,6 +126,8 @@ const CameraApp = () => {
         document.body.removeChild(link);
     }, []);
 
+    const dispatch = useAppDispatch();
+
     const draggableRef = useRef<HTMLDivElement>(null);
     const { position, handleMouseDown } = useDrag({
         ref: draggableRef,
@@ -127,8 +135,7 @@ const CameraApp = () => {
 
     const Action = {
         close: () => {
-            // dispatch(closeVideoPlayer());
-
+            dispatch(closeCamera())
         },
         minimize: () => {
             // Minimize the image viewer

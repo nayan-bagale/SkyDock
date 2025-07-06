@@ -22,6 +22,7 @@ const Dock = () => {
         appsMenuSystem,
         pdfReaderApp,
         notePadApp,
+        cameraApp
     } = useAppProcess();
 
     const systemApps = [
@@ -110,13 +111,23 @@ const Dock = () => {
             active: pdfReaderApp.isProcessOn,
             isLoading: pdfReaderApp.isLoading,
             pin: false,
-        }, {
+        },
+        {
             id: AppsT.NotePad,
             name: "Note Pad",
             Icon: Icons.Notepad,
             fun: notePadApp.open,
             active: notePadApp.isProcessOn,
             isLoading: notePadApp.isLoading,
+            pin: false,
+        },
+        {
+            id: AppsT.Camera,
+            name: "Camera",
+            Icon: Icons.Camera,
+            fun: cameraApp.open,
+            active: cameraApp.isProcessOn, // Camera is not a process, so we set it to false
+            isLoading: cameraApp.isLoading, // Camera does not have a loading state
             pin: false,
         }
 

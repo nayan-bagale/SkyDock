@@ -1,5 +1,10 @@
 import { setFocusedApp } from "@/redux/features/apps/appsSlice";
 import {
+  closeCamera,
+  openCamera,
+  setCameraLoading,
+} from "@/redux/features/camera/cameraSlice";
+import {
   explorerProcess,
   setExplorerLoading,
 } from "@/redux/features/explorer/explorerSlice";
@@ -54,6 +59,7 @@ const useAppProcess = () => {
   const pdfReaderState = useAppSelector((state) => state.pdfReader);
   const appsMenuState = useAppSelector((state) => state.skydock.appsMenu);
   const notePadState = useAppSelector((state) => state.notePad);
+  const cameraState = useAppSelector((state) => state.camera);
 
   // const focusedApp = useAppSelector((state) => state.apps.focusedApp);
 
@@ -229,15 +235,35 @@ const useAppProcess = () => {
     };
   }, [appsMenuState.isLoading, appsMenuState.isOpen, dispatch]);
 
+  const cameraApp = useMemo(() => {
+    return {
+      isProcessOn: cameraState.actions.isProcessOn,
+      isLoading: cameraState.state.isLoading,
+      open: () => {
+        if (!cameraState.actions.isProcessOn) {
+          dispatch(openCamera());
+        }
+        dispatch(setFocusedApp(AppsT.Camera));
+      },
+      close: () => {
+        dispatch(closeCamera());
+      },
+      setLoadingTrue: () => {
+        dispatch(setCameraLoading(true));
+      },
+      setLoadingFalse: () => {
+        dispatch(setCameraLoading(false));
+      },
+    };
+  }, [cameraState.actions.isProcessOn, cameraState.state.isLoading, dispatch]);
+
   const notePadApp = useMemo(() => {
     return {
       open: () => {
         if (!notePadState.actions.isProcessOn) {
           dispatch(openNotePad(null));
         }
-        // if (focusedApp !== AppsT.NotePad) {
         dispatch(setFocusedApp(AppsT.NotePad));
-        // }
       },
       close: () => {
         dispatch(closeNotePad());
@@ -267,6 +293,7 @@ const useAppProcess = () => {
     appsMenuSystem,
     pdfReaderApp,
     notePadApp,
+    cameraApp,
   };
 };
 

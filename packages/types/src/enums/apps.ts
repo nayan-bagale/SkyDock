@@ -9,6 +9,7 @@ export enum AppsT {
   PdfReader = "PdfReader",
   Trash = "Trash",
   NotePad = "NotePad",
+  Camera = "Camera",
 }
 
 export const APPS_TEXT: Record<AppsT, string> = {
@@ -22,4 +23,5 @@ export const APPS_TEXT: Record<AppsT, string> = {
   [AppsT.PdfReader]: "PDF Reader",
   [AppsT.Trash]: "Trash",
   [AppsT.NotePad]: "NotePad",
+  [AppsT.Camera]: "Camera",
 } as const;

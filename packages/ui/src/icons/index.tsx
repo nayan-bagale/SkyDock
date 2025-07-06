@@ -1,6 +1,7 @@
 import { cn } from "../utils";
 
 import account_svg from './assests/account-avatar-multimedia-svgrepo-com.svg';
+import camera_svg from './assests/camera-svgrepo-com.svg';
 import logo_svg from './assests/cat-svgrepo-com.svg';
 import paste_svg from './assests/clipboard-svgrepo-com.svg';
 import cloud_svg from './assests/cloud-storage-upload-up-arrow-svgrepo-com.svg';
@@ -134,5 +135,6 @@ export const Icons = {
   Document: ({ className }: { className: string }) => $({ svg: document_svg, name: 'document', className }),
   Play_Square: ({ className }: { className: string }) => $({ svg: play_square_svg, name: 'play_square', className }),
   Play_Button: ({ className }: { className: string }) => $({ svg: play_button_svg, name: 'play_button', className }),
+  Camera: ({ className }: { className: string }) => $({ svg: camera_svg, name: 'camera', className }),
 }
 

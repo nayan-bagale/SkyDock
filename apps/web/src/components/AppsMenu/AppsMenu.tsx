@@ -25,20 +25,21 @@ const AppsMenu = () => {
         videoPlayerApp,
         pdfReaderApp,
         notePadApp,
+        cameraApp,
     } = useAppProcess();
 
     const { signOutFunction } = useSkydockSystem();
 
     const pinnedApps = [
+        { id: 9, name: "Camera", Icon: Icons.Camera, open: cameraApp.open },
+        { id: 5, name: "Terminal", Icon: Icons.Terminal, open: terminalApp.open },
+        { id: 4, name: "Settings", Icon: Icons.Settings2, open: settingsApp.open },
         { id: 1, name: "Explorer", Icon: Icons.Folder, open: explorerApp.open },
+        { id: 8, name: "Note Pad", Icon: Icons.Notepad, open: notePadApp.open },
+        { id: 7, name: "PDF Reader", Icon: Icons.PDF, open: pdfReaderApp.open },
         { id: 2, name: "Image Viewer", Icon: Icons.Image, open: imageViewerApp.open },
         { id: 3, name: "Music Player", Icon: Icons.Music, open: musicPlayerApp.open },
-        { id: 4, name: "Settings", Icon: Icons.Settings2, open: settingsApp.open },
-        { id: 5, name: "Terminal", Icon: Icons.Terminal, open: terminalApp.open },
         { id: 6, name: "Video Player", Icon: Icons.Video, open: videoPlayerApp.open },
-        { id: 7, name: "PDF Reader", Icon: Icons.PDF, open: pdfReaderApp.open },
-        { id: 8, name: "Note Pad", Icon: Icons.Notepad, open: notePadApp.open },
-
     ];
 
     useOnClickOutside(ref, () => {

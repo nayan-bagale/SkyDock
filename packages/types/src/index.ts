@@ -5,6 +5,7 @@ export type * from "./skydock";
 
 export type * from "./ai";
 
+export type * from "./apps/camera";
 export type * from "./apps/image-viewer";
 export type * from "./apps/music-player";
 export type * from "./apps/note-pad";

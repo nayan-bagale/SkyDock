@@ -8,6 +8,7 @@ export const MusicPlayer = lazy(() => import('@/components/Apps/MusicPlayer/Musi
 export const VideoPlayer = lazy(() => import('@/components/Apps/VideoPlayer/VideoPlayer'))
 export const PdfReader = lazy(() => import('@/components/Apps/PdfReader/PdfReader'))
 export const NotePad = lazy(() => import('@/components/Apps/NotePad/NotePad'))
+export const Camera = lazy(() => import('@/components/Apps/Camera/Camera'))
 
 // System Elements
 export const AppsMenu = lazy(() => import('@/components/AppsMenu/AppsMenu'))
