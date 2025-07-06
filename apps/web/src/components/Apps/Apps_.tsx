@@ -14,6 +14,7 @@ import {
     VideoPlayer,
 } from "./Apps.Lazy";
 import AppsErrorBoundary from "./AppsErrorBoundary";
+import CameraApp from "./Camera/Camera";
 
 const Apps_ = () => {
     const {
@@ -30,6 +31,7 @@ const Apps_ = () => {
 
     return (
         <>
+            <CameraApp />
             <AnimatePresence>
                 {terminalApp.isProcessOn && (
                     <Suspense
