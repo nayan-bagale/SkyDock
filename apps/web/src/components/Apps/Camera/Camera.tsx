@@ -1,12 +1,14 @@
+import { useBrowserAPI } from '@/components/ContextApi/BrowserApi';
+import useChangeAppFocus from '@/components/hooks/useChangeAppFocus';
 import { useDrag } from '@/components/hooks/useDrag';
 import { closeCamera } from '@/redux/features/camera/cameraSlice';
 import { useAppDispatch } from '@/redux/hooks';
 import { Button } from '@/ui/button';
 import CameraCard from '@/ui/Cards/Camera/Camera';
+import { AppsT } from '@skydock/types/enums';
 import { showToast } from '@skydock/ui/toast';
-import { Camera, Square, Video } from 'lucide-react';
+import { Camera, CameraOff, Square, Video } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useUnmount } from 'react-use';
 
 
 const CameraApp = () => {
@@ -17,23 +19,8 @@ const CameraApp = () => {
     const [isRecording, setIsRecording] = useState(false);
     const [capturedMedia, setCapturedMedia] = useState<string[]>([]);
     const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
-
-    const startCamera = useCallback(async () => {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: { width: 1280, height: 720 },
-                audio: true
-            });
-
-            if (videoRef.current) {
-                videoRef.current.srcObject = stream;
-                setIsStreaming(true);
-            }
-        } catch (error) {
-            showToast('Unable to access camera. Please check permissions.', 'error')
-
-        }
-    }, []);
+    const { handleAppFocus } = useChangeAppFocus(AppsT.Camera);
+    const { camera } = useBrowserAPI();
 
     const stopCamera = () => {
         console.log(videoRef.current)
@@ -45,19 +32,39 @@ const CameraApp = () => {
         }
     };
 
-    useUnmount(stopCamera)
+    // useEffect(() => {
+    //     // Start the camera when the component mounts
+    //     // if (camera.stream) {
+    //     //     videoRef.current!.srcObject = camera.stream;
+    //     // } else {
+    //     camera.start();
+    //     // }
 
+    //     // Cleanup function to stop the camera when the component unmounts
+    //     // return () => {
+    //     //     camera.stop();
+    //     //     // if (videoRef.current) {
+    //     //     //     videoRef.current.srcObject = null;
+    //     //     // }
+    //     // };
+    // }, [])
+
+    // Attach stream to video when stream becomes available
     useEffect(() => {
-        if (!isStreaming) {
-            startCamera();
+        if (videoRef.current && camera.stream) {
+            videoRef.current.srcObject = camera.stream;
         } else {
-            stopCamera();
+            console.error('Camera stream is not available');
+            camera.start();
         }
+    }, [camera.stream]);
 
-        return () => {
-            stopCamera();
-        };
-    }, []);
+    // useEffect(() => {
+    //     startCamera();
+    //     return () => {
+    //         stopCamera();
+    //     };
+    // }, []);
 
     const capturePhoto = useCallback(() => {
         if (!videoRef.current || !canvasRef.current) return;
@@ -159,31 +166,12 @@ const CameraApp = () => {
             isFocused={true}
             onMouseDown={handleMouseDown}
             action={Action}
-            onMouseDownCard={() => { }}
+            onMouseDownCard={handleAppFocus}
             theme={null}
             title="Camera App"
             onContextMenu={handleContextMenu}
         >
-            {/* <div className="flex absolute h-full inset-0 backdrop-blur justify-center gap-4">
-                {!isStreaming ? (
-                    <Button onClick={startCamera} size="lg">
-                        <Camera className="mr-2" />
-                        Start Camera
-                    </Button>
-                ) : (
-                    <Button onClick={stopCamera} variant="destructive" size="lg">
-                        <Square className="mr-2" />
-                        Stop Camera
-                    </Button>
-                )}
-            </div> */}
             <div className=" relative pt-0.5 pb-7 h-full w-full ">
-
-                {/* <div className="space-y-4 relative"> */}
-
-
-                {/* {isStreaming && ( */}
-                {/* <div className="relative overflow-hidden"> */}
                 <video
                     ref={videoRef}
                     autoPlay
@@ -206,43 +194,12 @@ const CameraApp = () => {
                             <Square />
                         </Button>
                     )}
-                </div>
-                {/* )} */}
-                {/* </div> */}
-            </div>
+                    <Button className='p-2 rounded-full' onClick={stopCamera} intent={'secondary'} size={'icon'}>
+                        <CameraOff />
+                    </Button>
 
-            {/* {capturedMedia.length > 0 && (
-                    <div className="p-6 rounded-lg border bg-card text-card-foreground shadow-sm">
-                        <h2 className="text-2xl font-bold mb-4">Captured Media</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {capturedMedia.map((mediaUrl, index) => (
-                                <div key={index} className="space-y-2">
-                                    {mediaUrl.startsWith('data:image') ? (
-                                        <img
-                                            src={mediaUrl}
-                                            alt={`Captured photo ${index + 1}`}
-                                            className="w-full h-48 object-cover rounded-lg"
-                                        />
-                                    ) : (
-                                        <video
-                                            src={mediaUrl}
-                                            controls
-                                            className="w-full h-48 object-cover rounded-lg"
-                                        />
-                                    )}
-                                    <Button
-                                        onClick={() => downloadMedia(mediaUrl, index)}
-                                        size="sm"
-                                        className="w-full"
-                                    >
-                                        <Download className="mr-2 h-4 w-4" />
-                                        Download
-                                    </Button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )} */}
+                </div>
+            </div>
 
             <canvas ref={canvasRef} style={{ display: 'none' }} />
         </CameraCard>

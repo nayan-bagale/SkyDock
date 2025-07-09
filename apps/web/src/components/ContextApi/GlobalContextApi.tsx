@@ -1,16 +1,19 @@
 import { FC, PropsWithChildren } from 'react'
+import { BrowserAPIProvider } from './BrowserApi'
 import { ConfirmModalProvider } from './ConfirmModal'
 import { FileSaveAndOpenModalProvider } from './FileSaveAndOpenModal'
 
 const GlobalContextApi: FC<PropsWithChildren> = ({ children }) => {
     return (
-        <ConfirmModalProvider>
-            <FileSaveAndOpenModalProvider>
-                {/* <AIContextProvider> */}
-                {children}
-                {/* </AIContextProvider> */}
-            </FileSaveAndOpenModalProvider>
-        </ConfirmModalProvider>
+        <BrowserAPIProvider>
+            <ConfirmModalProvider>
+                <FileSaveAndOpenModalProvider>
+                    {/* <AIContextProvider> */}
+                    {children}
+                    {/* </AIContextProvider> */}
+                </FileSaveAndOpenModalProvider>
+            </ConfirmModalProvider>
+        </BrowserAPIProvider>
     )
 }
 
