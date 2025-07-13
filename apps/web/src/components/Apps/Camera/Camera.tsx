@@ -173,7 +173,8 @@ const CameraApp = () => {
         >
             <div className=" relative pt-0.5 pb-7 h-full w-full ">
                 <video
-                    ref={videoRef}
+                    ref={camera.streamRef}
+                    // src={camera.stream ? URL.createObjectURL(camera.stream) : ''}
                     autoPlay
                     playsInline
                     muted
