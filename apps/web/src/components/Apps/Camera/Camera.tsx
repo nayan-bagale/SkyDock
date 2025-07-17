@@ -1,70 +1,35 @@
 import { useBrowserAPI } from '@/components/ContextApi/BrowserApi';
 import useChangeAppFocus from '@/components/hooks/useChangeAppFocus';
 import { useDrag } from '@/components/hooks/useDrag';
+import { useEffectOnceSafe } from '@/components/hooks/useEffectOnceSafe';
 import { closeCamera } from '@/redux/features/camera/cameraSlice';
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Button } from '@/ui/button';
 import CameraCard from '@/ui/Cards/Camera/Camera';
 import { AppsT } from '@skydock/types/enums';
 import { showToast } from '@skydock/ui/toast';
-import { Camera, CameraOff, Square, Video } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Camera, Square, Video, Webcam } from 'lucide-react';
+import { useCallback, useRef, useState } from 'react';
 
 
 const CameraApp = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-    const [isStreaming, setIsStreaming] = useState(false);
     const [isRecording, setIsRecording] = useState(false);
     const [capturedMedia, setCapturedMedia] = useState<string[]>([]);
     const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
     const { handleAppFocus } = useChangeAppFocus(AppsT.Camera);
     const { camera } = useBrowserAPI();
+    const camerState = useAppSelector((state) => state.skydock.browserApis.camera);
 
-    const stopCamera = () => {
-        console.log(videoRef.current)
-        if (videoRef.current?.srcObject) {
-            const stream = videoRef.current.srcObject as MediaStream;
-            stream.getTracks().forEach(track => track.stop());
-            videoRef.current.srcObject = null;
-            setIsStreaming(false);
-        }
-    };
-
-    // useEffect(() => {
-    //     // Start the camera when the component mounts
-    //     // if (camera.stream) {
-    //     //     videoRef.current!.srcObject = camera.stream;
-    //     // } else {
-    //     camera.start();
-    //     // }
-
-    //     // Cleanup function to stop the camera when the component unmounts
-    //     // return () => {
-    //     //     camera.stop();
-    //     //     // if (videoRef.current) {
-    //     //     //     videoRef.current.srcObject = null;
-    //     //     // }
-    //     // };
-    // }, [])
-
-    // Attach stream to video when stream becomes available
-    useEffect(() => {
-        if (videoRef.current && camera.stream) {
-            videoRef.current.srcObject = camera.stream;
-        } else {
-            console.error('Camera stream is not available');
-            camera.start();
-        }
-    }, [camera.stream]);
-
-    // useEffect(() => {
-    //     startCamera();
-    //     return () => {
-    //         stopCamera();
-    //     };
-    // }, []);
+    useEffectOnceSafe(() => {
+        camera.start();
+        console.log('starting camera')
+        // return () => {
+        //     camera.stop();
+        // };
+    });
 
     const capturePhoto = useCallback(() => {
         if (!videoRef.current || !canvasRef.current) return;
@@ -142,7 +107,8 @@ const CameraApp = () => {
 
     const Action = {
         close: () => {
-            dispatch(closeCamera())
+            dispatch(closeCamera());
+            camera.stop();
         },
         minimize: () => {
             // Minimize the image viewer
@@ -171,16 +137,33 @@ const CameraApp = () => {
             title="Camera App"
             onContextMenu={handleContextMenu}
         >
+            {camerState?.permission !== 'Allowed' && (<div className='relative pt-0.5 pb-7 h-full w-full'>
+                <div className='absolute gap-4 inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 z-10'>
+                    <div className='relative'>
+                        <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center animate-pulse">
+                            <Webcam className="w-10 h-10 text-red-500" />
+                        </div>
+                        <div className="absolute inset-0 w-20 h-20 bg-red-200 rounded-full animate-ping opacity-20"></div>
+                    </div>
+                    <div className='inset-0 flex flex-col gap-2 items-center justify-center z-20'>
+
+                        {camerState.permission === "Prompt" ? <>
+                            <p className='text-white text-lg font-semibold'>Camera Permission Required</p>
+                            <Button intent={'secondary'} size={'md'} onClick={() => camera.start()}>
+                                Grant Permission
+                            </Button>
+                        </> : <p className='text-white text-lg font-semibold'>Enable camera permission from browser settings</p>}
+                    </div>
+                </div>
+            </div>)}
             <div className=" relative pt-0.5 pb-7 h-full w-full ">
                 <video
                     ref={camera.streamRef}
-                    // src={camera.stream ? URL.createObjectURL(camera.stream) : ''}
                     autoPlay
                     playsInline
                     muted
                     className="w-full object-fit h-full"
                 />
-                {/* </div> */}
                 <div className="flex w-full absolute bottom-9 justify-center gap-4">
                     <Button className='p-2 rounded-full' onClick={capturePhoto} intent={'secondary'} size={'icon'}>
                         <Camera />
@@ -195,12 +178,9 @@ const CameraApp = () => {
                             <Square />
                         </Button>
                     )}
-                    <Button className='p-2 rounded-full' onClick={stopCamera} intent={'secondary'} size={'icon'}>
-                        <CameraOff />
-                    </Button>
-
                 </div>
             </div>
+
 
             <canvas ref={canvasRef} style={{ display: 'none' }} />
         </CameraCard>

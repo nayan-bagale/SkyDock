@@ -9,3 +9,5 @@ export * from "./storage";
 export * from "./explorer";
 
 export * from "./supportedMimeTypes";
+
+export * from "./browserApi";

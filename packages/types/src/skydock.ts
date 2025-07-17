@@ -1,4 +1,5 @@
 import { AppsT } from "./enums";
+import { BrowserApis } from "./enums/browserApi";
 import { ExplorerItemT } from "./explorer-items";
 
 export interface SkydockT {
@@ -9,6 +10,7 @@ export interface SkydockT {
     isLoading: boolean;
     isProcessOn: boolean;
   };
+  browserApis: BrowserApis;
 }
 
 export type FocusedAppsT = Exclude<keyof typeof AppsT, "AppsMenu"> | "";

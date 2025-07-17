@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { SkydockT } from "@skydock/types";
 
-const intialState = {
+const intialState: SkydockT = {
   isLoading: true,
   isError: false,
   appsMenu: {
@@ -9,7 +9,13 @@ const intialState = {
     isLoading: false,
     isProcessOn: false,
   },
-} as SkydockT;
+  browserApis: {
+    camera: {
+      permission: "Prompt",
+      error: undefined,
+    },
+  },
+};
 
 export const skydockSlice = createSlice({
   name: "skydock",
@@ -27,6 +33,13 @@ export const skydockSlice = createSlice({
     setAppsMenuLoading: (state, action: PayloadAction<boolean>) => {
       state.appsMenu.isLoading = action.payload;
     },
+
+    setCameraPermission: (
+      state,
+      action: PayloadAction<"Allowed" | "Denied" | "Prompt" | undefined>
+    ) => {
+      state.browserApis.camera.permission = action.payload;
+    },
   },
 });
 
@@ -35,6 +48,7 @@ export const {
   setSkydockLoading,
   setAppsMenuOpen,
   setAppsMenuLoading,
+  setCameraPermission,
 } = skydockSlice.actions;
 
 export default skydockSlice.reducer;
