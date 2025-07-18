@@ -3,4 +3,6 @@ export const ExplorerTabs = [
   "trash",
   "desktop",
   "documents",
+  "pictures",
+  "videos",
 ] as const;

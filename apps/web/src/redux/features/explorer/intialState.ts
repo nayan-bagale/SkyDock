@@ -34,6 +34,28 @@ const defaultExplorerItems = {
     },
     children: [],
   },
+  pictures: {
+    id: "pictures",
+    isFolder: true,
+    name: "Pictures",
+    parent: "",
+    details: {
+      size: 0,
+      lastModified: "2023-10-01T12:00:00Z",
+    },
+    children: [],
+  },
+  videos: {
+    id: "videos",
+    isFolder: true,
+    name: "Videos",
+    parent: "",
+    details: {
+      size: 0,
+      lastModified: "2023-10-01T12:00:00Z",
+    },
+    children: [],
+  },
   trash: {
     id: "trash",
     isFolder: true,

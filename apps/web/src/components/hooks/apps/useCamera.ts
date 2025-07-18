@@ -26,7 +26,6 @@ const useCamera = () => {
       setValue("Allowed");
     } catch (err) {
       if (err instanceof Error) {
-        setError(err.message);
         if (
           err.message
             .toLowerCase()
@@ -44,7 +43,7 @@ const useCamera = () => {
           dispatch(setCameraPermission("Prompt"));
           setValue("Prompt");
         } else {
-          setError("Could not access camera");
+          setError(err.message);
         }
       }
       console.log(err);

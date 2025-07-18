@@ -56,6 +56,8 @@ const Explorer = () => {
             // { name: 'Trash', id: 'trash', Icon: <Icons.Trash className="w-5 h-5" /> },
             { name: 'Desktop', id: 'desktop', Icon: <Icons.Folder className="w-5 h-5" /> },
             { name: "Documents", id: 'documents', Icon: <Icons.Document className="w-5 h-5" /> },
+            { name: "Pictures", id: 'pictures', Icon: <Icons.Image className="w-5 h-5" /> },
+            { name: "Videos", id: 'videos', Icon: <Icons.Video className="w-5 h-5" /> },
         ]
     }, [])
 

@@ -22,7 +22,7 @@ export function useBlobFileGenerator(): FileGenerationResult {
 
   const generateFile = ({ name, content, type }: FileInput) => {
     try {
-      let blob: Blob;
+      let blob: Blob | undefined;
       let mimeType = SupportedMimeTypes.Text;
 
       switch (type) {
@@ -51,12 +51,58 @@ export function useBlobFileGenerator(): FileGenerationResult {
           mimeType = SupportedMimeTypes.CSV;
           break;
         }
+        case "jpg":
+        case "jpeg":
+        case "png": {
+          switch (type) {
+            case "jpg":
+              mimeType = SupportedMimeTypes.ImageJpg;
+              break;
+            case "jpeg":
+              mimeType = SupportedMimeTypes.ImageJpeg;
+              break;
+            case "png":
+              mimeType = SupportedMimeTypes.ImagePng;
+              break;
+          }
+
+          // Support both Blob and base64 (data URL)
+          if (typeof content === "string" && content.startsWith("data:")) {
+            // Convert base64 to Blob
+            const byteString = atob(content.split(",")[1]);
+            const ab = new ArrayBuffer(byteString.length);
+            const ia = new Uint8Array(ab);
+            for (let i = 0; i < byteString.length; i++) {
+              ia[i] = byteString.charCodeAt(i);
+            }
+            blob = new Blob([ab], { type: mimeType });
+          } else if (content instanceof Blob) {
+            blob = content;
+          } else {
+            throw new Error(
+              "Invalid content format for image. Must be base64 or Blob."
+            );
+          }
+          break;
+        }
+
+        case "webm": {
+          mimeType = SupportedMimeTypes.VideoWebm;
+          if (typeof content === "object") {
+            blob = new Blob(content, { type: mimeType });
+          }
+          break;
+        }
 
         default:
           throw new Error(`Unsupported file type: ${type}`);
       }
 
       const fileName = name.endsWith(`.${type}`) ? name : `${name}.${type}`;
+
+      if (!blob) {
+        throw new Error("Failed to generate file blob.");
+      }
 
       const fileWithMeta = new File([blob], fileName, {
         type: mimeType,
@@ -68,6 +114,7 @@ export function useBlobFileGenerator(): FileGenerationResult {
       console.error("Error generating file:", err);
       showToast("Error generating file", "error");
       setFile(null);
+      setError(err?.message ?? "Unknown error");
       return null;
     }
   };

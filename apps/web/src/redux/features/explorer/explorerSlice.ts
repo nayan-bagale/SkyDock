@@ -8,7 +8,14 @@ export const explorerSlice = createSlice({
   initialState,
   reducers: {
     addItem: (state, action) => {
-      const drives: ExplorerT["activeTab"][] = ["skydrive", "desktop", "trash"];
+      const drives: ExplorerT["activeTab"][] = [
+        "skydrive",
+        "desktop",
+        "trash",
+        "documents",
+        "pictures",
+        "videos",
+      ];
       if (drives.includes(action.payload.parent)) {
         const currentDriveItem = state.explorerItems[
           action.payload.parent

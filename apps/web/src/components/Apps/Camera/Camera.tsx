@@ -1,13 +1,15 @@
 import { useBrowserAPI } from '@/components/ContextApi/BrowserApi';
+import { useBlobFileGenerator } from '@/components/hooks/useBlobFileGenerator';
 import useChangeAppFocus from '@/components/hooks/useChangeAppFocus';
 import { useDrag } from '@/components/hooks/useDrag';
 import { useEffectOnceSafe } from '@/components/hooks/useEffectOnceSafe';
+import useFileUploadsAndUpdateState from '@/components/hooks/useFileUploadsAndUpdateState';
 import { closeCamera } from '@/redux/features/camera/cameraSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Button } from '@/ui/button';
 import CameraCard from '@/ui/Cards/Camera/Camera';
+import { fileArrayGenerator } from '@/utils/file-array-generator';
 import { AppsT } from '@skydock/types/enums';
-import { showToast } from '@skydock/ui/toast';
 import { Camera, Square, Video, Webcam } from 'lucide-react';
 import { useCallback, useRef, useState } from 'react';
 
@@ -18,10 +20,14 @@ const CameraApp = () => {
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const [isRecording, setIsRecording] = useState(false);
     const [capturedMedia, setCapturedMedia] = useState<string[]>([]);
-    const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
+    // const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
     const { handleAppFocus } = useChangeAppFocus(AppsT.Camera);
     const { camera } = useBrowserAPI();
     const camerState = useAppSelector((state) => state.skydock.browserApis.camera);
+
+    const { generateFile } = useBlobFileGenerator();
+
+    const [uploadFile] = useFileUploadsAndUpdateState();
 
     useEffectOnceSafe(() => {
         camera.start();
@@ -31,72 +37,94 @@ const CameraApp = () => {
         // };
     });
 
-    const capturePhoto = useCallback(() => {
-        if (!videoRef.current || !canvasRef.current) return;
+    const capturePhoto = useCallback(async () => {
+        if (!camera.streamRef.current || !canvasRef.current) return;
 
         const canvas = canvasRef.current;
-        const video = videoRef.current;
+        const video = camera.streamRef.current;
         const context = canvas.getContext('2d');
 
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
 
         if (context) {
+            // Flip canvas horizontally
+            context.translate(canvas.width, 0);
+            context.scale(-1, 1);
+
+            // Draw the mirrored image
             context.drawImage(video, 0, 0);
-            const photoUrl = canvas.toDataURL('image/jpeg', 0.9);
+            const photoUrl = canvas.toDataURL('image/jpg', 0.9);
+            // const file = dataURLToFile(photoUrl, `photo-${Date.now()}.jpg`);
+            const file = generateFile({
+                content: photoUrl,
+                name: `photo-${Date.now()}`,
+                type: 'jpg',
+            })
+            if (file) {
+                await uploadFile(fileArrayGenerator([file], 'pictures'));
+                // showToast('Photo successfully saved in pictures.', 'success')
+
+            }
             setCapturedMedia(prev => [...prev, photoUrl]);
 
-            showToast('Photo saved successfully!', 'success')
+            // Reset transform so future drawings aren’t flipped
+            context.setTransform(1, 0, 0, 1, 0, 0);
         }
-    }, []);
+    }, [camera.streamRef, generateFile, uploadFile]);
 
-    const startRecording = useCallback(() => {
-        if (!videoRef.current?.srcObject) return;
+    const startRecording = useCallback(async () => {
+        if (!camera.streamRef.current?.srcObject) return;
 
-        const stream = videoRef.current.srcObject as MediaStream;
+        const stream = camera.streamRef.current.srcObject as MediaStream;
         const mediaRecorder = new MediaRecorder(stream, {
             mimeType: 'video/webm;codecs=vp9'
         });
 
         mediaRecorderRef.current = mediaRecorder;
-        setRecordedChunks([]);
+        let recordedChunks: Blob[] = [];
 
         mediaRecorder.ondataavailable = (event) => {
             if (event.data.size > 0) {
-                setRecordedChunks(prev => [...prev, event.data]);
+                recordedChunks.push(event.data);
             }
         };
 
         mediaRecorder.onstop = () => {
-            const blob = new Blob(recordedChunks, { type: 'video/webm' });
-            const videoUrl = URL.createObjectURL(blob);
-            setCapturedMedia(prev => [...prev, videoUrl]);
-
-            showToast('Video saved successfully', 'success')
-
+            const file = generateFile({
+                content: recordedChunks,
+                name: `video-${Date.now()}`,
+                type: 'webm',
+            })
+            if (file) {
+                uploadFile(fileArrayGenerator([file], 'videos'));
+                recordedChunks = [];
+            }
         };
-
         mediaRecorder.start();
         setIsRecording(true);
-    }, [recordedChunks]);
+    }, [camera.streamRef, generateFile, uploadFile]);
 
     const stopRecording = useCallback(() => {
-        if (mediaRecorderRef.current && isRecording) {
-            mediaRecorderRef.current.stop();
-            setIsRecording(false);
-        }
+        setIsRecording(false);
+        setTimeout(() => {
+            if (mediaRecorderRef.current && isRecording) {
+                mediaRecorderRef.current.requestData();
+                mediaRecorderRef.current.stop();
+            }
+        }, 500);
     }, [isRecording]);
 
-    const downloadMedia = useCallback((mediaUrl: string, index: number) => {
-        const link = document.createElement('a');
-        link.href = mediaUrl;
-        link.download = mediaUrl.startsWith('data:image')
-            ? `photo-${index + 1}.jpg`
-            : `video-${index + 1}.webm`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }, []);
+    // const downloadMedia = useCallback((mediaUrl: string, index: number) => {
+    //     const link = document.createElement('a');
+    //     link.href = mediaUrl;
+    //     link.download = mediaUrl.startsWith('data:image')
+    //         ? `photo-${index + 1}.jpg`
+    //         : `video-${index + 1}.webm`;
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    // }, []);
 
     const dispatch = useAppDispatch();
 
@@ -162,7 +190,8 @@ const CameraApp = () => {
                     autoPlay
                     playsInline
                     muted
-                    className="w-full object-fit h-full"
+
+                    className="w-full object-fit h-full -scale-x-100"
                 />
                 <div className="flex w-full absolute bottom-9 justify-center gap-4">
                     <Button className='p-2 rounded-full' onClick={capturePhoto} intent={'secondary'} size={'icon'}>
@@ -180,9 +209,7 @@ const CameraApp = () => {
                     )}
                 </div>
             </div>
-
-
-            <canvas ref={canvasRef} style={{ display: 'none' }} />
+            <canvas className='absolute top-0 h-24 ' ref={canvasRef} style={{ display: 'block' }} />
         </CameraCard>
     );
 };
