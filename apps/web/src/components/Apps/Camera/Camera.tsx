@@ -14,6 +14,7 @@ import { AppsT, StorageLimit } from '@skydock/types/enums';
 import { showToast } from '@skydock/ui/toast';
 import { Camera, Database, Square, Video, Webcam } from 'lucide-react';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import fixWebmDuration from 'webm-duration-fix';
 
 
 const CameraApp = () => {
@@ -31,6 +32,9 @@ const CameraApp = () => {
         const usedStorage = state.auth.user?.usedStorage || 0;
         return totalStorage - usedStorage;
     });
+    const [recordTime, setRecordTime] = useState(0); // in seconds
+    const timerRef = useRef<NodeJS.Timeout | null>(null);
+
 
 
     const { generateFile } = useBlobFileGenerator();
@@ -137,7 +141,7 @@ const CameraApp = () => {
             }
         };
 
-        mediaRecorder.onstop = () => {
+        mediaRecorder.onstop = async () => {
             cancelAnimationFrame(animationFrameId);
 
             if (totalSize >= availabeStorage) {
@@ -159,8 +163,11 @@ const CameraApp = () => {
             }
 
 
+            const fixedBlob = await fixWebmDuration(new Blob(recordedChunks, { type: 'video/webm' }));
+
+
             const file = generateFile({
-                content: recordedChunks,
+                content: [fixedBlob],
                 name: `video-${Date.now()}`,
                 type: 'webm',
             });
@@ -173,6 +180,11 @@ const CameraApp = () => {
         };
 
         mediaRecorder.start(1000);
+
+        setRecordTime(0);
+        timerRef.current = setInterval(() => {
+            setRecordTime(prev => prev + 1);
+        }, 1000);
         setIsRecording(true);
     }, [availabeStorage, camera.streamRef, generateFile, uploadFile]);
 
@@ -183,6 +195,10 @@ const CameraApp = () => {
             if (mediaRecorderRef.current && isRecording) {
                 mediaRecorderRef.current.requestData();
                 mediaRecorderRef.current.stop();
+            }
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+                timerRef.current = null;
             }
         }, 500);
     }, [isRecording]);
@@ -285,9 +301,9 @@ const CameraApp = () => {
                         </div>) :
 
                         <div className="flex w-full absolute bottom-9 justify-center gap-4">
-                            <Button className='p-2 rounded-full' disabled={disabledButtons} onClick={capturePhoto} intent={'secondary'} size={'icon'}>
+                            {!isRecording && <Button className='p-2 rounded-full' disabled={disabledButtons || isRecording} onClick={capturePhoto} intent={'secondary'} size={'icon'}>
                                 <Camera />
-                            </Button>
+                            </Button>}
 
                             {!isRecording ? (
                                 <Button className='p-2 rounded-full' disabled={disabledButtons} onClick={startRecording} intent={'secondary'} size={'icon'}>
@@ -297,6 +313,11 @@ const CameraApp = () => {
                                 <Button className='p-2 bg-red-600 text-white rounded-full' disabled={disabledButtons} onClick={stopRecording} intent={'destructive'} size={'icon'}>
                                     <Square />
                                 </Button>
+                            )}
+                            {isRecording && (
+                                <div className='text-white text-sm font-semibold'>
+                                    {Math.floor(recordTime / 60)}:{('0' + (recordTime % 60)).slice(-2)}
+                                </div>
                             )}
                         </div>
                     )

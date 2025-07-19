@@ -3,6 +3,7 @@ import { nanoid } from "@reduxjs/toolkit";
 export const fileArrayGenerator = (files: File[], parentId: string) => {
   if (!files || files.length === 0) return [];
   const Arrayfiles = Array.from(files);
+  console.log(files);
   return Arrayfiles.map((file) => ({
     id: nanoid(),
     isFolder: false as const,

@@ -9,6 +9,7 @@ import { DraggedFilesT } from "@/ui/DragDropWrapper";
 import { nanoid } from "@reduxjs/toolkit";
 import { FolderT, PatchItemRequest } from "@skydock/types";
 import { showToast } from "@skydock/ui/toast";
+import { useCallback } from "react";
 import useFileUploadsAndUpdateState from "../hooks/useFileUploadsAndUpdateState";
 import DragnDropWrapper_Desktop from "../Wrappers/DragnDropWrapper_Desktop";
 import DesktopItems from "./DesktopItems";
@@ -85,12 +86,21 @@ const Desktop = ({ children }: DesktopProps) => {
         );
     };
 
+    const onKeyDownDesktop = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
+        console.log("clicked", e.key)
+        if (e.key === "a" && (e.ctrlKey || e.metaKey)) {
+            console.log("a+ctrl")
+        }
+
+    }, [])
+
     return (
         <DragnDropWrapper_Desktop
             DesktopItems={DesktopItems}
             handleExternalfiles={handleExternalfiles}
             handleInternalFiles={handleInternalFiles}
             onContextMenu={handleContextMenu}
+        // onKeyDown={onKeyDownDesktop}
         >
             {children}
         </DragnDropWrapper_Desktop>

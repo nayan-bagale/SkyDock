@@ -13,10 +13,11 @@ interface DisplayItemsIconsT {
     onContextMenu?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
     view: 'grid' | 'row';
     onDoubleClick?: () => void;
-    onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void;
+    onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
     handleDragStart: any;
     handleDrop: DragEventT;
     isSelected?: boolean;
+    onSelectItem?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
 }
 
 export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
@@ -30,7 +31,8 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
         handleDragStart,
         handleDrop,
         className,
-        isSelected
+        isSelected,
+        onSelectItem
     }) => {
         const [isOver, setIsOver] = useState(false);
 
@@ -48,7 +50,8 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
         };
 
         const enhancedOnKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-            onKeyDown(e);
+            // e.stopPropagation();
+            onKeyDown?.(e);
 
         }
 
@@ -96,6 +99,7 @@ export const DisplayItemsIcons: FC<DisplayItemsIconsT> =
                         onDragOver={handleDragOverInner}
                         onDrop={(e) => onDropTweak(e, handleDropInner)}
                         onDragLeave={handleDragLeaveInner}
+                        onClick={onSelectItem}
                     >
                         <Icon className="w-16" />
                         <p className={cn('text-[14px] relative cursor-default text-center select-none ', 'truncate h-7 w-[11ch] overflow-hidden')}>{item.name}</p>

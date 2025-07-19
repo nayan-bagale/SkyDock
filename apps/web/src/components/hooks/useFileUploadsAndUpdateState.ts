@@ -1,3 +1,4 @@
+import { HandleError } from "@/errors/rtkQueryError";
 import {
   useGetUploadUrlsMutation,
   useUploadFilesMutation,
@@ -51,7 +52,8 @@ const useFileUploadsAndUpdateState = (addItemfunc: any = addItem) => {
       return uploadUrls;
     } catch (error: any) {
       setError((prev) => [...prev, { id: "unknown", error: error.data }]);
-      showToast("Failed to upload", "error");
+      // showToast("Failed to upload", "error");
+      HandleError(error).display(error.data.message);
       console.error(error);
       return null;
     }

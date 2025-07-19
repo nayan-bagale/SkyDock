@@ -12,11 +12,14 @@ interface ItemPropsT {
     item: FileT | FolderT,
     handleDragStart: MouseEventT;
     handleDrop: DragEventT;
+    isSelected?: boolean;
+    onSelectItem?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+    onKeydown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
 
 const Item: FC<ItemPropsT> =
-    ({ item, handleDragStart, handleDrop }) => {
+    ({ item, handleDragStart, handleDrop, isSelected, onSelectItem, onKeydown }) => {
         const isExplorerOn = useAppSelector((state) => state.explorer.actions.isProcessOn);
         const dispatch = useAppDispatch()
         const Icon = IconByMimeType('type' in item.details ? item.details.type : null);
@@ -57,6 +60,8 @@ const Item: FC<ItemPropsT> =
 
             } else if (e.key === 'Delete' || e.key === 'Backspace') {
                 handleSoftDelete(item)
+            } else {
+                onKeydown?.(e);
             }
         }
 
@@ -72,6 +77,8 @@ const Item: FC<ItemPropsT> =
                     onKeyDown={handleKeyDown}
                     handleDragStart={handleDragStart}
                     handleDrop={handleDrop}
+                    isSelected={isSelected}
+                    onSelectItem={onSelectItem}
                 />
             </div>
         )

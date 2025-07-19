@@ -1,13 +1,14 @@
 import { useUpdateItemMutation } from "@/redux/apis/filesAndFolderApi";
 import { moveFileIntoFolder, setItemDragged } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { handleDragStartT, handleDropT } from "@skydock/types";
+import { ExplorerItemT, handleDragStartT, handleDropT } from "@skydock/types";
 import { showToast } from "@skydock/ui/toast";
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Item from "./Items";
 
 const DesktopItems = () => {
     const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
+    const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
     const desktopItem = explorerItems["desktop"];
     const dispatch = useAppDispatch();
@@ -21,6 +22,48 @@ const DesktopItems = () => {
         return []
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [explorerItems])
+
+
+    const onSelectItem = useCallback((event: React.MouseEvent<HTMLDivElement, MouseEvent>, item: ExplorerItemT) => {
+        if (event.ctrlKey || event.metaKey) {
+            // Toggle selection if Ctrl or Command key is pressed
+            setSelectedItems((prev) => {
+                if (prev.includes(item.id)) {
+                    return prev.filter(id => id !== item.id);
+                } else {
+                    return [...prev, item.id];
+                }
+            });
+
+        } else if (event.shiftKey) {
+            // Select range of items if Shift key is pressed
+            const lastSelectedIndex = selectedItems.length > 0 ? files.findIndex(i => selectedItems.includes(i.id)) : -1;
+            const currentIndex = files.findIndex(i => i.id === item.id);
+            const newSelectedItems = new Set(selectedItems);
+            if (lastSelectedIndex !== -1) {
+                const start = Math.min(lastSelectedIndex, currentIndex);
+                const end = Math.max(lastSelectedIndex, currentIndex);
+                for (let i = start; i <= end; i++) {
+                    newSelectedItems.add(files[i].id);
+                }
+            } else {
+                newSelectedItems.add(item.id);
+            }
+            setSelectedItems(Array.from(newSelectedItems));
+        } else {
+            // Select single item if no modifier keys are pressed
+            setSelectedItems([item.id]);
+        }
+    }, [files, selectedItems]);
+
+
+
+    const onKeydown = useCallback((e: React.KeyboardEvent<HTMLDivElement>, item: ExplorerItemT) => {
+
+
+    }, []);
+
+
 
 
     // Handle drag start for internal elements
@@ -57,6 +100,9 @@ const DesktopItems = () => {
                     item={child}
                     handleDragStart={(e) => handleDragStart(e, child)}
                     handleDrop={(e) => handleDrop(e, child, index)}
+                    isSelected={selectedItems.includes(child.id)}
+                    onSelectItem={(e) => onSelectItem(e, child)}
+                    onKeydown={(e) => onKeydown(e, child)}
                 />
             ))}
         </div>
