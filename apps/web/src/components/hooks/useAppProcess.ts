@@ -48,6 +48,7 @@ import {
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { AppsT } from "@skydock/types/enums";
 import { useCallback, useMemo } from "react";
+import { useBrowserAPI } from "../ContextApi/BrowserApi";
 
 const useAppProcess = () => {
   const settingsState = useAppSelector((state) => state.settings);
@@ -60,6 +61,7 @@ const useAppProcess = () => {
   const appsMenuState = useAppSelector((state) => state.skydock.appsMenu);
   const notePadState = useAppSelector((state) => state.notePad);
   const cameraState = useAppSelector((state) => state.camera);
+  const browserApi = useBrowserAPI();
 
   // const focusedApp = useAppSelector((state) => state.apps.focusedApp);
 
@@ -247,6 +249,7 @@ const useAppProcess = () => {
       },
       close: () => {
         dispatch(closeCamera());
+        browserApi.camera.stop();
       },
       setLoadingTrue: () => {
         dispatch(setCameraLoading(true));
@@ -255,7 +258,12 @@ const useAppProcess = () => {
         dispatch(setCameraLoading(false));
       },
     };
-  }, [cameraState.actions.isProcessOn, cameraState.state.isLoading, dispatch]);
+  }, [
+    browserApi.camera,
+    cameraState.actions.isProcessOn,
+    cameraState.state.isLoading,
+    dispatch,
+  ]);
 
   const notePadApp = useMemo(() => {
     return {

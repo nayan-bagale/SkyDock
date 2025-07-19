@@ -28,21 +28,12 @@ const DockContextMenu = ({
             [AppsT.VideoPlayer]: apps.videoPlayerApp,
             [AppsT.AppsMenu]: apps.appsMenuSystem,
             [AppsT.PdfReader]: apps.pdfReaderApp,
+            [AppsT.Camera]: apps.cameraApp,
         };
         if (!targetId) return null;
         if (!(targetId in AppsObj)) return null;
         return AppsObj[targetId as keyof typeof AppsObj];
-    }, [
-        apps.settingsApp,
-        apps.terminalApp,
-        apps.explorerApp,
-        apps.imageViewerApp,
-        apps.musicPlayerApp,
-        apps.videoPlayerApp,
-        apps.appsMenuSystem,
-        apps.pdfReaderApp,
-        targetId,
-    ]);
+    }, [apps.settingsApp, apps.terminalApp, apps.explorerApp, apps.imageViewerApp, apps.musicPlayerApp, apps.videoPlayerApp, apps.appsMenuSystem, apps.pdfReaderApp, apps.cameraApp, targetId]);
 
     if (!app) return null;
 

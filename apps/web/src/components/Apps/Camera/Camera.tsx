@@ -4,6 +4,7 @@ import useChangeAppFocus from '@/components/hooks/useChangeAppFocus';
 import { useDrag } from '@/components/hooks/useDrag';
 import { useEffectOnceSafe } from '@/components/hooks/useEffectOnceSafe';
 import useFileUploadsAndUpdateState from '@/components/hooks/useFileUploadsAndUpdateState';
+import { openSubscriptionPlanCard } from '@/redux/features/apps/appsSlice';
 import { closeCamera } from '@/redux/features/camera/cameraSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Button } from '@/ui/button';
@@ -11,7 +12,7 @@ import CameraCard from '@/ui/Cards/Camera/Camera';
 import { fileArrayGenerator } from '@/utils/file-array-generator';
 import { AppsT, StorageLimit } from '@skydock/types/enums';
 import { showToast } from '@skydock/ui/toast';
-import { Camera, Square, Video, Webcam } from 'lucide-react';
+import { Camera, Database, Square, Video, Webcam } from 'lucide-react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 
@@ -20,7 +21,9 @@ const CameraApp = () => {
     const [isRecording, setIsRecording] = useState(false);
     const { handleAppFocus } = useChangeAppFocus(AppsT.Camera);
     const { camera } = useBrowserAPI();
-    const camerState = useAppSelector((state) => state.skydock.browserApis.camera);
+    const cameraState = useAppSelector((state) => state.skydock.browserApis.camera);
+    const dispatch = useAppDispatch();
+
 
     const canvasRef = useRef<HTMLCanvasElement>(document.createElement("canvas"));
     const availabeStorage = useAppSelector((state) => {
@@ -41,6 +44,11 @@ const CameraApp = () => {
         //     camera.stop();
         // };
     });
+
+    const handleUpgrade = useCallback(() => {
+        dispatch(openSubscriptionPlanCard())
+
+    }, [dispatch]);
 
     const capturePhoto = useCallback(async () => {
         if (!camera.streamRef.current || !canvasRef.current) return;
@@ -179,7 +187,6 @@ const CameraApp = () => {
         }, 500);
     }, [isRecording]);
 
-    const dispatch = useAppDispatch();
 
     const draggableRef = useRef<HTMLDivElement>(null);
     const { position, handleMouseDown } = useDrag({
@@ -206,14 +213,35 @@ const CameraApp = () => {
         // }));
     };
 
-    console.log(availabeStorage)
-
     const disabledButtons = useMemo(() => {
         if (availabeStorage <= 0) {
             return true;
         }
         return false;
-    }, [availabeStorage])
+    }, [availabeStorage]);
+
+
+    const StorageLimitComponent = useMemo(() => {
+        return (
+            <div className='absolute gap-4 inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 z-10'>
+                <div className='relative'>
+                    <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center animate-pulse">
+                        <Database className="w-10 h-10 text-yellow-500" />
+                    </div>
+                    <div className="absolute inset-0 w-20 h-20 bg-yellow-200 rounded-full animate-ping opacity-20"></div>
+                </div>
+                <div className='inset-0 flex flex-col gap-2 items-center justify-center z-20'>
+                    <p className='text-gray-200 text-center text-sm font-semibold'>
+                        You have reached your storage limit.
+                        <br />
+                        Please upgrade your plan to continue using the Camera app.
+                        <br />
+                        or free up some space.
+                    </p>
+                    <Button onClick={handleUpgrade} size='sm' intent={'cta'} className="bg-gradient-to-r from-lime-400 to-lime-500 text-white">Upgrade Plan</Button>
+                </div>
+            </div>)
+    }, [handleUpgrade])
 
     return (
         <CameraCard
@@ -227,25 +255,6 @@ const CameraApp = () => {
             title="Camera App"
             onContextMenu={handleContextMenu}
         >
-            {camerState?.permission !== 'Allowed' && (<div className='relative pt-0.5 pb-7 h-full w-full'>
-                <div className='absolute gap-4 inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 z-10'>
-                    <div className='relative'>
-                        <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center animate-pulse">
-                            <Webcam className="w-10 h-10 text-red-500" />
-                        </div>
-                        <div className="absolute inset-0 w-20 h-20 bg-red-200 rounded-full animate-ping opacity-20"></div>
-                    </div>
-                    <div className='inset-0 flex flex-col gap-2 items-center justify-center z-20'>
-
-                        {camerState.permission === "Prompt" ? <>
-                            <p className='text-white text-lg font-semibold'>Camera Permission Required</p>
-                            <Button intent={'secondary'} size={'md'} onClick={() => camera.start()}>
-                                Grant Permission
-                            </Button>
-                        </> : <p className='text-white text-lg font-semibold'>Enable camera permission from browser settings</p>}
-                    </div>
-                </div>
-            </div>)}
             <div className=" relative pt-0.5 pb-7 h-full w-full ">
                 <video
                     ref={camera.streamRef}
@@ -255,23 +264,45 @@ const CameraApp = () => {
 
                     className="w-full object-fit h-full -scale-x-100"
                 />
-                <div className="flex w-full absolute bottom-9 justify-center gap-4">
-                    <Button className='p-2 rounded-full' disabled={disabledButtons} onClick={capturePhoto} intent={'secondary'} size={'icon'}>
-                        <Camera />
-                    </Button>
+                {availabeStorage <= 0 ? (StorageLimitComponent) : (
+                    (cameraState?.permission !== 'Allowed' ? (
+                        <div className='absolute gap-4 inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 z-10'>
+                            <div className='relative'>
+                                <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center animate-pulse">
+                                    <Webcam className="w-10 h-10 text-red-500" />
+                                </div>
+                                <div className="absolute inset-0 w-20 h-20 bg-red-200 rounded-full animate-ping opacity-20"></div>
+                            </div>
+                            <div className='inset-0 flex flex-col gap-2 items-center justify-center z-20'>
 
-                    {!isRecording ? (
-                        <Button className='p-2 rounded-full' disabled={disabledButtons} onClick={startRecording} intent={'secondary'} size={'icon'}>
-                            <Video />
-                        </Button>
-                    ) : (
-                        <Button className='p-2 bg-red-600 text-white rounded-full' disabled={disabledButtons} onClick={stopRecording} intent={'destructive'} size={'icon'}>
-                            <Square />
-                        </Button>
-                    )}
-                </div>
+                                {cameraState.permission === "Prompt" ? <>
+                                    <p className='text-white text-lg font-semibold'>Camera Permission Required</p>
+                                    <Button intent={'secondary'} size={'md'} onClick={() => camera.start()}>
+                                        Grant Permission
+                                    </Button>
+                                </> : <p className='text-white text-lg font-semibold'>Enable camera permission from browser settings</p>}
+                            </div>
+                        </div>) :
+
+                        <div className="flex w-full absolute bottom-9 justify-center gap-4">
+                            <Button className='p-2 rounded-full' disabled={disabledButtons} onClick={capturePhoto} intent={'secondary'} size={'icon'}>
+                                <Camera />
+                            </Button>
+
+                            {!isRecording ? (
+                                <Button className='p-2 rounded-full' disabled={disabledButtons} onClick={startRecording} intent={'secondary'} size={'icon'}>
+                                    <Video />
+                                </Button>
+                            ) : (
+                                <Button className='p-2 bg-red-600 text-white rounded-full' disabled={disabledButtons} onClick={stopRecording} intent={'destructive'} size={'icon'}>
+                                    <Square />
+                                </Button>
+                            )}
+                        </div>
+                    )
+
+                )}
             </div>
-            {/* //<canvas className='absolute top-0 h-24 ' ref={canvasRef} style={{ display: 'block' }} /> */}
         </CameraCard>
     );
 };
