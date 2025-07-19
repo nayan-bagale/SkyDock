@@ -9,21 +9,26 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Button } from '@/ui/button';
 import CameraCard from '@/ui/Cards/Camera/Camera';
 import { fileArrayGenerator } from '@/utils/file-array-generator';
-import { AppsT } from '@skydock/types/enums';
+import { AppsT, StorageLimit } from '@skydock/types/enums';
+import { showToast } from '@skydock/ui/toast';
 import { Camera, Square, Video, Webcam } from 'lucide-react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 
 const CameraApp = () => {
-    const videoRef = useRef<HTMLVideoElement>(null);
-    const canvasRef = useRef<HTMLCanvasElement>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const [isRecording, setIsRecording] = useState(false);
-    const [capturedMedia, setCapturedMedia] = useState<string[]>([]);
-    // const [recordedChunks, setRecordedChunks] = useState<Blob[]>([]);
     const { handleAppFocus } = useChangeAppFocus(AppsT.Camera);
     const { camera } = useBrowserAPI();
     const camerState = useAppSelector((state) => state.skydock.browserApis.camera);
+
+    const canvasRef = useRef<HTMLCanvasElement>(document.createElement("canvas"));
+    const availabeStorage = useAppSelector((state) => {
+        const totalStorage = (state.auth.user?.plan.storageLimit ?? 0) - StorageLimit.MB_10;
+        const usedStorage = state.auth.user?.usedStorage || 0;
+        return totalStorage - usedStorage;
+    });
+
 
     const { generateFile } = useBlobFileGenerator();
 
@@ -66,44 +71,103 @@ const CameraApp = () => {
                 // showToast('Photo successfully saved in pictures.', 'success')
 
             }
-            setCapturedMedia(prev => [...prev, photoUrl]);
-
             // Reset transform so future drawings aren’t flipped
             context.setTransform(1, 0, 0, 1, 0, 0);
         }
     }, [camera.streamRef, generateFile, uploadFile]);
 
-    const startRecording = useCallback(async () => {
+
+    const startRecording = useCallback(() => {
         if (!camera.streamRef.current?.srcObject) return;
 
-        const stream = camera.streamRef.current.srcObject as MediaStream;
-        const mediaRecorder = new MediaRecorder(stream, {
+        const video = camera.streamRef.current;
+        const originalStream = video.srcObject as MediaStream;
+        const audioTracks = originalStream.getAudioTracks(); // Get mic audio
+
+        const canvas = canvasRef.current!;
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        const context = canvas.getContext("2d")!;
+        let animationFrameId: number;
+
+        const drawMirroredVideo = () => {
+            context.save();
+            context.scale(-1, 1); // mirror the video
+            context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+            context.restore();
+            animationFrameId = requestAnimationFrame(drawMirroredVideo);
+        };
+
+        drawMirroredVideo();
+
+        const mirroredVideoStream = canvas.captureStream(30); // 30fps
+        const combinedStream = new MediaStream([
+            ...mirroredVideoStream.getVideoTracks(),
+            ...audioTracks, // add audio from the original stream
+        ]);
+
+        const mediaRecorder = new MediaRecorder(combinedStream, {
             mimeType: 'video/webm;codecs=vp9'
         });
 
         mediaRecorderRef.current = mediaRecorder;
         let recordedChunks: Blob[] = [];
+        let totalSize = 0;
+
 
         mediaRecorder.ondataavailable = (event) => {
             if (event.data.size > 0) {
                 recordedChunks.push(event.data);
+                totalSize += event.data.size;
+                console.log(`Recorded chunk size: ${event.data.size}, Total size: ${totalSize}, Available storage: ${availabeStorage}`);
+                if (totalSize >= availabeStorage) {
+                    if (mediaRecorderRef.current?.state === 'recording') {
+                        mediaRecorderRef.current.stop();
+                    }
+                }
             }
         };
 
         mediaRecorder.onstop = () => {
+            cancelAnimationFrame(animationFrameId);
+
+            if (totalSize >= availabeStorage) {
+                while (totalSize >= availabeStorage && recordedChunks.length > 0) {
+                    const lastChunk = recordedChunks.pop();
+                    totalSize -= lastChunk?.size || 0;
+                }
+
+                setIsRecording(false);
+
+                if (recordedChunks.length === 0) {
+                    showToast('No video recorded due to storage limit.', 'error');
+                    return;
+                } else {
+                    setTimeout(() => {
+                        showToast('Max storage size reached, stopping recording...', 'error');
+                    }, 1000);
+                }
+            }
+
+
             const file = generateFile({
                 content: recordedChunks,
                 name: `video-${Date.now()}`,
                 type: 'webm',
-            })
+            });
+
             if (file) {
                 uploadFile(fileArrayGenerator([file], 'videos'));
-                recordedChunks = [];
             }
+
+            recordedChunks = [];
         };
-        mediaRecorder.start();
+
+        mediaRecorder.start(1000);
         setIsRecording(true);
-    }, [camera.streamRef, generateFile, uploadFile]);
+    }, [availabeStorage, camera.streamRef, generateFile, uploadFile]);
+
 
     const stopRecording = useCallback(() => {
         setIsRecording(false);
@@ -114,17 +178,6 @@ const CameraApp = () => {
             }
         }, 500);
     }, [isRecording]);
-
-    // const downloadMedia = useCallback((mediaUrl: string, index: number) => {
-    //     const link = document.createElement('a');
-    //     link.href = mediaUrl;
-    //     link.download = mediaUrl.startsWith('data:image')
-    //         ? `photo-${index + 1}.jpg`
-    //         : `video-${index + 1}.webm`;
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     document.body.removeChild(link);
-    // }, []);
 
     const dispatch = useAppDispatch();
 
@@ -152,6 +205,15 @@ const CameraApp = () => {
         //     additionalData: { currentImageId: imageViewerState?.currentImageId }
         // }));
     };
+
+    console.log(availabeStorage)
+
+    const disabledButtons = useMemo(() => {
+        if (availabeStorage <= 0) {
+            return true;
+        }
+        return false;
+    }, [availabeStorage])
 
     return (
         <CameraCard
@@ -194,22 +256,22 @@ const CameraApp = () => {
                     className="w-full object-fit h-full -scale-x-100"
                 />
                 <div className="flex w-full absolute bottom-9 justify-center gap-4">
-                    <Button className='p-2 rounded-full' onClick={capturePhoto} intent={'secondary'} size={'icon'}>
+                    <Button className='p-2 rounded-full' disabled={disabledButtons} onClick={capturePhoto} intent={'secondary'} size={'icon'}>
                         <Camera />
                     </Button>
 
                     {!isRecording ? (
-                        <Button className='p-2 rounded-full' onClick={startRecording} intent={'secondary'} size={'icon'}>
+                        <Button className='p-2 rounded-full' disabled={disabledButtons} onClick={startRecording} intent={'secondary'} size={'icon'}>
                             <Video />
                         </Button>
                     ) : (
-                        <Button className='p-2 bg-red-600 text-white rounded-full' onClick={stopRecording} intent={'destructive'} size={'icon'}>
+                        <Button className='p-2 bg-red-600 text-white rounded-full' disabled={disabledButtons} onClick={stopRecording} intent={'destructive'} size={'icon'}>
                             <Square />
                         </Button>
                     )}
                 </div>
             </div>
-            <canvas className='absolute top-0 h-24 ' ref={canvasRef} style={{ display: 'block' }} />
+            {/* //<canvas className='absolute top-0 h-24 ' ref={canvasRef} style={{ display: 'block' }} /> */}
         </CameraCard>
     );
 };
