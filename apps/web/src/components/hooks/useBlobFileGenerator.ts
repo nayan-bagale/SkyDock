@@ -93,6 +93,13 @@ export function useBlobFileGenerator(): FileGenerationResult {
           }
           break;
         }
+        case "mp4": {
+          mimeType = SupportedMimeTypes.VideoMp4;
+          if (typeof content === "object") {
+            blob = new Blob(content, { type: mimeType });
+          }
+          break;
+        }
 
         default:
           throw new Error(`Unsupported file type: ${type}`);

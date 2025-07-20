@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { Button } from '@/ui/button';
 import CameraCard from '@/ui/Cards/Camera/Camera';
 import { fileArrayGenerator } from '@/utils/file-array-generator';
+import { getSupportedMediaRecorderMimeType } from '@/utils/supportedMediaRecorderMimeType';
 import { AppsT, StorageLimit } from '@skydock/types/enums';
 import { showToast } from '@skydock/ui/toast';
 import { Camera, Database, Video, Webcam } from 'lucide-react';
@@ -113,14 +114,16 @@ const CameraApp = () => {
 
         drawMirroredVideo();
 
-        const mirroredVideoStream = canvas.captureStream(30); // 30fps
+        const mirroredVideoStream = canvas.captureStream(60); // 30fps
         const combinedStream = new MediaStream([
             ...mirroredVideoStream.getVideoTracks(),
             ...audioTracks, // add audio from the original stream
         ]);
 
+        const mediaRecorderMimeType = getSupportedMediaRecorderMimeType();
+
         const mediaRecorder = new MediaRecorder(combinedStream, {
-            mimeType: 'video/webm;codecs=vp9'
+            mimeType: mediaRecorderMimeType
         });
 
         mediaRecorderRef.current = mediaRecorder;
@@ -161,16 +164,23 @@ const CameraApp = () => {
                     }, 1000);
                 }
             }
+            let file = null;
+            if (!mediaRecorderMimeType.includes('webm')) {
+                file = generateFile({
+                    content: recordedChunks,
+                    name: `video-${Date.now()}`,
+                    type: 'mp4',
+                });
 
+            } else {
+                const fixedBlob = await fixWebmDuration(new Blob(recordedChunks, { type: 'video/webm' }));
+                file = generateFile({
+                    content: [fixedBlob],
+                    name: `video-${Date.now()}`,
+                    type: 'webm',
+                });
+            }
 
-            const fixedBlob = await fixWebmDuration(new Blob(recordedChunks, { type: 'video/webm' }));
-
-
-            const file = generateFile({
-                content: [fixedBlob],
-                name: `video-${Date.now()}`,
-                type: 'webm',
-            });
 
             if (file) {
                 uploadFile(fileArrayGenerator([file], 'videos'));
@@ -306,11 +316,11 @@ const CameraApp = () => {
                             </Button>}
 
                             {!isRecording ? (
-                                <Button layoutId='record' className='p-2 rounded-full' disabled={disabledButtons} onClick={startRecording} intent={'secondary'} size={'icon'}>
+                                <Button className='p-2 rounded-full' disabled={disabledButtons} onClick={startRecording} intent={'secondary'} size={'icon'}>
                                     <Video />
                                 </Button>
                             ) : (
-                                <Button layoutId='record' className='p-2 px-3 bg-red-600 text-white rounded-full' disabled={disabledButtons} onClick={stopRecording} intent={'destructive'} size={'icon'}>
+                                <Button className='p-2 px-3 bg-red-600 text-white rounded-full' disabled={disabledButtons} onClick={stopRecording} intent={'destructive'} size={'icon'}>
                                     {Math.floor(recordTime / 60)}:{('0' + (recordTime % 60)).slice(-2)}
                                 </Button>
                             )}

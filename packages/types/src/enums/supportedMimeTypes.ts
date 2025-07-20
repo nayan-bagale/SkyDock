@@ -7,6 +7,7 @@ export enum SupportedMimeTypes {
   Audio = "audio/",
   Video = "video/",
   VideoWebm = "video/webm",
+  VideoMp4 = "video/mp4",
   PDF = "application/pdf",
   Text = "text/plain",
   JSON = "application/json",
@@ -24,6 +25,7 @@ export enum FileExtensions {
   jpeg = "jpeg",
   png = "png",
   webm = "webm",
+  mp4 = "mp4",
 }
 
 export const FILE_EXTENSIONS_TO_MIME_TYPES: Record<
@@ -38,4 +40,5 @@ export const FILE_EXTENSIONS_TO_MIME_TYPES: Record<
   [FileExtensions.png]: SupportedMimeTypes.ImagePng,
   [FileExtensions.md]: SupportedMimeTypes.Markdown,
   [FileExtensions.webm]: SupportedMimeTypes.VideoWebm,
+  [FileExtensions.mp4]: SupportedMimeTypes.VideoMp4,
 };
