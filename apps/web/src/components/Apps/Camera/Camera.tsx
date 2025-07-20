@@ -12,7 +12,7 @@ import CameraCard from '@/ui/Cards/Camera/Camera';
 import { fileArrayGenerator } from '@/utils/file-array-generator';
 import { AppsT, StorageLimit } from '@skydock/types/enums';
 import { showToast } from '@skydock/ui/toast';
-import { Camera, Database, Square, Video, Webcam } from 'lucide-react';
+import { Camera, Database, Video, Webcam } from 'lucide-react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import fixWebmDuration from 'webm-duration-fix';
 
@@ -306,19 +306,19 @@ const CameraApp = () => {
                             </Button>}
 
                             {!isRecording ? (
-                                <Button className='p-2 rounded-full' disabled={disabledButtons} onClick={startRecording} intent={'secondary'} size={'icon'}>
+                                <Button layoutId='record' className='p-2 rounded-full' disabled={disabledButtons} onClick={startRecording} intent={'secondary'} size={'icon'}>
                                     <Video />
                                 </Button>
                             ) : (
-                                <Button className='p-2 bg-red-600 text-white rounded-full' disabled={disabledButtons} onClick={stopRecording} intent={'destructive'} size={'icon'}>
-                                    <Square />
+                                <Button layoutId='record' className='p-2 px-3 bg-red-600 text-white rounded-full' disabled={disabledButtons} onClick={stopRecording} intent={'destructive'} size={'icon'}>
+                                    {Math.floor(recordTime / 60)}:{('0' + (recordTime % 60)).slice(-2)}
                                 </Button>
                             )}
-                            {isRecording && (
+                            {/* {isRecording && (
                                 <div className='text-white text-sm font-semibold'>
                                     {Math.floor(recordTime / 60)}:{('0' + (recordTime % 60)).slice(-2)}
                                 </div>
-                            )}
+                            )} */}
                         </div>
                     )
 

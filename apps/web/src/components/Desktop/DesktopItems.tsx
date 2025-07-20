@@ -101,8 +101,8 @@ const DesktopItems = () => {
                     handleDragStart={(e) => handleDragStart(e, child)}
                     handleDrop={(e) => handleDrop(e, child, index)}
                     isSelected={selectedItems.includes(child.id)}
-                    onSelectItem={(e) => onSelectItem(e, child)}
-                    onKeydown={(e) => onKeydown(e, child)}
+                // onSelectItem={(e) => onSelectItem(e, child)}
+                // onKeydown={(e) => onKeydown(e, child)}
                 />
             ))}
         </div>
