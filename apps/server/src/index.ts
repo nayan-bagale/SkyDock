@@ -11,6 +11,7 @@ import rateLimitMiddleware from "./middleware/rate-limit-middleware";
 import authRoute from "./routes/auth-route";
 import filesRoute from "./routes/files-route";
 import planRoute from "./routes/subscription-plan-route";
+import email from "./services/email";
 import { decodeToken } from "./utils/token";
 
 const app = express();
@@ -44,6 +45,11 @@ app.get("/api/v1", rateLimitMiddleware.defaultLimiter, (req, res) => {
 
 app.get("/api/v1/protected", authMiddleware, (req, res) => {
   res.status(OK).json({ message: "Access Granted." });
+});
+
+app.get("/api/v1/test-email", async (req, res) => {
+  const response = await email.sendTestEmail();
+  res.status(OK).json({ message: "Test email sent", response });
 });
 
 app.use("/api/v1/auth", authRoute);
