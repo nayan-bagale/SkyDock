@@ -47,7 +47,7 @@ class OAuthHelper {
       });
 
       await this.emailService.sendThankYouForSignUpEmail(
-        profile?.emails?.[0]?.value as string
+        profile?.emails?.[0]?.value as string,
       );
 
       return user;

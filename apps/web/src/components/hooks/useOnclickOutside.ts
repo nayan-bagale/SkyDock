@@ -4,7 +4,7 @@ import { MutableRefObject } from "react";
 
 export default function useOnClickOutside(
   ref: MutableRefObject<HTMLElement | null>,
-  callback: (ref: MutableRefObject<HTMLElement | null>) => void
+  callback: (ref: MutableRefObject<HTMLElement | null>) => void,
 ) {
   useEffect(() => {
     /**

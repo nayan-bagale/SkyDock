@@ -21,13 +21,13 @@ interface UseVideoPlayerProps {
 const useVideoPlayer = ({ initialVolume = 1 }: UseVideoPlayerProps = {}) => {
   const dispatch = useAppDispatch();
   const videoUrl = useAppSelector(
-    (state) => state.videoPlayer.videoPlayerInfo.videoUrl
+    (state) => state.videoPlayer.videoPlayerInfo.videoUrl,
   );
   const videoFileInfo = useAppSelector(
-    (state) => state.videoPlayer.videoPlayerInfo.videoFileInfo
+    (state) => state.videoPlayer.videoPlayerInfo.videoFileInfo,
   );
   const lastPosition = useAppSelector(
-    (state) => state.videoPlayer.actions.lastPosition
+    (state) => state.videoPlayer.actions.lastPosition,
   );
 
   const { openFileOpenerModal } = useContext(FileSaveAndOpenModalContext);
@@ -289,7 +289,7 @@ const useVideoPlayer = ({ initialVolume = 1 }: UseVideoPlayerProps = {}) => {
       if (item) {
         try {
           const { url } = await getFileUrl(
-            `${item.id}.${item.name.split(".").pop()}`
+            `${item.id}.${item.name.split(".").pop()}`,
           ).unwrap();
           dispatch(setVideoUrl(url));
           dispatch(openVideoPlayer(item));
@@ -298,7 +298,7 @@ const useVideoPlayer = ({ initialVolume = 1 }: UseVideoPlayerProps = {}) => {
         }
       }
     },
-    [dispatch, getFileUrl]
+    [dispatch, getFileUrl],
   );
 
   const openVideoFileUsingModal = useCallback(() => {

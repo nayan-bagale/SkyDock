@@ -13,6 +13,6 @@ export function getSupportedMediaRecorderMimeType(): string {
   }
 
   throw new Error(
-    "No supported MediaRecorder MIME type found in this browser."
+    "No supported MediaRecorder MIME type found in this browser.",
   );
 }

@@ -20,12 +20,12 @@ export const controlCenterSlice = createSlice({
     },
     removeNotification: (state, action) => {
       state.notifications = state.notifications.filter(
-        (notification) => notification.id !== action.payload
+        (notification) => notification.id !== action.payload,
       );
     },
     updateNotification: (state, action) => {
       const index = state.notifications.findIndex(
-        (notification) => notification.id === action.payload.id
+        (notification) => notification.id === action.payload.id,
       );
       state.notifications[index] = {
         ...state.notifications[index],

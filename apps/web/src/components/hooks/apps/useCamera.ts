@@ -37,7 +37,7 @@ const useCamera = () => {
           err.message
             .toLowerCase()
             .includes(
-              BrowserApisErrors.CAMERA_PERMISSION_DISMISSED.toLowerCase()
+              BrowserApisErrors.CAMERA_PERMISSION_DISMISSED.toLowerCase(),
             )
         ) {
           dispatch(setCameraPermission("Prompt"));

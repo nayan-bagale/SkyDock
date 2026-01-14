@@ -11,7 +11,8 @@ const FullScreenBtn = () => {
       ) : (
         <Icons.Full_Screen className="h-3" />
       )}
-    </Button >)
-}
+    </Button>
+  );
+};
 
-export default FullScreenBtn
+export default FullScreenBtn;

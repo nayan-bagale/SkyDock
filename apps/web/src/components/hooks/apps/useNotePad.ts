@@ -35,11 +35,11 @@ type SyncStatus = "saved" | "saving" | "synced" | "error";
 const useNotePad = () => {
   const dispatch = useAppDispatch();
   const { content, syncStatus, lastSaved } = useAppSelector(
-    (state) => state.notePad.notePadInfo
+    (state) => state.notePad.notePadInfo,
   );
 
   const fileInfo = useAppSelector(
-    (state) => state.notePad.notePadInfo.textFileInfo
+    (state) => state.notePad.notePadInfo.textFileInfo,
   );
 
   const { isFileActionModalOn: isFileActionModalOn, lastPosition } =
@@ -52,7 +52,7 @@ const useNotePad = () => {
 
   const { invalidUserInfo } = useInvalidApi();
   const { openFileOpenerModal, openSaveFileModal } = useContext(
-    FileSaveAndOpenModalContext
+    FileSaveAndOpenModalContext,
   );
 
   const { downloadFile } = useFileDownloadWithProgress();
@@ -63,21 +63,21 @@ const useNotePad = () => {
     (date: Date | null) => {
       dispatch(setNotePadLastSaved(date ? date.toISOString() : null));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const setSyncStatus = useCallback(
     (status: SyncStatus) => {
       dispatch(setNotePadSyncStatus(status));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const setContent = useCallback(
     (newContent: string) => {
       dispatch(setNotePadContent(newContent));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const fetchFileContent = useCallback(
@@ -100,7 +100,7 @@ const useNotePad = () => {
         throw error; // Re-throw to handle it in the component if needed
       }
     },
-    [getTextFileContent, setContent, setLastSaved, setSyncStatus]
+    [getTextFileContent, setContent, setLastSaved, setSyncStatus],
   );
 
   // TODO: Add a debounce to setContent to avoid too many updates
@@ -165,7 +165,7 @@ const useNotePad = () => {
         setSyncStatus("saved");
       }
     },
-    [dispatch, fetchFileContent, setContent, setLastSaved, setSyncStatus]
+    [dispatch, fetchFileContent, setContent, setLastSaved, setSyncStatus],
   );
 
   const saveAs = useCallback(() => {

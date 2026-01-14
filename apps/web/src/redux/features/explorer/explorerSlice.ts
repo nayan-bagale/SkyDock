@@ -108,7 +108,7 @@ export const explorerSlice = createSlice({
           [currentFolderItem.id]: {
             ...currentFolderItem,
             children: currentFolderItem.children.filter(
-              (child) => child !== action.payload.id
+              (child) => child !== action.payload.id,
             ),
           },
         };
@@ -162,7 +162,7 @@ export const explorerSlice = createSlice({
 
     moveFileIntoFolder: (
       state,
-      action: PayloadAction<{ fileId: FileT["id"]; folderId: FolderT["id"] }>
+      action: PayloadAction<{ fileId: FileT["id"]; folderId: FolderT["id"] }>,
     ) => {
       const { fileId, folderId } = action.payload;
 
@@ -201,7 +201,7 @@ export const explorerSlice = createSlice({
       action: PayloadAction<{
         currentFolder: string;
         activeTab: ExplorerT["activeTab"];
-      }>
+      }>,
     ) => {
       state.currentFolder = action.payload.currentFolder;
       state.activeTab = action.payload.activeTab;
@@ -267,7 +267,7 @@ export const explorerSlice = createSlice({
 
     setExplorerLastPosition: (
       state,
-      action: PayloadAction<{ x: number; y: number }>
+      action: PayloadAction<{ x: number; y: number }>,
     ) => {
       state.actions.lastPosition = action.payload;
     },

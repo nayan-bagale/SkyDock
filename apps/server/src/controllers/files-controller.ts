@@ -26,7 +26,7 @@ class FilesController {
     try {
       const sizeRequired = files.reduce(
         (acc, file) => acc + parseInt(file.size),
-        0
+        0,
       );
       const userWithPlan = await prisma.user.findUnique({
         where: { id: req.userInfo?.id as string },
@@ -70,10 +70,10 @@ class FilesController {
           // `${filename?.split(" ").join("-")}-${file.id}.${extension}`,
           `${file.id}.${extension}`,
           file.type,
-          Number(file.size)
+          Number(file.size),
         );
         return { [file.id]: url };
-      })
+      }),
     );
     res.json(signed_urls);
   }
@@ -83,7 +83,7 @@ class FilesController {
 
     const sizeRequired = files.reduce(
       (acc, file) => acc + parseInt(file.details.size),
-      0
+      0,
     );
 
     try {
@@ -281,7 +281,7 @@ class FilesController {
           .map((file) => `${userId}/${file.id}.${file.name.split(".").pop()}`);
 
         await Promise.allSettled(
-          files.map(async (file) => await Store.deleteObject(file))
+          files.map(async (file) => await Store.deleteObject(file)),
         );
 
         const totalSize = items.reduce((acc, item) => acc + item.size, 0);
@@ -322,7 +322,7 @@ class FilesController {
                 parent_id: item.parent,
               },
             });
-          })
+          }),
         );
       });
 
@@ -349,7 +349,7 @@ class FilesController {
       }
 
       const content = await Store.getObject(
-        `${userId}/${fileId}.${file.name.split(".").pop()}`
+        `${userId}/${fileId}.${file.name.split(".").pop()}`,
       );
       if (!content.Body) {
         return res
@@ -425,7 +425,7 @@ class FilesController {
         await Store.putObject(
           `${userId}/${fileId}.${file.name.split(".").pop()}`,
           content,
-          "text/plain"
+          "text/plain",
         );
 
         await tx.user.update({
@@ -490,7 +490,7 @@ class FilesController {
 
         totalStorageUsed = explorerItems.reduce(
           (acc, item) => acc + (item.size ?? 0),
-          0
+          0,
         );
 
         await tx.user.update({

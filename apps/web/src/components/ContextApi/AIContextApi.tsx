@@ -6,30 +6,33 @@ import ChatBox from "../Ai/ChatBox";
 export const AIContextAPI = createContext<null>(null);
 
 export const AIContextProvider: FC<PropsWithChildren> = ({ children }) => {
-    const isAiChatBoxOpen = useAppSelector((state) => state.ai.chatBoxOpen);
-    const dispatch = useAppDispatch();
+  const isAiChatBoxOpen = useAppSelector((state) => state.ai.chatBoxOpen);
+  const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                e.preventDefault();
-                dispatch(setAiChatBoxOpen(!isAiChatBoxOpen));
-            }
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        dispatch(setAiChatBoxOpen(!isAiChatBoxOpen));
+      }
 
-            if (e.key === 'Escape' && isAiChatBoxOpen) {
-                dispatch(setAiChatBoxOpen(false));
-            }
-        };
+      if (e.key === "Escape" && isAiChatBoxOpen) {
+        dispatch(setAiChatBoxOpen(false));
+      }
+    };
 
-        document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [isAiChatBoxOpen]);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isAiChatBoxOpen]);
 
-    return (
-        <AIContextAPI.Provider value={null}>
-            {/* Your AI context provider logic goes here */}
-            {children}
-            <ChatBox isOpen={isAiChatBoxOpen} onClose={() => dispatch(setAiChatBoxOpen(false))} />
-        </AIContextAPI.Provider>
-    );
-}
+  return (
+    <AIContextAPI.Provider value={null}>
+      {/* Your AI context provider logic goes here */}
+      {children}
+      <ChatBox
+        isOpen={isAiChatBoxOpen}
+        onClose={() => dispatch(setAiChatBoxOpen(false))}
+      />
+    </AIContextAPI.Provider>
+  );
+};

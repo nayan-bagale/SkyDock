@@ -40,7 +40,7 @@ export const pdfReaderSlice = createSlice({
 
     setPdfReaderLastPosition: (
       state,
-      action: PayloadAction<{ x: number; y: number }>
+      action: PayloadAction<{ x: number; y: number }>,
     ) => {
       state.actions.lastPosition = action.payload;
     },

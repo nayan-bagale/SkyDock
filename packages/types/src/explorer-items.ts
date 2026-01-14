@@ -107,12 +107,12 @@ export type handleDragStartT = (e: any, item: FileT | FolderT) => void;
 export type handleDropT = (
   e: React.DragEvent<HTMLElement>,
   item: FileT | FolderT,
-  targetIndex: number
+  targetIndex: number,
 ) => Promise<void>;
 
 export type DragEventT = (e: React.DragEvent<HTMLElement>) => void;
 
 export type MouseEventT = (
   event: MouseEvent | TouchEvent | PointerEvent,
-  info: any
+  info: any,
 ) => void;

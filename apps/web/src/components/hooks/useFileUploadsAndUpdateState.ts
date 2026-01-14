@@ -44,7 +44,7 @@ const useFileUploadsAndUpdateState = (addItemfunc: any = addItem) => {
   const [error, setError] = useState<{ id: string; error: string }[] | []>([]);
 
   const getUploadUrlsSafely = async (
-    requestFiles: { name: string; type: string; id: string; size: string }[]
+    requestFiles: { name: string; type: string; id: string; size: string }[],
   ) => {
     try {
       const uploadUrls: UploadUrlsResponse[] =
@@ -86,8 +86,8 @@ const useFileUploadsAndUpdateState = (addItemfunc: any = addItem) => {
           type: "upload",
           status: "pending",
           progress: 0,
-        })
-      )
+        }),
+      ),
     );
 
     // Get upload urls for each file
@@ -128,7 +128,7 @@ const useFileUploadsAndUpdateState = (addItemfunc: any = addItem) => {
             signal: controller.signal,
             onUploadProgress: (progressEvent) => {
               const percentCompleted = Math.round(
-                (progressEvent.loaded * 100) / (progressEvent.total || 1)
+                (progressEvent.loaded * 100) / (progressEvent.total || 1),
               );
               showProgressToast(
                 {
@@ -139,7 +139,7 @@ const useFileUploadsAndUpdateState = (addItemfunc: any = addItem) => {
                 },
                 {
                   id: toastId,
-                }
+                },
               );
 
               dispatch(
@@ -147,7 +147,7 @@ const useFileUploadsAndUpdateState = (addItemfunc: any = addItem) => {
                   id: file.id,
                   progress: percentCompleted,
                   cancelUpload: () => controller.abort(),
-                })
+                }),
               );
               dispatch(
                 updateItemState({
@@ -156,7 +156,7 @@ const useFileUploadsAndUpdateState = (addItemfunc: any = addItem) => {
                     currentState: "uploding",
                     progress: percentCompleted,
                   },
-                })
+                }),
               );
             },
           });
@@ -171,7 +171,7 @@ const useFileUploadsAndUpdateState = (addItemfunc: any = addItem) => {
                 currentState: "idle",
                 progress: 0,
               },
-            })
+            }),
           );
           showProgressToast(
             {
@@ -181,7 +181,7 @@ const useFileUploadsAndUpdateState = (addItemfunc: any = addItem) => {
             },
             {
               id: toastId,
-            }
+            },
           );
           return { ...response, details: file as FileT };
         } catch (error: any) {
@@ -193,7 +193,7 @@ const useFileUploadsAndUpdateState = (addItemfunc: any = addItem) => {
             },
             {
               id: toastId,
-            }
+            },
           );
           setError((prev) => [
             ...prev,
@@ -207,7 +207,7 @@ const useFileUploadsAndUpdateState = (addItemfunc: any = addItem) => {
             toast.dismiss(toastId);
           }, 2000);
         }
-      })
+      }),
     );
     if (!uploadFilesPromise) return null;
 

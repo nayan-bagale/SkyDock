@@ -25,7 +25,7 @@ const useDeleteFolderRecursively = () => {
 
       return arr;
     },
-    [items]
+    [items],
   );
 
   const getNestedFolderItems = useCallback(
@@ -48,7 +48,7 @@ const useDeleteFolderRecursively = () => {
 
       return arr;
     },
-    [items]
+    [items],
   );
 
   return { getNestedFolderItemsId, getNestedFolderItems };

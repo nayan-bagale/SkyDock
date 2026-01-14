@@ -17,13 +17,13 @@ import useFileDownloadWithProgress from "../useFileDownloadWithProgress";
 const useMusicPlayer = () => {
   const dispatch = useAppDispatch();
   const musicUrl = useAppSelector(
-    (state) => state.musicPlayer.musicPlayerInfo.musicUrl
+    (state) => state.musicPlayer.musicPlayerInfo.musicUrl,
   );
   const musicFileInfo = useAppSelector(
-    (state) => state.musicPlayer.musicPlayerInfo.musicFileInfo
+    (state) => state.musicPlayer.musicPlayerInfo.musicFileInfo,
   );
   const lastPosition = useAppSelector(
-    (state) => state.musicPlayer.actions.lastPosition
+    (state) => state.musicPlayer.actions.lastPosition,
   );
   const { openFileOpenerModal } = useContext(FileSaveAndOpenModalContext);
   const { downloadFile } = useFileDownloadWithProgress();
@@ -78,7 +78,7 @@ const useMusicPlayer = () => {
         }
       }
     },
-    [dispatch, getFileUrl]
+    [dispatch, getFileUrl],
   );
 
   const openMusicFileUsingModal = useCallback(() => {

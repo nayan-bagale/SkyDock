@@ -26,35 +26,35 @@ class RateLimitMiddleware {
   private constructor() {
     this.loginLimiter = this.createRateLimitMiddleware(
       TimeInMs.THREE_HOURS,
-      10
+      10,
     );
     this.signupLimiter = this.createRateLimitMiddleware(TimeInMs.ONE_DAY, 5);
     this.sendOTPLimiter = this.createRateLimitMiddleware(
       TimeInMs.FIFTEEN_MINUTES,
-      3
+      3,
     );
     this.verifyOTPLimiter = this.createRateLimitMiddleware(
       TimeInMs.FIFTEEN_MINUTES,
-      10
+      10,
     );
     this.defaultLimiter = this.createRateLimitMiddleware(
       TimeInMs.FIFTEEN_MINUTES,
-      50
+      50,
     );
     this.resetPasswordLimiter = this.createRateLimitMiddleware(
       TimeInMs.FIFTEEN_MINUTES,
-      10
+      10,
     );
     this.sendVerificationEmailLimiter = this.createRateLimitMiddleware(
       TimeInMs.ONE_DAY,
-      5
+      5,
     );
     this.strictLimiter = this.createRateLimitMiddleware(TimeInMs.ONE_MINUTE, 5);
   }
 
   private createRateLimitMiddleware(
     windowMs: number = DEFAULT_RATE_LIMIT_WINDOW,
-    max: number = DEFAULT_RATE_LIMIT_MAX
+    max: number = DEFAULT_RATE_LIMIT_MAX,
   ) {
     return rateLimit({
       windowMs, // 15 minutes

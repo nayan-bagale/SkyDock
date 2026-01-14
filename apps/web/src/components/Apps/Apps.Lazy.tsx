@@ -1,14 +1,28 @@
-import { lazy } from 'react'
+import { lazy } from "react";
 
-export const Terminal = lazy(() => import('@/components/Apps/terminal/Terminal'))
-export const Explorer = lazy(() => import('@/components/Apps/Explorer/Explorer'))
-export const Settings = lazy(() => import('@/components/Apps/Settings/Settings'))
-export const ImageViewer = lazy(() => import('@/components/Apps/ImageViewer/ImageViewer'))
-export const MusicPlayer = lazy(() => import('@/components/Apps/MusicPlayer/MusicPlayer'))
-export const VideoPlayer = lazy(() => import('@/components/Apps/VideoPlayer/VideoPlayer'))
-export const PdfReader = lazy(() => import('@/components/Apps/PdfReader/PdfReader'))
-export const NotePad = lazy(() => import('@/components/Apps/NotePad/NotePad'))
-export const Camera = lazy(() => import('@/components/Apps/Camera/Camera'))
+export const Terminal = lazy(
+  () => import("@/components/Apps/terminal/Terminal"),
+);
+export const Explorer = lazy(
+  () => import("@/components/Apps/Explorer/Explorer"),
+);
+export const Settings = lazy(
+  () => import("@/components/Apps/Settings/Settings"),
+);
+export const ImageViewer = lazy(
+  () => import("@/components/Apps/ImageViewer/ImageViewer"),
+);
+export const MusicPlayer = lazy(
+  () => import("@/components/Apps/MusicPlayer/MusicPlayer"),
+);
+export const VideoPlayer = lazy(
+  () => import("@/components/Apps/VideoPlayer/VideoPlayer"),
+);
+export const PdfReader = lazy(
+  () => import("@/components/Apps/PdfReader/PdfReader"),
+);
+export const NotePad = lazy(() => import("@/components/Apps/NotePad/NotePad"));
+export const Camera = lazy(() => import("@/components/Apps/Camera/Camera"));
 
 // System Elements
-export const AppsMenu = lazy(() => import('@/components/AppsMenu/AppsMenu'))
+export const AppsMenu = lazy(() => import("@/components/AppsMenu/AppsMenu"));

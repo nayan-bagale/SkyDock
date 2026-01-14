@@ -29,7 +29,7 @@ class EmailService {
     to: string,
     subject: string,
     html: string,
-    from: string = `"MyApp" <${process.env.SMTP_USER}>`
+    from: string = `"MyApp" <${process.env.SMTP_USER}>`,
   ): Promise<void> {
     try {
       const info = await this.transporter.sendMail({

@@ -104,7 +104,7 @@ class Email {
     await emailService.sendMail(
       "nvbagale@gmail.com",
       "Test Email from SkyDock",
-      "<h1>This is a test email from SkyDock</h1>"
+      "<h1>This is a test email from SkyDock</h1>",
     );
   }
 }

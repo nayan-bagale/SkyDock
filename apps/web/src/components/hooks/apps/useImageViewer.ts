@@ -16,13 +16,13 @@ import useFileDownloadWithProgress from "../useFileDownloadWithProgress";
 const useImageViewer = () => {
   const dispatch = useAppDispatch();
   const imageUrl = useAppSelector(
-    (state) => state.imageViewer.imageViewerInfo.imageUrl
+    (state) => state.imageViewer.imageViewerInfo.imageUrl,
   );
   const imageFileInfo = useAppSelector(
-    (state) => state.imageViewer.imageViewerInfo.imageFileInfo
+    (state) => state.imageViewer.imageViewerInfo.imageFileInfo,
   );
   const lastPosition = useAppSelector(
-    (state) => state.imageViewer.actions.lastPosition
+    (state) => state.imageViewer.actions.lastPosition,
   );
 
   const { openFileOpenerModal } = useContext(FileSaveAndOpenModalContext);
@@ -63,7 +63,7 @@ const useImageViewer = () => {
         }
       }
     },
-    [dispatch, getFileUrl]
+    [dispatch, getFileUrl],
   );
 
   const openImageFileUsingModal = useCallback(() => {

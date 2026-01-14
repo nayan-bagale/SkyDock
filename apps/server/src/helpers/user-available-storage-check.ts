@@ -3,7 +3,7 @@ import logger from "../logger";
 
 export const userAvailableStorageCheck = async (
   userId: string,
-  requiredStorage: number
+  requiredStorage: number,
 ): Promise<boolean> => {
   try {
     const userWithPlan = await prisma.user.findUnique({

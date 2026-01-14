@@ -32,7 +32,7 @@ export const initialState = {
 
 export const forgotPasswordReducer = (
   state: typeof initialState,
-  action: { type: ActionTypes; payload: string }
+  action: { type: ActionTypes; payload: string },
 ) => {
   switch (action.type) {
     case ActionTypes.SET_EMAIL:

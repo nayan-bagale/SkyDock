@@ -57,7 +57,7 @@ const useSoftDeleteItem = () => {
       try {
         await softDeleteFileAndFolder(arrayItems).unwrap();
         dispatch(
-          moveFileIntoFolder({ fileId: targetItem.id, folderId: "trash" })
+          moveFileIntoFolder({ fileId: targetItem.id, folderId: "trash" }),
         );
       } catch (error) {
         console.error(error);
@@ -72,7 +72,7 @@ const useSoftDeleteItem = () => {
           handleDeleteItem(targetItem);
           close();
         },
-        () => close()
+        () => close(),
       );
     }
   };

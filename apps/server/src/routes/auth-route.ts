@@ -9,7 +9,7 @@ const router = express.Router();
 router.post(
   "/register",
   rateLimitMiddleware.signupLimiter,
-  authController.register
+  authController.register,
 );
 
 router.post("/login", rateLimitMiddleware.loginLimiter, authController.login);
@@ -17,26 +17,26 @@ router.post("/login", rateLimitMiddleware.loginLimiter, authController.login);
 router.get(
   "/logout",
   rateLimitMiddleware.defaultLimiter,
-  authController.logout
+  authController.logout,
 );
 
 router.get(
   "/refresh",
   rateLimitMiddleware.defaultLimiter,
-  authController.refresh
+  authController.refresh,
 );
 
 // ------------------ Verify Email ------------------
 router.get(
   "/verify-email",
   rateLimitMiddleware.defaultLimiter,
-  authController.verifyEmail
+  authController.verifyEmail,
 );
 
 router.get(
   "/send-verification-email",
   rateLimitMiddleware.sendVerificationEmailLimiter,
-  authController.sendVerificationEmail
+  authController.sendVerificationEmail,
 );
 
 // ------------------ Forgot Password ------------------
@@ -44,32 +44,32 @@ router.get(
 router.get(
   "/send-otp",
   rateLimitMiddleware.sendOTPLimiter,
-  authController.sendOtpToEmail
+  authController.sendOtpToEmail,
 );
 
 router.post(
   "/verify-otp",
   rateLimitMiddleware.verifyOTPLimiter,
-  authController.verifyOtpForPasswordReset
+  authController.verifyOtpForPasswordReset,
 );
 
 router.post(
   "/reset-password",
   rateLimitMiddleware.resetPasswordLimiter,
-  authController.forgotPasswordReset
+  authController.forgotPasswordReset,
 );
 
 // ------------------ OAuth ------------------
 router.get(
   "/google",
   rateLimitMiddleware.defaultLimiter,
-  authController.OAuthGoogle
+  authController.OAuthGoogle,
 );
 
 router.get(
   "/google/callback",
   rateLimitMiddleware.defaultLimiter,
-  authController.OAuthGoogleCallback
+  authController.OAuthGoogleCallback,
 );
 
 // ------------------ Update User ------------------

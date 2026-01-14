@@ -32,7 +32,7 @@ export const contextMenuSlice = createSlice({
         location: ContextMenuLocation;
         targetId?: string;
         additionalData?: any;
-      }>
+      }>,
     ) => {
       state.isOpen = true;
       state.position = action.payload.position;

@@ -59,16 +59,16 @@ export const useDrag = ({
           x: Math.max(
             Math.min(
               window.innerWidth - width,
-              window.innerWidth - (x + width)
+              window.innerWidth - (x + width),
             ),
-            0
+            0,
           ),
           y: Math.max(
             Math.min(
               window.innerHeight - height,
-              window.innerHeight - (y + height)
+              window.innerHeight - (y + height),
             ),
-            0
+            0,
           ),
         });
 
@@ -83,7 +83,7 @@ export const useDrag = ({
             : Math.min(Math.max(0, y), window.innerHeight - height),
       });
     },
-    [calculateFor]
+    [calculateFor],
   );
 
   const handleMouseUp = (evt: any) => {
@@ -135,7 +135,7 @@ export const useDrag = ({
 
       updateFinalPosition(width, height, left - position.x, top - position.y);
     },
-    [isDragging, dragInfo, ref, updateFinalPosition]
+    [isDragging, dragInfo, ref, updateFinalPosition],
   );
 
   const recalculate = (width: number, height: number) => {
@@ -151,7 +151,7 @@ export const useDrag = ({
       width ?? boundingWidth,
       height ?? boundingHeight,
       left,
-      top
+      top,
     );
   };
 
@@ -177,7 +177,7 @@ export const useDrag = ({
       onChangePosition?.(finalPosition);
     },
     LAST_POSITION_DEBOUNCE_TIME,
-    [finalPosition]
+    [finalPosition],
   );
 
   useUnmount(() => onChangePosition?.({ x: 0, y: 0 }));

@@ -31,12 +31,12 @@ import useSoftDeleteItem from "./useSoftDeleteItem";
 const useContextMenu = (targetItem: FileT | FolderT | null) => {
   const explorerItems = useAppSelector((state) => state.explorer.explorerItems);
   const isExplorerOn = useAppSelector(
-    (state) => state.explorer.actions.isProcessOn
+    (state) => state.explorer.actions.isProcessOn,
   );
   const clipboardItems = useAppSelector((state) => state.explorer.clipboard);
   const activeTab = useAppSelector((state) => state.explorer.activeTab);
   const explorerLastPosition = useAppSelector(
-    (state) => state.explorer.actions.lastPosition
+    (state) => state.explorer.actions.lastPosition,
   );
   const { openApp } = useAppOpenBasedOnFileType(targetItem);
 
@@ -52,7 +52,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
     // Get all folders in current directory
     const currentFolderChildren = currentFolder.children;
     const existingFolders = Object.values(explorerItems).filter((item) =>
-      currentFolderChildren.includes(item.id)
+      currentFolderChildren.includes(item.id),
     );
 
     // Generate new folder name
@@ -88,7 +88,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
 
   const handleOpen = (
     targetItem: FileT | FolderT | null,
-    folder?: "explorer" | "desktop"
+    folder?: "explorer" | "desktop",
   ) => {
     if (!targetItem) return;
     if (targetItem.isFolder) {
@@ -100,7 +100,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
           setCurrentFolderAndCurrentTab({
             currentFolder: targetItem.id,
             activeTab: folder,
-          })
+          }),
         );
       } else {
         dispatch(setCurrentFolder(targetItem.id));
@@ -142,7 +142,10 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
               parent_id: currentFolder.id,
             }).unwrap();
             dispatch(
-              moveFileIntoFolder({ fileId: itemId, folderId: currentFolder.id })
+              moveFileIntoFolder({
+                fileId: itemId,
+                folderId: currentFolder.id,
+              }),
             );
           } catch (error) {
             showToast("Error occurred while moving the file", "error");
@@ -158,7 +161,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
 
   const fileNameGenerator = (
     mimeType: keyof typeof FileExtensions,
-    number: number
+    number: number,
   ) => {
     let newFileName = number === 0 ? "untitled" : `untitled ${number}`;
     switch (mimeType) {
@@ -196,7 +199,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
       }
       dispatch(closeContextMenu());
     },
-    [dispatch, explorerItems, generateEmptyFile]
+    [dispatch, explorerItems, generateEmptyFile],
   );
 
   const handleRestoreFile = async () => {
@@ -212,7 +215,7 @@ const useContextMenu = (targetItem: FileT | FolderT | null) => {
             parent_id: item.id,
           }).unwrap();
           dispatch(
-            moveFileIntoFolder({ fileId: targetItem.id, folderId: item.id })
+            moveFileIntoFolder({ fileId: targetItem.id, folderId: item.id }),
           );
         } catch (error) {
           showToast("Error occurred while restoring the file", "error");

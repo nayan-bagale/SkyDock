@@ -16,13 +16,13 @@ import useFileDownloadWithProgress from "../useFileDownloadWithProgress";
 const usePdfReader = () => {
   const dispatch = useAppDispatch();
   const pdfUrl = useAppSelector(
-    (state) => state.pdfReader.pdfReaderInfo.pdfUrl
+    (state) => state.pdfReader.pdfReaderInfo.pdfUrl,
   );
   const pdfFileInfo = useAppSelector(
-    (state) => state.pdfReader.pdfReaderInfo.pdfFileInfo
+    (state) => state.pdfReader.pdfReaderInfo.pdfFileInfo,
   );
   const lastPosition = useAppSelector(
-    (state) => state.pdfReader.actions.lastPosition
+    (state) => state.pdfReader.actions.lastPosition,
   );
 
   const { openFileOpenerModal } = useContext(FileSaveAndOpenModalContext);
@@ -39,7 +39,7 @@ const usePdfReader = () => {
       setNumPages(numPages);
       setIsLoading(false);
     },
-    []
+    [],
   );
 
   const onDocumentLoadError = useCallback((error: Error) => {
@@ -71,7 +71,7 @@ const usePdfReader = () => {
         }
       }
     },
-    [numPages]
+    [numPages],
   );
 
   const openPdfFile = useCallback(
@@ -79,7 +79,7 @@ const usePdfReader = () => {
       if (item) {
         try {
           const { url } = await getFileUrl(
-            `${item.id}.${item.name.split(".").pop()}`
+            `${item.id}.${item.name.split(".").pop()}`,
           ).unwrap();
           dispatch(setPdfUrl(url));
           dispatch(openPdfReader(item));
@@ -88,7 +88,7 @@ const usePdfReader = () => {
         }
       }
     },
-    [dispatch, getFileUrl]
+    [dispatch, getFileUrl],
   );
 
   const openPdfFileUsingModal = useCallback(() => {

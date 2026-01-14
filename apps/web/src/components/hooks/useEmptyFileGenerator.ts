@@ -29,7 +29,7 @@ const useEmptyFileGenerator = () => {
       const structuredFile = fileArrayGenerator([buffer_file], folderId);
       uploadFileAndUpdateState(structuredFile);
     },
-    []
+    [],
   );
 
   return { generateEmptyFile };

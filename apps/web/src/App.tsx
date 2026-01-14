@@ -49,7 +49,6 @@
 
 //   if (isLoading) return <div>Loading...</div>;
 
-
 //   return (
 //     <main className="pb-4 h-screen" onContextMenu={handleContext}>
 //       <div
@@ -90,18 +89,11 @@ import Layout from "./routes/Layout";
 import MainApp from "./routes/MainApp";
 import Protected from "./routes/Protected";
 
-
 const App = () => {
-
   const { isOnline, isChecking, checkConnection } = useNetworkStatus();
 
   if (!isOnline) {
-    return (
-      <OfflinePage
-        onRetry={checkConnection}
-        isRetrying={isChecking}
-      />
-    );
+    return <OfflinePage onRetry={checkConnection} isRetrying={isChecking} />;
   }
 
   return (
@@ -118,8 +110,7 @@ const App = () => {
         {/* <Route path="*" element={<NotFound />} /> */}
       </Route>
     </Routes>
-  )
-}
-
+  );
+};
 
 export default App;

@@ -14,7 +14,7 @@ const useAppOpenBasedOnFileType = (item: FileT | FolderT | null) => {
   const dispatch = useAppDispatch();
   // const { getFileUrl } = useGetFileURl();
   const isTrashTabActive = useAppSelector(
-    (state) => state.explorer.activeTab === "trash"
+    (state) => state.explorer.activeTab === "trash",
   );
   const { openFile: openTextFile } = useNotePad();
   const { openImageFile } = useImageViewer();
@@ -28,7 +28,7 @@ const useAppOpenBasedOnFileType = (item: FileT | FolderT | null) => {
       const itemType = (item as FileT).details.type;
       return itemType ? itemType.startsWith(type) : false;
     },
-    [item]
+    [item],
   );
 
   const openApp = useCallback(() => {

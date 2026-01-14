@@ -44,7 +44,7 @@ export function useBlobFileGenerator(): FileGenerationResult {
           }
           const csvHeaders = Object.keys(content[0]).join(",");
           const csvRows = content.map((row: Record<string, unknown>) =>
-            Object.values(row).join(",")
+            Object.values(row).join(","),
           );
           const csvString = [csvHeaders, ...csvRows].join("\n");
           blob = new Blob([csvString], { type: SupportedMimeTypes.CSV });
@@ -80,7 +80,7 @@ export function useBlobFileGenerator(): FileGenerationResult {
             blob = content;
           } else {
             throw new Error(
-              "Invalid content format for image. Must be base64 or Blob."
+              "Invalid content format for image. Must be base64 or Blob.",
             );
           }
           break;

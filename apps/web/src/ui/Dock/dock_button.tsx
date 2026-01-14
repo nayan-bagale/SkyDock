@@ -45,7 +45,7 @@ const dockButtonStyles = cva(
     defaultVariants: {
       intent: "primary",
     },
-  }
+  },
 );
 
 type DockButtonProps = HTMLMotionProps<"button"> &

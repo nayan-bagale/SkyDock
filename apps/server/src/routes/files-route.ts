@@ -47,7 +47,7 @@ router.patch("/file/text/:id", authMiddleware, async (req, res) => {
 router.put(
   "/folderAndFile/softDelete",
   authMiddleware,
-  filesController.softDeleteFileAndFolder
+  filesController.softDeleteFileAndFolder,
 );
 
 // router.put("/restore/storage", authMiddleware, async (req, res) => {

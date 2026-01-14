@@ -30,7 +30,7 @@ class Store {
     userId: string,
     filename: string,
     contentType: string,
-    contentLength: number
+    contentLength: number,
   ): Promise<string> {
     const command = new PutObjectCommand({
       Bucket: process.env.AWS_BUCKET_NAME!,

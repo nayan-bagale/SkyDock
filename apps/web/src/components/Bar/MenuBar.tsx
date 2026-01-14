@@ -7,7 +7,6 @@ import Logo from "./Logo/Logo";
 import ProfileDropdown from "./Profile/ProfleDropDown";
 
 const MenuBar = () => {
-
   return (
     <>
       <Bar className="flex justify-between items-center">
@@ -28,7 +27,7 @@ const MenuBar = () => {
         </div>
       </Bar>
     </>
-  )
-}
+  );
+};
 
-export default MenuBar
+export default MenuBar;

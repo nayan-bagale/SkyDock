@@ -14,7 +14,7 @@ const useFileDownloadWithProgress = () => {
 
     try {
       const fileDownloadUrl = await getDownloadUrl(
-        `${item.id}.${item.name.split(".").pop()}`
+        `${item.id}.${item.name.split(".").pop()}`,
       );
       if (!fileDownloadUrl) return;
       const controller = new AbortController();
@@ -60,7 +60,7 @@ const useFileDownloadWithProgress = () => {
             },
             {
               id: toastId,
-            }
+            },
           );
           //TODO: Add Throttling for the progress bar
           //TODO: Refer https://www.npmjs.com/package/lodash.throttle
@@ -90,7 +90,7 @@ const useFileDownloadWithProgress = () => {
         },
         {
           id: toastId,
-        }
+        },
       );
     } catch (error) {
       console.error(error);
@@ -103,7 +103,7 @@ const useFileDownloadWithProgress = () => {
         },
         {
           id: toastId || undefined,
-        }
+        },
       );
     } finally {
       if (toastId) {

@@ -68,8 +68,8 @@ class AuthController {
           } catch (error) {
             return done(error);
           }
-        }
-      )
+        },
+      ),
     );
   }
 
@@ -132,7 +132,7 @@ class AuthController {
           id: user.id,
           email: user.email,
           name: user.name,
-        })
+        }),
       );
       return res.status(OK).json({ message: messages.USER_CREATED });
     } catch (e: any) {
@@ -490,7 +490,7 @@ class AuthController {
           id: user.id,
           email: user.email,
           name: user.name,
-        })
+        }),
       );
     } catch (e: any) {
       logger.error("Error while sending verification email", e);
@@ -723,7 +723,7 @@ class AuthController {
       res.cookie("refreshToken", refreshToken, cookieOptions);
 
       return res.redirect(
-        `${process.env.CLIENT_URL}/oauth?accessToken=${accessToken}`
+        `${process.env.CLIENT_URL}/oauth?accessToken=${accessToken}`,
       );
     })(req, res, next); // Don't forget to pass next
   }

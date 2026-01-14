@@ -9,32 +9,30 @@ import Dock from "../components/Dock/Dock";
 import SubscriptionPlans from "../components/SubscriptionPlan/SubscriptionPlan";
 import "../index.css";
 
-
 const MainApp = () => {
+  const isSubscriptionPlanCardOpen = useAppSelector(
+    (state) => state.apps.subscriptionPlanCard,
+  );
 
-    const isSubscriptionPlanCardOpen = useAppSelector(
-        (state) => state.apps.subscriptionPlanCard
-    );
+  return (
+    <GlobalContextApi>
+      <div className="w-full">
+        <MenuBar />
+      </div>
+      <Desktop>
+        <Apps_ />
+      </Desktop>
+      <div className="justify-self-end">
+        <Dock />
+      </div>
+      {/* <AiButton /> */}
+      <AnimatePresence>
+        {isSubscriptionPlanCardOpen && <SubscriptionPlans />}
+      </AnimatePresence>
+      {/* <DraggingItem /> */}
+      <GlobalContextMenu />
+    </GlobalContextApi>
+  );
+};
 
-    return (
-        <GlobalContextApi>
-            <div className="w-full">
-                <MenuBar />
-            </div>
-            <Desktop>
-                <Apps_ />
-            </Desktop>
-            <div className="justify-self-end">
-                <Dock />
-            </div>
-            {/* <AiButton /> */}
-            <AnimatePresence>
-                {isSubscriptionPlanCardOpen && <SubscriptionPlans />}
-            </AnimatePresence>
-            {/* <DraggingItem /> */}
-            <GlobalContextMenu />
-        </GlobalContextApi>
-    )
-}
-
-export default MainApp
+export default MainApp;

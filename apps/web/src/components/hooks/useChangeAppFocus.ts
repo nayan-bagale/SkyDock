@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 const useChangeAppFocus = (
   AppName: FocusedAppsT,
-  onUnmountCallback?: () => void
+  onUnmountCallback?: () => void,
 ) => {
   const dispatch = useAppDispatch();
   const focusedApp = useAppSelector((state) => state.apps.focusedApp);

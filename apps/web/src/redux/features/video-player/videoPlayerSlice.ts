@@ -39,7 +39,7 @@ export const videoPlayerSlice = createSlice({
     },
     setVideoPlayerLastPosition: (
       state,
-      action: PayloadAction<{ x: number; y: number }>
+      action: PayloadAction<{ x: number; y: number }>,
     ) => {
       state.actions.lastPosition = action.payload;
     },

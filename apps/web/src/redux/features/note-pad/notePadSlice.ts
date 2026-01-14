@@ -49,7 +49,7 @@ export const notePadSlice = createSlice({
     },
     setNotePadSyncStatus: (
       state,
-      action: PayloadAction<"saved" | "saving" | "synced" | "error">
+      action: PayloadAction<"saved" | "saving" | "synced" | "error">,
     ) => {
       state.notePadInfo.syncStatus = action.payload;
     },
@@ -59,7 +59,7 @@ export const notePadSlice = createSlice({
 
     setLastPosition: (
       state,
-      action: PayloadAction<{ x: number; y: number }>
+      action: PayloadAction<{ x: number; y: number }>,
     ) => {
       state.actions.lastPosition = action.payload;
     },

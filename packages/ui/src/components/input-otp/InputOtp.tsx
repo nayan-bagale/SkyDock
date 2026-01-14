@@ -1,6 +1,6 @@
-import classNames from "classnames"
-import { OTPInput, OTPInputContext } from "input-otp"
-import * as React from "react"
+import classNames from "classnames";
+import { OTPInput, OTPInputContext } from "input-otp";
+import * as React from "react";
 
 const InputOTP = React.forwardRef<
   React.ElementRef<typeof OTPInput>,
@@ -10,28 +10,32 @@ const InputOTP = React.forwardRef<
     ref={ref}
     containerClassName={classNames(
       "flex items-center gap-2 has-[:disabled]:opacity-50",
-      containerClassName
+      containerClassName,
     )}
     className={classNames("disabled:cursor-not-allowed", className)}
     {...props}
   />
-))
-InputOTP.displayName = "InputOTP"
+));
+InputOTP.displayName = "InputOTP";
 
 const InputOTPGroup = React.forwardRef<
   React.ElementRef<"div">,
   React.ComponentPropsWithoutRef<"div">
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={classNames("flex items-center", className)} {...props} />
-))
-InputOTPGroup.displayName = "InputOTPGroup"
+  <div
+    ref={ref}
+    className={classNames("flex items-center", className)}
+    {...props}
+  />
+));
+InputOTPGroup.displayName = "InputOTPGroup";
 
 const InputOTPSlot = React.forwardRef<
   React.ElementRef<"div">,
   React.ComponentPropsWithoutRef<"div"> & { index: number }
 >(({ index, className, ...props }, ref) => {
-  const inputOTPContext = React.useContext(OTPInputContext)
-  const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index]
+  const inputOTPContext = React.useContext(OTPInputContext);
+  const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index];
 
   return (
     <div
@@ -39,7 +43,7 @@ const InputOTPSlot = React.forwardRef<
       className={classNames(
         "relative flex h-9 w-9 items-center justify-center border-y border-r border-input text-sm shadow-sm transition-all first:rounded-l-md first:border-l last:rounded-r-md",
         isActive && "z-10 ring-1 ring-ring",
-        className
+        className,
       )}
       {...props}
     >
@@ -50,9 +54,9 @@ const InputOTPSlot = React.forwardRef<
         </div>
       )}
     </div>
-  )
-})
-InputOTPSlot.displayName = "InputOTPSlot"
+  );
+});
+InputOTPSlot.displayName = "InputOTPSlot";
 
 const InputOTPSeparator = React.forwardRef<
   React.ElementRef<"div">,
@@ -61,8 +65,7 @@ const InputOTPSeparator = React.forwardRef<
   <div ref={ref} role="separator" {...props}>
     {/* // <Minus /> */}
   </div>
-))
-InputOTPSeparator.displayName = "InputOTPSeparator"
+));
+InputOTPSeparator.displayName = "InputOTPSeparator";
 
-export { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot }
-
+export { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot };

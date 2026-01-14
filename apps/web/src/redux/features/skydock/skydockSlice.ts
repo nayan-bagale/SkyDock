@@ -36,7 +36,7 @@ export const skydockSlice = createSlice({
 
     setCameraPermission: (
       state,
-      action: PayloadAction<"Allowed" | "Denied" | "Prompt" | undefined>
+      action: PayloadAction<"Allowed" | "Denied" | "Prompt" | undefined>,
     ) => {
       state.browserApis.camera.permission = action.payload;
     },

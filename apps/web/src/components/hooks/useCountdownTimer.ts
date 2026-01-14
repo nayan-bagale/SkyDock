@@ -8,7 +8,7 @@ function formatTime(seconds: number): string {
 }
 
 export function useCountdownTimer(
-  defaultDuration: number = TimeInMs.FIVE_MINUTES
+  defaultDuration: number = TimeInMs.FIVE_MINUTES,
 ) {
   const [remainingTime, setRemainingTime] = useState(defaultDuration);
   const [isExpired, setIsExpired] = useState(false);

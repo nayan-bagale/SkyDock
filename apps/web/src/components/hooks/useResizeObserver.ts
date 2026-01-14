@@ -49,7 +49,7 @@ import { useEffect, useRef, useState } from "react";
 
 function useResizeObserver(
   targetRef: React.RefObject<HTMLElement>,
-  delay = 500
+  delay = 500,
 ) {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [{ width, height }, setSize] = useState({ width: 0, height: 0 });

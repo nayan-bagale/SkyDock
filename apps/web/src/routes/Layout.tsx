@@ -8,44 +8,42 @@ import { Outlet } from "react-router";
 import { Toaster } from "sonner";
 
 const Layout = () => {
-    // const token = useAppSelector((state) => state.auth.accessToken);
-    const { isLoading, isError } = useSkydockInitialLoad();
-    const dispatch = useAppDispatch();
-    const isSkydockLoading = useAppSelector((state) => state.skydock.isLoading);
+  // const token = useAppSelector((state) => state.auth.accessToken);
+  const { isLoading, isError } = useSkydockInitialLoad();
+  const dispatch = useAppDispatch();
+  const isSkydockLoading = useAppSelector((state) => state.skydock.isLoading);
 
-    const handleContext = (e: any) => {
-        // e.preventDefault()
-        // console.log(e.target)
-    };
+  const handleContext = (e: any) => {
+    // e.preventDefault()
+    // console.log(e.target)
+  };
 
-    const onFinishLoading = () => {
-        dispatch(setSkydockLoading(false));
-    }
+  const onFinishLoading = () => {
+    dispatch(setSkydockLoading(false));
+  };
 
+  return (
+    <>
+      <main className="pb-4 h-screen" onContextMenu={handleContext}>
+        {isSkydockLoading && (
+          <AnimatePresence>
+            <LoadingScreen
+              isResourcesLoaded={!isLoading}
+              onFinishLoading={onFinishLoading}
+            />
+          </AnimatePresence>
+        )}
+        {!isSkydockLoading && (
+          <>
+            <div className={cn("flex flex-col items-center h-full")}>
+              <Outlet />
+            </div>
+          </>
+        )}
+      </main>
+      <Toaster swipeDirections={["right", "bottom"]} />
+    </>
+  );
+};
 
-    return (
-        <>
-            <main className="pb-4 h-screen" onContextMenu={handleContext}>
-                {isSkydockLoading && (
-                    <AnimatePresence>
-                        <LoadingScreen isResourcesLoaded={!isLoading} onFinishLoading={onFinishLoading} />
-                    </AnimatePresence>
-                )}{!isSkydockLoading && <>
-
-                    <div
-                        className={cn(
-                            "flex flex-col items-center h-full",
-                        )}
-                    >
-                        <Outlet />
-                    </div>
-                </>}
-
-            </main>
-            <Toaster swipeDirections={['right', 'bottom']} />
-        </>
-
-    )
-}
-
-export default Layout
+export default Layout;

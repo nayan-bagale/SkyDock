@@ -7,7 +7,7 @@ import { decodeToken, verifyToken } from "../utils/token";
 export function authMiddleware(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   // ----------------- Refresh Token ----------------
   const refreshToken = req.cookies.refreshToken;

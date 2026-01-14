@@ -2,7 +2,7 @@
 //INFO: This can prevent event bubbling while drag and drop.
 export const onDropTweak = <T>(
   event: React.DragEvent<T>,
-  callback?: null | ((event: React.DragEvent<T>) => void | Promise<void>)
+  callback?: null | ((event: React.DragEvent<T>) => void | Promise<void>),
 ) => {
   event.preventDefault();
   event.stopPropagation();
@@ -11,7 +11,7 @@ export const onDropTweak = <T>(
 
 export const onContextMenuTweak = <T>(
   event: React.MouseEvent<T>,
-  callback?: null | ((event: React.MouseEvent<T>) => void | Promise<void>)
+  callback?: null | ((event: React.MouseEvent<T>) => void | Promise<void>),
 ) => {
   event.preventDefault();
   event.stopPropagation();

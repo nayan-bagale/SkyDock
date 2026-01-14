@@ -1,11 +1,9 @@
-import Confetti from "@skydock/ui/confetti"
-import { useWindowSize } from "react-use"
+import Confetti from "@skydock/ui/confetti";
+import { useWindowSize } from "react-use";
 
 const Confetti_ = () => {
-    const { width, height } = useWindowSize()
-    return (
-        <Confetti width={width} height={height} />
-    )
-}
+  const { width, height } = useWindowSize();
+  return <Confetti width={width} height={height} />;
+};
 
-export default Confetti_
+export default Confetti_;

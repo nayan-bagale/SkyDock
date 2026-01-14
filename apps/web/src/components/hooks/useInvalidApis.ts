@@ -6,7 +6,7 @@ export const useInvalidApi = () => {
   const dispatch = useAppDispatch();
   const invalidUserInfo = useCallback(
     () => dispatch(userAuthApi.util.invalidateTags(["UserInfo"])),
-    [dispatch]
+    [dispatch],
   );
   return {
     invalidUserInfo,

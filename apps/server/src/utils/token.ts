@@ -6,17 +6,17 @@ export const createRefreshToken = (user: Partial<LoginResponse>) => {
   return jwt.sign(
     { user },
     process.env.REFRESH_TOKEN_SECRET!,
-    jwtOptions.refreshToken
+    jwtOptions.refreshToken,
   );
 };
 export const createAccessToken = (
   user: Partial<LoginResponse>,
-  refreshToken: string
+  refreshToken: string,
 ) => {
   return jwt.sign(
     { user },
     `${process.env.ACCESS_TOKEN_SECRET!} ${refreshToken}`,
-    jwtOptions.accessToken
+    jwtOptions.accessToken,
   );
 };
 
@@ -24,14 +24,14 @@ export const createEmailVerificationToken = (user: LoginResponse) => {
   return jwt.sign(
     { user },
     process.env.EMAIL_VERIFICATION_TOKEN_SECRET!,
-    jwtOptions.emailVerification
+    jwtOptions.emailVerification,
   );
 };
 
 export const verifyToken = (
   token: string,
   type: "AccessToken" | "RefreshToken" | "EmailVerification",
-  refreshToken?: string
+  refreshToken?: string,
 ) => {
   const tokenType = {
     RefreshToken: "REFRESH_TOKEN_SECRET",

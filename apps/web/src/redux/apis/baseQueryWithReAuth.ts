@@ -32,7 +32,7 @@ const baseQueryWithReAuth: BaseQueryFn<
     const response = await baseQuery(
       `${import.meta.env.VITE_BACKEND_URL}/auth/refresh`,
       store,
-      extraOptions
+      extraOptions,
     );
 
     if (response.data) {

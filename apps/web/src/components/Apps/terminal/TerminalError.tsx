@@ -1,9 +1,7 @@
 import { FC } from "react";
 
 const TerminalError: FC = () => {
-    return (
-        null
-    )
-}
+  return null;
+};
 
-export default TerminalError
+export default TerminalError;

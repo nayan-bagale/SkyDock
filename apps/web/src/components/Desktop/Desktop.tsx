@@ -1,8 +1,8 @@
 import { useUpdateItemMutation } from "@/redux/apis/filesAndFolderApi";
 import { openContextMenu } from "@/redux/features/contextMenu/contextMenuSlice";
 import {
-    moveFileIntoFolder,
-    setItemDragged,
+  moveFileIntoFolder,
+  setItemDragged,
 } from "@/redux/features/explorer/explorerSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { DraggedFilesT } from "@/ui/DragDropWrapper";
@@ -15,96 +15,99 @@ import DragnDropWrapper_Desktop from "../Wrappers/DragnDropWrapper_Desktop";
 import DesktopItems from "./DesktopItems";
 
 interface DesktopProps extends React.HTMLAttributes<HTMLDivElement> {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
 
 const Desktop = ({ children }: DesktopProps) => {
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
-    const itemDragged = useAppSelector((state) => state.explorer.itemDragged);
-    const desktopItem = useAppSelector(
-        (state) => state.explorer.explorerItems["desktop"]
-    ) as FolderT;
-    const [updateFileApi] = useUpdateItemMutation();
-    const [getUploadUrls] = useFileUploadsAndUpdateState();
+  const itemDragged = useAppSelector((state) => state.explorer.itemDragged);
+  const desktopItem = useAppSelector(
+    (state) => state.explorer.explorerItems["desktop"],
+  ) as FolderT;
+  const [updateFileApi] = useUpdateItemMutation();
+  const [getUploadUrls] = useFileUploadsAndUpdateState();
 
+  const handleExternalfiles = async (files: DraggedFilesT) => {
+    const Arrayfiles = Array.from(files);
+    const filesObj = Arrayfiles.filter((file) => file.type !== "").map(
+      (file) => ({
+        id: nanoid(),
+        isFolder: false as const,
+        name: file.name,
+        parent: "desktop",
+        details: {
+          name: file.name,
+          size: file.size.toString(),
+          // size_display: changeBytes(file.size),
+          type: file.type,
+          lastModified: file.lastModified.toString(),
+          File: file,
+        },
+      }),
+    );
 
-    const handleExternalfiles = async (files: DraggedFilesT) => {
-        const Arrayfiles = Array.from(files)
-        const filesObj = Arrayfiles.filter((file) => file.type !== "").map(
-            (file) => ({
-                id: nanoid(),
-                isFolder: false as const,
-                name: file.name,
-                parent: "desktop",
-                details: {
-                    name: file.name,
-                    size: file.size.toString(),
-                    // size_display: changeBytes(file.size),
-                    type: file.type,
-                    lastModified: file.lastModified.toString(),
-                    File: file,
-                },
-            })
-        );
+    await getUploadUrls(filesObj);
+  };
 
-        await getUploadUrls(filesObj);
-    }
+  const handleInternalFiles = async (e: any) => {
+    if (!itemDragged) return;
+    if (desktopItem.children.includes(itemDragged.id)) return;
 
-    const handleInternalFiles = async (e: any) => {
-        if (!itemDragged) return;
-        if (desktopItem.children.includes(itemDragged.id)) return;
-
-        const requestBody: PatchItemRequest = {
-            id: itemDragged.id,
-            parent_id: desktopItem.id,
-            is_deleted: false,
-            deletedAt: null,
-        };
-
-        try {
-            await updateFileApi(requestBody).unwrap();
-            dispatch(
-                moveFileIntoFolder({ fileId: itemDragged.id, folderId: desktopItem.id })
-            );
-        } catch (error) {
-            console.error("Error moving item to desktop:", error);
-            showToast("Error moving item to desktop", "error");
-        }
-        dispatch(setItemDragged(null));
-    }
-
-
-    const handleContextMenu = (e: React.MouseEvent) => {
-        e.preventDefault();
-        dispatch(
-            openContextMenu({
-                position: { x: e.clientX, y: e.clientY },
-                location: "Desktop",
-                additionalData: { desktopItem },
-            })
-        );
+    const requestBody: PatchItemRequest = {
+      id: itemDragged.id,
+      parent_id: desktopItem.id,
+      is_deleted: false,
+      deletedAt: null,
     };
 
-    const onKeyDownDesktop = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
-        console.log("clicked", e.key)
-        if (e.key === "a" && (e.ctrlKey || e.metaKey)) {
-            console.log("a+ctrl")
-        }
+    try {
+      await updateFileApi(requestBody).unwrap();
+      dispatch(
+        moveFileIntoFolder({
+          fileId: itemDragged.id,
+          folderId: desktopItem.id,
+        }),
+      );
+    } catch (error) {
+      console.error("Error moving item to desktop:", error);
+      showToast("Error moving item to desktop", "error");
+    }
+    dispatch(setItemDragged(null));
+  };
 
-    }, [])
-
-    return (
-        <DragnDropWrapper_Desktop
-            DesktopItems={DesktopItems}
-            handleExternalfiles={handleExternalfiles}
-            handleInternalFiles={handleInternalFiles}
-            onContextMenu={handleContextMenu}
-        // onKeyDown={onKeyDownDesktop}
-        >
-            {children}
-        </DragnDropWrapper_Desktop>
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    dispatch(
+      openContextMenu({
+        position: { x: e.clientX, y: e.clientY },
+        location: "Desktop",
+        additionalData: { desktopItem },
+      }),
     );
+  };
+
+  const onKeyDownDesktop = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      console.log("clicked", e.key);
+      if (e.key === "a" && (e.ctrlKey || e.metaKey)) {
+        console.log("a+ctrl");
+      }
+    },
+    [],
+  );
+
+  return (
+    <DragnDropWrapper_Desktop
+      DesktopItems={DesktopItems}
+      handleExternalfiles={handleExternalfiles}
+      handleInternalFiles={handleInternalFiles}
+      onContextMenu={handleContextMenu}
+      // onKeyDown={onKeyDownDesktop}
+    >
+      {children}
+    </DragnDropWrapper_Desktop>
+  );
 };
 
 export default Desktop;

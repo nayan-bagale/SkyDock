@@ -18,7 +18,7 @@ const useExplorer = () => {
     const currentFolder = explorerItems[currentFolderId] as FolderT;
     const currentFolderChildren = currentFolder.children;
     const existingFolders = Object.values(explorerItems).filter((item) =>
-      currentFolderChildren.includes(item.id)
+      currentFolderChildren.includes(item.id),
     );
 
     // Generate new folder name
