@@ -1,2 +1,2 @@
-import tailwindConfig from "@tailwind/configs/tailwind/tailwind.config";
+import tailwindConfig from "@skydock/configs/tailwind/tailwind.config.js";
 export default tailwindConfig;
