@@ -1,5 +1,5 @@
 {
-  "extends": "@skydock/typescript-config/react-library.json",
+  "extends": "@skydock/configs/typescript/react-library.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "./src",

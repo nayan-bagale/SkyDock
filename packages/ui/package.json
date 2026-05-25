@@ -22,7 +22,6 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
     "@skydock/configs": "*",
-    "@skydock/typescript-config": "*",
     "@turbo/gen": "^1.13.4",
     "@types/eslint": "^9.6.1",
     "@types/node": "^25.9.1",

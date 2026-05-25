@@ -1,5 +1,5 @@
 {
-  "extends": "@skydock/typescript-config/react-library.json",
+  "extends": "@skydock/configs/typescript/react-library.json",
   "compilerOptions": {
     "composite": true,
     "incremental": true,
@@ -12,7 +12,10 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
-    "types": ["vite/client", "node"],
+    "types": [
+      "vite/client",
+      "node"
+    ],
     "paths": {
       "@/*": [
         "./src/*"
