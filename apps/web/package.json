@@ -36,7 +36,6 @@
     "@eslint/eslintrc": "^3.3.5",
     "@skydock/configs": "*",
     "@skydock/types": "*",
-    "@skydock/typescript-config": "*",
     "@types/node": "^25.9.1",
     "@types/react": "^18.3.29",
     "@types/react-dom": "^18.3.7",

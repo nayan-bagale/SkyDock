@@ -1,5 +1,5 @@
 {
-  "extends": "@skydock/typescript-config/base.json",
+  "extends": "@skydock/configs/typescript/base.json",
   "compilerOptions": {
     "incremental": true,
     "composite": true,

@@ -1,11 +1,16 @@
 {
-  "extends": "@skydock/typescript-config/base.json",
+  "extends": "@skydock/configs/typescript/base.json",
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
     "target": "es6",
     "sourceMap": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
