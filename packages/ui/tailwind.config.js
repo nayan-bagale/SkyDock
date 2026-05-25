@@ -1,1 +1,1 @@
-module.exports = require("@tailwind/configs/tailwind/tailwind.config");
+module.exports = require("@skydock/configs/tailwind/tailwind.config.js");

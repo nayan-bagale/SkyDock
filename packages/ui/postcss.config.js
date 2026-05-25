@@ -1,1 +1,1 @@
-module.exports = require("@tailwind/configs/tailwind/postcss.config");
+module.exports = require("@skydock/configs/tailwind/postcss.config.js");
