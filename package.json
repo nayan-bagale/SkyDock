@@ -9,7 +9,8 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format": "prettier --config packages/configs/prettier/prettier.config.js --ignore-path packages/configs/prettier/.prettierignore --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
+    "format:check": "prettier --config packages/configs/prettier/prettier.config.js --ignore-path packages/configs/prettier/.prettierignore --check \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "db:studio": "yarn workspace @skydock/db run db:studio",
     "db:migrate": "yarn workspace @skydock/db run db:migrate",
     "docker:down": "yarn workspace @skydock/docker-dev run docker:stop"
