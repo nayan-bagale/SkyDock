@@ -1,6 +1,7 @@
 module.exports = {
   content: [
-    "../../packages/ui/**/*.{js,ts,jsx,tsx}",
+    // Limit to source files so Tailwind doesn't traverse any nested `node_modules`
+    "../../packages/ui/src/**/*.{js,ts,jsx,tsx}",
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
