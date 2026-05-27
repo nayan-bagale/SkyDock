@@ -1,93 +1,117 @@
-# Turborepo starter
+# SkyDock Monorepo
 
-This is an official starter Turborepo.
+SkyDock is a Turborepo-based TypeScript monorepo with:
 
-## Using this example
+- a Vite + React web client
+- an Express API server
+- shared internal packages for db, ui, validation, types, and configs
 
-Run the following command:
+## Tech Stack
+
+- Node.js `>=24`
+- Yarn `4` workspaces
+- Turborepo
+- TypeScript
+- Prisma + PostgreSQL
+- Vite + React + Tailwind CSS
+
+## Project Structure
+
+```text
+.
+├── apps
+│   ├── server          # Express API
+│   └── web             # Vite + React frontend
+├── packages
+│   ├── configs         # Shared eslint/tailwind/ts/prettier configs
+│   ├── db              # Prisma schema, migrations, db client package
+│   ├── docker-dev      # Local Postgres + MinIO docker-compose
+│   ├── types           # Shared TypeScript types/enums
+│   ├── ui              # Shared UI components/icons/styles
+│   └── validation      # Shared validation package
+├── turbo.json
+└── package.json
+```
+
+## Environment Setup
+
+1. Copy env template:
 
 ```sh
-npx create-turbo@latest
+cp .env.example .env
 ```
 
-## What's inside?
+2. Optionally create mode-specific overrides:
 
-This Turborepo includes the following packages/apps:
+- `.env.dev`
+- `.env.prod`
 
-### Apps and Packages
+Environment variables are centralized at the repository root and consumed by apps/packages from there.
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@skydock/configs`: Shared configurations for eslint and tailwind
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+## Install
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+```sh
+yarn install
 ```
 
-### Develop
+## Local Infrastructure (Postgres + MinIO)
 
-To develop all apps and packages, run the following command:
+Start local services:
 
-```
-cd my-turborepo
-pnpm dev
-```
-
-### Environment Variables
-
-- Copy `/.env.example` to `/.env`.
-- Optional overrides can be defined in `/.env.dev` and `/.env.prod`.
-- All apps/packages load environment variables from the repository root.
-
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
+```sh
+yarn workspace @skydock/docker-dev docker:up
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+Stop local services:
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
+```sh
+yarn docker:down
 ```
 
-## Useful Links
+## Development
 
-Learn more about the power of Turborepo:
+Run all dev tasks through Turborepo:
 
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
+```sh
+yarn dev
+```
 
-## Adding new app
+Key workspace scripts:
 
-- Add new slice for the app in `apps/web/src/store/slices`
-- Add new slice to the `store` in `apps/web/src/store/index.ts`
-- Add reducer to useAppOpenBasedOnFileType in `apps/web/src/components/hooks/useAppOpenBasedOnFileType.ts`
-- Add reducer to useAppProcess in `apps/web/src/components/hooks/useAppProcess.ts`
-- Add new app to supportedMimeTypes enum in `packages/types/src/enums/supportedMimeTypes.ts`
-- If app requires api then create rtk query slice in `apps/web/src/redux/apis`
+- `apps/web`: `yarn workspace web dev`
+- `apps/server`: `yarn workspace server dev`
+- `packages/db` generate client: `yarn workspace @skydock/db db:generate`
+- `packages/db` migrate: `yarn db:migrate`
+- `packages/db` studio: `yarn db:studio`
+- `packages/db` seed: `yarn workspace @skydock/db db:seed`
+
+## Build, Lint, Format
+
+Build all workspaces:
+
+```sh
+yarn build
+```
+
+Lint all workspaces:
+
+```sh
+yarn lint
+```
+
+Format code:
+
+```sh
+yarn format
+```
+
+Check formatting:
+
+```sh
+yarn format:check
+```
+
+## Notes
+
+- `turbo.json` tracks `.env`, `.env.dev`, and `.env.prod` as global dependencies.
+- Global env inputs for task hashing include `DATABASE_URL`, `VITE_BACKEND_URL`, and `NODE_ENV`.

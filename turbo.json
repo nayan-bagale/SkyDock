@@ -25,7 +25,7 @@
     },
     "db:migrate": {
       "cache": false,
-      "persistent": true
+      "persistent": false
     },
     "db:deploy": {
       "cache": false
@@ -37,6 +37,6 @@
       "cache": false
     }
   },
-  "globalDependencies": ["yarn.lock", ".env"],
-  "globalEnv": ["DATABASE_URL"]
+  "globalDependencies": [".env", ".env.dev", ".env.prod"],
+  "globalEnv": ["DATABASE_URL", "VITE_BACKEND_URL", "NODE_ENV"]
 }
