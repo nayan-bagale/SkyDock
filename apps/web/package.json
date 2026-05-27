@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "vite --mode dev",
-    "build:web": "tsc -b && vite build --mode prod",
+    "build": "tsc -b && vite build --mode prod",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "start": "vite preview"
