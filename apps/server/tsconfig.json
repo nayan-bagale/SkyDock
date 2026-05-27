@@ -3,9 +3,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "target": "ES2022",
     "sourceMap": true,
-    "strict": true,
     "typeRoots": [
       "./src/types"
     ]
@@ -14,6 +12,7 @@
     "src"
   ],
   "exclude": [
+    "node_modules",
     "dist"
   ]
 }
