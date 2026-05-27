@@ -1,7 +1,10 @@
-import "dotenv/config";
+import path from "path";
+import dotenv from "dotenv";
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/client";
+
+dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 
 let prismaInstance: PrismaClient | null = null;
 
