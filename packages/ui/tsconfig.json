@@ -1,11 +1,9 @@
 {
   "extends": "@skydock/configs/typescript/react-library.json",
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "./dist",
     "rootDir": "./src",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "sourceMap": true
   },
   "include": [
     "src",

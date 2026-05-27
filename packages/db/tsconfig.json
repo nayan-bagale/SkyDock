@@ -3,15 +3,13 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "moduleResolution": "NodeNext",
-    "module": "NodeNext",
-    "target": "ES2022",
-    "strict": true
+    "sourceMap": true
   },
   "include": [
     "src"
   ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
