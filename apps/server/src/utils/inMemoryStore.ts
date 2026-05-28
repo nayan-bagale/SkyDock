@@ -1,4 +1,4 @@
-import { OTP_EXPIRATION_TIME } from "../constants";
+import { OTP_EXPIRATION_TIME } from '../constants';
 
 type CacheValue = {
   value: any;

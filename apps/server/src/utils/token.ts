@@ -1,18 +1,11 @@
-import { LoginResponse } from "@skydock/types/Auth";
-import jwt from "jsonwebtoken";
-import { jwtOptions } from "../config/cookiesAndJwt";
+import { LoginResponse } from '@skydock/types/Auth';
+import jwt from 'jsonwebtoken';
+import { jwtOptions } from '../config/cookiesAndJwt';
 
 export const createRefreshToken = (user: Partial<LoginResponse>) => {
-  return jwt.sign(
-    { user },
-    process.env.REFRESH_TOKEN_SECRET!,
-    jwtOptions.refreshToken,
-  );
+  return jwt.sign({ user }, process.env.REFRESH_TOKEN_SECRET!, jwtOptions.refreshToken);
 };
-export const createAccessToken = (
-  user: Partial<LoginResponse>,
-  refreshToken: string,
-) => {
+export const createAccessToken = (user: Partial<LoginResponse>, refreshToken: string) => {
   return jwt.sign(
     { user },
     `${process.env.ACCESS_TOKEN_SECRET!} ${refreshToken}`,
@@ -30,13 +23,13 @@ export const createEmailVerificationToken = (user: LoginResponse) => {
 
 export const verifyToken = (
   token: string,
-  type: "AccessToken" | "RefreshToken" | "EmailVerification",
+  type: 'AccessToken' | 'RefreshToken' | 'EmailVerification',
   refreshToken?: string,
 ) => {
   const tokenType = {
-    RefreshToken: "REFRESH_TOKEN_SECRET",
-    AccessToken: "ACCESS_TOKEN_SECRET",
-    EmailVerification: "EMAIL_VERIFICATION_TOKEN_SECRET",
+    RefreshToken: 'REFRESH_TOKEN_SECRET',
+    AccessToken: 'ACCESS_TOKEN_SECRET',
+    EmailVerification: 'EMAIL_VERIFICATION_TOKEN_SECRET',
   };
   const SECRET = refreshToken
     ? `${process.env[tokenType[type]]!} ${refreshToken}`

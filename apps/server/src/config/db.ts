@@ -1,1 +1,1 @@
-export { prisma } from "@skydock/db";
+export { prisma } from '@skydock/db';
