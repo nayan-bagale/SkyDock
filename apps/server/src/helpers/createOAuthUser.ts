@@ -1,7 +1,7 @@
-import { Profile } from "passport";
-import { prisma } from "../config/db";
-import email from "../services/email";
-import { addMonths } from "../utils/date";
+import { Profile } from 'passport';
+import { prisma } from '../config/db';
+import email from '../services/email';
+import { addMonths } from '../utils/date';
 
 class OAuthHelper {
   constructor() {}
@@ -33,7 +33,7 @@ class OAuthHelper {
           planId: 1,
           startDate: startDate,
           endDate: endDate,
-          status: "active",
+          status: 'active',
         },
       });
       await ctx.payment.create({
@@ -41,14 +41,12 @@ class OAuthHelper {
           userId: user.id,
           planId: 1,
           amount: 0,
-          currency: "INR",
-          paymentStatus: "success",
+          currency: 'INR',
+          paymentStatus: 'success',
         },
       });
 
-      await this.emailService.sendThankYouForSignUpEmail(
-        profile?.emails?.[0]?.value as string,
-      );
+      await this.emailService.sendThankYouForSignUpEmail(profile?.emails?.[0]?.value as string);
 
       return user;
     });

@@ -1,8 +1,8 @@
-import { prisma } from "@skydock/db";
-import { Request, Response } from "express";
-import messages from "../constants/messages";
-import { INTERNALERROR } from "../constants/status";
-import logger from "../logger";
+import { prisma } from '@skydock/db';
+import { Request, Response } from 'express';
+import messages from '../constants/messages';
+import { INTERNALERROR } from '../constants/status';
+import logger from '../logger';
 
 class SubscriptionPlanController {
   private static instance: SubscriptionPlanController;
@@ -16,7 +16,7 @@ class SubscriptionPlanController {
     return SubscriptionPlanController.instance;
   }
 
-  async getAllPlans(req: Request, res: Response) {
+  async getAllPlans(_req: Request, res: Response) {
     try {
       const plans = await prisma.plan.findMany();
 
@@ -33,10 +33,8 @@ class SubscriptionPlanController {
 
       return res.status(200).json(plansArray);
     } catch (e) {
-      logger.error("Error in getting all plans", e);
-      return res
-        .status(INTERNALERROR)
-        .json({ message: messages.INTERNAL_SERVER_ERROR });
+      logger.error('Error in getting all plans', e);
+      return res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
     }
   }
 }

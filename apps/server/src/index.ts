@@ -1,23 +1,23 @@
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import express from "express";
-import { JwtPayload } from "jsonwebtoken";
-import passport from "passport";
-import { corsOptions } from "./config/corsOptions";
-import "./config/dotenv";
-import { OK } from "./constants/status";
-import authMiddleware from "./middleware/auth-middleware";
-import rateLimitMiddleware from "./middleware/rate-limit-middleware";
-import authRoute from "./routes/auth-route";
-import filesRoute from "./routes/files-route";
-import planRoute from "./routes/subscription-plan-route";
-import email from "./services/email";
-import { decodeToken } from "./utils/token";
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express from 'express';
+import { JwtPayload } from 'jsonwebtoken';
+import passport from 'passport';
+import { corsOptions } from './config/corsOptions';
+import './config/dotenv';
+import { OK } from './constants/status';
+import authMiddleware from './middleware/auth-middleware';
+import rateLimitMiddleware from './middleware/rate-limit-middleware';
+import authRoute from './routes/auth-route';
+import filesRoute from './routes/files-route';
+import planRoute from './routes/subscription-plan-route';
+import email from './services/email';
+import { decodeToken } from './utils/token';
 
 const app = express();
 
 // trust proxy because the server is behind nginx
-app.set("trust proxy", process.env.NODE_ENV === "prod");
+app.set('trust proxy', process.env.NODE_ENV === 'prod');
 
 // Cross Origin Resource Sharing
 app.use(cors(corsOptions));
@@ -33,29 +33,29 @@ app.use(cookieParser());
 
 app.use(passport.initialize());
 
-app.get("/api/v1/session", authMiddleware, (req, res) => {
+app.get('/api/v1/session', authMiddleware, (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   const decoded = decodeToken(refreshToken) as JwtPayload;
   res.status(OK).json({ user: decoded.user });
 });
 
-app.get("/api/v1", rateLimitMiddleware.defaultLimiter, (req, res) => {
-  res.status(OK).json({ message: "Welcome to the API!" });
+app.get('/api/v1', rateLimitMiddleware.defaultLimiter, (_req, res) => {
+  res.status(OK).json({ message: 'Welcome to the API!' });
 });
 
-app.get("/api/v1/protected", authMiddleware, (req, res) => {
-  res.status(OK).json({ message: "Access Granted." });
+app.get('/api/v1/protected', authMiddleware, (_req, res) => {
+  res.status(OK).json({ message: 'Access Granted.' });
 });
 
-app.get("/api/v1/test-email", async (req, res) => {
+app.get('/api/v1/test-email', async (_req, res) => {
   const response = await email.sendTestEmail();
-  res.status(OK).json({ message: "Test email sent", response });
+  res.status(OK).json({ message: 'Test email sent', response });
 });
 
-app.use("/api/v1/auth", authRoute);
-app.use("/api/v1/plan", planRoute);
-app.use("/api/v1", filesRoute);
+app.use('/api/v1/auth', authRoute);
+app.use('/api/v1/plan', planRoute);
+app.use('/api/v1', filesRoute);
 
 app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
+  console.log('Server is running on http://localhost:3000');
 });

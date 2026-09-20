@@ -1,5 +1,5 @@
-import { prisma } from "../config/db";
-import logger from "../logger";
+import { prisma } from '../config/db';
+import logger from '../logger';
 
 export const userAvailableStorageCheck = async (
   userId: string,
@@ -11,8 +11,8 @@ export const userAvailableStorageCheck = async (
       select: {
         usedStorage: true,
         UserPlan: {
-          where: { status: "active" },
-          orderBy: { createdAt: "desc" },
+          where: { status: 'active' },
+          orderBy: { createdAt: 'desc' },
           take: 1,
           select: {
             plan: {
@@ -26,7 +26,7 @@ export const userAvailableStorageCheck = async (
     });
 
     if (!userWithPlan) {
-      logger.error("User not found:", userId);
+      logger.error('User not found:', userId);
       //   throw new Error("User not found");
       return false;
     }
@@ -44,7 +44,7 @@ export const userAvailableStorageCheck = async (
     return true;
   } catch (error) {
     // console.error("Error checking user available storage:", error);
-    logger.error("Error checking user available storage:", error);
+    logger.error('Error checking user available storage:', error);
     return false;
   }
 };

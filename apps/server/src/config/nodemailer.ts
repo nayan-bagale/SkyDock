@@ -1,6 +1,6 @@
 // src/utils/EmailService.ts
-import nodemailer, { Transporter } from "nodemailer";
-import logger from "../logger";
+import nodemailer, { Transporter } from 'nodemailer';
+import logger from '../logger';
 
 class EmailService {
   private static instance: EmailService;
@@ -38,11 +38,11 @@ class EmailService {
         subject,
         html,
       });
-      console.log("Email sent:", info.messageId);
-      logger.log("Email sent:", info.messageId);
+      console.log('Email sent:', info.messageId);
+      logger.log('Email sent:', info.messageId);
     } catch (error) {
-      console.error("Error sending email:", error);
-      logger.error("Error sending email:", error);
+      console.error('Error sending email:', error);
+      logger.error('Error sending email:', error);
       throw error;
     }
   }
@@ -59,9 +59,9 @@ class EmailService {
         from: template.from ?? `<${process.env.SMTP_USER}>`,
       };
       const info = await this.transporter.sendMail(mailOptions);
-      logger.log("Email sent:", info.messageId);
+      logger.log('Email sent:', info.messageId);
     } catch (error) {
-      logger.error("Error sending email:", error);
+      logger.error('Error sending email:', error);
       throw error;
     }
   }
