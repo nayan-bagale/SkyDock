@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   postgres:
-    image: postgres:17
+    image: postgres:18
     container_name: skydock-postgres
     environment:
       POSTGRES_USER: postgres
@@ -11,7 +11,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      # Postgres 18+ stores the cluster under /var/lib/postgresql/<major>/docker
+      - postgres_data:/var/lib/postgresql
   minio:
     image: quay.io/minio/minio
     container_name: skydock-minio
