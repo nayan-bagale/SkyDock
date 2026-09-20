@@ -356,7 +356,6 @@ class AuthController {
       }
 
       const startDate = new Date();
-      // @ts-ignore
       const endDate = addMonths(startDate, 1);
 
       await prisma.$transaction(async (ctx) => {
@@ -372,15 +371,15 @@ class AuthController {
         });
 
         if (!userExist.length) {
-          // const user_plan = await ctx.userPlan.create({
-          //   data: {
-          //     userId: user.id,
-          //     planId: 1,
-          //     startDate: startDate,
-          //     endDate: endDate,
-          //     status: "active",
-          //   },
-          // });
+          await ctx.userPlan.create({
+            data: {
+              userId: user.id,
+              planId: 1,
+              startDate: startDate,
+              endDate: endDate,
+              status: "active",
+            },
+          });
           await ctx.payment.create({
             data: {
               userId: user.id,
