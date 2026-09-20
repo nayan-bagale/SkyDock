@@ -1,9 +1,9 @@
-import { UserT } from ".";
+import { UserT } from '.';
 
 declare global {
   namespace Express {
     interface Request {
-      userInfo?: UserT["user"];
+      userInfo?: UserT['user'];
     }
   }
 }

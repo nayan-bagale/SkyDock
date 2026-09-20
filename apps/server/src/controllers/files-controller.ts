@@ -1,11 +1,11 @@
-import { CreateFolderRequest, FileT, FolderT } from "@skydock/types";
-import { Request, Response } from "express";
-import { prisma } from "../config/db";
-import messages from "../constants/messages";
-import { INTERNALERROR, PAYLOADTOOLARGE } from "../constants/status";
-import logger from "../logger";
-import Store from "../services/object-storage";
-import { RequestFileForUploaded, RequestFilesForSignedUrl } from "../types";
+import { CreateFolderRequest, FileT, FolderT } from '@skydock/types';
+import { Request, Response } from 'express';
+import { prisma } from '../config/db';
+import messages from '../constants/messages';
+import { INTERNALERROR, PAYLOADTOOLARGE } from '../constants/status';
+import logger from '../logger';
+import Store from '../services/object-storage';
+import { RequestFileForUploaded, RequestFilesForSignedUrl } from '../types';
 
 class FilesController {
   private static instance: FilesController;
@@ -24,17 +24,14 @@ class FilesController {
     const userId = req.userInfo?.id as string;
 
     try {
-      const sizeRequired = files.reduce(
-        (acc, file) => acc + parseInt(file.size),
-        0,
-      );
+      const sizeRequired = files.reduce((acc, file) => acc + parseInt(file.size), 0);
       const userWithPlan = await prisma.user.findUnique({
         where: { id: req.userInfo?.id as string },
         select: {
           usedStorage: true,
           UserPlan: {
-            where: { status: "active" },
-            orderBy: { createdAt: "desc" },
+            where: { status: 'active' },
+            orderBy: { createdAt: 'desc' },
             take: 1,
             select: {
               plan: {
@@ -52,19 +49,17 @@ class FilesController {
 
       if (!canUpload) {
         return res.status(PAYLOADTOOLARGE).json({
-          message: "Storage limit exceeded for your current plan.",
+          message: 'Storage limit exceeded for your current plan.',
         });
       }
     } catch (e) {
-      logger.error("Error in file upload", e);
-      return res
-        .status(INTERNALERROR)
-        .json({ message: messages.INTERNAL_SERVER_ERROR });
+      logger.error('Error in file upload', e);
+      return res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
     }
 
     const signed_urls = await Promise.all(
       files.map(async (file) => {
-        const extension = file.name.split(".").pop();
+        const extension = file.name.split('.').pop();
         const url = await Store.putObjectUrl(
           userId,
           // `${filename?.split(" ").join("-")}-${file.id}.${extension}`,
@@ -81,10 +76,7 @@ class FilesController {
   async saveUploadedFilesToDB(req: Request, res: Response) {
     const files = req.body as RequestFileForUploaded[];
 
-    const sizeRequired = files.reduce(
-      (acc, file) => acc + parseInt(file.details.size),
-      0,
-    );
+    const sizeRequired = files.reduce((acc, file) => acc + parseInt(file.details.size), 0);
 
     try {
       const userWithPlan = await prisma.user.findUnique({
@@ -92,8 +84,8 @@ class FilesController {
         select: {
           usedStorage: true,
           UserPlan: {
-            where: { status: "active" },
-            orderBy: { createdAt: "desc" },
+            where: { status: 'active' },
+            orderBy: { createdAt: 'desc' },
             take: 1,
             select: {
               plan: {
@@ -113,14 +105,12 @@ class FilesController {
 
       if (!canUpload) {
         return res.status(PAYLOADTOOLARGE).json({
-          message: "Storage limit exceeded for your current plan.",
+          message: 'Storage limit exceeded for your current plan.',
         });
       }
     } catch (e) {
-      logger.error("Error in file upload", e);
-      return res
-        .status(INTERNALERROR)
-        .json({ message: messages.INTERNAL_SERVER_ERROR });
+      logger.error('Error in file upload', e);
+      return res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
     }
 
     try {
@@ -150,12 +140,10 @@ class FilesController {
           })),
         });
       });
-      res.json({ message: "Upload successful" });
+      res.json({ message: 'Upload successful' });
     } catch (err) {
-      logger.error("Error saving files metadata to DB", err);
-      res
-        .status(INTERNALERROR)
-        .json({ message: messages.INTERNAL_SERVER_ERROR });
+      logger.error('Error saving files metadata to DB', err);
+      res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -167,10 +155,8 @@ class FilesController {
       });
       res.json(files);
     } catch (err) {
-      logger.error("Error fetching files", err);
-      res
-        .status(INTERNALERROR)
-        .json({ message: messages.INTERNAL_SERVER_ERROR });
+      logger.error('Error fetching files', err);
+      res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -182,10 +168,8 @@ class FilesController {
       const fileUrl = await Store.getObjectUrl(`${userId}/${fileName}`);
       res.json({ url: fileUrl });
     } catch (err) {
-      logger.error("Error fetching signed file URL", err);
-      res
-        .status(INTERNALERROR)
-        .json({ message: messages.INTERNAL_SERVER_ERROR });
+      logger.error('Error fetching signed file URL', err);
+      res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -197,12 +181,10 @@ class FilesController {
         where: { id: fileId, user_id },
         data: req.body as { name: string },
       });
-      res.json({ message: "File updated" });
+      res.json({ message: 'File updated' });
     } catch (err) {
-      logger.error("Error updating file", err);
-      res
-        .status(INTERNALERROR)
-        .json({ message: messages.INTERNAL_SERVER_ERROR });
+      logger.error('Error updating file', err);
+      res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -218,16 +200,14 @@ class FilesController {
           parent_id: data.parent,
           user_id: userId,
           size: 0,
-          mime_type: "folder",
+          mime_type: 'folder',
           last_modified: new Date(),
         },
       });
-      res.json({ message: "Folder created" });
+      res.json({ message: 'Folder created' });
     } catch (err) {
-      logger.error("Error creating folder", err);
-      res
-        .status(INTERNALERROR)
-        .json({ message: messages.INTERNAL_SERVER_ERROR });
+      logger.error('Error creating folder', err);
+      res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -239,9 +219,9 @@ class FilesController {
         where: { id: fileId, is_deleted: true },
       });
       if (!file) {
-        return res.status(INTERNALERROR).json({ message: "File not found" });
+        return res.status(INTERNALERROR).json({ message: 'File not found' });
       }
-      const extension = file.name.split(".").pop() as string;
+      const extension = file.name.split('.').pop() as string;
 
       await prisma.$transaction(async (tx) => {
         await Store.deleteObject(`${userId}/${fileId}.${extension}`);
@@ -258,12 +238,10 @@ class FilesController {
         await tx.explorerItems.delete({ where: { id: fileId } });
       });
 
-      return res.json({ message: "File deleted" });
+      return res.json({ message: 'File deleted' });
     } catch (err) {
-      logger.error("Error deleting file", err);
-      return res
-        .status(INTERNALERROR)
-        .json({ message: messages.INTERNAL_SERVER_ERROR });
+      logger.error('Error deleting file', err);
+      return res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -278,11 +256,9 @@ class FilesController {
 
         const files = items
           .filter((item) => !item.is_folder)
-          .map((file) => `${userId}/${file.id}.${file.name.split(".").pop()}`);
+          .map((file) => `${userId}/${file.id}.${file.name.split('.').pop()}`);
 
-        await Promise.allSettled(
-          files.map(async (file) => await Store.deleteObject(file)),
-        );
+        await Promise.allSettled(files.map(async (file) => await Store.deleteObject(file)));
 
         const totalSize = items.reduce((acc, item) => acc + item.size, 0);
         await tx.user.update({
@@ -298,12 +274,10 @@ class FilesController {
           where: { id: { in: folderItems }, user_id: userId },
         });
       });
-      res.json({ message: "Folder deleted" });
+      res.json({ message: 'Folder deleted' });
     } catch (err) {
-      logger.error("Error deleting folder", err);
-      res
-        .status(INTERNALERROR)
-        .json({ message: messages.INTERNAL_SERVER_ERROR });
+      logger.error('Error deleting folder', err);
+      res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -326,12 +300,10 @@ class FilesController {
         );
       });
 
-      res.json({ message: "Files and folders deleted" });
+      res.json({ message: 'Files and folders deleted' });
     } catch (err) {
-      logger.error("Error deleting files and folders", err);
-      res
-        .status(INTERNALERROR)
-        .json({ message: messages.INTERNAL_SERVER_ERROR });
+      logger.error('Error deleting files and folders', err);
+      res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -344,26 +316,20 @@ class FilesController {
         where: { id: fileId, user_id: userId, is_deleted: false },
       });
 
-      if (!file || file.mime_type !== "text/plain") {
-        return res.status(INTERNALERROR).json({ message: "File not found" });
+      if (!file || file.mime_type !== 'text/plain') {
+        return res.status(INTERNALERROR).json({ message: 'File not found' });
       }
 
-      const content = await Store.getObject(
-        `${userId}/${fileId}.${file.name.split(".").pop()}`,
-      );
+      const content = await Store.getObject(`${userId}/${fileId}.${file.name.split('.').pop()}`);
       if (!content.Body) {
-        return res
-          .status(INTERNALERROR)
-          .json({ message: "File content not found" });
+        return res.status(INTERNALERROR).json({ message: 'File content not found' });
       }
       const textContent = await content.Body.transformToString();
-      res.set("Content-Type", "text/plain");
+      res.set('Content-Type', 'text/plain');
       res.send(textContent);
     } catch (err) {
-      logger.error("Error fetching text file content", err);
-      res
-        .status(INTERNALERROR)
-        .json({ message: messages.INTERNAL_SERVER_ERROR });
+      logger.error('Error fetching text file content', err);
+      res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -372,7 +338,7 @@ class FilesController {
     const userId = req.userInfo?.id as string;
     const content = req.body.content as string;
 
-    const contentLength = BigInt(Buffer.byteLength(content, "utf-8"));
+    const contentLength = BigInt(Buffer.byteLength(content, 'utf-8'));
 
     try {
       // if (!(await userAvailableStorageCheck(userId, contentLength))) {
@@ -387,8 +353,8 @@ class FilesController {
           select: {
             usedStorage: true,
             UserPlan: {
-              where: { status: "active" },
-              orderBy: { createdAt: "desc" },
+              where: { status: 'active' },
+              orderBy: { createdAt: 'desc' },
               take: 1,
               select: {
                 plan: {
@@ -402,13 +368,12 @@ class FilesController {
         });
 
         if (!userWithPlan) {
-          throw new Error("User not found");
+          throw new Error('User not found');
         }
 
         const usedStorage = userWithPlan?.usedStorage ?? 0;
         const storageLimit = userWithPlan?.UserPlan[0]?.plan?.storageLimit ?? 0;
-        const canUpload =
-          Number(usedStorage) + Number(contentLength) <= storageLimit;
+        const canUpload = Number(usedStorage) + Number(contentLength) <= storageLimit;
 
         if (!canUpload) {
           throw new Error(`User ${userId} exceeded storage limit`);
@@ -418,21 +383,20 @@ class FilesController {
           where: { id: fileId, user_id: userId, is_deleted: false },
         });
 
-        if (!file || file.mime_type !== "text/plain") {
-          throw new Error("File not found or not a text file");
+        if (!file || file.mime_type !== 'text/plain') {
+          throw new Error('File not found or not a text file');
         }
 
         await Store.putObject(
-          `${userId}/${fileId}.${file.name.split(".").pop()}`,
+          `${userId}/${fileId}.${file.name.split('.').pop()}`,
           content,
-          "text/plain",
+          'text/plain',
         );
 
         await tx.user.update({
           where: { id: userId },
           data: {
-            usedStorage:
-              Number(usedStorage) - Number(file.size) + Number(contentLength),
+            usedStorage: Number(usedStorage) - Number(file.size) + Number(contentLength),
           },
         });
 
@@ -445,12 +409,10 @@ class FilesController {
         });
       });
 
-      res.json({ message: "File content updated" });
+      res.json({ message: 'File content updated' });
     } catch (err) {
-      logger.error("Error updating text file content", err);
-      res
-        .status(INTERNALERROR)
-        .json({ message: messages.INTERNAL_SERVER_ERROR });
+      logger.error('Error updating text file content', err);
+      res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
     }
   }
 
@@ -466,8 +428,8 @@ class FilesController {
           select: {
             usedStorage: true,
             UserPlan: {
-              where: { status: "active" },
-              orderBy: { createdAt: "desc" },
+              where: { status: 'active' },
+              orderBy: { createdAt: 'desc' },
               take: 1,
               select: {
                 plan: {
@@ -481,17 +443,14 @@ class FilesController {
         });
 
         if (!userWithPlan) {
-          return res.status(INTERNALERROR).json({ message: "User not found" });
+          return res.status(INTERNALERROR).json({ message: 'User not found' });
         }
 
         const explorerItems = await tx.explorerItems.findMany({
           where: { user_id: userId, is_deleted: false, is_folder: false },
         });
 
-        totalStorageUsed = explorerItems.reduce(
-          (acc, item) => acc + (item.size ?? 0),
-          0,
-        );
+        totalStorageUsed = explorerItems.reduce((acc, item) => acc + (item.size ?? 0), 0);
 
         await tx.user.update({
           where: { id: userId },
@@ -502,14 +461,12 @@ class FilesController {
       });
 
       return res.json({
-        message: "User storage restored successfully",
+        message: 'User storage restored successfully',
         totalStorageUsed,
       });
     } catch (err) {
-      logger.error("Error restoring user storage", err);
-      res
-        .status(INTERNALERROR)
-        .json({ message: messages.INTERNAL_SERVER_ERROR });
+      logger.error('Error restoring user storage', err);
+      res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
     }
   }
 }
