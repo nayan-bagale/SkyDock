@@ -75,6 +75,25 @@ Errors (same semantics as `POST /auth/login` where applicable):
 | `400` | `code_challenge_method` is not `S256` |
 | `429` | Login rate limit exceeded |
 
+### `POST /pkce/session`
+
+For a browser that is already signed in. Requires the `refreshToken` cookie and `Authorization: Bearer <access_token>` (same as other protected routes).
+
+Request JSON:
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `code_challenge` | yes | S256 challenge |
+| `code_challenge_method` | yes | Must be `S256` |
+
+Success (`200`): same `{ code, expires_in }` body as `/pkce/authorize`. Does not replace the website session.
+
+| Status | Condition |
+|--------|-----------|
+| `400` | Missing challenge or method is not `S256` |
+| `401` / `498` | Missing or expired website session |
+| `429` | Login rate limit exceeded |
+
 ### `POST /pkce/exchange`
 
 Request JSON:

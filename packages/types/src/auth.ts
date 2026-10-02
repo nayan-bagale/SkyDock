@@ -21,6 +21,11 @@ export interface PKCELoginBody {
   code_challenge_method: string;
 }
 
+export interface PKCESessionBody {
+  code_challenge: string;
+  code_challenge_method: string;
+}
+
 export interface PKCEExchangeBody {
   code: string;
   code_verifier: string;

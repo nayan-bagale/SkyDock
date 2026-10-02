@@ -13,6 +13,13 @@ router.post('/login', rateLimitMiddleware.loginLimiter, authController.login);
 
 router.post('/pkce/authorize', rateLimitMiddleware.loginLimiter, pkceController.authorize);
 
+router.post(
+  '/pkce/session',
+  rateLimitMiddleware.loginLimiter,
+  authMiddleware,
+  pkceController.session,
+);
+
 router.post('/pkce/exchange', rateLimitMiddleware.strictLimiter, pkceController.exchange);
 
 router.post('/pkce/refresh', rateLimitMiddleware.defaultLimiter, pkceController.refresh);

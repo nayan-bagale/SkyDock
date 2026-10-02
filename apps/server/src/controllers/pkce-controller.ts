@@ -3,6 +3,7 @@ import {
   PKCEExchangeBody,
   PKCELoginBody,
   PKCERefreshBody,
+  PKCESessionBody,
 } from "@skydock/types/Auth";
 import { emailValidation } from "@skydock/validation";
 import bcrypt from "bcrypt";
@@ -107,6 +108,43 @@ class PkceController {
       return res.status(OK).json({ code, expires_in: expiresIn });
     } catch (e) {
       logger.error("Error while creating authorization code", e);
+      return res
+        .status(INTERNALERROR)
+        .json({ message: messages.INTERNAL_SERVER_ERROR });
+    }
+  }
+
+  /**
+   * Issue a one-time code for the browser session already authenticated by auth middleware.
+   * Used when the website login page hands the user back to the desktop app.
+   */
+  async session(req: Request, res: Response) {
+    const { code_challenge, code_challenge_method } = req.body as PKCESessionBody;
+    const userId = req.userInfo?.id;
+
+    if (!userId) {
+      return res.status(UNAUTHORIED).json({ message: messages.UNAUTHORIED });
+    }
+
+    if (!code_challenge) {
+      return res.status(BADREQUEST).json({ message: "code_challenge is required" });
+    }
+
+    if (!pkceService.assertChallengeMethod(code_challenge_method)) {
+      return res
+        .status(BADREQUEST)
+        .json({ message: "code_challenge_method must be S256" });
+    }
+
+    try {
+      const { code, expiresIn } = await pkceService.createAuthorizationCode({
+        userId,
+        codeChallenge: code_challenge,
+      });
+
+      return res.status(OK).json({ code, expires_in: expiresIn });
+    } catch (e) {
+      logger.error("Error while creating authorization code from session", e);
       return res
         .status(INTERNALERROR)
         .json({ message: messages.INTERNAL_SERVER_ERROR });
