@@ -1,6 +1,7 @@
 import express from 'express';
 
 import authController from '../controllers/auth-controller';
+import pkceController from '../controllers/pkce-controller';
 import authMiddleware from '../middleware/auth-middleware';
 import rateLimitMiddleware from '../middleware/rate-limit-middleware';
 
@@ -9,6 +10,12 @@ const router = express.Router();
 router.post('/register', rateLimitMiddleware.signupLimiter, authController.register);
 
 router.post('/login', rateLimitMiddleware.loginLimiter, authController.login);
+
+router.post('/pkce/authorize', rateLimitMiddleware.loginLimiter, pkceController.authorize);
+
+router.post('/pkce/exchange', rateLimitMiddleware.strictLimiter, pkceController.exchange);
+
+router.post('/pkce/refresh', rateLimitMiddleware.defaultLimiter, pkceController.refresh);
 
 router.get('/logout', rateLimitMiddleware.defaultLimiter, authController.logout);
 
