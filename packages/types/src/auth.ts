@@ -14,6 +14,22 @@ export interface LoginBody {
   password: string;
 }
 
+export interface PKCELoginBody {
+  email: string;
+  password: string;
+  code_challenge: string;
+  code_challenge_method: string;
+}
+
+export interface PKCEExchangeBody {
+  code: string;
+  code_verifier: string;
+  redirect_uri?: string;
+}
+
+export interface PKCERefreshBody {
+  refresh_token: string;
+}
 export interface LoginResponse {
   email?: string;
   name?: string;

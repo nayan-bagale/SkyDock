@@ -43,7 +43,8 @@ model User {
   explorerItems ExplorerItems[]
   UserPlan      UserPlan[]
   Payment       Payment[]
-  OAuth         OAuth[]
+  OAuth              OAuth[]
+  authorizationCodes AuthorizationCode[]
 }
 
 model OAuth {
@@ -106,6 +107,22 @@ model Payment {
 
   user User @relation(fields: [userId], references: [id])
   plan Plan @relation(fields: [planId], references: [id])
+}
+
+model AuthorizationCode {
+  id            String    @id @default(cuid())
+  codeHash      String    @unique
+  userId        String
+  codeChallenge String
+  clientId      String?
+  redirectUri   String?
+  expiresAt     DateTime
+  usedAt        DateTime?
+  createdAt     DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([expiresAt])
 }
 
 model ExplorerItems {
