@@ -178,7 +178,7 @@ class PkceController {
 
     const userResObj: LoginResponse = { id: consumed.userId };
     const refreshToken = createRefreshToken(userResObj);
-    const accessToken = createAccessToken(userResObj, refreshToken);
+    const accessToken = createAccessToken(userResObj);
 
     return res.status(OK).json({
       access_token: accessToken,
@@ -202,7 +202,7 @@ class PkceController {
     }
 
     try {
-      verifyToken(refresh_token, "RefreshToken", "");
+      verifyToken(refresh_token, "RefreshToken");
     } catch {
       return res
         .status(UNAUTHORIED)
@@ -212,7 +212,7 @@ class PkceController {
     try {
       const decoded = decodeToken(refresh_token) as JwtPayload;
       const user = decoded.user as LoginResponse;
-      const accessToken = createAccessToken(user, refresh_token);
+      const accessToken = createAccessToken(user);
 
       return res.status(OK).json({
         access_token: accessToken,

@@ -174,7 +174,7 @@ class AuthController {
     };
 
     const refreshToken = createRefreshToken(UserResObj);
-    const accessToken = createAccessToken(UserResObj, refreshToken);
+    const accessToken = createAccessToken(UserResObj);
     res.cookie('refreshToken', refreshToken, cookieOptions);
 
     res.status(OK).json({
@@ -192,7 +192,7 @@ class AuthController {
 
     // Verify the refresh token if it is valid or not if not then return unauthorized
     try {
-      verifyToken(refreshToken, 'RefreshToken', '');
+      verifyToken(refreshToken, 'RefreshToken');
     } catch (e: any) {
       res.clearCookie('refreshToken');
       return res.status(UNAUTHORIED).json({ message: messages.INVALID_REFRESH_TOKEN });
@@ -202,7 +202,7 @@ class AuthController {
     // If the refresh token is valid then create a new access token and send it back to the client along with the user data
     try {
       const decoded = decodeToken(refreshToken) as JwtPayload;
-      const newAccessToken = createAccessToken(decoded.user, refreshToken);
+      const newAccessToken = createAccessToken(decoded.user);
       return res.json({ accessToken: newAccessToken, user: decoded.user });
     } catch (e: any) {
       res.clearCookie('refreshToken');
@@ -634,7 +634,7 @@ class AuthController {
       };
 
       const refreshToken = createRefreshToken(UserResObj);
-      const accessToken = createAccessToken(UserResObj, refreshToken);
+      const accessToken = createAccessToken(UserResObj);
 
       res.cookie('refreshToken', refreshToken, cookieOptions);
 

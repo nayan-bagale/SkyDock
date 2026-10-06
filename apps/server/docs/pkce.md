@@ -141,7 +141,7 @@ Errors:
 | `401` | Invalid refresh token |
 | `429` | Default rate limit exceeded |
 
-Use the access token as `Authorization: Bearer <access_token>` on protected API routes. For routes that use cookie auth middleware, the web app still expects a refresh cookie; PKCE clients use bearer access tokens only unless you add separate middleware.
+Use the access token as `Authorization: Bearer <access_token>` on protected API routes. A valid bearer token is enough; PKCE clients do not send a refresh cookie.
 
 ## Token lifetimes
 
@@ -151,7 +151,7 @@ Use the access token as `Authorization: Bearer <access_token>` on protected API 
 | Access token | 5 minutes |
 | Refresh token | 1 day |
 
-`POST /pkce/refresh` returns a new access token bound to the same refresh token. The refresh token is **not** rotated on refresh.
+`POST /pkce/refresh` returns a new access token. The refresh token is **not** rotated on refresh.
 
 ## Calling the API
 
@@ -161,7 +161,7 @@ After exchange, send:
 Authorization: Bearer <access_token>
 ```
 
-Protected routes that use `authMiddleware` today also require a valid `refreshToken` cookie and a matching access token. PKCE-only clients may need a bearer-only middleware in a future change; confirm against the route you call.
+Protected routes accept `Authorization: Bearer <access_token>` without a `refreshToken` cookie. Website clients still send that cookie along with the bearer token. An expired or invalid access token returns `498`; refresh it with `POST /pkce/refresh`. A request with neither a cookie nor a bearer token returns `401`.
 
 ## Planned: browser OAuth PKCE
 

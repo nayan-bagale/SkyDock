@@ -5,12 +5,8 @@ import { jwtOptions } from '../config/cookiesAndJwt';
 export const createRefreshToken = (user: Partial<LoginResponse>) => {
   return jwt.sign({ user }, process.env.REFRESH_TOKEN_SECRET!, jwtOptions.refreshToken);
 };
-export const createAccessToken = (user: Partial<LoginResponse>, refreshToken: string) => {
-  return jwt.sign(
-    { user },
-    `${process.env.ACCESS_TOKEN_SECRET!} ${refreshToken}`,
-    jwtOptions.accessToken,
-  );
+export const createAccessToken = (user: Partial<LoginResponse>) => {
+  return jwt.sign({ user }, process.env.ACCESS_TOKEN_SECRET!, jwtOptions.accessToken);
 };
 
 export const createEmailVerificationToken = (user: LoginResponse) => {
@@ -24,17 +20,13 @@ export const createEmailVerificationToken = (user: LoginResponse) => {
 export const verifyToken = (
   token: string,
   type: 'AccessToken' | 'RefreshToken' | 'EmailVerification',
-  refreshToken?: string,
 ) => {
   const tokenType = {
     RefreshToken: 'REFRESH_TOKEN_SECRET',
     AccessToken: 'ACCESS_TOKEN_SECRET',
     EmailVerification: 'EMAIL_VERIFICATION_TOKEN_SECRET',
   };
-  const SECRET = refreshToken
-    ? `${process.env[tokenType[type]]!} ${refreshToken}`
-    : process.env[tokenType[type]]!;
-  return jwt.verify(token, SECRET);
+  return jwt.verify(token, process.env[tokenType[type]]!);
 };
 
 export const decodeToken = (token: string) => {
