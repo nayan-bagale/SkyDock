@@ -26,5 +26,7 @@ export {
 } from "./components/toast/showToast";
 
 import LoadingScreen from "./components/LoadingScreen/LoadingScreen";
-
+import PaperGlass from "./components/paper-glass/PaperGlass";
 export { LoadingScreen };
+
+export { PaperGlass };

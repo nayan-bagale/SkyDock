@@ -17,6 +17,22 @@ const userAuthApi = createApi({
       }),
       invalidatesTags: ["UserInfo"],
     }),
+    refreshSession: builder.mutation<{ accessToken: string; user: LoginResponse }, void>({
+      query: () => ({
+        url: `/auth/refresh`,
+        method: "GET",
+      }),
+    }),
+    pkceSession: builder.mutation<
+      { code: string; expires_in: number },
+      { code_challenge: string; code_challenge_method: string }
+    >({
+      query: (body) => ({
+        url: `/auth/pkce/session`,
+        method: "POST",
+        body,
+      }),
+    }),
     register: builder.mutation({
       query: (body) => ({
         url: `/auth/register`,
@@ -111,6 +127,8 @@ const userAuthApi = createApi({
 // // auto-generated based on the defined endpoints
 export const {
   useLoginMutation,
+  useRefreshSessionMutation,
+  usePkceSessionMutation,
   useRegisterMutation,
   useProtectedMutation,
   useGetSessionQuery,
@@ -122,6 +140,7 @@ export const {
   useVerifyOtpMutation,
   useResetPasswordMutation,
   useGetUserInfoQuery,
+  useLazyGetUserInfoQuery,
   useSetPasswordMutation,
 } = userAuthApi;
 export default userAuthApi;
