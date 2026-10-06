@@ -1,7 +1,6 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
-import { JwtPayload } from 'jsonwebtoken';
 import passport from 'passport';
 import { corsOptions } from './config/corsOptions';
 import './config/dotenv';
@@ -12,7 +11,6 @@ import authRoute from './routes/auth-route';
 import filesRoute from './routes/files-route';
 import planRoute from './routes/subscription-plan-route';
 import email from './services/email';
-import { decodeToken } from './utils/token';
 
 const app = express();
 
@@ -34,9 +32,7 @@ app.use(cookieParser());
 app.use(passport.initialize());
 
 app.get('/api/v1/session', authMiddleware, (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
-  const decoded = decodeToken(refreshToken) as JwtPayload;
-  res.status(OK).json({ user: decoded.user });
+  res.status(OK).json({ user: req.userInfo });
 });
 
 app.get('/api/v1', rateLimitMiddleware.defaultLimiter, (_req, res) => {
