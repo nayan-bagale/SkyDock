@@ -163,8 +163,19 @@ Authorization: Bearer <access_token>
 
 Protected routes accept `Authorization: Bearer <access_token>` without a `refreshToken` cookie. Website clients still send that cookie along with the bearer token. An expired or invalid access token returns `498`; refresh it with `POST /pkce/refresh`. A request with neither a cookie nor a bearer token returns `401`.
 
-## Planned: browser OAuth PKCE
+## Desktop app (browser handoff)
 
-A future release will add browser-based authorization (`GET /auth/pkce/authorize` with `client_id`, `redirect_uri`, and `state`) for users who already have a web session. That flow will reuse the same authorization-code table and `POST /auth/pkce/exchange`. Credential codes store `clientId` and `redirectUri` as null; OAuth codes will set those fields and enforce `redirect_uri` at exchange time.
+The SkyDock desktop agent is a PKCE public client:
 
-This is not available yet.
+1. The agent generates `code_verifier`, S256 `code_challenge`, and `state`, then opens the web app at `/login` with `redirect_uri=skydock://callback`.
+2. The user signs in on the website (or continues an existing session). The login page calls `POST /auth/pkce/session` and redirects the browser to `skydock://callback?code&state`.
+3. Electron receives the custom-scheme URL and forwards `code` and `state` to the agent over the local ZMQ channel.
+4. The agent calls `POST /auth/pkce/exchange` with `code` and `code_verifier`. It does **not** send `redirect_uri`, because session-issued codes store `redirectUri` as null.
+
+The agent stores the refresh token in the OS keychain and keeps the access token in memory. It refreshes via `POST /auth/pkce/refresh` and calls protected routes with `Authorization: Bearer` only.
+
+See [the web PKCE doc](../../web/docs/pkce.md) for the login-page behavior.
+
+## Planned: OAuth authorization endpoint
+
+Not available yet: `GET /auth/pkce/authorize` with `client_id`, `redirect_uri`, and `state` for third-party clients, with `redirect_uri` enforced at exchange time on codes that store a non-null `redirectUri`.

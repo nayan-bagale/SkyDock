@@ -1,5 +1,4 @@
 import { createHash, randomBytes } from 'crypto';
-import { prisma } from '../config/db';
 import {
   AUTHORIZATION_CODE_TTL_MS,
   BASE64_URL_ENCODING_METHOD,
@@ -7,7 +6,9 @@ import {
   DIGEST_ALGORITHM,
   HASH_AUTHORIZATION_CODE_METHOD,
 } from '../constants';
+import cache from '../utils/inMemoryStore';
 
+const PKCE_CACHE_PREFIX = 'pkce:';
 
 export type CreateAuthorizationCodeInput = {
   userId: string;
@@ -18,6 +19,12 @@ export type CreateAuthorizationCodeInput = {
 
 export type ConsumedAuthorizationCode = {
   userId: string;
+};
+
+type StoredAuthorizationCode = {
+  userId: string;
+  codeChallenge: string;
+  redirectUri: string | null;
 };
 
 /** Persists and validates OAuth-style authorization codes with PKCE (RFC 7636). */
@@ -49,25 +56,24 @@ class PkceService {
 
   /**
    * Creates a one-time authorization code for the user. Stores codeChallenge and optional
-   * clientId/redirectUri (null for credential login). Only the hash of the raw code is persisted.
+   * redirectUri (null for credential login). Only the hash of the raw code is persisted.
    */
   async createAuthorizationCode(
     input: CreateAuthorizationCodeInput,
   ): Promise<{ code: string; expiresIn: number }> {
     const code = this.base64UrlEncode(randomBytes(32));
     const codeHash = this.hashAuthorizationCode(code);
-    const expiresAt = new Date(Date.now() + AUTHORIZATION_CODE_TTL_MS);
+    const cacheKey = this.cacheKey(codeHash);
 
-    await prisma.authorizationCode.create({
-      data: {
-        codeHash,
+    cache.set(
+      cacheKey,
+      {
         userId: input.userId,
         codeChallenge: input.codeChallenge,
-        clientId: input.clientId ?? null,
         redirectUri: input.redirectUri ?? null,
-        expiresAt,
       },
-    });
+      AUTHORIZATION_CODE_TTL_MS,
+    );
 
     return {
       code,
@@ -76,8 +82,7 @@ class PkceService {
   }
 
   /**
-   * Validates and burns a code: must be unused, unexpired, PKCE-valid, and (if bound) redirect_uri must match.
-   * updateMany with usedAt guards against double redemption under concurrent token requests.
+   * Validates and burns a code: must be unexpired, PKCE-valid, and (if bound) redirect_uri must match.
    */
   async consumeAuthorizationCode(
     code: string,
@@ -85,12 +90,11 @@ class PkceService {
     redirectUri?: string,
   ): Promise<ConsumedAuthorizationCode | null> {
     const codeHash = this.hashAuthorizationCode(code);
+    const cacheKey = this.cacheKey(codeHash);
 
-    const record = await prisma.authorizationCode.findUnique({
-      where: { codeHash },
-    });
+    const record = cache.get<StoredAuthorizationCode>(cacheKey);
 
-    if (!record || record.usedAt || record.expiresAt <= new Date()) {
+    if (!record) {
       return null;
     }
 
@@ -102,18 +106,7 @@ class PkceService {
       return null;
     }
 
-    const updated = await prisma.authorizationCode.updateMany({
-      where: {
-        codeHash,
-        usedAt: null,
-        expiresAt: { gt: new Date() },
-      },
-      data: { usedAt: new Date() },
-    });
-
-    if (updated.count !== 1) {
-      return null;
-    }
+    cache.del(cacheKey);
 
     return { userId: record.userId };
   }
@@ -130,9 +123,13 @@ class PkceService {
       .digest(BASE64_URL_ENCODING_METHOD);
   }
 
-  /** Lookup key for AuthorizationCode rows; raw codes are never stored. */
+  /** Lookup key for cached codes; raw codes are never stored. */
   private hashAuthorizationCode(code: string): string {
     return createHash(HASH_AUTHORIZATION_CODE_METHOD).update(code).digest(DIGEST_ALGORITHM);
+  }
+
+  private cacheKey(codeHash: string): string {
+    return `${PKCE_CACHE_PREFIX}${codeHash}`;
   }
 }
 

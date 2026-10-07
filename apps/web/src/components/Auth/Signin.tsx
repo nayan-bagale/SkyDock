@@ -88,6 +88,10 @@ const Signin: FC<SigninProps> = () => {
     );
   };
 
+  const handleLoginDifferent = async () => {
+    setUseDifferentAccount(true);
+  };
+
   const handleLoginWithGoogle = async () => {
     window.location.href = `${import.meta.env.VITE_BACKEND_URL}/auth/google`;
   };
@@ -173,23 +177,23 @@ const Signin: FC<SigninProps> = () => {
     return (
       <AppRedirect
         user={user}
-        onLoginDifferent={() => setUseDifferentAccount(true)}
+        onLoginDifferent={handleLoginDifferent}
         onOpenInApp={handleContinue}
         onContinueOnWeb={() => navigate("/")}
       />
     );
   }
 
-  if (pkce.status === PkceStatus.Ready) {
-    return (
-      <AuthCard>
-        <h1 className=" text-2xl font-bold text-white ">Login</h1>
-        <span className=" animate-spin">
-          <Icons.Loader className=" h-6 w-6" />
-        </span>
-      </AuthCard>
-    );
-  }
+  // if (pkce.status === PkceStatus.Ready) {
+  //   return (
+  //     <AuthCard>
+  //       <h1 className=" text-2xl font-bold text-white ">Login</h1>
+  //       <span className=" animate-spin">
+  //         <Icons.Loader className=" h-6 w-6" />
+  //       </span>
+  //     </AuthCard>
+  //   );
+  // }
 
   return (
     <AuthCard>
