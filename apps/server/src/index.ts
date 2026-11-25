@@ -14,8 +14,11 @@ import email from './services/email';
 
 const app = express();
 
-// trust proxy because the server is behind nginx
-app.set('trust proxy', process.env.NODE_ENV === 'prod');
+// trust proxy because the server is behind a reverse proxy (nginx, or Vercel's edge).
+// Trust exactly one hop so req.ip comes from X-Forwarded-For and can't be spoofed.
+const behindProxy =
+  process.env.NODE_ENV === 'prod' || process.env.NODE_ENV === 'production' || !!process.env.VERCEL;
+app.set('trust proxy', behindProxy ? 1 : false);
 
 // Cross Origin Resource Sharing
 app.use(cors(corsOptions));

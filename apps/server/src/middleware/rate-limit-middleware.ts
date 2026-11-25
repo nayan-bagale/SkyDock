@@ -41,6 +41,9 @@ class RateLimitMiddleware {
       message: 'Too many requests from this IP, please try again later.',
       standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
       legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+      // Vercel also sends the standardized `Forwarded` header alongside X-Forwarded-For;
+      // we deliberately key on req.ip (X-Forwarded-For), so silence that validation.
+      validate: { forwardedHeader: false },
     });
   }
 }
