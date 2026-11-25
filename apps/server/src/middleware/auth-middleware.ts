@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
+import { clearCookieOptions } from '../config/cookiesAndJwt';
 import messages from '../constants/messages';
 import { TOKENEXPIRED, UNAUTHORIED } from '../constants/status';
 import { decodeToken, verifyToken } from '../utils/token';
@@ -12,7 +13,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
     try {
       verifyToken(refreshToken, 'RefreshToken');
     } catch {
-      res.clearCookie('refreshToken');
+      res.clearCookie('refreshToken', clearCookieOptions);
       return res.status(UNAUTHORIED).json({ message: messages.INVALID_REFRESH_TOKEN });
     }
 

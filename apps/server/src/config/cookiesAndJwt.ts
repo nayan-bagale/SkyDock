@@ -24,3 +24,10 @@ export const cookieOptions: CookieOptions = {
   secure: true,
   sameSite: 'none',
 };
+
+// Attributes must match those used when the cookie was set, or browsers may ignore the clear.
+export const clearCookieOptions: CookieOptions = {
+  httpOnly: cookieOptions.httpOnly,
+  secure: cookieOptions.secure,
+  sameSite: cookieOptions.sameSite,
+};

@@ -6,7 +6,7 @@ import { NextFunction, Request, Response } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import { cookieOptions } from '../config/cookiesAndJwt';
+import { clearCookieOptions, cookieOptions } from '../config/cookiesAndJwt';
 import { prisma } from '../config/db';
 import { SALT } from '../constants/constants';
 import messages from '../constants/messages';
@@ -194,7 +194,7 @@ class AuthController {
     try {
       verifyToken(refreshToken, 'RefreshToken');
     } catch (e: any) {
-      res.clearCookie('refreshToken');
+      res.clearCookie('refreshToken', clearCookieOptions);
       return res.status(UNAUTHORIED).json({ message: messages.INVALID_REFRESH_TOKEN });
     }
 
@@ -205,13 +205,13 @@ class AuthController {
       const newAccessToken = createAccessToken(decoded.user);
       return res.json({ accessToken: newAccessToken, user: decoded.user });
     } catch (e: any) {
-      res.clearCookie('refreshToken');
+      res.clearCookie('refreshToken', clearCookieOptions);
       return res.status(INTERNALERROR).json({ message: messages.INTERNAL_SERVER_ERROR });
     }
   }
 
   async logout(_req: Request, res: Response) {
-    res.clearCookie('refreshToken');
+    res.clearCookie('refreshToken', clearCookieOptions);
     res.status(OK).json({ message: messages.LOGOUT });
   }
 
