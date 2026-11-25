@@ -21,7 +21,19 @@ class Logger {
     this.logger = winston.createLogger({
       level: 'debug',
       format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
-      transports: [
+      transports: this.buildTransports(),
+      exitOnError: false,
+    });
+  }
+
+  // Vercel's filesystem is read-only, so log to stdout/stderr there (shown in the Vercel
+  // dashboard). Set LOG_TO_CONSOLE=true to also get console output elsewhere.
+  private buildTransports(): winston.transport[] {
+    const onVercel = !!process.env.VERCEL;
+    const transports: winston.transport[] = [];
+
+    if (!onVercel) {
+      transports.push(
         new winston.transports.File({
           filename: this.logFilePath,
           maxsize: 5 * 1024 * 1024,
@@ -29,12 +41,19 @@ class Logger {
           zippedArchive: true,
           format: this.fileLogFormat(),
         }),
-        // new winston.transports.Console({
-        //   format: this.fileLogFormat(),
-        // }),
-      ],
-      exitOnError: false,
-    });
+      );
+    }
+
+    if (onVercel || process.env.LOG_TO_CONSOLE === 'true') {
+      transports.push(
+        new winston.transports.Console({
+          stderrLevels: ['error'],
+          format: this.fileLogFormat(!onVercel),
+        }),
+      );
+    }
+
+    return transports;
   }
 
   public static getInstance(): Logger {
@@ -44,11 +63,13 @@ class Logger {
     return Logger.instance;
   }
 
-  private fileLogFormat() {
+  private fileLogFormat(colorize = true) {
     return winston.format.printf(({ level, message }) => {
       const date = moment().format('DD-MMM-YYYY HH:mm:ss');
       const upperLevel = level.toUpperCase();
       let colorizeLevel = upperLevel;
+
+      if (!colorize) return `${date} [${this.lineCount++}] ${upperLevel} ${message}`;
 
       if (upperLevel === 'ERROR') colorizeLevel = `\x1b[31m${upperLevel}\x1b[0m`; // red
       if (upperLevel === 'INFO') colorizeLevel = `\x1b[32m${upperLevel}\x1b[0m`; // green
