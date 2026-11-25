@@ -52,6 +52,11 @@ app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/plan', planRoute);
 app.use('/api/v1', filesRoute);
 
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
-});
+// On Vercel the platform invokes the exported app; only bind a port elsewhere.
+if (!process.env.VERCEL) {
+  app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+  });
+}
+
+export default app;

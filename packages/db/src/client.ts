@@ -1,3 +1,4 @@
+import { readFileSync } from "fs";
 import path from "path";
 import dotenv from "dotenv";
 
@@ -24,9 +25,28 @@ function initializePrisma(): PrismaClient {
     throw new Error("DATABASE_URL is not defined");
   }
 
-  const adapter = new PrismaPg({
-    connectionString: databaseUrl,
-  });
+  // Aiven (and similar hosts) use a private CA. Provide it via DATABASE_CA_PATH
+  // (path to ca.pem) or DATABASE_CA (PEM contents). sslmode is stripped from the
+  // URL so the explicit ssl option below is what pg uses.
+  const caPem =
+    process.env.DATABASE_CA ??
+    (process.env.DATABASE_CA_PATH
+      ? readFileSync(
+          path.resolve(__dirname, "../../..", process.env.DATABASE_CA_PATH),
+          "utf8",
+        )
+      : undefined);
+
+  let connectionString = databaseUrl;
+  let ssl: { ca: string; rejectUnauthorized: true } | undefined;
+  if (caPem) {
+    const url = new URL(databaseUrl);
+    url.searchParams.delete("sslmode");
+    connectionString = url.toString();
+    ssl = { ca: caPem, rejectUnauthorized: true };
+  }
+
+  const adapter = new PrismaPg({ connectionString, ssl });
 
   prismaInstance =
     global.prisma ??
