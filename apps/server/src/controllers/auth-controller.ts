@@ -211,6 +211,7 @@ class AuthController {
   }
 
   async logout(_req: Request, res: Response) {
+    res.set('Cache-Control', 'no-store');
     res.clearCookie('refreshToken', clearCookieOptions);
     res.status(OK).json({ message: messages.LOGOUT });
   }

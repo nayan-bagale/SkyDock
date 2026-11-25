@@ -14,6 +14,9 @@ import email from './services/email';
 
 const app = express();
 
+// No ETag: a 304 on GET /auth/logout would skip the Set-Cookie that clears the session.
+app.set('etag', false);
+
 // trust proxy because the server is behind a reverse proxy (nginx, or Vercel's edge).
 // Trust exactly one hop so req.ip comes from X-Forwarded-For and can't be spoofed.
 const behindProxy =
