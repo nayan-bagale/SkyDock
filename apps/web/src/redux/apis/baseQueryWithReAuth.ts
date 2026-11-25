@@ -30,7 +30,7 @@ const baseQueryWithReAuth: BaseQueryFn<
 
   if (result.error?.status === 498) {
     const response = await baseQuery(
-      `${import.meta.env.VITE_BACKEND_URL}/auth/refresh`,
+      "/auth/refresh", // baseUrl is prepended by fetchBaseQuery
       store,
       extraOptions,
     );
